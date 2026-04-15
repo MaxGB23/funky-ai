@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": ["../src/extension.ts"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA;AAAA,aAAwB;AAEjB,SAAS,SAAS,SAAkC;AACvD,UAAQ,IAAI,qEAAqE;AAEjF,MAAI,aAAoB,gBAAS,gBAAgB,iCAAiC,MAAM;AACpF,IAAO,cAAO,uBAAuB,sCAAsC;AAAA,EAC/E,CAAC;AAED,UAAQ,cAAc,KAAK,UAAU;AACzC;AAEO,SAAS,aAAa;AAAC;",
+  "names": []
+}
