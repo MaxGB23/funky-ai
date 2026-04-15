@@ -29,6 +29,11 @@ Transformar Funky AI de un "protocolo puramente conversacional y manual" a un en
 - **La Solución:** Desarrollar un comando de orquestación (ej: `/sdd-release`) inspirado en la arquitectura forense de Gentle AI.
 - **Implementación:** El Orquestador, al mantener las referencias del `ORCHESTRATOR-STATE.md` (Punteros limpios), tiene suficiente contexto de alto nivel para deducir qué sub-sistemas cambiaron. Esto le permite auto-generar las notas de versión y mantener la sincronización del índice sin ensuciar la ventana de contexto del desarrollo de código.
 
+### 5. Delegación de Git Branching (Autonomía de Workers)
+- **El Problema:** El Humano debe recordar aislar el entorno (`git checkout -b feature/...`) antes de ordenar picar código, lo cual es una intervención manual tediosa que pone en riesgo la rama `main`.
+- **La Solución:** Facultar a los Sub-Agentes (Workers) para que asuman la autoría de su propio entorno de trabajo utilizando herramientas de terminal de la IDE.
+- **Implementación:** Establecer por norma (o en los manuales SDD operativos) que la primera acción obligatoria de un Worker Tier 2 o Tier 3 antes de escribir código es ejecutar la creación y salto a una nueva rama de Git alineada con la tarea de su Return Envelope. 
+
 ---
 
 ## 📈 Impacto Académico y Profesional
