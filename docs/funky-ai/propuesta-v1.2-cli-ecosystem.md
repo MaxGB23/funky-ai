@@ -24,9 +24,17 @@ Transformar Funky AI de un "protocolo puramente conversacional y manual" a un en
 - **La Solución:** Formalizar el uso de los *Tiers de Complejidad* no solo como métrica humana, sino como "Identidad" a declarar en el primer mensaje.
 - **Implementación:** Al delegar, el humano arrancará explícitamente diciendo *"Agente, sos Worker Tier 3"*. Esto activará heurísticas internas donde el agente aniquilará su creatividad y se convertirá en un transductor estricto de requerimientos.
 
+### 4. Automatización "Doc-Ops" (Housekeeping Autosuficiente)
+- **El Problema:** Sincronizar el `README.md`, generar notas de versión en `docs/releases/` o consolidar reportes genera fatiga burocrática. El humano no debería abrir un chat exclusivamente para "escribir documentación" tras un feature.
+- **La Solución:** Desarrollar un comando de orquestación (ej: `/sdd-release`) inspirado en la arquitectura forense de Gentle AI.
+- **Implementación:** El Orquestador, al mantener las referencias del `ORCHESTRATOR-STATE.md` (Punteros limpios), tiene suficiente contexto de alto nivel para deducir qué sub-sistemas cambiaron. Esto le permite auto-generar las notas de versión y mantener la sincronización del índice sin ensuciar la ventana de contexto del desarrollo de código.
+
 ---
 
 ## 📈 Impacto Académico y Profesional
 Construir una CLI desde cero implica comprender el Event Loop, manipulación cruda de archivos (`fs` de Node), parseo de argumentos de línea de comandos (ej. `commander` o `yargs`) y publicación de paquetes globales. Es el ejercicio técnico perfecto y definitivo para solidificar las bases de arquitectura y subir un escalón masivo como desarrollador. 
+
+## 🔭 Horizonte a Futuro (Post v1.2)
+- **v1.3 (Git-Ops & CI/CD):** La generación de *Pull Requests*, análisis autónomo de `git diff` y estandarización estricta de Commits convencionales se desarrollará como un módulo de "Skills" totalmente independiente en el futuro. *Justificación arquitectónica: Evitar el "Feature Bloat" en la v1.2 y focalizarse 100% en el scaffolding y sistema de archivos locales primero.*
 
 *Estado: Fase de Ideación. Pendiente de diseño de arquitectura técnica (Node.js).*
