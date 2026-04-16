@@ -86,7 +86,8 @@ Para que Funky AI funcione, hay que **evitar que el IDE bloquee a sus modelos po
 **Reglas de tu `~/.gemini/GEMINI.md` Global:**
 - **SÍ:** Debe contener el Perfil Psicológico (Persona), el Tono y la Filosofía (Clean Architecture).
 - **SÍ:** Debe contener el mapeo de `Skills` si usás reglas nativas del IDE (ej, condicionales de autoloader).
-- **NO DEBE EXISTIR NI UN RASTRO DE RESTRICCIÓN DE ORQUESTACIÓN.** Las reglas que digan "Solo delegá, no programes" **anulan** este ecosistema entero. El agente ejecutando el chat debe sentirse completamente libre y capacitado para programar 1000 líneas *inline* si el contexto del chat es el de un "Agente Ejecutor".
+- **NO (en `~/.gemini/GEMINI.md` global):** Este archivo NO debe contener restricciones de orquestación del tipo "solo delegá, no programes". Esas reglas anulan la capacidad de ejecución inline de cualquier Worker.
+- **SÍ (en `.agents/rules/`):** El canal correcto para inyectar el protocolo SDD es mediante workspace rules. Esto aísla las restricciones de orquestación al contexto del proyecto sin contaminar el perfil global del agente.
 
 ---
 

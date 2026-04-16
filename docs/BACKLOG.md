@@ -11,19 +11,19 @@
 
 Estas tareas NO requieren desarrollar código Node.js. Son ajustes a la infraestructura de `.agents/rules/`.
 
-- [ ] **[PATCH-A]** Actualizar `.agents/rules/engram-protocol.md` con:
+- [x] **[PATCH-A]** Actualizar `.agents/rules/engram-protocol.md` con: ✅ Completado — W1
   - Trigger Taxonomy completa (cuándo guardar: después de decisiones, bugfixes, descubrimientos)
   - Self-Check Question obligatoria post-tarea
   - Topic Key / Upsert Pattern (buscar con `grep_search` antes de escribir, actualizar si ya existe)
   - Session Close Protocol (estructura de cierre de sesión Orquestador)
   - **Fuente:** `docs/funky-ai/refactor/auditoria-claude-md.md`
 
-- [ ] **[PATCH-B]** Actualizar `docs/post-mortem.md` para que refleje la convención de `topic_key` en sus headers (el primer entry ya existe, hay que darle el formato correcto como modelo de referencia).
+- [x] **[PATCH-B]** Actualizar `docs/post-mortem.md` para que refleje la convención de `topic_key` en sus headers. ✅ Completado — W2
 
 - [x] **[PATCH-C]** Actualizar `README.md` para reflejar la nueva estructura de carpetas. ✅ Completado en esta sesión.
-- [ ] **[PATCH-D]** Corregir `docs/funky-ai/funky-ai.md` línea 89: La instrucción *"NO debe haber restricciones de orquestación en el GEMINI.md global"* es una contradicción directa con la v1.1 actual que ya inyectó el protocolo SDD en el Global. Clarificar o eliminar.
+- [x] **[PATCH-D]** Corregir `docs/funky-ai/funky-ai.md` línea 89: Contradicción resuelta — 2 bullets diferenciados global vs workspace rules. ✅ Completado — W2
 - [x] **[PATCH-E]** Crear `docs/ORCHESTRATOR-STATE.md` como archivo canónico de estado de sesión. ✅ Completado al cierre de sesión.
-- [ ] **[PATCH-F]** Crear Skill `.agents/skills/sdd-proposal.md` con template PRD-style. Campos obligatorios: `Estado` (Ideación/In Progress/Done), `Backlog IDs vinculados`, `Criterios de Aceptación`, e `Implementación` con referencia explícita a archivo destino. **Fuente:** `docs/post-mortem.md` entry `[discovery] Anti-patrón: Propuestas sin Estado Obligatorio`.
+- [x] **[PATCH-F]** Crear Skill `.agents/skills/sdd-proposal.md` con template PRD-style. ✅ Completado — W3
 
 ---
 
