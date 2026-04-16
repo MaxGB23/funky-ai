@@ -46,6 +46,19 @@ Acá está la magia de Funky AI:
 
 ---
 
+## 🚀 Workflow V1.2: CLI & Slash Commands
+
+El ecosistema pegó un salto de calidad brutal. Ahora el Router Humano tiene un estándar dorado donde el CLI y el Chat operan en tándem perfecto, ahorrando la fricción de escribir testamentos para dar contexto. Es así de metódico:
+
+1. **Humano en consola:** Ejecutá `funky phase explore` ➔ El CLI tira el template `.md` de la fase crudo al disco.
+2. **Humano en chat de IA:** Tirá el comando `/sdd-explore` y arrobá (con `@`) el template que se acaba de crear. El agente entra directamente en *Modo Arquitecto* y lo llena.
+3. **Humano en consola:** Ejecutá `funky phase design` ➔ Se inyecta el próximo template en la carpeta.
+4. **Humano en chat de IA:** Tirá el comando `/sdd-propose` arrobando el archivo resultante de la fase anterior. El agente lee la base y arma el diseño técnico.
+
+Con esta mecánica de un-dos (Consola-Chat), el modelo queda *psicológicamente pre-acondicionado* desde la tecla uno, cortando de raíz la burocracia de prompt. Es así de fácil, loco.
+
+---
+
 ## ⚖️ Matriz de Decisión: ¿Automatizar o Manual?
 
 Dado que ser el "Router Humano" en Funky AI requiere intervención constante (cerrar ventanas, pasar el `.md` a mano), **no debe convertirse en tu herramienta por defecto para todo**. Si tenés acceso a VS Code con Gentle AI nativo (automatizado con SQLite Engram) y modelos veloces/baratos (Claude Haiku, GPT-o mini), debés elegir sabiamente.

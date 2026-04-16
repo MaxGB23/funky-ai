@@ -1,39 +1,35 @@
 # ORCHESTRATOR-STATE.md
 > Archivo canónico de estado. Leer al inicio de CADA sesión de Orquestador antes de hacer cualquier cosa.
-> Equivalente a `mem_context()` de Gentle AI.
 
 ---
 
-## 🎯 Objetivo Actual
-Ejecutar la Fase de Implementación para el CLI en Node.js (V1.2). Ya pasamos la barrera de planificación arquitectónica y auditoría. Es hora de crear el código de `funky init`.
+## Objetivo
+Implementación de la Versión 1.2 (`feature/v1.2-funky-cli`): Creación del CLI de Funky AI en Node.js, automatización de plantillas y sharding del Falso Engram para resolver el token bloat y oficialización de slash commands.
 
-## 📋 Estado del Proyecto
-- **Versión activa:** v1.1.1 
-- **Rama en progreso:** `feature/v1.2-funky-cli` 
-- **Siguiente acción inmediata:** Orquestar el Brief de un **Worker Tier 2** para que empiece a escribir el código de `[V1.2-C] Implementar funky init`.
+## Instrucciones Aprendidas
+- El usuario prefiere estricta adherencia al protocolo de delegación manual "Un Worker a la vez" para no generar cruces cognitivos.
+- Los templates SDD se acordó guardarlos como archivos físicos `.md` en lugar de variables de JavaScript para mayor flexibilidad (implementado en V1.2-D).
 
-## ✅ Completado en Esta Sesión (V1.2 Planning)
-- `V1.2-A` ✅ — Worker Analista extrajo con éxito políticas QA de Gentle AI. (Reflejado en `v1.2-a-report.md`).
-- `V1.2-B` ✅ — Creado el Documento de Diseño Técnico `diseno-tecnico-funky-cli.md` usando el nuevo Skill `sdd-proposal.md`.
-- `DEUDA-REGEX` ✅ — Parche aplicado a `engram-protocol.md`. (Deuda técnica de la sesión anterior purgada).
-- `BACKLOG.md` ✅ — Marcados los ítems completados.
+## Descubrimientos
+- **Grep Regex Topic Key:** Identificado en la etapa inicial. La rule `.agents/rules/engram-protocol.md` fue corregida para instruir a los subagentes a buscar los `topic_key` compuestos (ej. `[bugfix][auth-model]`) usando `IsRegex: true` con backslashes en la tool de `grep_search`.
+- **API Status:Approved (Gentle AI):** El chequeo de etiquetas vía GitHub API es excesivo para nosotros ahora. Usamos validaciones simples (`Closes #XY`).
+- **Sharding en Acción:** El viejo y grandote `post-mortem.md` fue purgado. La data histórica ahora vive limpia bajo `docs/engram/bugfixes.md` y `docs/engram/discoveries.md`.
 
-## 🧠 Instrucciones Aprendidas
-- El usuario valida que se siga usando el flujo de delegación manual (un Worker a la vez).
-- Respetamos firmemente la prohibición de picar código en el Rol de Orquestador. Todo código de CLI debe ser delegado a Workers concretos.
+## Completado
+- `PATCH-A`, `PATCH-B`, `PATCH-D`, `PATCH-F` ✅ (Estabilidad del core lograda, rule de engram actualizada y bug de regex fixed).
+- `V1.2-A` ✅ (Auditoría CI/CD Gentle AI).
+- `V1.2-B` ✅ (Diseño técnico del CLI en markdown).
+- `V1.2-C` ✅ (Scaffolding Node + `funky init` con Commander).
+- `V1.2-D` ✅ (Comando `funky phase` y carga dinámica de templates MD protectivos).
+- `V1.2-E` ✅ (Manuales de equipo actualizados sobre el workflow `/sdd-*` + CLI).
+- `V1.2-F` ✅ (Sharding completado: Migrado post-mortem a `docs/engram/*` y engram-protocol.md actualizado enseñándole a la IA a escribir dinámicamente).
 
-## 🔍 Descubrimientos de Esta Sesión
-1. Las políticas de QA strict que usaban en Gentle AI (validar labels vía HTTP) resultan de extrema burocracia temprana (over-engineering) para nuestro Node CLI en este punto. Solo validaremos `Closes #` y un label manual `type:*`. 
-2. Nos movemos a una solución `memfs` / mocks rápidos para vitest con el fin de evitar que nuestra suite e2e corrompa el sistema de archivos del usuario testeando herramientas de scaffolding.
+## Próximos Pasos
+- **Release V1.2:** Crear un PR de la rama `feature/v1.2-funky-cli` a `main`. Documentar el release notes de la v1.2 y publicarlo a nivel repo.
+- **Horizonte V1.3:** Setup the Git-Ops Skills (automatización e interceptación de git diffs).
 
-## 🔴 Pending Inmediato
-- **[V1.2-C]** Implementar `funky init` — Worker Tier 2 crea la estructura base del Falso Engram (directorio `docs/engram/` en lugar de `post-mortem.md` monolítico).
-- **[V1.2-D]** Implementar `funky phase <name>` — Worker Tier 2 crea templates de fases SDD.
-
-## 📁 Archivos Clave
-- `docs/BACKLOG.md` — Fuente de verdad de tareas.
-- `docs/funky-ai/propuestas/diseno-tecnico-funky-cli.md` — El Master Plan del código que viene ahora.
-- `funky-cli/package.json` — Scaffolding que el Worker tendrá que rellenar.
-
-## 🔭 Horizonte
-- Setup del Framework de CLI Node.js (`commander`/`yargs` decidiremos pronto).
+## Archivos Relevantes
+- `funky-cli/bin/funky.js` — Core router del nuevo CLI automatizado.
+- `.agents/rules/engram-protocol.md` — La regla sagrada, ya configurada para soportar memoria distribuida.
+- `docs/BACKLOG.md` — Todo V1.2 y V1.1.1 tildado.
+- `docs/engram/` — El directorio físico de nuestra nueva memoria dividida. 

@@ -31,6 +31,9 @@ Para simular el comportamiento asíncrono y evitar la *degradación de contexto*
 ### 3. La Torre de Control (El Chat Orquestador)
 Si el proyecto es inmenso, el usuario puede mantener **un único hilo de chat abierto fijo** que nunca programe. A ese chat inicial se le van adjuntando los reportes físicos que los "chats sub-agentes" van soltando en el disco, para que ayude al humano a llevar la cuenta de qué tarea del plan falta delegar.
 
+#### Slash Commands de Contexto Rápido
+Para agilizar la comunicación con la Torre de Control y evitar la burocracia de armar prompts extensos, la doctrina ahora usa un sistema pre-acondicionante mediante **Slash Commands** en el chat (como `/sdd-explore` o `/sdd-propose`). Usarlos le inyecta instantáneamente el contexto psicológico al modelo, preparándolo para operar como Arquitecto sobre los templates físicos sin que el humano tenga que darle explicaciones redundantes.
+
 ---
 
 ## 🤔 Niveles de Complejidad (Tiers Funcionales)

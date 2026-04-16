@@ -9,10 +9,10 @@ globs: ["docs/*", "docs/**/*"]
 Estás operando en un proyecto que usa persistencia estructural. Al detectar este entorno debes comportarte como una unidad de memoria activa:
 
 ## 1. Memory Polling Dinámico (Lectura Pasiva)
-ANTES de cualquier modificación estructural o decisión arquitectónica, **DEBES usar `grep_search` o `view_file` sobre `docs/post-mortem.md`**. Esto asegura que no repitas errores del pasado ni rompas decisiones previamente tomadas por otros Workers o el Orchestrator. 
+ANTES de cualquier modificación estructural o decisión arquitectónica, **DEBES usar `grep_search` sobre TODO el directorio `docs/engram/`**. Esto asegura que no repitas errores del pasado ni rompas decisiones previamente tomadas por otros Workers o el Orchestrator. 
 
 ## 2. Estructuración MCP en Texto Plano (Escritura Indexada)
-Toda documentación dejada para la posteridad en `docs/post-mortem.md` está atada irrevocablemente al siguiente esquema estricto (no uses formatos libres, emulamos una base de datos con Markdown):
+Toda documentación dejada para la posteridad DEBE ser dirigida al archivo que corresponda con su tipo en `docs/engram/` (Ej: si es una decisión de diseño, debés hacer append a `docs/engram/decisions.md`). Está atada irrevocablemente al siguiente esquema estricto (no uses formatos libres, emulamos una base de datos con Markdown):
 
 ```markdown
 ### [{type}] {title}
@@ -21,11 +21,11 @@ Toda documentación dejada para la posteridad en `docs/post-mortem.md` está ata
 **Where:** [El rastro de las entidades o archivos modificados. Ej: root/configs/db.json]
 **Learned:** [Casuística rara, caveats, advertencias de cara al futuro. Campo vital]
 ```
-*(Types permitidos: `bugfix`, `decision`, `arquitectura`, `discovery`)*
+*(Types permitidos: `bugfix`, `decision`, `arquitectura`, `discovery` -> y sus archivos respectivos como `bugfixes.md`, `decisions.md`, `architecture.md`, `discoveries.md`)*
 
 ## 3. Trigger Taxonomy (Cuándo Guardar en Engram)
 
-Un Worker debe guardar en `post-mortem.md` INMEDIATAMENTE y SIN ESPERAR PEDIDO, después de cualquiera de estos eventos:
+Un Worker debe guardar en el archivo correspondiente de `docs/engram/` INMEDIATAMENTE y SIN ESPERAR PEDIDO, después de cualquiera de estos eventos:
 
 **Después de una Decisión:**
 - Se tomó una decisión de Arquitectura o Diseño
@@ -44,19 +44,19 @@ Un Worker debe guardar en `post-mortem.md` INMEDIATAMENTE y SIN ESPERAR PEDIDO, 
 
 ### 🔑 La Self-Check Question (Obligatoria Post-Tarea)
 Al terminar cada tarea, el agente (Worker u Orquestador) DEBE hacerse esta pregunta antes de cerrar el chat:
-> *"¿Acabo de tomar una decisión, arreglar un bug, aprender algo no-obvio, o establecer una convención? Si la respuesta es Sí → escribir en `post-mortem.md` AHORA."*
+> *"¿Acabo de tomar una decisión, arreglar un bug, aprender algo no-obvio, o establecer una convención? Si la respuesta es Sí → escribir en el archivo respectivo de `docs/engram/` AHORA."*
 
 ## 4. Topic Key / Upsert Pattern (Anti-Duplicación)
 
-En nuestro `post-mortem.md` y archivos de `docs/engram/`, esto se emula con **headers de sección consistentes**:
+En nuestros archivos de `docs/engram/`, esto se emula con **headers de sección consistentes**:
 
 - ❌ **Anti-patrón:** Crear una nueva sección `### [decision] Auth Model` cada vez que el tema evoluciona → el archivo acumula 4 entradas del mismo tema.
 - ✅ **Patrón correcto:** Buscar primero con `grep_search` si ya existe un header con ese `topic_key`. Si existe, **editar la entrada existente** con `replace_file_content`. Si no existe, recién crear una entrada nueva.
 
 ### El Flujo con topic_key:
-1. Antes de escribir en Engram → grep_search por el término. ⚠️ ATENCIÓN: Si vas a buscar en archivos donde el topic_key puede estar anidado en un título (ej: ### [bugfix][auth-model] Texto), DEBÉS usar el argumento IsRegex: true de la tool con un patrón escapado como "\[tipo\]\[topic-key\]" porque la búsqueda por substring puro fallará.
+1. Antes de escribir en Engram → `grep_search` por el término en todo `docs/engram/`. ⚠️ ATENCIÓN: Si vas a buscar en archivos donde el topic_key puede estar anidado en un título (ej: ### [decision][auth-model] Texto), DEBÉS usar el argumento IsRegex: true de la tool con un patrón escapado como `grep_search "\[decision\]\[auth-model\]" docs/engram/` porque la búsqueda por substring puro fallará.
 2. ¿Existe? → `replace_file_content` para actualizar.
-3. ¿No existe? → `replace_file_content` con append al final del archivo.
+3. ¿No existe? → `replace_file_content` con append al final del archivo correspondiente.
 
 ## 5. Session Close Protocol (Cierre de Sesión Orquestador)
 
