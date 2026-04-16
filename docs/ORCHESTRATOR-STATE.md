@@ -5,43 +5,35 @@
 ---
 
 ## 🎯 Objetivo Actual
-La v1.1.1 (Patches de protocolo) está **100% completada**. El próximo objetivo es diseñar técnicamente el `funky-cli` para la `v1.2`.
+Ejecutar la Fase de Implementación para el CLI en Node.js (V1.2). Ya pasamos la barrera de planificación arquitectónica y auditoría. Es hora de crear el código de `funky init`.
 
 ## 📋 Estado del Proyecto
-- **Versión activa:** v1.1.1 (patches aplicados en esta sesión)
-- **Rama en progreso:** `feature/v1.2-funky-cli` (scaffolding Node.js inicializado en sesión anterior)
-- **Siguiente acción inmediata:** Atacar los items de la v1.2 del BACKLOG. Empezar por `V1.2-A` (auditar CI/CD de Gentle AI) antes de picar código del CLI.
+- **Versión activa:** v1.1.1 
+- **Rama en progreso:** `feature/v1.2-funky-cli` 
+- **Siguiente acción inmediata:** Orquestar el Brief de un **Worker Tier 2** para que empiece a escribir el código de `[V1.2-C] Implementar funky init`.
 
-## ✅ Completado en Esta Sesión — Patches v1.1.1
-- `PATCH-A` ✅ — `.agents/rules/engram-protocol.md` enriquecido con §3 Trigger Taxonomy, §4 Topic Key/Upsert, §5 Session Close Protocol. Worker 1.
-- `PATCH-B` ✅ — `docs/post-mortem.md` estandarizado: topic_keys `[worker-prompt-persistence]` y `[proposal-sin-estado]` agregados a headers. Worker 2.
-- `PATCH-D` ✅ — `docs/funky-ai/funky-ai.md` §Parametrización corregido: contradicción resuelta con 2 bullets diferenciados (global vs `.agents/rules/`). Worker 2.
-- `PATCH-F` ✅ — `.agents/skills/sdd-proposal.md` creado: primer Skill del ecosistema, template PRD-style con trigger: manual. Worker 3.
-- `BACKLOG.md` ✅ — Todos los patches marcados como completados.
-- `docs/post-mortem.md` ✅ — 2 nuevas entradas de discovery agregadas por el Orquestador.
+## ✅ Completado en Esta Sesión (V1.2 Planning)
+- `V1.2-A` ✅ — Worker Analista extrajo con éxito políticas QA de Gentle AI. (Reflejado en `v1.2-a-report.md`).
+- `V1.2-B` ✅ — Creado el Documento de Diseño Técnico `diseno-tecnico-funky-cli.md` usando el nuevo Skill `sdd-proposal.md`.
+- `DEUDA-REGEX` ✅ — Parche aplicado a `engram-protocol.md`. (Deuda técnica de la sesión anterior purgada).
+- `BACKLOG.md` ✅ — Marcados los ítems completados.
 
 ## 🧠 Instrucciones Aprendidas
-- El usuario prefiere el flujo Worker-por-Worker con análisis de reporte entre cada uno. **NUNCA pre-generar todos los briefs en cadena.** Ver `[discovery][prompts-adelantados]` en post-mortem.
-- Los briefs de Workers deben construirse DESPUÉS de leer el reporte del Worker anterior — el ciclo de feedback es el valor central del protocolo.
+- El usuario valida que se siga usando el flujo de delegación manual (un Worker a la vez).
+- Respetamos firmemente la prohibición de picar código en el Rol de Orquestador. Todo código de CLI debe ser delegado a Workers concretos.
 
 ## 🔍 Descubrimientos de Esta Sesión
-1. **grep_search falla con topic_keys compuestos en headers H3.** El modo substring no matchea `### [discovery][topic-key] Título`. Solución: usar `IsRegex: true` con patrón escapado `\[tipo\]\[topic-key\]`. Documentado en `[discovery][grep-regex-topic-key]` del post-mortem. **PENDIENTE:** Actualizar §4 del `engram-protocol.md` para incluir esta advertencia.
-2. **Primer Skill del ecosistema creado.** La distinción `trigger: manual` (Skills) vs `trigger: glob/model_decision` (Rules) quedó formalizada en el frontmatter de `sdd-proposal.md`.
+1. Las políticas de QA strict que usaban en Gentle AI (validar labels vía HTTP) resultan de extrema burocracia temprana (over-engineering) para nuestro Node CLI en este punto. Solo validaremos `Closes #` y un label manual `type:*`. 
+2. Nos movemos a una solución `memfs` / mocks rápidos para vitest con el fin de evitar que nuestra suite e2e corrompa el sistema de archivos del usuario testeando herramientas de scaffolding.
 
 ## 🔴 Pending Inmediato
-- **[DEUDA TÉCNICA]** Actualizar `engram-protocol.md` §4 Topic Key/Upsert con advertencia sobre `IsRegex: true` para búsquedas de topic_keys compuestos. (Detectado por W3, no estaba en el scope original.)
-- **[V1.2-A]** Auditar CI/CD de Gentle AI — mandar Worker Analista a leer `docs/gentle-ai/.github/workflows/`.
-- **[V1.2-B]** Diseño técnico del CLI (Orquestador — sin picar código).
+- **[V1.2-C]** Implementar `funky init` — Worker Tier 2 crea la estructura base del Falso Engram (directorio `docs/engram/` en lugar de `post-mortem.md` monolítico).
+- **[V1.2-D]** Implementar `funky phase <name>` — Worker Tier 2 crea templates de fases SDD.
 
 ## 📁 Archivos Clave
 - `docs/BACKLOG.md` — Fuente de verdad de tareas.
-- `docs/post-mortem.md` — Engram del proyecto (ahora con 5 entries y topic_keys estandarizados).
-- `.agents/rules/engram-protocol.md` — Rule de memoria completa (v1.1.1).
-- `.agents/skills/sdd-proposal.md` — Primer Skill PRD-style del ecosistema.
-- `docs/funky-ai/funky-ai.md` — Protocolo corregido en §Parametrización.
-- `funky-cli/package.json` — Scaffolding Node.js del CLI (rama feature/v1.2-funky-cli).
-- `docs/funky-ai/workers/` — Carpeta con Return Envelopes de W1, W2, W3 de esta sesión.
+- `docs/funky-ai/propuestas/diseno-tecnico-funky-cli.md` — El Master Plan del código que viene ahora.
+- `funky-cli/package.json` — Scaffolding que el Worker tendrá que rellenar.
 
 ## 🔭 Horizonte
-- `v1.2` → `funky-cli` en Node.js (scaffolding, slash commands, sharding de memoria).
-- `v1.3` → Git-Ops Skill (PR automation, git diff analysis).
+- Setup del Framework de CLI Node.js (`commander`/`yargs` decidiremos pronto).

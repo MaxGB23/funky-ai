@@ -48,3 +48,51 @@ Archivos Mutados:
 Bugs Encontrados: [ninguno / describí si encontraste algo]
 Notas: [cualquier decisión editorial tomada]
 ---
+
+
+
+
+
+
+2----
+
+Excelente decisión técnica. No arrastrar deuda es la filosofía base acá.
+
+Te armo el brief del Worker para liquidar este bug de memoria.
+
+🟢 Worker Brief — Fix Deuda IsRegex | Tier 1
+¿Por qué Tier 1? Modificación súper puntual a un archivo único basándonos en un descubrimiento ya documentado en el Engram. Un solo comando lo liquida.
+
+Archivos a arrobar: @.agents/rules/engram-protocol.md @docs/post-mortem.md
+
+markdown
+Sos un Worker Tier 1 de Funky AI. Tu tarea es resolver una Deuda Técnica documentada.
+IMPORTANTE: Escribí todos los cambios directamente al disco con tus tools. NO respondas en el chat.
+CONTEXTO:
+Si revisás `docs/post-mortem.md`, la entrada `[discovery][grep-regex-topic-key]` dice:
+"El grep_search por substring exacto no matchea cuando el topic_key está embebido
+junto a otros tokens en la misma línea... El Memory Polling DEBE usar IsRegex: true
+con el patrón escapado cuando busca topic_keys compuestos".
+El archivo `.agents/rules/engram-protocol.md` en su `## 4. Topic Key / Upsert Pattern`
+tiene documentado el flujo (paso 1) usando un `grep_search` simple de substring, lo cual lleva a
+falsos negativos a los futuros Workers.
+TU MISIÓN:
+Editá el archivo `.agents/rules/engram-protocol.md` y modificá la sección 4,
+específicamente el "Paso 1". 
+Cambiá la línea que dice:
+`1. Antes de escribir en Engram → grep_search "auth-model" docs/post-mortem.md`
+Por una versión más robusta y explicativa que advierta del uso de regex, algo parecido a esto:
+`1. Antes de escribir en Engram → grep_search por el término. ⚠️ ATENCIÓN: Si vas a buscar en archivos donde el topic_key puede estar anidado en un título (ej: ### [bugfix][auth-model] Texto), DEBÉS usar el argumento IsRegex: true de la tool con un patrón escapado como "\[tipo\]\[topic-key\]" porque la búsqueda por substring puro fallará.`
+RESTRICCIONES:
+- Solo alterá el contenido dentro del Paso 1 de la sección 4.
+- Escribí el cambio usando tus tools de file-system.
+AL TERMINAR:
+Creá `docs/funky-ai/workers/patch-isregex-report.md` con este Return Envelope:
+---
+Worker: PATCH-ISREGEX
+Estado: ✅ Completado
+Archivos Mutados:
+- `.agents/rules/engram-protocol.md` — Modificado §4 para explicitar el uso de IsRegex: true 
+Bugs Encontrados: [ninguno]
+---
+Copiá esto, abríle un chat nuevo a un Worker, que ejecute, y traeme el patch-isregex-report.md cuando termine, loco. Con esto dejamos la mesa súper limpia para la V1.2.

@@ -54,7 +54,7 @@ En nuestro `post-mortem.md` y archivos de `docs/engram/`, esto se emula con **he
 - ✅ **Patrón correcto:** Buscar primero con `grep_search` si ya existe un header con ese `topic_key`. Si existe, **editar la entrada existente** con `replace_file_content`. Si no existe, recién crear una entrada nueva.
 
 ### El Flujo con topic_key:
-1. Antes de escribir en Engram → `grep_search "auth-model" docs/post-mortem.md`
+1. Antes de escribir en Engram → grep_search por el término. ⚠️ ATENCIÓN: Si vas a buscar en archivos donde el topic_key puede estar anidado en un título (ej: ### [bugfix][auth-model] Texto), DEBÉS usar el argumento IsRegex: true de la tool con un patrón escapado como "\[tipo\]\[topic-key\]" porque la búsqueda por substring puro fallará.
 2. ¿Existe? → `replace_file_content` para actualizar.
 3. ¿No existe? → `replace_file_content` con append al final del archivo.
 

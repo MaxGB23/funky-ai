@@ -31,8 +31,8 @@ Estas tareas NO requieren desarrollar código Node.js. Son ajustes a la infraest
 
 Diseño documentado en: `docs/funky-ai/propuestas/propuesta-v1.2-cli-ecosystem.md`
 
-- [ ] **[V1.2-A]** Auditar CI/CD de Gentle AI antes de ejecutar — Mandar Worker Analista a leer `docs/gentle-ai/.github/workflows/` y extraer políticas de QA relevantes para Node.js.
-- [ ] **[V1.2-B]** Diseño técnico del CLI en Node.js (Orquestador — sin picar código).
+- [x] **[V1.2-A]** Auditar CI/CD de Gentle AI antes de ejecutar — ✅ Completado (Worker Analista).
+- [x] **[V1.2-B]** Diseño técnico del CLI (Orquestador — sin picar código). ✅ Completado (`diseno-tecnico-funky-cli.md` redactado).
 - [ ] **[V1.2-C]** Implementar `funky init` — Worker Tier 2 crea la estructura base del Falso Engram (directorio `docs/engram/` en lugar de `post-mortem.md` monolítico).
 - [ ] **[V1.2-D]** Implementar `funky phase <name>` — Worker Tier 2 crea templates de fases SDD.
 - [ ] **[V1.2-E]** Documentar comandos `/sdd-*` formalmente en `funky-ai.md` y `funky-ai-team-guide.md`.
