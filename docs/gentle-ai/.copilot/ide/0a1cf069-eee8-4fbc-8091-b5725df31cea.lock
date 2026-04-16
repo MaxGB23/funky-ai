@@ -1,0 +1,14 @@
+{
+  "socketPath": "\\\\.\\pipe\\mcp-bc999fb6-34f6-4f9d-8875-cce7cd9a8b5a.sock",
+  "scheme": "pipe",
+  "headers": {
+    "Authorization": "Nonce 0660e5cb-e43c-4309-9754-54339316364a"
+  },
+  "pid": 24756,
+  "ideName": "Visual Studio Code",
+  "timestamp": 1776196401150,
+  "workspaceFolders": [
+    "c:\\Users\\cb147\\.vscode\\extensions\\maxiano-theme"
+  ],
+  "isTrusted": true
+}

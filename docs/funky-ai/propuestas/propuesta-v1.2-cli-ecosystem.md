@@ -24,15 +24,17 @@ Transformar Funky AI de un "protocolo puramente conversacional y manual" a un en
 - **La Solución:** Formalizar el uso de los *Tiers de Complejidad* no solo como métrica humana, sino como "Identidad" a declarar en el primer mensaje.
 - **Implementación:** Al delegar, el humano arrancará explícitamente diciendo *"Agente, sos Worker Tier 3"*. Esto activará heurísticas internas donde el agente aniquilará su creatividad y se convertirá en un transductor estricto de requerimientos.
 
-### 4. Automatización "Doc-Ops" (Housekeeping Autosuficiente)
-- **El Problema:** Sincronizar el `README.md`, generar notas de versión en `docs/releases/` o consolidar reportes genera fatiga burocrática. El humano no debería abrir un chat exclusivamente para "escribir documentación" tras un feature.
-- **La Solución:** Desarrollar un comando de orquestación (ej: `/sdd-release`) inspirado en la arquitectura forense de Gentle AI.
-- **Implementación:** El Orquestador, al mantener las referencias del `ORCHESTRATOR-STATE.md` (Punteros limpios), tiene suficiente contexto de alto nivel para deducir qué sub-sistemas cambiaron. Esto le permite auto-generar las notas de versión y mantener la sincronización del índice sin ensuciar la ventana de contexto del desarrollo de código.
+### 4. Automatización "Doc-Ops" y Sharding de Memoria (Housekeeping Autosuficiente)
+- **El Problema:** Archivos como el `post-mortem.md` generan "Token Bloat" si crecen infinitamente, destruyendo el límite de contexto del LLM al momento de leerlos. Además, mantener a mano el `README.md` o hacer las Release Notes genera fatiga burocrática.
+- **La Solución:** Implementar Particionamiento de memoria (Sharding) y crear comandos Doc-Ops explícitos (ej: `/sdd-archive`, `/sdd-release`).
+- **Implementación:** 
+  1. **Sharding CLI:** El comando `funky init` configurará la memoria como un directorio distribuido (`docs/engram/`) para que el `grep_search` encuentre aguja en un pajar sin arrastrar monolitos gigantes de texto.
+  2. **Archivado Autónomo:** El Orquestador responderá a comandos de limpieza delegando a Workers la reducción de logs viejos y la compresión de "Learned" en resúmenes densos, manteniendo el Falso Engram rápido y blindado.
 
 ### 5. Delegación de Git Branching (Autonomía de Workers)
 - **El Problema:** El Humano debe recordar aislar el entorno (`git checkout -b feature/...`) antes de ordenar picar código, lo cual es una intervención manual tediosa que pone en riesgo la rama `main`.
 - **La Solución:** Facultar a los Sub-Agentes (Workers) para que asuman la autoría de su propio entorno de trabajo utilizando herramientas de terminal de la IDE.
-- **Implementación:** Establecer por norma (o en los manuales SDD operativos) que la primera acción obligatoria de un Worker Tier 2 o Tier 3 antes de escribir código es ejecutar la creación y salto a una nueva rama de Git alineada con la tarea de su Return Envelope. 
+- **Implementación:** Añadir al archivo `docs/funky-ai/funky-ai-team-guide.md` (Sección: Paso 2 - La Delegación) la restricción explícita de que la **primera acción** de todo Worker Tier 2/3 antes de escribir código es ejecutar `git checkout -b feature/[nombre-tarea]`. Esta norma también debe reflejarse en el template de prompt que el Orquestador usa al instanciar Workers.
 
 ---
 
@@ -42,4 +44,4 @@ Construir una CLI desde cero implica comprender el Event Loop, manipulación cru
 ## 🔭 Horizonte a Futuro (Post v1.2)
 - **v1.3 (Git-Ops & CI/CD):** La generación de *Pull Requests*, análisis autónomo de `git diff` y estandarización estricta de Commits convencionales se desarrollará como un módulo de "Skills" totalmente independiente en el futuro. *Justificación arquitectónica: Evitar el "Feature Bloat" en la v1.2 y focalizarse 100% en el scaffolding y sistema de archivos locales primero.*
 
-*Estado: Fase de Ideación. Pendiente de diseño de arquitectura técnica (Node.js).*
+*Estado: 🚧 In Progress — Rama `feature/v1.2-funky-cli` activa. `funky-cli/package.json` e `index.js` inicializados. Pendiente diseño técnico de comandos Node.js.*
