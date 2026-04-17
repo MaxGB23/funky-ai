@@ -4,11 +4,11 @@
 ---
 
 ## 🎯 Objetivo Actual
-**V1.3 EXECUTION**. Consolidando el plan de optimización de tokens tras éxito en Fase 3.
+**V1.3 EXECUTION**. ✅ STABLE COMPLETED.
 
 ## 📋 Estado del Proyecto
 - **Versión activa:** v1.2.0 (Stable) ✅
-- **Rama activa:** `feature/v1.3-token-diet` 🌿 (Fase 3 completada)
+- **Rama activa:** `main` 🌿 (v1.3 merged)
 - **Siguiente acción inmediata:** Delegar **Fase 4: Reporte Preliminar** a Worker Flash.
 - **Métrica Clave:** Ahorro total estimado acumulado: ~2,800 tokens.
 
@@ -26,7 +26,7 @@
 - **Peligro de Flash:** Gemini Flash NO debe usarse para comprimir reglas filosóficas abstractas; poda las heurísticas críticas creyendo que son cháchara. Para "downscaling" del core vital, usar modelos Pro.
 
 ## 🔴 Pending Inmediato
-- **[V1.3.A]** **Token Diet Plan**: Ejecutar Parcheo de Amendments (Worker) en ramas locales antes de fusionar.
+- Ninguno.
 
 ## 📁 Archivos Clave
 - `docs/openspec/changes/v1.3-token-diet/fase-3-report.md` — Reporte de mutación de guías.
