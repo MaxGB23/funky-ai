@@ -4,26 +4,30 @@
 ---
 
 ## 🎯 Objetivo Actual
-**V1.2.0 RELEASED**. El ecosistema Funky AI ha alcanzado su primera madurez operativa con CLI y memoria particionada. La sesión actual se encuentra en fase de cierre administrativo de hito.
+**V1.3 EXECUTION**. Consolidando el plan de optimización de tokens tras éxito en Fase 3.
 
 ## 📋 Estado del Proyecto
-- **Versión activa:** v1.2.0 ✅
-- **Rama en progreso:** `main` (Post-merge de `feature/v1.2-funky-cli`)
-- **Siguiente acción inmediata:** Iniciar **V1.3.A: Token Diet Plan** para optimizar el consumo de la cuota del modelo.
+- **Versión activa:** v1.2.0 (Stable) ✅
+- **Rama activa:** `feature/v1.3-token-diet` 🌿 (Fase 3 completada)
+- **Siguiente acción inmediata:** Delegar **Fase 4: Reporte Preliminar** a Worker Flash.
+- **Métrica Clave:** Ahorro total estimado acumulado: ~2,800 tokens.
 
-## ✅ Completado en Esta Sesión (V1.2 Release)
-- `V1.2-RELEASE-1` ✅ — Release Notes creados en `docs/funky-ai/releases/v1.2.0-release.md`.
-- `V1.2-RELEASE-2` ✅ — README.md actualizado con la nueva identidad visual y técnica.
-- `V1.2-RELEASE-3` ✅ — Backlog cerrado y horizonte V1.3 establecido.
+## ✅ Completado en Esta Sesión (V1.3 Token Diet)
+- Fase 0 ✅ — Infraestructura Git-Ops.
+- Fase 1 ✅ — Inventario y análisis.
+- Fase 2 ✅ — Reglas Core optimizadas.
+- Fase 3 ✅ — Teoría y Guías optimizadas (-2200 tokens).
+- Fase 4 ✅ — Consolidación Flash.
+- Fase 5 ✅ — QA QA Técnico & Model Benchmark (Completado: `MERGE WITH AMENDMENTS`).
 
 ## 🧠 Instrucciones Aprendidas
-- **Token Bloat Awareness:** El equipo detectó que el arrastre de múltiples rulesets y reportes extensos agota la cuota prematuramente. Se establece como prioridad técnica la compresión de doctrina (V1.3.A).
-- **Worker Efficacy:** Los workers de release operaron con Tier 1 bajo el protocolo Openspec, demostrando que para tareas de documentación el flujo es extremadamente veloz.
+- **Massive Consolidation:** La tablerización de procesos (SDD) es mucho más eficiente que la narrativa secuencial para el modelo.
+- **Flash Efficacy:** Gemini 3 Flash se posiciona como el modelo ideal para tareas de refactor documental de alto volumen.
+- **Peligro de Flash:** Gemini Flash NO debe usarse para comprimir reglas filosóficas abstractas; poda las heurísticas críticas creyendo que son cháchara. Para "downscaling" del core vital, usar modelos Pro.
 
 ## 🔴 Pending Inmediato
-- **[V1.3.A]** **Token Diet Plan**: Auditoría de archivos en `.agents/rules/` y `docs/funky-ai/` para reducir redundancias y compactar instrucciones sin perder semántica arquitectónica.
+- **[V1.3.A]** **Token Diet Plan**: Ejecutar Parcheo de Amendments (Worker) en ramas locales antes de fusionar.
 
 ## 📁 Archivos Clave
-- `README.md` — Portada actualizada v1.2.0.
-- `docs/BACKLOG.md` — Registro de hito completado.
-- `docs/funky-ai/releases/v1.2.0-release.md` — El log histórico de cambios.
+- `docs/openspec/changes/v1.3-token-diet/fase-3-report.md` — Reporte de mutación de guías.
+- `docs/openspec/changes/v1.3-token-diet/tasks.md` — Plan maestro.

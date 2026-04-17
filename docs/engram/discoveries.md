@@ -17,3 +17,9 @@
 **Why:** Las propuestas se redactaron iterativamente en el chat sin un template estructurado que obligue a definir Estado actual, Backlog IDs vinculados y Referencias de archivo explícitas en cada punto de implementación.
 **Where:** `docs/funky-ai/propuestas/` — aplica a todos los documentos de propuesta y release del ecosistema.
 **Learned:** Toda propuesta/release doc DEBE tener: (1) campo `Estado` con valores controlados (Ideación/In Progress/Done), (2) cada punto de implementación debe referenciar el archivo concreto donde vive la norma, (3) al cierre de sesión hay que auditar que el Estado refleje la realidad del repo. Solución sistémica: crear Skill `sdd-proposal.md` con template PRD-style.
+
+### [discovery][flash-lossy-compression] Anti-patrón: Compresión de Reglas Core con Modelos Flash
+**What:** Al comprimir la documentación base (`funky-ai.md` y `engram-protocol.md`) usando Gemini 3 Flash, el modelo aplicó una compresión semánticamente destructiva ("lossy"), removiendo heurísticas críticas como la prohibición de codificar del Orquestador y el trigger de auto-reflexión (Self-Check) del Worker.
+**Why:** Los modelos optimizados por velocidad (Flash) tienden a condensar la información identificando narrativas u opiniones como "cháchara", eliminándolas para ahorrar tokens. Ignoran que en un protocolo de IA, la "opinión" limitante es la regla de arquitectura misma.
+**Where:** Archivos en `.agents/rules/` y `docs/funky-ai/` afectados durante la Fase 3 de v1.3-token-diet.
+**Learned:** Jamás usar modelos "Flash" o veloces para el *refactor* o compresión de documentos que contengan reglas filosóficas restrictivas o protocolos de comportamiento. Estas tareas requieren modelos pesados (Pro/Ultra) capaces de distinguir entre verbosidad literaria y directivas conductuales irremplazables.
