@@ -6,80 +6,54 @@ globs: ["docs/*", "docs/**/*"]
 
 # Engram Protocol (Funky AI Memory Bus)
 
-Estás operando en un proyecto que usa persistencia estructural. Al detectar este entorno debes comportarte como una unidad de memoria activa:
+## 1. Memory Polling (Lectura)
+- **OBLIGATORIO:** Antes de cambios estructurales, ejecutar `grep_search` en `docs/engram/`.
+- **OBJETIVO:** Evitar repetición de errores y colisión con decisiones previas.
 
-## 1. Memory Polling Dinámico (Lectura Pasiva)
-ANTES de cualquier modificación estructural o decisión arquitectónica, **DEBES usar `grep_search` sobre TODO el directorio `docs/engram/`**. Esto asegura que no repitas errores del pasado ni rompas decisiones previamente tomadas por otros Workers o el Orchestrator. 
-
-## 2. Estructuración MCP en Texto Plano (Escritura Indexada)
-Toda documentación dejada para la posteridad DEBE ser dirigida al archivo que corresponda con su tipo en `docs/engram/` (Ej: si es una decisión de diseño, debés hacer append a `docs/engram/decisions.md`). Está atada irrevocablemente al siguiente esquema estricto (no uses formatos libres, emulamos una base de datos con Markdown):
-
+## 2. Escritura Indexada (Esquema MCP)
+- **DESTINO:** Archivo según tipo en `docs/engram/` (`bugfixes.md`, `decisions.md`, `architecture.md`, `discoveries.md`).
+- **FORMATO:**
 ```markdown
-### [{type}] {title}
-**What:** [Lo que se hizo a nivel de código o configuración, concreto]
-**Why:** [La justificación, el causante del error o la métrica de negocio/estado]
-**Where:** [El rastro de las entidades o archivos modificados. Ej: root/configs/db.json]
-**Learned:** [Casuística rara, caveats, advertencias de cara al futuro. Campo vital]
-```
-*(Types permitidos: `bugfix`, `decision`, `arquitectura`, `discovery` -> y sus archivos respectivos como `bugfixes.md`, `decisions.md`, `architecture.md`, `discoveries.md`)*
-
-## 3. Trigger Taxonomy (Cuándo Guardar en Engram)
-
-Un Worker debe guardar en el archivo correspondiente de `docs/engram/` INMEDIATAMENTE y SIN ESPERAR PEDIDO, después de cualquiera de estos eventos:
-
-**Después de una Decisión:**
-- Se tomó una decisión de Arquitectura o Diseño
-- Se estableció una convención de equipo
-- Se eligió una herramienta o librería con tradeoffs evaluados
-
-**Después de Completar Trabajo:**
-- Bug fix terminado (incluir causa raíz)
-- Feature implementada con lógica no-obvia
-- Cambio de configuración de entorno realizado
-
-**Después de un Descubrimiento:**
-- Comportamiento inesperado o edge case encontrado
-- Patrón nuevo establecido (naming, estructura)
-- Restricción técnica descubierta en el IDE o deps
-
-### 🔑 La Self-Check Question (Obligatoria Post-Tarea)
-Al terminar cada tarea, el agente (Worker u Orquestador) DEBE hacerse esta pregunta antes de cerrar el chat:
-> *"¿Acabo de tomar una decisión, arreglar un bug, aprender algo no-obvio, o establecer una convención? Si la respuesta es Sí → escribir en el archivo respectivo de `docs/engram/` AHORA."*
-
-## 4. Topic Key / Upsert Pattern (Anti-Duplicación)
-
-En nuestros archivos de `docs/engram/`, esto se emula con **headers de sección consistentes**:
-
-- ❌ **Anti-patrón:** Crear una nueva sección `### [decision] Auth Model` cada vez que el tema evoluciona → el archivo acumula 4 entradas del mismo tema.
-- ✅ **Patrón correcto:** Buscar primero con `grep_search` si ya existe un header con ese `topic_key`. Si existe, **editar la entrada existente** con `replace_file_content`. Si no existe, recién crear una entrada nueva.
-
-### El Flujo con topic_key:
-1. Antes de escribir en Engram → `grep_search` por el término en todo `docs/engram/`. ⚠️ ATENCIÓN: Si vas a buscar en archivos donde el topic_key puede estar anidado en un título (ej: ### [decision][auth-model] Texto), DEBÉS usar el argumento IsRegex: true de la tool con un patrón escapado como `grep_search "\[decision\]\[auth-model\]" docs/engram/` porque la búsqueda por substring puro fallará.
-2. ¿Existe? → `replace_file_content` para actualizar.
-3. ¿No existe? → `replace_file_content` con append al final del archivo correspondiente.
-
-## 5. Session Close Protocol (Cierre de Sesión Orquestador)
-
-Al finalizar cada sesión de Orquestación, se DEBE actualizar `ORCHESTRATOR-STATE.md` con la siguiente estructura obligatoria antes de declarar "listo" o "terminado":
-
-```markdown
-## Objetivo
-[En qué estuvimos trabajando esta sesión]
-
-## Instrucciones Aprendidas
-[Preferencias o restricciones del usuario descubiertas - si las hay]
-
-## Descubrimientos
-- [Hallazgos técnicos, gotchas, aprendizajes no-obvios]
-
-## Completado
-- [Items terminados con detalles clave]
-
-## Próximos Pasos
-- [Lo que queda por hacer para la próxima sesión]
-
-## Archivos Relevantes
-- path/to/file — [qué hace o qué cambió]
+### [{type}][{topic_key}] {title}
+**What:** [Cambio técnico concreto]
+**Why:** [Causa/Justificación]
+**Where:** [Archivos afectados]
+**Learned:** [Aprendizajes/Caveats]
 ```
 
-> **Regla de Oro:** Si el Orquestador cierra la sesión sin actualizar el `ORCHESTRATOR-STATE.md` con esta estructura, la próxima sesión arranca CIEGA.
+## 3. Trigger Taxonomy (Cuándo guardar)
+- **Decisiones:** Arquitectura, convenciones, tradeoffs de librerías.
+- **Resultados:** Bugfixes (con causa raíz), features con lógica no-obvia, configuración de enviroment.
+- **Hallazgos:** Edge cases, patrones nuevos, restricciones técnicas.
+
+### 🔑 Self-Check (Obligatorio Post-Tarea): Antes de cerrar el chat, pregúntate "¿Acabo de tomar una decisión, arreglar un bug o aprender algo no-obvio? Si sí -> Escribir en Engram AHORA."
+
+## 4. Upsert Pattern (Anti-Duplicación)
+1. **Search:** `grep_search` por `{topic_key}` en `docs/engram/`.
+2. **Regex:** Usar `IsRegex: true` si el key está anidado (ej: `\[tipo\]\[key\]`).
+3. **Write:** Si existe, `replace_file_content` sobre la entrada. Si no, append al final.
+
+## 5. Return Envelope (Reporte de Worker)
+Todo Worker DEBE finalizar escribiendo un reporte físico en `docs/openspec/changes/{change-name}/` o `docs/funky-ai/workers/` con este formato:
+```markdown
+---
+Worker: [ID/Fase]
+Estado: [✅ Completado | ❌ Error | ⚠️ Parcial]
+Archivos Mutados:
+- [path]: [cambio]
+Tokens Ahorrados (Est): [Solo en Fase de Dieta]
+Bugs Encontrados: [Ninguno | Descripción]
+---
+```
+
+## 6. Session Close (Orquestador)
+Actualizar `ORCHESTRATOR-STATE.md` antes de cerrar:
+```markdown
+## Objetivo: [Tema de la sesión]
+## Descubrimientos: [Hallazgos técnicos/aprendizajes]
+## Completado: [Items cerrados]
+## Próximos Pasos: [Pendientes]
+## Archivos Relevantes: [Path — Descripción]
+## Instrucciones Aprendidas: [Preferencias o restricciones del usuario]
+```
+> **REGLA DE ORO:** Un Orquestador sin `ORCHESTRATOR-STATE.md` actualizado deja ciega la siguiente sesión.

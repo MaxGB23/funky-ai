@@ -41,7 +41,7 @@ Estas tareas NO requieren desarrollar código Node.js. Son ajustes a la infraest
 ---
 
 ## [V1.3] PRÓXIMO: Token Optimization & Git-Ops 🔭 (Horizonte)
-- [ ] **[V1.3.A]** **Token Diet Plan**: Auditoría de peso de rulesets y comprimir doctrina para ahorrar cuota (Prioridad post-quota limit).
+- [x] **[V1.3.A]** **Token Diet Plan**: Auditoría de peso de rulesets y comprimir doctrina para ahorrar cuota (Planificado en `tasks.md`).
 - [ ] **[V1.3.B]** **Git-Ops Skills**: Automatizar la creación de PRs y lectura de diffs vía CLI.
 - [ ] **[V1.3.C]** Integrar con CI/CD de Gentle AI como referencia para flujo de PR validation.
 
