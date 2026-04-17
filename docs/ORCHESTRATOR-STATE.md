@@ -3,33 +3,27 @@
 
 ---
 
-## Objetivo
-Implementación de la Versión 1.2 (`feature/v1.2-funky-cli`): Creación del CLI de Funky AI en Node.js, automatización de plantillas y sharding del Falso Engram para resolver el token bloat y oficialización de slash commands.
+## 🎯 Objetivo Actual
+**V1.2.0 RELEASED**. El ecosistema Funky AI ha alcanzado su primera madurez operativa con CLI y memoria particionada. La sesión actual se encuentra en fase de cierre administrativo de hito.
 
-## Instrucciones Aprendidas
-- El usuario prefiere estricta adherencia al protocolo de delegación manual "Un Worker a la vez" para no generar cruces cognitivos.
-- Los templates SDD se acordó guardarlos como archivos físicos `.md` en lugar de variables de JavaScript para mayor flexibilidad (implementado en V1.2-D).
+## 📋 Estado del Proyecto
+- **Versión activa:** v1.2.0 ✅
+- **Rama en progreso:** `main` (Post-merge de `feature/v1.2-funky-cli`)
+- **Siguiente acción inmediata:** Iniciar **V1.3.A: Token Diet Plan** para optimizar el consumo de la cuota del modelo.
 
-## Descubrimientos
-- **Grep Regex Topic Key:** Identificado en la etapa inicial. La rule `.agents/rules/engram-protocol.md` fue corregida para instruir a los subagentes a buscar los `topic_key` compuestos (ej. `[bugfix][auth-model]`) usando `IsRegex: true` con backslashes en la tool de `grep_search`.
-- **API Status:Approved (Gentle AI):** El chequeo de etiquetas vía GitHub API es excesivo para nosotros ahora. Usamos validaciones simples (`Closes #XY`).
-- **Sharding en Acción:** El viejo y grandote `post-mortem.md` fue purgado. La data histórica ahora vive limpia bajo `docs/engram/bugfixes.md` y `docs/engram/discoveries.md`.
+## ✅ Completado en Esta Sesión (V1.2 Release)
+- `V1.2-RELEASE-1` ✅ — Release Notes creados en `docs/funky-ai/releases/v1.2.0-release.md`.
+- `V1.2-RELEASE-2` ✅ — README.md actualizado con la nueva identidad visual y técnica.
+- `V1.2-RELEASE-3` ✅ — Backlog cerrado y horizonte V1.3 establecido.
 
-## Completado
-- `PATCH-A`, `PATCH-B`, `PATCH-D`, `PATCH-F` ✅ (Estabilidad del core lograda, rule de engram actualizada y bug de regex fixed).
-- `V1.2-A` ✅ (Auditoría CI/CD Gentle AI).
-- `V1.2-B` ✅ (Diseño técnico del CLI en markdown).
-- `V1.2-C` ✅ (Scaffolding Node + `funky init` con Commander).
-- `V1.2-D` ✅ (Comando `funky phase` y carga dinámica de templates MD protectivos).
-- `V1.2-E` ✅ (Manuales de equipo actualizados sobre el workflow `/sdd-*` + CLI).
-- `V1.2-F` ✅ (Sharding completado: Migrado post-mortem a `docs/engram/*` y engram-protocol.md actualizado enseñándole a la IA a escribir dinámicamente).
+## 🧠 Instrucciones Aprendidas
+- **Token Bloat Awareness:** El equipo detectó que el arrastre de múltiples rulesets y reportes extensos agota la cuota prematuramente. Se establece como prioridad técnica la compresión de doctrina (V1.3.A).
+- **Worker Efficacy:** Los workers de release operaron con Tier 1 bajo el protocolo Openspec, demostrando que para tareas de documentación el flujo es extremadamente veloz.
 
-## Próximos Pasos
-- **Release V1.2:** Crear un PR de la rama `feature/v1.2-funky-cli` a `main`. Documentar el release notes de la v1.2 y publicarlo a nivel repo.
-- **Horizonte V1.3:** Setup the Git-Ops Skills (automatización e interceptación de git diffs).
+## 🔴 Pending Inmediato
+- **[V1.3.A]** **Token Diet Plan**: Auditoría de archivos en `.agents/rules/` y `docs/funky-ai/` para reducir redundancias y compactar instrucciones sin perder semántica arquitectónica.
 
-## Archivos Relevantes
-- `funky-cli/bin/funky.js` — Core router del nuevo CLI automatizado.
-- `.agents/rules/engram-protocol.md` — La regla sagrada, ya configurada para soportar memoria distribuida.
-- `docs/BACKLOG.md` — Todo V1.2 y V1.1.1 tildado.
-- `docs/engram/` — El directorio físico de nuestra nueva memoria dividida. 
+## 📁 Archivos Clave
+- `README.md` — Portada actualizada v1.2.0.
+- `docs/BACKLOG.md` — Registro de hito completado.
+- `docs/funky-ai/releases/v1.2.0-release.md` — El log histórico de cambios.

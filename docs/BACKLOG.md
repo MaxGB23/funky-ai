@@ -27,23 +27,23 @@ Estas tareas NO requieren desarrollar código Node.js. Son ajustes a la infraest
 
 ---
 
-## 🟡 PRÓXIMO — Release v1.2 (funky-cli en Node.js)
+---
 
-Diseño documentado en: `docs/funky-ai/propuestas/propuesta-v1.2-cli-ecosystem.md`
+## [V1.2.0] RELEASE: CLI & Sharding ✅
+*Fecha: Abril 2026*
+*Estado: COMPLETADO*
 
-- [x] **[V1.2-A]** Auditar CI/CD de Gentle AI antes de ejecutar — ✅ Completado (Worker Analista).
-- [x] **[V1.2-B]** Diseño técnico del CLI (Orquestador — sin picar código). ✅ Completado (`diseno-tecnico-funky-cli.md` redactado).
-- [x] **[V1.2-C]** Implementar `funky init` — ✅ Completado (Worker Tier 2 seteó Commander y el primer subcomando).
-- [x] **[V1.2-D]** Implementar `funky phase <name>` — ✅ Completado (Comando y templates .md ruteados en el CLI).
-- [x] **[V1.2-E]** Documentar comandos `/sdd-*` formalmente en `funky-ai.md` y `funky-ai-team-guide.md`. ✅ Completado (Doctrina Slash inyectada).
-- [x] **[V1.2-F]** Implementar Sharding de Memoria (`docs/engram/` con archivos temáticos). ✅ Completado (Migramos post-mortem a bugfixes.md y discoveries.md).
+- [x] **[V1.2.A-F]** Core Implementation (CLI, Sharding, Slash Commands).
+- [x] **[V1.2-RELEASE-1]** Documentación de Release Notes (`v1.2.0-release.md`).
+- [x] **[V1.2-RELEASE-2]** Actualización de Portada (`README.md`).
+- [x] **[V1.2-RELEASE-3]** Cierre de hito y merge a `main`.
 
 ---
 
-## 🟠 FUTURO — Release v1.3 (Git-Ops)
-
-- [ ] **[V1.3-A]** Crear Skill `git-ops.md` en `.agents/skills/`. 
-- [ ] **[V1.3-B]** Integrar con CI/CD de Gentle AI como referencia para flujo de PR validation.
+## [V1.3] PRÓXIMO: Token Optimization & Git-Ops 🔭 (Horizonte)
+- [ ] **[V1.3.A]** **Token Diet Plan**: Auditoría de peso de rulesets y comprimir doctrina para ahorrar cuota (Prioridad post-quota limit).
+- [ ] **[V1.3.B]** **Git-Ops Skills**: Automatizar la creación de PRs y lectura de diffs vía CLI.
+- [ ] **[V1.3.C]** Integrar con CI/CD de Gentle AI como referencia para flujo de PR validation.
 
 ---
 
