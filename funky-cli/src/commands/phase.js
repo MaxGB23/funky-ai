@@ -11,13 +11,13 @@ export const phaseCommand = new Command('phase')
   .argument('<nombre_fase>', 'Nombre de la fase (ej: explore, design)')
   .action((nombreFase) => {
     const templateName = nombreFase.toLowerCase();
-    const templatePath = path.join(__dirname, '..', 'templates', `${templateName}.md`);
+    const templatePath = path.join(__dirname, '..', 'templates', 'sdd', `${templateName}.md`);
     const targetFileName = `sdd-${templateName}.md`;
     const targetPath = path.join(process.cwd(), targetFileName);
 
     if (!fs.existsSync(templatePath)) {
       console.error(`❌ Error: El template para la fase '${templateName}' no existe.`);
-      console.error(`Archivos soportados en templates: ${fs.readdirSync(path.join(__dirname, '..', 'templates')).join(', ')}`);
+      console.error(`Archivos soportados en templates: ${fs.readdirSync(path.join(__dirname, '..', 'templates', 'sdd')).join(', ')}`);
       process.exit(1);
     }
 

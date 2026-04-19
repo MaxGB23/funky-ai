@@ -4,13 +4,13 @@
 ---
 
 ## 🎯 Objetivo Actual
-**V1.3 EXECUTION**. ✅ STABLE COMPLETED.
+**V1.4 CLI BOOTSTRAP**. 🟡 IN PROGRESS.
 
 ## 📋 Estado del Proyecto
-- **Versión activa:** v1.2.0 (Stable) ✅
-- **Rama activa:** `main` 🌿 (v1.3 merged)
-- **Siguiente acción inmediata:** Delegar **Fase 4: Reporte Preliminar** a Worker Flash.
-- **Métrica Clave:** Ahorro total estimado acumulado: ~2,800 tokens.
+- **Versión activa:** v1.3.0 (Stable) ✅
+- **Rama activa:** `feature/v1.4-init-bootstrap` 🌿
+- **Siguiente acción inmediata:** Delegar **Fase 1: Templates** a Worker Flash.
+- **Métrica Clave:** v1.3 logró una reducción de ~80% en el peso de las reglas core.
 
 ## ✅ Completado en Esta Sesión (V1.3 Token Diet)
 - Fase 0 ✅ — Infraestructura Git-Ops.
@@ -21,8 +21,11 @@
 - Fase 5 ✅ — QA QA Técnico & Model Benchmark (Completado: `MERGE WITH AMENDMENTS`).
 
 ## 🧠 Instrucciones Aprendidas
-- **Massive Consolidation:** La tablerización de procesos (SDD) es mucho más eficiente que la narrativa secuencial para el modelo.
-- **Flash Efficacy:** Gemini 3 Flash se posiciona como el modelo ideal para tareas de refactor documental de alto volumen.
+- ### [DISCOVERY] Model Efficacy & Quota Optimization
+**What:** Gemini 3 Flash es ideal para tareas de Worker (picar código/templates) por su velocidad. Gemini 3.1 Pro Low es el "punto dulce" para Orquestación, ofreciendo estabilidad sin el consumo masivo de Pro High.
+**Why:** El tráfico alto genera errores de retry que pueden agotar cuotas; modelos más ligeros fallan menos y responden más rápido.
+**Where:** Workflow de ruteo de modelos en Funky AI.
+**Learned:** Reservar Sonnet 4.6 Thinking / Pro High solo para crisis arquitectónicas o refactors masivos.
 - **Peligro de Flash:** Gemini Flash NO debe usarse para comprimir reglas filosóficas abstractas; poda las heurísticas críticas creyendo que son cháchara. Para "downscaling" del core vital, usar modelos Pro.
 
 ## 🔴 Pending Inmediato
