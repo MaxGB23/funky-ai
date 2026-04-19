@@ -1,25 +1,21 @@
 # Discoveries
 
-### [discovery][prompts-adelantados] Anti-patrón: Generación Anticipada de Todos los Worker Briefs
-**What:** El Orquestador generó los 3 prompts de Workers (PATCH-A, B+D, F) en simultáneo antes de ejecutar ninguno, planificando sin datos reales.
-**Why:** El Return Envelope de cada Worker existe precisamente para retroalimentar al Orquestador con descubrimientos reales del disco (contradicciones, formatos inesperados, dependencias ocultas) que pueden cambiar el brief del siguiente Worker. Ignorar ese ciclo es planificar sobre suposiciones.
-**Where:** Protocolo de Orquestación — flujo de delegación secuencial entre Workers.
-**Learned:** El Orquestador NUNCA debe pre-generar todos los briefs de Workers en cadena. El flujo correcto es: `brief W1 → ejecutar → leer report → brief W2 → ejecutar → leer report → brief W3`. El Router Humano es el API gateway: el valor está en el ciclo de feedback, no en la velocidad de planificación.
+Aquí se registran los hallazgos técnicos y arquitectónicos que moldean el futuro de Funky AI.
 
-### [discovery][grep-regex-topic-key] grep_search con substring falla en headers con topic_key compuesto
-**What:** Un Worker ejecutó `grep_search "proposal-sin-estado" docs/post-mortem.md` y no obtuvo resultados, a pesar de que la entrada existía con topic_key `[discovery][proposal-sin-estado]` en un header H3.
-**Why:** El `grep_search` por substring exacto no matchea cuando el topic_key está embebido junto a otros tokens en la misma línea (`### [discovery][proposal-sin-estado] Texto descriptivo...`). El término buscado SÍ existe, pero la herramienta necesita modo regex para capturar el patrón correctamente.
-**Where:** `docs/post-mortem.md` — afecta al Memory Polling de cualquier Worker que use el engram-protocol.md §4.
-**Learned:** El Memory Polling DEBE usar `IsRegex: true` con el patrón escapado cuando busca topic_keys compuestos: `grep_search "\\[tipo\\]\\[topic-key\\]"`. El modo substring puro es insuficiente para el formato `### [{type}][{topic_key}] Título`. Actualizar el §4 del engram-protocol.md para documentar esta distinción.
+### [DISCOVERY] Model Efficacy & Quota Optimization (Abril 2026)
+**What:** Gemini 3 Flash es ideal para tareas de Worker (picar código/templates) por su velocidad. Gemini 3.1 Pro Low es el "punto dulce" para Orquestación, ofreciendo estabilidad sin el consumo masivo de Pro High.
+**Why:** El tráfico alto genera errores de retry que pueden agotar cuotas; modelos más ligeros fallan menos y responden más rápido.
+**Where:** Workflow de ruteo de modelos en Funky AI.
+**Learned:** Reservar Sonnet 4.6 Thinking / Pro High solo para crisis arquitectónicas o refactors masivos.
 
-### [discovery][proposal-sin-estado] Anti-patrón: Propuestas sin Estado Obligatorio ni Referencias Explícitas
-**What:** Durante la auditoría de cierre de sesión se detectaron 2 inconsistencias en `propuesta-v1.2-cli-ecosystem.md`: (1) el campo "Estado" decía "Ideación" cuando la rama ya estaba activa; (2) el Pilar 5 decía "establecer por norma" sin indicar en qué archivo específico.
-**Why:** Las propuestas se redactaron iterativamente en el chat sin un template estructurado que obligue a definir Estado actual, Backlog IDs vinculados y Referencias de archivo explícitas en cada punto de implementación.
-**Where:** `docs/funky-ai/propuestas/` — aplica a todos los documentos de propuesta y release del ecosistema.
-**Learned:** Toda propuesta/release doc DEBE tener: (1) campo `Estado` con valores controlados (Ideación/In Progress/Done), (2) cada punto de implementación debe referenciar el archivo concreto donde vive la norma, (3) al cierre de sesión hay que auditar que el Estado refleje la realidad del repo. Solución sistémica: crear Skill `sdd-proposal.md` con template PRD-style.
+### [DISCOVERY] Massive Consolidation
+**What:** La tablerización de procesos (SDD) es mucho más eficiente que la narrativa secuencial para el modelo.
+**Why:** Reduce la carga cognitiva y el "bloat" de tokens de conexión lógica.
+**Where:** `funky-ai.md` y guías de equipo.
+**Learned:** Priorizar tablas de decisión sobre párrafos largos.
 
-### [discovery][flash-lossy-compression] Anti-patrón: Compresión de Reglas Core con Modelos Flash
-**What:** Al comprimir la documentación base (`funky-ai.md` y `engram-protocol.md`) usando Gemini 3 Flash, el modelo aplicó una compresión semánticamente destructiva ("lossy"), removiendo heurísticas críticas como la prohibición de codificar del Orquestador y el trigger de auto-reflexión (Self-Check) del Worker.
-**Why:** Los modelos optimizados por velocidad (Flash) tienden a condensar la información identificando narrativas u opiniones como "cháchara", eliminándolas para ahorrar tokens. Ignoran que en un protocolo de IA, la "opinión" limitante es la regla de arquitectura misma.
-**Where:** Archivos en `.agents/rules/` y `docs/funky-ai/` afectados durante la Fase 3 de v1.3-token-diet.
-**Learned:** Jamás usar modelos "Flash" o veloces para el *refactor* o compresión de documentos que contengan reglas filosóficas restrictivas o protocolos de comportamiento. Estas tareas requieren modelos pesados (Pro/Ultra) capaces de distinguir entre verbosidad literaria y directivas conductuales irremplazables.
+### [DISCOVERY] In-Template Rule Injection (Zero-Token-Waste)
+**What:** En lugar de inyectar reglas de orquestación en archivos de workspace globales (ej. `.agents/rules/sdd-orchestrator.md`), se deben colocar como bloques ocultos (`> **[SISTEMA]**`) al final de los propios templates SDD (`tasks.md`, `report.md`).
+**Why:** Las reglas globales contaminan el contexto y consumen cuota de tokens en todos los chats irrelevantes. La inyección en el template garantiza que la regla solo se procese en el momento exacto en que se necesita.
+**Where:** Protocolo de SDD y generación de Templates.
+**Learned:** Las restricciones de orquestación deben vivir lo más cerca posible de la ejecución, no en configuraciones globales.
