@@ -43,3 +43,15 @@ Aquí se registran los hallazgos técnicos y arquitectónicos que moldean el fut
 **Why:** Asumimos que el Orquestador siempre le diría al usuario qué copiar y pegar en el chat, pero si el Orquestador no lo hace (o el usuario no lee el chat), se pierde la fluidez.
 **Where:** Protocolo de Worker Handoff.
 **Learned:** El `worker-handoff.md` (y el template de la CLI) debería incluir en su parte superior o inferior un bloque para el humano: `[HUMANO] Para ejecutar este worker, abrí un chat nuevo y pegá: @ruta/al/worker-handoff.md Ejecutá la Fase X`.
+
+### [DISCOVERY][cli-testing-pure-functions] Testear CLI Commands: Extraer Funciones Puras vs. Mockear el Framework
+**What:** Al intentar testear comandos de `commander` (CLI Node.js), la estrategia de mockear el módulo `commander` directamente falla. El Worker necesitó 2-3 intentos antes de encontrar el patrón correcto.
+**Why:** `commander` y `process.exit()` están acoplados internamente. Mockear el módulo completo rompe la inicialización y genera errores de "cannot read property of undefined" o "process.exit is not a function" en el contexto del test runner.
+**Where:** `funky-cli/src/commands/init.js` y `phase.js` — v1.6.
+**Learned:** El patrón correcto para testear comandos CLI es **Extracción de Función Pura**: mover toda la lógica de negocio a una función (`runInit(opts)`, `runPhase(opts)`) que recibe sus dependencias como parámetros. El handler de `commander` solo actúa de "entry point" que llama a esa función. Los tests unitarios prueban la función pura directamente, mockeando solo `fs`, `path`, y `console`. Nunca `commander` ni `process`.
+
+### [DISCOVERY][worker-return-envelope-compliance] Workers omiten la sección de Bugs en el Return Envelope
+**What:** El Worker de la Fase 2 (v1.6) entregó un reporte en formato libre, omitiendo la sección `Bugs encontrados` del Return Envelope canónico definido en `tasks.md`. Los fallos iniciales (2-3 intentos) no quedaron documentados hasta que el Orquestador lo detectó.
+**Why:** El Worker priorizó reportar los éxitos y omitió los fallos intermedios. El schema del Return Envelope no tenía una instrucción explícita de "documentar TODOS los intentos fallidos, no solo el resultado final".
+**Where:** Protocolo Return Envelope en `funky-cli/src/templates/sdd/tasks.md`.
+**Learned:** El template de Return Envelope debe aclarar explícitamente: "Bugs encontrados incluye intentos fallidos y los anti-patrones descartados, no solo bugs en producción". El Orquestador debe validar el schema del report antes de aprobar la siguiente fase.
