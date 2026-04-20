@@ -1,8 +1,8 @@
-# 🧭 Funky AI v1.2.0: Índice y Mapa de Navegación
+# 🧭 Funky AI v1.5.0: Índice y Mapa de Navegación
 
 Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia Artificial que te permite emular redes asíncronas de agentes (SDD) usando recursos manuales y archivos físicos locales sobre el IDE Antigravity.
 
-> **🚀 Estado del Arte (V1.2.0):** El núcleo de Funky AI ha evolucionado. Ahora utilizamos la herramienta `funky-cli` para automatizar el Scaffolding de Falsos Engrams, apoyando al Router Humano con *Slash Commands* de contexto y separación de archivos (*Sharding*) para escalabilidad de memoria.
+> **🚀 Estado del Arte (V1.5.0):** El núcleo de Funky AI ha evolucionado. Ahora utilizamos la herramienta `funky-cli` para automatizar el Scaffolding de Falsos Engrams, apoyando al Router Humano con *Slash Commands* de contexto y separación de archivos (*Sharding*) para escalabilidad de memoria.
 
 > **¿Perdido?** Empezá por el **Manifiesto** → leé la **Filosofía** → aplicá la **Team Guide**.
 
@@ -27,6 +27,7 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 | [`docs/funky-ai/funky-ai.md`](./docs/funky-ai/funky-ai.md) | Protocolo completo: Pilares, Tiers, Engram y Return Envelopes |
 | [`docs/funky-ai/funky-ai-team-guide.md`](./docs/funky-ai/funky-ai-team-guide.md) | Paso a paso del Router Humano: cómo crear Workers, cuándo matarlos |
 | [`docs/funky-ai/funky-ai-tutorial-app.md`](./docs/funky-ai/funky-ai-tutorial-app.md) | Simulación End-to-End de un proyecto real |
+| [`docs/funky-ai/guia-flujo-completo.md`](./docs/funky-ai/guia-flujo-completo.md) | Guía End-to-End de inicio y SDD con el CLI |
 
 ---
 
@@ -41,7 +42,17 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 
 ---
 
-## 📦 4. Roadmap y Propuestas
+## 🛠️ 4. Herramientas CLI (Automatización)
+*Automatización del SDD y Bootstrap.*
+
+| Comando | Propósito |
+|---|---|
+| `funky init` | Inyecta las reglas globales y memoria (ecosystem) en un proyecto nuevo. |
+| `funky phase <fase>` | Inyecta templates SDD (explore, proposal, tasks, handoff, report). |
+
+---
+
+## 📦 5. Roadmap y Propuestas
 *Estado del proyecto y planificación de versiones futuras.*
 
 | Archivo | Propósito |
@@ -52,16 +63,16 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 
 ---
 
-## 🧠 5. Falso Engram (Memoria del Proyecto)
+## 🧠 6. Falso Engram (Memoria del Proyecto)
 *La base de datos del sistema. Consultar al inicio de cada sesión.*
 
 | Archivo | Propósito |
 |---|---|
-| [`docs/post-mortem.md`](./docs/post-mortem.md) | Memoria persistente: bugs, decisiones, gotchas del proyecto |
+| [`docs/engram/`](./docs/engram/) | Memoria persistente sharded: discoveries y bugfixes del proyecto |
 
 ---
 
-## 📚 6. Referencia e Investigación
+## 📚 7. Referencia e Investigación
 *Material de estudio. No se ejecuta directamente.*
 
 | Archivo | Propósito |
@@ -72,7 +83,7 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 
 ---
 
-## 🗺️ 7. Journey (Diario de Madurez)
+## 🗺️ 8. Journey (Diario de Madurez)
 *Registro de decisiones arquitectónicas y evolución del pensamiento.*
 
 | Archivo | Contenido |
