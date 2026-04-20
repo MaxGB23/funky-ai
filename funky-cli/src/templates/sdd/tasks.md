@@ -24,6 +24,19 @@
 
 ---
 
+### FASE X — Release y Doc-Ops (Humano u Orquestador)
+> Objetivo: Merge de la funcionalidad, tageo de versión y actualización de deuda técnica documental.
+
+- [ ] Crear release notes en `docs/funky-ai/releases/vX.Y.Z-release.md`.
+- [ ] Actualizar `README.md` con la nueva versión si corresponde.
+- [ ] `git add -A && git commit -m "feat/fix: descripcion"`
+- [ ] `git checkout main && git merge --no-ff feature/nombre-del-branch`
+- [ ] `git tag -a vX.Y.Z -m "release: vX.Y.Z"`
+- [ ] Sincronizar `ORCHESTRATOR-STATE.md` (estado estable, versión actualizada, sin tareas pendientes).
+- [ ] Eliminar directorio de feature en `docs/openspec/changes/`.
+
+---
+
 ## 📋 Return Envelope (Para el Worker)
 
 Al finalizar cada fase, actualizar `report.md` con:
