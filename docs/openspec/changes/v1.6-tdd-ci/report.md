@@ -41,4 +41,14 @@
   - ⚠️ **Anti-patrón descartado:** El skill `github-actions-templates` usa `npm ci` por defecto. Ignorado intencionalmente — se reemplazó por `pnpm install --frozen-lockfile` con `pnpm/action-setup@v4` para cumplir con SecOps (packageManager: pnpm@10.23.0).
   - ✅ **`pnpm-lock.yaml` verificado:** Existe en `funky-cli/` — no hay bloqueo por lockfile faltante.
   - ✅ **Cache configurado correctamente:** `cache-dependency-path: funky-cli/pnpm-lock.yaml` apunta al lockfile relativo al root del repo, no al `working-directory`.
-- **Próxima acción:** Orquestador ejecuta merge y release de la v1.6
+
+---
+
+## Fase 4 — Merge y Release v1.6.0
+- **Status:** ✅ Completada
+- **Acciones realizadas:**
+  - `git add -A` y commit de todos los cambios de la feature branch.
+  - Merge `--no-ff` de `feat/v1.6-tdd-ci` hacia `main`.
+  - Tagged release `v1.6.0`.
+- **Bugs encontrados:** ninguno.
+- **Resultado:** El repositorio ahora se encuentra en la rama `main` con la versión `v1.6.0` consolidada.
