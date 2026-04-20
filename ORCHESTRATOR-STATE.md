@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v1.4.0
-- **Rama activa:** `feature/v1.4-init-bootstrap` → pendiente de merge a `main`
-- **Última sesión:** 2026-04-19
-- **Estado:** ✅ Feature completa — lista para release
+- **Versión:** v1.5.0
+- **Rama activa:** `main`
+- **Última sesión:** 2026-04-20
+- **Estado:** 🟢 Estable. Versión 1.5 lanzada.
 
 ---
 
@@ -28,22 +28,18 @@
 
 ---
 
-## ✅ Tareas Completadas (v1.4)
+## ✅ Tareas Completadas (v1.5)
 
-- [x] Fase 0 — pnpm link global configurado
-- [x] Fase 1 — Templates bootstrap materializados en `funky-cli/src/templates/bootstrap/`
-- [x] Fase 2 — `init.js` refactorizado para copiar ecosystem completo con idempotencia
-- [x] Fase 3 — Templates SDD creados en `funky-cli/src/templates/sdd/`
-- [x] Fase 4 — Smoke Test pasado (init idempotente + phase inject ok)
-- [x] Fase 5 — `plantilla-worker-handoff.md` oficial creada
+- [x] Fase 1 — Templates SDD enriquecidos y con Doc-Ops
+- [x] Fase 2 — CLI README creado
+- [x] Fase 3 — Deuda de Release remediada
+- [x] Fase 4 — Tag v1.5.0 creado
 
 ---
 
 ## ⏳ Tareas Pendientes
 
-- [ ] Merge `feature/v1.4-init-bootstrap` → `main`
-- [ ] Eliminar carpeta `docs/openspec/changes/v1.4-init-bootstrap/` post-merge
-- [ ] Crear tag `v1.4.0` en git
+Ninguna.
 
 ---
 
@@ -62,3 +58,4 @@ Ninguno.
 | v1.2 | Engram sharding — `docs/engram/discoveries.md` + `bugfixes.md` |
 | v1.3 | Protocolo Worker Handoff + Memory Polling canonizado |
 | v1.4 | `funky init` + `funky phase` — CLI bootstrapper completo |
+| v1.5 | Templates SDD enriquecidos, Doc-Ops jerarquía Tier N y CLI README |

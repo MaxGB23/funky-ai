@@ -55,6 +55,11 @@ view_file [archivo principal que vas a modificar]
 | 🟡 Bugs Encontrados | Si encontrás un bug no relacionado con tu tarea → registralo en `report.md` bajo `## Bugs Encontrados` con schema engram (`What / Why / Where / Learned`) |
 | 🟢 Idempotencia | Verificá si el destino ya existe antes de sobreescribir. Documentá si salteás algo |
 
+### 🔍 Jerarquía de Conocimiento (Doc-Ops)
+1. **Prioridad 1 (Skills):** Antes de codear para una librería/framework, verificá si hay un estándar en `.agents/skills/`. Si existe, usalo.
+2. **Prioridad 2 (MCP context7):** Si NO hay Skill, y la API es nueva/compleja, o dudás de su sintaxis, estás **OBLIGADO** a usar el servidor MCP `context7` (`resolve-library-id` + `query-docs`) antes de escribir código.
+3. **Extracción:** Si descubrís un patrón nuevo usando `context7`, documentalo en tu Return Envelope para convertirlo en Skill.
+
 ---
 
 ## 4. Criterios de Éxito

@@ -1,14 +1,24 @@
-# 🔍 SDD Explore: [Feature Name]
+# Explore: [Nombre de la Funcionalidad o Cambio]
 
-## 1. Requerimientos (Requirements)
-> ¿Qué es lo mínimo que debe funcionar?
+## 1. Contexto del Problema
+[Describe brevemente qué problema estamos intentando resolver, por qué es necesario, y cuál es el impacto esperado.]
 
-## 2. Opciones de Arquitectura (Architecture Options)
-> Mínimo 3 opciones con sus respectivos trade-offs.
+## 2. Opciones de Arquitectura
 
-1. **Opción A:**
-2. **Opción B:**
-3. **Opción C:**
+| Opción | Descripción | Pros | Contras / Tradeoffs |
+|--------|-------------|------|---------------------|
+| **Opción A** | [Descripción] | - [Pro 1]<br>- [Pro 2] | - [Contra 1]<br>- [Contra 2] |
+| **Opción B** | [Descripción] | - [Pro 1]<br>- [Pro 2] | - [Contra 1]<br>- [Contra 2] |
+| **Opción C** | [Descripción] | - [Pro 1]<br>- [Pro 2] | - [Contra 1]<br>- [Contra 2] |
 
-## 3. Recomendación
-> Cuál elegimos y por qué.
+## 3. Recomendación + Riesgos
+**Opción recomendada:** [Elegir A, B o C]
+
+**Justificación:**
+[Explicar por qué esta es la mejor opción dadas las restricciones y necesidades actuales del proyecto.]
+
+**Riesgos mitigables:**
+- [Riesgo 1]: [Cómo mitigarlo]
+- [Riesgo 2]: [Cómo mitigarlo]
+
+> **[SISTEMA - PARA EL ORQUESTADOR]** Una vez finalizada la exploración, utilizá este documento como base para generar el `proposal.md`.

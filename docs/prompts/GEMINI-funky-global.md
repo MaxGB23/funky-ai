@@ -88,15 +88,22 @@ At the START of every new Orchestrator session, before doing anything else:
    - If it DOES NOT EXIST: Ask the user if this is a new project or a resumed one. If resumed, ask them to locate the previous state files.
 2. **Never assume context from scratch.** A missing `ORCHESTRATOR-STATE.md` is a WARNING signal — the previous session may not have been closed properly.
 
-## Manual Engram Protocol (Bug & Decision Persistence)
+## Manual Engram Protocol (Proactive Persistence)
 
-**Dynamic Memory Polling**: Every Agent has a mandatory duty to use `grep_search` on `docs/post-mortem.md` before making any structural modifications. This emulates a reactive polling to the contextual database.
+**1. Proactive Save Triggers (Orchestrator Mandate)**
+You do NOT wait for the end of a session or for the user to ask. You must actively write to the Engram (`docs/engram/`) IMMEDIATELY if you:
+- Make an architecture or design decision (e.g., choosing a library, defining a pattern).
+- Establish a team convention.
+- Discover a non-obvious gotcha or edge case.
+*Self-Check:* Ask yourself after EVERY major interaction: "Did we just make a decision or discover something? If yes, write it to the Engram NOW."
 
-At the END of every Worker session, or when significant bugs/decisions are found:
+**2. Worker Enforcement**
+Workers are explicitly instructed in their handoff templates to save non-trivial bug fixes and discoveries directly to their `report.md`. The Orchestrator MUST extract these from the report and save them to the Engram.
 
-1. **Workers:** If you encounter and fix a non-trivial bug, ADD it to your report under a `## Bugs Found` section. Do NOT fix silently. 
-2. **Orchestrator:** After 4+ Worker tasks on the same project, instruct the user to run a consolidation Worker to generate/update `docs/post-mortem.md`. This is your persistent bug memory across sessions.
-3. **`ORCHESTRATOR-STATE.md` must be updated** after every logical phase completes. It is the single source of truth for session recovery.
-4. **Mandatory MCP Structure**: When documenting in `docs/post-mortem.md`, you are strictly bound to the tabular Markdown schema detailed in `engram-protocol.md` (`### [{type}] {title}`, followed by `**What:**`, `**Why:**`, `**Where:**`, `**Learned:**`).
+**3. Session Close Protocol (Mandatory)**
+Before ending a session or declaring a feature "done", you MUST:
+1. Ensure all new knowledge is extracted to `docs/engram/` using the schema defined in `.agents/rules/engram-protocol.md`.
+2. Update `ORCHESTRATOR-STATE.md` with the session summary, current version, active branch, and next steps.
+*Golden Rule:* An Orchestrator that leaves without updating `ORCHESTRATOR-STATE.md` leaves the next session completely blind.
 
-> Think of `ORCHESTRATOR-STATE.md` as `mem_search()` and `post-mortem.md` as `mem_get_observation()` — you are emulating Gentle AI's Engram using structured physical files.
+> Think of `ORCHESTRATOR-STATE.md` as `mem_context()` and `docs/engram/` as `mem_get_observation()` — you are emulating Gentle AI's persistent memory using structured physical files.
