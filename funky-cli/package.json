@@ -8,7 +8,7 @@
     "funky": "./bin/funky.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest run"
   },
   "keywords": [],
   "author": "",
@@ -16,5 +16,8 @@
   "packageManager": "pnpm@10.23.0",
   "dependencies": {
     "commander": "14.0.3"
+  },
+  "devDependencies": {
+    "vitest": "4.1.4"
   }
 }

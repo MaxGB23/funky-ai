@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v1.5.0
+- **Versión:** v1.6.0-planning
 - **Rama activa:** `main`
 - **Última sesión:** 2026-04-20
-- **Estado:** 🟢 Estable. Versión 1.5 lanzada.
+- **Estado:** 🟡 Planning. Diseñando v1.6 (TDD & CI).
 
 ---
 
@@ -39,7 +39,11 @@
 
 ## ⏳ Tareas Pendientes
 
-Ninguna.
+- [ ] **v1.6:** Implementar TDD y CI/CD (GitHub Actions) en `funky-cli`. (En Progreso)
+- [ ] **Auditoría SecOps v1.6:** Revisar si la implementación de Vitest cumple estrictamente con `secops.legacy.md` (uso de `pnpm` en lugar de `npm`, versiones exactas sin caret `^` en package.json).
+- [ ] **v1.7 (Propuesta):** Mejorar `funky init` para que genere un `PROJECT-CANVAS.md` (o similar) con decisiones arquitectónicas iniciales (Ej: ¿TDD Sí/No?, ¿Estrategia de CI?).
+- [ ] **Auditoría de Journey:** Levantar un Worker para actualizar `docs/funky-ai/journey` con los aprendizajes de TDD, arquitectura SDD y repasar los releases anteriores (v1.0 a v1.5) para asentar lecciones aprendidas.
+- [ ] **Auditoría Legacy (Backlog):** Analizar el workspace del proyecto Next.js anterior. El objetivo es barrer el desastre de reglas/skills viejas, rescatar las decisiones arquitectónicas que eran joyas, y re-documentarlas usando el formato estructurado y liviano de Funky AI.
 
 ---
 

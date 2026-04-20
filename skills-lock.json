@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "skills": {
+    "github-actions-docs": {
+      "source": "xixu-me/skills",
+      "sourceType": "github",
+      "computedHash": "ead3fa2aff18e829c468dee593e1dc897aa95dc7a07d9ff8ff9f30c296b19af8"
+    },
+    "github-actions-templates": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "3dcb8b0c64ef38bb0fb03e4c9a39084927a55fd229e91fa48af0673389389fe8"
+    },
+    "skill-creator": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "computedHash": "7e3c9cd74e9e2b4828527a857170e86310f2dab5ea8030a9043df2c7e6c88857"
+    },
+    "vitest": {
+      "source": "onmax/nuxt-skills",
+      "sourceType": "github",
+      "computedHash": "4180d5256b0da05f5d39f15bc9a0850d67fe87e8bf7d7bd6ff28f0fb795dce5c"
+    }
+  }
+}
