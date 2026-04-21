@@ -203,19 +203,21 @@ Los compromisos de paquetes npm ya tienen respuesta activa en `.agents/rules/sec
    - Esto abre un vector de ataque que pasa desapercibido en revisiones manuales de código.
    - Midudev publicó un video cubriendo este tema (verificar y vincular el video exacto).
 
-2. **Vulnerabilidad en Python — infección sin ejecutar el archivo**
-   - Existe un caso reciente documentado donde una vulnerabilidad en el ecosistema Python permitía que, simplemente al tener el archivo presente en el entorno (o al ser analizado por ciertas herramientas), ya se ejecutaba código malicioso.
-   - El vector exacto puede ser `setup.py`, hooks de build, o análisis automático del entorno IDE/sandbox.
-   - Esto es especialmente relevante porque rompe el supuesto de "no lo ejecuto, no me infecta".
+2. **Vulnerabilidad en Python — ejecución automática sin intención del usuario**
+   - La percepción popular es "sin ejecutar el archivo ya estás infectado", pero la formulación técnicamente precisa es: el código **sí se ejecuta**, pero de forma **automática e implícita**, sin que el usuario lo corra conscientemente.
+   - Los vectores concretos son: `setup.py` (al instalar el paquete), hooks de build, imports automáticos al cargar módulos, o herramientas del IDE/sandbox que analizan el archivo y disparan ejecución como efecto secundario.
+   - El impacto práctico es el mismo: comprometés el entorno sin haber tenido intención de correr nada. Rompe el supuesto de "no lo ejecuto, no me infecta", pero por ejecución implícita, no por magia.
+   - **Nota:** el documento del análisis original (sección 3) aclara que hay mucho ruido y exageración en torno a este caso. No existe (hasta ahora) una vulnerabilidad general donde *abrir* un archivo sin ningún tipo de ejecución derive en infección directa. La distinción importa para no sobredimensionar el riesgo.
 
 **Acción requerida:**
-- Investigar en profundidad ambos casos (código invisible + Python sin ejecución directa).
+- Investigar en profundidad ambos casos (código invisible + Python con ejecución automática implícita).
 - Vincular el video de midudev correspondiente.
 - Crear un documento de protocolo de seguridad específico para **revisión de repositorios externos** (distinto de `secops.md` que cubre npm), que incluya:
   - Cómo detectar caracteres Unicode invisibles en código fuente.
   - Herramientas para visualizar diffs con caracteres no visibles.
   - Qué revisar antes de clonar o usar cualquier repo externo como dependencia o referencia.
   - Reglas para entornos de sandboxing seguros.
+  - Cómo revisar un repo ya clonado o extension de vscode, etc. (lo que paso con este proyecto, pero un plan mas detallada a seguir, ya que se era inexperto en este caso, y no se sabía qué hacer).
 
 ---
 
