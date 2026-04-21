@@ -1,8 +1,10 @@
-# 🧭 Funky AI v1.5.0: Índice y Mapa de Navegación
+# 🦭 Funky AI v1.6.0: Índice y Mapa de Navegación
 
 Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia Artificial que te permite emular redes asíncronas de agentes (SDD) usando recursos manuales y archivos físicos locales sobre el IDE Antigravity.
 
-> **🚀 Estado del Arte (V1.5.0):** El núcleo de Funky AI ha evolucionado. Ahora utilizamos la herramienta `funky-cli` para automatizar el Scaffolding de Falsos Engrams, apoyando al Router Humano con *Slash Commands* de contexto y separación de archivos (*Sharding*) para escalabilidad de memoria.
+> **🚀 Estado del Arte (V1.6.0):** El núcleo de Funky AI ha evolucionado. Ahora utilizamos la herramienta `funky-cli` para automatizar el Scaffolding de Falsos Engrams, apoyando al Router Humano con *Slash Commands* de contexto y separación de archivos (*Sharding*) para escalabilidad de memoria. Desde v1.6, el CLI cuenta con **TDD (Vitest)** y un **pipeline de CI (GitHub Actions)** que garantizan calidad automática en cada push.
+
+> **🛡️ CI Status:** ![CI](https://github.com/MaxGB23/funky-ai/actions/workflows/ci.yml/badge.svg)
 
 > **¿Perdido?** Empezá por el **Manifiesto** → leé la **Filosofía** → aplicá la **Team Guide**.
 
@@ -16,6 +18,7 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 | [`docs/funky-ai/core-concepts/manifiesto.md`](./docs/funky-ai/core-concepts/manifiesto.md) | Qué es Funky AI y sus 6 Reglas Inviolables |
 | [`docs/funky-ai/core-concepts/filosofia.md`](./docs/funky-ai/core-concepts/filosofia.md) | Cómo funciona Gentle AI por dentro y cómo lo adaptamos |
 | [`docs/funky-ai/core-concepts/rules-vs-skills.md`](./docs/funky-ai/core-concepts/rules-vs-skills.md) | Cuándo una lógica va en Rule vs en Skill |
+| [`docs/funky-ai/core-concepts/testing-landscape.md`](./docs/funky-ai/core-concepts/testing-landscape.md) | Landscape de testing: Vitest, TDD y CI en el ecosistema Funky AI |
 
 ---
 
@@ -49,6 +52,7 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 |---|---|
 | `funky init` | Inyecta las reglas globales y memoria (ecosystem) en un proyecto nuevo. |
 | `funky phase <fase>` | Inyecta templates SDD (explore, proposal, tasks, handoff, report). |
+| `pnpm test` *(en `funky-cli/`)* | Ejecuta la suite Vitest (TDD, desde v1.6). Corre automáticamente en CI vía GitHub Actions. |
 
 ---
 
@@ -60,6 +64,11 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 | [`docs/BACKLOG.md`](./docs/BACKLOG.md) | ⭐ Backlog Maestro: TODO pendiente, en progreso y completado |
 | [`docs/funky-ai/propuestas/propuesta-v1.2-cli-ecosystem.md`](./docs/funky-ai/propuestas/propuesta-v1.2-cli-ecosystem.md) | Diseño de la v1.2: `funky-cli`, Slash Commands, Doc-Ops |
 | [`docs/funky-ai/releases/v1.1.0-release.md`](./docs/funky-ai/releases/v1.1.0-release.md) | Release Notes oficiales de la v1.1.0 |
+| [`docs/funky-ai/releases/v1.2.0-release.md`](./docs/funky-ai/releases/v1.2.0-release.md) | Release Notes oficiales de la v1.2.0 |
+| [`docs/funky-ai/releases/v1.3.0-release.md`](./docs/funky-ai/releases/v1.3.0-release.md) | Release Notes oficiales de la v1.3.0 |
+| [`docs/funky-ai/releases/v1.4.0-release.md`](./docs/funky-ai/releases/v1.4.0-release.md) | Release Notes oficiales de la v1.4.0 |
+| [`docs/funky-ai/releases/v1.5.0-release.md`](./docs/funky-ai/releases/v1.5.0-release.md) | Release Notes oficiales de la v1.5.0 |
+| [`docs/funky-ai/releases/v1.6.0-release.md`](./docs/funky-ai/releases/v1.6.0-release.md) | Release Notes oficiales de la v1.6.0 (TDD + CI) |
 
 ---
 
@@ -78,7 +87,6 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 | Archivo | Propósito |
 |---|---|
 | [`docs/funky-ai/refactor/auditoria-claude-md.md`](./docs/funky-ai/refactor/auditoria-claude-md.md) | Estrategias portables extraídas de Gentle AI CLAUDE.md |
-| [`docs/funky-ai/refactor/inventario-completo-skills.md`](./docs/funky-ai/refactor/inventario-completo-skills.md) | Inventario forense de Skills de Gentle AI |
 | [`docs/gentle-ai/`](./docs/gentle-ai/) | Documentación original de Gentle AI (solo referencia) |
 
 ---
