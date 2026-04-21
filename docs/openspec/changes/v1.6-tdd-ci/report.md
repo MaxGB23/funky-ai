@@ -52,3 +52,22 @@
   - Tagged release `v1.6.0`.
 - **Bugs encontrados:** ninguno.
 - **Resultado:** El repositorio ahora se encuentra en la rama `main` con la versión `v1.6.0` consolidada.
+
+---
+
+## Auditoría README
+- **Status:** ✅ Completada
+- **Rutas rotas encontradas:**
+  - ❌ `docs/funky-ai/refactor/inventario-completo-skills.md` — archivo inexistente en disco. **Eliminado** de la Sección 7.
+- **Rutas agregadas:**
+  - ✅ `docs/funky-ai/core-concepts/testing-landscape.md` → Sección 1 (Core Concepts)
+  - ✅ `docs/funky-ai/releases/v1.2.0-release.md` → Sección 5 (Roadmap)
+  - ✅ `docs/funky-ai/releases/v1.3.0-release.md` → Sección 5 (Roadmap)
+  - ✅ `docs/funky-ai/releases/v1.4.0-release.md` → Sección 5 (Roadmap)
+  - ✅ `docs/funky-ai/releases/v1.5.0-release.md` → Sección 5 (Roadmap)
+  - ✅ `docs/funky-ai/releases/v1.6.0-release.md` → Sección 5 (Roadmap)
+  - ✅ `pnpm test` (en `funky-cli/`) → Sección 4 (CLI), con nota de CI automático
+- **Bugs encontrados:** 
+  - ⚠️ **Anti-patrón: link muerto.** `inventario-completo-skills.md` referenciado en README pero nunca fue creado en el disco. Corregido eliminando la fila.
+  - ⚠️ **Releases desactualizadas.** La Sección 5 solo listaba `v1.1.0`. Los release notes de `v1.2.0` a `v1.6.0` existían en disco pero no estaban documentados en el índice.
+- **Próxima acción:** Orquestador hace commit final del README
