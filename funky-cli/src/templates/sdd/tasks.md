@@ -27,13 +27,14 @@
 ### FASE X — Release y Doc-Ops (Humano u Orquestador)
 > Objetivo: Merge de la funcionalidad, tageo de versión y actualización de deuda técnica documental.
 
-- [ ] Crear release notes en `docs/funky-ai/releases/vX.Y.Z-release.md`.
-- [ ] Actualizar `README.md` con la nueva versión si corresponde.
-- [ ] Eliminar directorio de feature en `docs/openspec/changes/` (PRE-merge cleanup).
-- [ ] `git add -A && git commit -m "feat/fix: descripcion"`
-- [ ] `git checkout main && git merge --no-ff feature/nombre-del-branch`
-- [ ] `git tag -a vX.Y.Z -m "release: vX.Y.Z"`
-- [ ] Sincronizar `ORCHESTRATOR-STATE.md` (estado estable, versión actualizada, sin tareas pendientes).
+**🚨 CHECKLIST DE RELEASE (OBLIGATORIO - NO OMITIR):**
+- [ ] **Release Notes:** Crear archivo de notas en `docs/funky-ai/releases/vX.Y.Z-release.md`.
+- [ ] **README:** Actualizar `README.md` con la nueva versión y/o cambios en los comandos.
+- [ ] **Limpieza:** Eliminar directorio de feature en `docs/openspec/changes/` (PRE-merge cleanup).
+- [ ] **Git:** `git add -A && git commit -m "feat/fix: descripcion"`
+- [ ] **Git:** `git checkout main && git merge --no-ff feature/nombre-del-branch`
+- [ ] **Git:** `git tag -a vX.Y.Z -m "release: vX.Y.Z"`
+- [ ] **Sincronización:** Actualizar `ORCHESTRATOR-STATE.md` (estado estable, versión actualizada, asegurar que no quede stale).
 
 ---
 
@@ -45,7 +46,7 @@ Al finalizar cada fase, actualizar `report.md` con:
 ## Fase [N] — [Nombre]
 - **Status:** ✅ Completada / ❌ Bloqueada
 - **Archivos creados/modificados:** (lista)
-- **Bugs encontrados:** (si aplica, con schema engram)
+- **Bugs encontrados:** (si aplica, usar schema engram. OBLIGATORIO: incluir intentos fallidos y anti-patrones descartados, no solo bugs finales)
 - **Próxima acción:** (qué debe hacer el Orquestador)
 ```
 
