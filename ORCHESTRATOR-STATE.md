@@ -49,10 +49,12 @@
 
 ## ⏳ Tareas Pendientes
 
-- [ ] **v1.7 (Propuesta):** Mejorar `funky init` para que genere un `PROJECT-CANVAS.md` (o similar) con decisiones arquitectónicas iniciales (Ej: ¿TDD Sí/No?, ¿Estrategia de CI?).
+- [ ] **v1.7 (Propuesta):** Mejorar `funky init` para que genere un `PROJECT-CANVAS.md` con decisiones arquitectónicas iniciales (Ej: ¿TDD Sí/No?, ¿Estrategia de CI?).
+- [ ] **v1.7 Testing:** Agregar (1) Unit tests para la nueva lógica del `PROJECT-CANVAS.md` en `runInit()`, (2) primer Integration Test contra carpeta `tmp/` real para verificar creación en disco. Los tests de v1.6 se mantienen como regresión.
 - [ ] **Deuda Sistémica:** El template `funky-cli/src/templates/sdd/tasks.md` debe reforzar la Fase de Release con checklist explícito de README + release notes. El Orquestador volvió a omitirla en v1.6 a pesar de estar documentada en `[DISCOVERY][release-dod-gap]`.
 - [ ] **Auditoría de Journey:** Levantar un Worker para actualizar `docs/funky-ai/journey` con los aprendizajes de TDD, arquitectura SDD y repasar los releases anteriores (v1.0 a v1.5) para asentar lecciones aprendidas.
 - [ ] **Auditoría Legacy (Backlog):** Analizar el workspace del proyecto Next.js anterior. El objetivo es barrer el desastre de reglas/skills viejas, rescatar las decisiones arquitectónicas que eran joyas, y re-documentarlas usando el formato estructurado y liviano de Funky AI.
+
 
 ---
 
