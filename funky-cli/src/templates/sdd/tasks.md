@@ -30,7 +30,7 @@
 **🚨 CHECKLIST DE RELEASE (OBLIGATORIO - NO OMITIR):**
 - [ ] **Release Notes:** Crear archivo de notas en `docs/funky-ai/releases/vX.Y.Z-release.md`.
 - [ ] **README:** Actualizar `README.md` con la nueva versión y/o cambios en los comandos.
-- [ ] **Limpieza:** Eliminar directorio de feature en `docs/openspec/changes/` (PRE-merge cleanup).
+- [ ] **Archivado:** Mover directorio de feature de `openspec/changes/` hacia `openspec/archive/` para preservar las decisiones arquitectónicas (ADRs).
 - [ ] **Git:** `git add -A && git commit -m "feat/fix: descripcion"`
 - [ ] **Git:** `git checkout main && git merge --no-ff feature/nombre-del-branch`
 - [ ] **Git:** `git tag -a vX.Y.Z -m "release: vX.Y.Z"`
