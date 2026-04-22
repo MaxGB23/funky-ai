@@ -59,6 +59,7 @@
 
 ## ⏳ Tareas Pendientes
 
+- [ ] **Smoke Test v1.7.0**: Ejecutar `funky init` en un proyecto nuevo desde cero para validar el flujo interactivo de `@clack/prompts` y la generación correcta del `PROJECT-CANVAS.md` en un entorno real fuera de tests.
 - [x] **Deuda Sistémica:** El template `funky-cli/src/templates/sdd/tasks.md` debe reforzar la Fase de Release con checklist explícito de README + release notes. El Orquestador volvió a omitirla en v1.6 a pesar de estar documentada en `[DISCOVERY][release-dod-gap]`.
 - [x] **Auditoría de Journey:** Levantar un Worker para actualizar `docs/funky-ai/journey` con los aprendizajes de TDD, arquitectura SDD y repasar los releases anteriores (v1.0 a v1.5) para asentar lecciones aprendidas.
 - [x] **v1.7 (Propuesta):** ✅ COMPLETADA — `funky init` genera `PROJECT-CANVAS.md` dinámico con modos interactivo y headless. Listo para merge y tag v1.7.0.
