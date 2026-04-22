@@ -1,8 +1,8 @@
-# 🦭 Funky AI v1.6.0: Índice y Mapa de Navegación
+# 🦭 Funky AI v1.7.0: Índice y Mapa de Navegación
 
 Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia Artificial que te permite emular redes asíncronas de agentes (SDD) usando recursos manuales y archivos físicos locales sobre el IDE Antigravity.
 
-> **🚀 Estado del Arte (V1.6.0):** El núcleo de Funky AI ha evolucionado. Ahora utilizamos la herramienta `funky-cli` para automatizar el Scaffolding de Falsos Engrams, apoyando al Router Humano con *Slash Commands* de contexto y separación de archivos (*Sharding*) para escalabilidad de memoria. Desde v1.6, el CLI cuenta con **TDD (Vitest)** y un **pipeline de CI (GitHub Actions)** que garantizan calidad automática en cada push.
+> **🚀 Estado del Arte (V1.7.0):** El núcleo de Funky AI ha evolucionado. Ahora utilizamos la herramienta `funky-cli` para automatizar el Scaffolding de Falsos Engrams, apoyando al Router Humano con *Slash Commands* de contexto y separación de archivos (*Sharding*) para escalabilidad de memoria. Desde v1.7, el CLI cuenta con un `funky init` súper-cargado que soporta modos **Interactivo y Headless** mediante la generación/consumo de un `PROJECT-CANVAS.md`, todo respaldado por **TDD (Vitest)** y un **pipeline de CI (GitHub Actions)**.
 
 > **🛡️ CI Status:** ![CI](https://github.com/MaxGB23/funky-ai/actions/workflows/ci.yml/badge.svg)
 
@@ -50,7 +50,7 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 
 | Comando | Propósito |
 |---|---|
-| `funky init` | Inyecta las reglas globales y memoria (ecosystem) en un proyecto nuevo. |
+| `funky init` | Inyecta reglas, memoria (ecosystem) y genera/consume un `PROJECT-CANVAS.md` (modo interactivo y headless). |
 | `funky phase <fase>` | Inyecta templates SDD (explore, proposal, tasks, handoff, report). |
 | `pnpm test` *(en `funky-cli/`)* | Ejecuta la suite Vitest (TDD, desde v1.6). Corre automáticamente en CI vía GitHub Actions. |
 
@@ -69,6 +69,7 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 | [`docs/funky-ai/releases/v1.4.0-release.md`](./docs/funky-ai/releases/v1.4.0-release.md) | Release Notes oficiales de la v1.4.0 |
 | [`docs/funky-ai/releases/v1.5.0-release.md`](./docs/funky-ai/releases/v1.5.0-release.md) | Release Notes oficiales de la v1.5.0 |
 | [`docs/funky-ai/releases/v1.6.0-release.md`](./docs/funky-ai/releases/v1.6.0-release.md) | Release Notes oficiales de la v1.6.0 (TDD + CI) |
+| [`docs/funky-ai/releases/v1.7.0-release.md`](./docs/funky-ai/releases/v1.7.0-release.md) | Release Notes oficiales de la v1.7.0 (Project Canvas) |
 
 ---
 

@@ -39,6 +39,23 @@ describe('runInit()', () => {
     expect(fs.copyFileSync).toHaveBeenCalledTimes(filesToCopy.length);
   });
 
+  it('llama a writeFileSync para generar PROJECT-CANVAS.md si se provee canvasConfig', () => {
+    fs.existsSync.mockReturnValue(false);
+    fs.mkdirSync.mockImplementation(() => {});
+    fs.copyFileSync.mockImplementation(() => {});
+    fs.writeFileSync = vi.fn();
+
+    const config = { pattern: 'Test Pattern' };
+    const result = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir, canvasConfig: config });
+
+    expect(result.created).toBe(filesToCopy.length + 1);
+    expect(fs.writeFileSync).toHaveBeenCalledTimes(1);
+    expect(fs.writeFileSync).toHaveBeenCalledWith(
+      expect.stringContaining('PROJECT-CANVAS.md'),
+      expect.stringContaining('Test Pattern')
+    );
+  });
+
   it('saltea archivos que ya existen', () => {
     // Todos los archivos ya existen
     fs.existsSync.mockReturnValue(true);

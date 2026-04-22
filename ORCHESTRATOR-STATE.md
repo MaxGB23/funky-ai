@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v1.6.0
+- **Versión:** v1.7.0
 - **Rama activa:** `main`
-- **Última sesión:** 2026-04-20
-- **Estado:** 🟢 Release. v1.6 consolidada (TDD & CI).
+- **Última sesión:** 2026-04-21
+- **Estado:** 🟢 Release. v1.7 consolidada (Project Canvas).
 
 ---
 
@@ -22,8 +22,10 @@
 | `funky-cli/src/templates/bootstrap/` | Templates canónicos v1.4 que `init` copia |
 | `funky-cli/src/templates/sdd/` | Templates del ciclo SDD que `phase` inyecta |
 | `funky-cli/src/templates/sdd/worker-handoff.md` | Template oficial del patrón Worker Handoff |
+| `funky-cli/src/utils/canvas.js` | Función pura `generateCanvasMarkdown(config)` — Motor del Project Canvas |
 | `docs/engram/discoveries.md` | Memoria de descubrimientos arquitectónicos |
 | `docs/engram/bugfixes.md` | Memoria de bugs y fixes |
+| `docs/funky-ai/releases/v1.7.0-release.md` | Release notes oficiales de v1.7 |
 | `docs/post-mortem.md` | DEPRECATED — apunta al sharded engram |
 
 ---
@@ -45,19 +47,27 @@
 - [x] Fase 3 — GitHub Actions CI Pipeline
 - [x] Fase 4 — Tag v1.6.0 creado, merge a `main`
 
+## ✅ Tareas Completadas (v1.7)
+
+- [x] Fase 0 — Rama `feat/v1.7-project-canvas` creada
+- [x] Fase 1 — Motor de Generación `generateCanvasMarkdown` + Unit Tests
+- [x] Fase 2 — Refactor `runInit` + Integration Tests contra disco real
+- [x] Fase 3 — CLI Interactivo con `@clack/prompts` (flujo dual Headless/Interactivo)
+- [x] Fase 4 — Tests 14/14 ✅, README bumped a v1.7.0, Release Notes creadas, Deuda Sistémica saldada
+
 ---
 
 ## ⏳ Tareas Pendientes
 
 - [x] **Deuda Sistémica:** El template `funky-cli/src/templates/sdd/tasks.md` debe reforzar la Fase de Release con checklist explícito de README + release notes. El Orquestador volvió a omitirla en v1.6 a pesar de estar documentada en `[DISCOVERY][release-dod-gap]`.
 - [x] **Auditoría de Journey:** Levantar un Worker para actualizar `docs/funky-ai/journey` con los aprendizajes de TDD, arquitectura SDD y repasar los releases anteriores (v1.0 a v1.5) para asentar lecciones aprendidas.
-- [ ] **v1.7 (Propuesta):** Mejorar `funky init` para que genere un `PROJECT-CANVAS.md` dinámico interactivo. → [Ver Diseño y Arquitectura](./openspec/changes/v1.7-project-canvas/proposal.md)
-- [ ] **v1.7 Testing:** Agregar (1) Unit tests para la nueva lógica del `PROJECT-CANVAS.md` en `runInit()`, (2) primer Integration Test contra carpeta `tmp/` real para verificar creación en disco. Los tests de v1.6 se mantienen como regresión.
+- [x] **v1.7 (Propuesta):** ✅ COMPLETADA — `funky init` genera `PROJECT-CANVAS.md` dinámico con modos interactivo y headless. Listo para merge y tag v1.7.0.
+- [x] **v1.7 Testing:** ✅ COMPLETADA — Unit tests + Integration tests implementados. 14/14 tests pasando.
 - [ ] **Protocolo de Seguridad — Revisión de Repos Externos:** Crear un documento de protocolo (distinto de `secops.md`, que ya cubre npm) para auditar repos de GitHub, extensiones de VSCode y código de terceros. Incluye: detección de caracteres Unicode invisibles (Trojan Source), vectores de ejecución implícita en Python (import time / setup.py), y checklist para revisar repos ya clonados. → Contexto completo en [`docs/funky-ai/mierdilla/midudev.md` — Pendiente 1](./docs/funky-ai/mierdilla/midudev.md)
 - [ ] **Protocolo de Optimización por Tipo de Proyecto:** Definir estándares mínimos de optimización según el tipo de proyecto (frontend, backend, CLI, API), con límites explícitos de cuándo parar y un framework de tradeoff entre rendimiento, UX, DX y funcionalidad. → Contexto completo en [`docs/funky-ai/mierdilla/midudev.md` — Pendiente 2](./docs/funky-ai/mierdilla/midudev.md)
 - [ ] **Auditoría Legacy (Backlog):** Analizar el workspace del proyecto Next.js anterior. El objetivo es barrer el desastre de reglas/skills viejas, rescatar las decisiones arquitectónicas que eran joyas, y re-documentarlas usando el formato estructurado y liviano de Funky AI.
 - [ ] **Optimización del Memory Polling:** Comprobar que el agente efectivamente investigue en el engram cuando sea necesario, y auditar si `grep_search` consume demasiados tokens en archivos largos. Evaluar nuevas estrategias de búsqueda indexada o fragmentada (ya que no contamos con SQLite/vectores como Gentle AI) para no agotar la ventana de contexto.
-
+- [ ] **Auditoría de Sobrecarga Cognitiva (Worker Handoff):** Revisar si las reglas globales y la documentación de orquestación (`sdd-orchestrator.md`, rules) saturan la ventana de contexto de los agentes, provocando que se salten pasos críticos (como generar el `worker-handoff.md`). Evaluar simplificación de instrucciones.
 
 ---
 
@@ -78,3 +88,4 @@ Ninguno.
 | v1.4 | `funky init` + `funky phase` — CLI bootstrapper completo |
 | v1.5 | Templates SDD enriquecidos, Doc-Ops jerarquía Tier N y CLI README |
 | v1.6 | TDD (Vitest) + CI (GitHub Actions) + Refactor para Testabilidad |
+| v1.7 | Project Canvas Dinámico — `funky init` con flujo dual Headless/Interactivo (`@clack/prompts`), 14/14 tests |
