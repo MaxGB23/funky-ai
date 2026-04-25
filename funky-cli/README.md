@@ -22,7 +22,7 @@ pnpm link --global
 
 | Comando | Descripción | Ejemplo |
 |---------|-------------|---------|
-| `funky init` | Inicia el ecosistema Funky AI en el directorio actual. Copia las reglas de agente, el archivo `ORCHESTRATOR-STATE.md`, los schemas del engram y los templates SDD iniciales. Es idempotente. | `funky init` -> "🚀 Funky Ecosystem inicializado!" |
+| `funky init` | Inicia el ecosistema Funky AI en el directorio actual. Genera los `PROJECT-CANVAS.md` e `INFRA-CANVAS.md`, copia las reglas de agente, el `ORCHESTRATOR-STATE.md`, schemas de engram y una guía de planeación (`canvas-planning-guide.md`). Puede recibir el flag `--template` para generarlos en blanco. Es idempotente. | `funky init` -> "🚀 Funky Ecosystem inicializado!" |
 | `funky phase <nombre>` | Inyecta el template correspondiente a la fase SDD indicada en el directorio activo o en el predeterminado para las especificaciones, listos para ser editados. | `funky phase explore` -> "📄 Template 'explore' inyectado!" |
 
 ## Fases SDD Disponibles
@@ -45,6 +45,9 @@ Al ejecutar `funky init`, se generará la siguiente estructura en el directorio 
 │   └── rules/             (Reglas canónicas SDD, secops, etc.)
 ├── docs/
 │   ├── engram/            (Memoria persistente: discoveries.md, bugfixes.md)
-│   └── openspec/          (Carpeta para tus cambios y fases SDD)
-└── ORCHESTRATOR-STATE.md  (Estado global del proyecto)
+│   ├── openspec/          (Carpeta para tus cambios y fases SDD)
+│   └── funky-ai/cli/      (Contiene la guía canvas-planning-guide.md)
+├── ORCHESTRATOR-STATE.md  (Estado global del proyecto)
+├── PROJECT-CANVAS.md      (Canvas Core: Framework, Arquitectura, Testing)
+└── INFRA-CANVAS.md        (Canvas Operacional: DB, Auth, Deployment)
 ```
