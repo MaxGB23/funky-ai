@@ -20,10 +20,10 @@ describe('runInit() Integration', () => {
     }
   });
 
-  it('debería persistir PROJECT-CANVAS.md físico cuando se provee canvasConfig', () => {
+  it('debería persistir los CANVAS físicos cuando se provee canvasConfig', () => {
     const config = {
-      pattern: 'Integration Pattern',
-      state: 'Test State'
+      projectData: { pattern: 'Integration Pattern' },
+      infraData: { db: 'Test DB' }
     };
 
     const result = runInit({ templatesDir, targetBase: tmpDir, canvasConfig: config });
@@ -33,7 +33,26 @@ describe('runInit() Integration', () => {
     
     const content = fs.readFileSync(canvasPath, 'utf8');
     expect(content).toContain('Integration Pattern');
-    expect(content).toContain('Test State');
     expect(result.created).toBeGreaterThan(0);
+  });
+
+  it('debería copiar la plantilla canónica worker-handoff al nuevo workspace', () => {
+    const workerHandoffPath = path.join(tmpDir, 'docs', 'funky-ai', 'workers', 'plantilla-worker-handoff.md');
+    expect(fs.existsSync(workerHandoffPath)).toBe(true);
+    const content = fs.readFileSync(workerHandoffPath, 'utf8');
+    expect(content).toContain('Worker Handoff');
+  });
+
+  it('NO debería sobreescribir PROJECT-CANVAS.md si tiene skipProjectCanvas', () => {
+    const canvasPath = path.join(tmpDir, 'PROJECT-CANVAS.md');
+    fs.writeFileSync(canvasPath, 'CONTENIDO ORIGINAL DEL USUARIO');
+    
+    const config = { skipProjectCanvas: true, skipInfraCanvas: true };
+
+    const result = runInit({ templatesDir, targetBase: tmpDir, canvasConfig: config });
+
+    const content = fs.readFileSync(canvasPath, 'utf8');
+    expect(content).toBe('CONTENIDO ORIGINAL DEL USUARIO');
+    expect(result.skipped).toBeGreaterThan(0);
   });
 });

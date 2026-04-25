@@ -31,3 +31,9 @@
 **Why:** La instrucción de la Fase 3 prohibía tocar archivos `.js`, por lo que el Worker creó la subcarpeta sin actualizar la referencia en el comando.
 **Where:** `funky-cli/src/commands/phase.js` línea 14.
 **Learned:** Cuando un Worker mueve o reorganiza templates, DEBE listar explícitamente en sus restricciones si puede o no actualizar las referencias en los comandos JS. La ambigüedad genera deuda. Alternativa: el Orquestador debe delegar la reorganización de templates y la actualización de rutas en la misma Fase, no en fases separadas.
+
+### [bugfix][cli-headless-overwrite] Sobreescritura de Canvas en modo Headless
+**What:** La ejecución de `funky init` cuando ya existía un `PROJECT-CANVAS.md` pisaba el archivo original con un template vacío.
+**Why:** El código pasaba `canvasConfig = { fromHeadless: true }` a `runInit`, pero `runInit` no verificaba explícitamente el flag `fromHeadless` antes de llamar a `generateCanvasMarkdown` y escribir en disco.
+**Where:** `funky-cli/src/commands/init.js`
+**Learned:** Siempre validar los flags pasados al objeto de configuración dentro de la lógica pura (no solo en el command handler de Commander) para evitar flujos destructivos no intencionados.

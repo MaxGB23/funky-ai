@@ -1,24 +1,25 @@
 # Tareas: Smoke Test v1.7.0 (Out-of-Workspace)
 
+> [!WARNING]
+> **ESTADO: ❌ CANCELADO**
+> Se detectó un bug destructivo en el flujo Headless (`runInit` sobreescribe el Canvas existente). Este plan queda suspendido hasta que se complete la **Auditoría de Inconsistencias** y el fix correspondiente.
+
 ## Fase 0: Preparación Global (En este workspace)
-- [ ] Navegar a `funky-cli` y ejecutar `npm link` para que el comando `funky` quede disponible globalmente en el sistema operativo.
+- [ ] Navegar a `funky-cli` y ejecutar `pnpm link --global` para disponibilizar el comando `funky` globalmente respetando nuestro gestor de paquetes.
 
-## Fase 1: Escenario AI-Driven (Chat Nuevo)
+## Fase 1: Escenario Headless (SDD / PRD-First)
 - [ ] Abrir un directorio externo vacío y un chat nuevo.
-- [ ] Discutir con el Agente un proyecto nuevo (tipo PRD), para que defina qué stack y configuraciones usar, basándose en los inputs que va a pedir el CLI.
-- [ ] Pedirle al Agente que ejecute `funky init` y llene la información (si falla la interactividad por TTY en el entorno del agente, asistir manualmente).
-- [ ] Validar que el agente entienda el `PROJECT-CANVAS.md` resultante.
+- [ ] Discutir con el Agente la arquitectura.
+- [ ] El Agente ejecuta `funky init --template` para obtener el esqueleto del Canvas, lo edita con la información acordada y guarda los cambios en `PROJECT-CANVAS.md`.
+- [ ] Ejecutar `funky init`.
+- [ ] Validar que la CLI detecta el archivo, lo consume silenciosamente y hace el scaffolding sin lanzar los prompts interactivos.
 
-## Fase 2: Escenario Interactivo Manual
-- [ ] Abrir otra carpeta externa vacía.
-- [ ] Como humano, correr `funky init` en la terminal.
-- [ ] Llenar opción por opción para sentir la Developer Experience.
-- [ ] Validar la escritura en disco del Canvas.
+## Fase 2: Escenario Interactivo (CLI Manual)
+- [ ] Abrir otra carpeta externa vacía (asegurándose de que **NO** exista `PROJECT-CANVAS.md`).
+- [ ] Ejecutar `funky init` manualmente.
+- [ ] Responder a todos los prompts interactivos (`@clack/prompts`).
+- [ ] Validar la generación exitosa del archivo `PROJECT-CANVAS.md` y de los demás archivos de scaffolding.
 
-## Fase 3: Escenario Headless
-- [ ] En otra carpeta externa, ejecutar `funky init -y`.
-- [ ] Comprobar que asume defaults y sale rápido.
-
-## Fase 4: Reporte y Cierre
-- [ ] El humano vuelve a **este chat (Orquestador)** con el resultado de las pruebas.
-- [ ] Si hay errores, se documentan y abrimos nueva iteración. Si pasa todo, actualizamos `ORCHESTRATOR-STATE.md` marcando todo como ✅ Completado y consolidamos el tag v1.7.0.
+## Fase 3: Reporte y Cierre
+- [ ] El humano vuelve a **este chat (Orquestador)** con el resultado.
+- [ ] Si hay fallos, se documentan y abrimos nueva iteración. Si pasa todo, actualizamos `ORCHESTRATOR-STATE.md` marcando la tarea como ✅ Completada y consolidamos el tag v1.7.0.

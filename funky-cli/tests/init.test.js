@@ -17,6 +17,8 @@ describe('runInit()', () => {
     { src: 'agents-rules-sdd-orchestrator.md', dest: '.agents/rules/sdd-orchestrator.md' },
     { src: 'engram-discoveries.md', dest: 'docs/engram/discoveries.md' },
     { src: 'engram-bugfixes.md', dest: 'docs/engram/bugfixes.md' },
+    { src: 'plantilla-worker-handoff.md', dest: 'docs/funky-ai/workers/plantilla-worker-handoff.md' },
+    { src: 'canvas-planning-guide.md', dest: 'docs/funky-ai/cli/canvas-planning-guide.md' },
   ];
 
   beforeEach(() => {
@@ -39,17 +41,17 @@ describe('runInit()', () => {
     expect(fs.copyFileSync).toHaveBeenCalledTimes(filesToCopy.length);
   });
 
-  it('llama a writeFileSync para generar PROJECT-CANVAS.md si se provee canvasConfig', () => {
+  it('llama a writeFileSync para generar PROJECT-CANVAS e INFRA-CANVAS si se provee canvasConfig', () => {
     fs.existsSync.mockReturnValue(false);
     fs.mkdirSync.mockImplementation(() => {});
     fs.copyFileSync.mockImplementation(() => {});
     fs.writeFileSync = vi.fn();
 
-    const config = { pattern: 'Test Pattern' };
+    const config = { projectData: { pattern: 'Test Pattern' }, infraData: { db: 'Test DB' } };
     const result = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir, canvasConfig: config });
 
-    expect(result.created).toBe(filesToCopy.length + 1);
-    expect(fs.writeFileSync).toHaveBeenCalledTimes(1);
+    expect(result.created).toBe(filesToCopy.length + 2);
+    expect(fs.writeFileSync).toHaveBeenCalledTimes(2);
     expect(fs.writeFileSync).toHaveBeenCalledWith(
       expect.stringContaining('PROJECT-CANVAS.md'),
       expect.stringContaining('Test Pattern')
@@ -65,6 +67,19 @@ describe('runInit()', () => {
     expect(result.created).toBe(0);
     expect(result.skipped).toBe(filesToCopy.length);
     expect(fs.copyFileSync).not.toHaveBeenCalled();
+  });
+
+  it('NO llama a writeFileSync si canvasConfig tiene los skips en true', () => {
+    fs.existsSync.mockReturnValue(false);
+    fs.mkdirSync.mockImplementation(() => {});
+    fs.copyFileSync.mockImplementation(() => {});
+    fs.writeFileSync = vi.fn();
+
+    const config = { skipProjectCanvas: true, skipInfraCanvas: true };
+    const result = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir, canvasConfig: config });
+
+    expect(fs.writeFileSync).not.toHaveBeenCalled();
+    expect(result.created).toBe(filesToCopy.length);
   });
 
   it('crea solo los archivos que no existen (estado mixto)', () => {

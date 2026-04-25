@@ -1,24 +1,38 @@
-function generateCanvasMarkdown(config) {
+export function generateProjectCanvasMarkdown(config = {}) {
+  const f = (val) => val || 'No definido / Pendiente';
   return `# 🚀 PROJECT CANVAS
 
-## 1. Patrón Arquitectónico Base
-${config.pattern || 'No definido'}
+## 1. Framework Base
+${f(config.framework)}
 
-## 2. Gestión de Estado y Datos
-${config.state || 'No definido'}
+## 2. Patrón Arquitectónico
+${f(config.pattern)}
 
-## 3. Ecosistema y Tooling
-${config.tooling || 'No definido'}
+## 3. Gestión de Estado
+${f(config.state)}
 
-## 4. Estrategia de Estilos y UI
-${config.styling || 'No definido'}
+## 4. Estrategia UI
+${f(config.styling)}
 
-## 5. Testing y CI/CD
-${config.testing || 'No definido'}
-
-## 6. SecOps y Entornos
-${config.secops || 'No definido'}
+## 5. Estrategia de Testing
+${f(config.testing)}
 `;
 }
 
-export { generateCanvasMarkdown };
+export function generateInfraCanvasMarkdown(config = {}) {
+  const f = (val) => val || 'No definido / Pendiente';
+  return `# 🏗️ INFRA CANVAS
+
+## 1. Base de Datos / ORM
+${f(config.database)}
+
+## 2. Autenticación
+${f(config.auth)}
+
+## 3. Linter / Formatter
+${f(config.linter)}
+
+## 4. Deployment & CI/CD
+${f(config.deployment)}
+`;
+}

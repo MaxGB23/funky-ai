@@ -61,3 +61,27 @@ Aquí se registran los hallazgos técnicos y arquitectónicos que moldean el fut
 **Why:** El Worker priorizó reportar los éxitos y omitió los fallos intermedios. El schema del Return Envelope no tenía una instrucción explícita de "documentar TODOS los intentos fallidos, no solo el resultado final".
 **Where:** Protocolo Return Envelope en `funky-cli/src/templates/sdd/tasks.md`.
 **Learned:** El template de Return Envelope debe aclarar explícitamente: "Bugs encontrados incluye intentos fallidos y los anti-patrones descartados, no solo bugs en producción". El Orquestador debe validar el schema del report antes de aprobar la siguiente fase.
+
+### [DISCOVERY][smoke-test-is-dod] El Smoke Test es la única verdad, no los tests unitarios
+**What:** Tests unitarios y de integración en verde NO equivalen a software funcionando. Durante el Smoke Test de v1.7.0 descubrimos 3 bugs críticos (Canvas Overwrite, Template Sync Drift, Incomplete Scaffolding) en un CLI con 14/14 tests pasando.
+**Why:** Los tests automatizados solo validan lo que el autor del test imaginó. No validan casos de negocio destructivos que el programador no anticipó, ni el comportamiento real en un entorno virgen externo.
+**Where:** Definition of Done de cualquier feature con efectos en el sistema de archivos o UX del CLI.
+**Learned:** La DoD para features de CLI DEBE incluir: ✅ Tests automatizados + ✅ Smoke Test en directorio virgen fuera del workspace + ✅ Revisión humana de UX. Sin las tres capas, la release no existe.
+
+### [DISCOVERY][cli-template-sync-drift] Los templates del CLI son snapshots que se pudren
+**What:** `funky-cli/src/templates/bootstrap/` es una copia estática. Cada vez que el ecosistema padre evoluciona (nuevas reglas, archivos actualizados) sin sincronización automática, el CLI distribuye versiones obsoletas del sistema Funky AI.
+**Why:** No existía ningún mecanismo que forzara la sincronización. Era un proceso manual que dependía de que el desarrollador se acordara.
+**Where:** `funky-cli/src/templates/bootstrap/` y cualquier carpeta de templates estáticos de una CLI.
+**Learned:** Cualquier archivo que una CLI distribuya necesita un script de sincronización automatizado atado al ciclo de tests (`pretest`). Si la sincronización es manual, va a fallar. La solución es el script `sync-templates.js` creado en v1.7.0.
+
+### [DISCOVERY][agent-cognitive-load] La sobrecarga cognitiva del agente omite protocolos críticos
+**What:** El Orquestador creó el `worker-handoff.md` desde cero sin consultar la plantilla canónica del proyecto (83 líneas, estructura completa). Lo hizo a pesar de que la plantilla estaba documentada y disponible.
+**Why:** Cuando el contexto del agente está saturado con reglas globales, estado del proyecto y el problema técnico simultaneamente, las instrucciones de proceso de menor urgencia percibida se caen del foco de atención.
+**Where:** Protocolo de creación de Worker Handoffs. Reglas globales en `.agents/rules/`.
+**Learned:** (1) Las restricciones de proceso deben vivir lo más cerca posible de donde se usan (inyección Just-In-Time), no en archivos globales que se cargan siempre. (2) El humano es el guardián del proceso, no el agente. Si el agente se salta un protocolo, la solución es estructural (forzarlo con la herramienta), no conductual (esperar que lo recuerde).
+
+### [DISCOVERY][pnpm-strict-usage] Mezclar gestores de paquetes (npm vs pnpm)
+**What:** El uso accidental de comandos de `npm` (ej. `npm run test`, `npm link`) en un repositorio inicializado y gestionado con `pnpm` (evidenciado por la existencia de `pnpm-lock.yaml`) es destructivo para la integridad del ecosistema local.
+**Why:** Genera un `package-lock.json` paralelo, corrompe el algoritmo de hoisting en `node_modules` y causa inconsistencias con dependencias fantasma, desestabilizando builds futuros y la reproducibilidad.
+**Where:** Instrucciones de los Agentes/Orquestadores en artefactos como `tasks.md` y operaciones de terminal ejecutadas por Workers.
+**Learned:** Siempre auditar pasivamente el directorio raíz en busca de archivos lock (ej. `pnpm-lock.yaml`, `yarn.lock`, `package-lock.json`) ANTES de sugerir o ejecutar comandos de empaquetado/linkeo. Mantener estricta fidelidad al gestor oficial detectado en el proyecto.

@@ -1,8 +1,11 @@
-# 🤖 Funky AI — Plantilla Oficial: Worker Handoff
+# 🤖 Funky AI — Worker Handoff: Fase [N] ([Nombre de la Fase])
 
 > **Instrucción para el LLM:** Sos un Worker **Tier [N]** de ejecución de Funky AI.
 > Tu única misión es leer este documento, ejecutar las tareas exactas detalladas abajo escribiendo al disco mediante tus tools, y luego actualizar el `report.md` final.
 > **NO redactes código ni explicaciones largas en el chat. Acción directa al disco.**
+
+> **[HUMANO]** Para ejecutar este worker, abrí un chat nuevo y pegá:
+> `@docs/openspec/changes/{feature-name}/worker-handoff.md Ejecutá la Fase [N]`
 
 ---
 
@@ -11,22 +14,19 @@
 Antes de ejecutar **cualquier tarea**, el Worker DEBE cargar los tres pilares de contexto:
 
 ### A) Estado Global del Proyecto
-Leé el archivo de estado del Orquestador:
 ```
 view_file ORCHESTRATOR-STATE.md
 ```
 
 ### B) Memoria Persistente (Memory Polling)
-Ejecutá `grep_search` en el post-mortem antes de tocar cualquier archivo estructural:
 ```
-grep_search "[topic-key-relevante]" docs/post-mortem.md  (IsRegex: true)
+grep_search "[topic-key-relevante]" docs/engram/discoveries.md (IsRegex: false)
+grep_search "[topic-key-relevante]" docs/engram/bugfixes.md (IsRegex: false)
 ```
-> ⚠️ Usá `IsRegex: true` si el topic-key puede estar embebido en un header compuesto (`### [tipo][topic-key] Título`).
 
 ### C) Especificación de Tarea
-Leé el archivo de contexto técnico correspondiente a tu tarea:
 ```
-view_file docs/openspec/changes/{feature-name}/tasks.md   (sección Fase N)
+view_file docs/openspec/changes/{feature-name}/tasks.md
 view_file [archivo principal que vas a modificar]
 ```
 
@@ -34,14 +34,11 @@ view_file [archivo principal que vas a modificar]
 
 ## 2. La Misión (Surgical Task)
 
-> **[EL ORQUESTADOR COMPLETA ESTA SECCIÓN]**
-
-**Objetivo:** _Describir en una oración qué debe producir este Worker al final._
+**Objetivo:** [Describir en una oración qué debe producir este Worker al final.]
 
 **Acciones exactas:**
-1. _Acción 1 con archivo destino explícito_
-2. _Acción 2_
-3. _..._
+1. [Acción 1 con archivo destino explícito]
+2. [Acción 2]
 
 ---
 
@@ -50,8 +47,8 @@ view_file [archivo principal que vas a modificar]
 | Regla | Descripción |
 |-------|-------------|
 | 🔴 Cero Exploración | No uses `list_dir` ni `view_file` sobre archivos no indicados en §1 |
-| 🔴 Foco Láser | Tu scope está delimitado en §2. Si algo fuera de scope está roto, **documentalo en el report, no lo arregles** |
-| 🔴 Acción Directa | Cada archivo se escribe con tools. Cero borradores en chat |
+| 🔴 Foco Láser | Tu scope está delimitado en §2. Si algo fuera de scope está roto, documentalo en el report, no lo arregles |
+| 🔴 Acción Directa | Cada archivo se escribe con tools de escritura directa. |
 | 🟡 Bugs Encontrados | Si encontrás un bug no relacionado con tu tarea → registralo en `report.md` bajo `## Bugs Encontrados` con schema engram (`What / Why / Where / Learned`) |
 | 🟢 Idempotencia | Verificá si el destino ya existe antes de sobreescribir. Documentá si salteás algo |
 
@@ -83,5 +80,3 @@ Actualizá `docs/openspec/changes/{feature-name}/report.md` con:
 - **Bugs encontrados:** Ninguno / (schema engram si aplica)
 - **Próxima acción:** Qué debe hacer el Orquestador a continuación
 ```
-
-> **[SISTEMA - PARA EL ORQUESTADOR]** Al finalizar, extraé conocimiento al `post-mortem.md` e instruí al usuario a ELIMINAR FÍSICAMENTE toda la carpeta de este feature.

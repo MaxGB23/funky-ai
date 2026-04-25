@@ -42,7 +42,7 @@ Each logical planning phase returns physical files on disk representing: `status
 
 ## Session Bootstrap Protocol (CRITICAL)
 At the START of every new Orchestrator session, before doing anything else:
-1. **Look for `ORCHESTRATOR-STATE.md`** in the `docs/` or root folder of the project.
+1. **Look for `ORCHESTRATOR-STATE.md`** ONLY in the root folder of the project.
    - If it EXISTS: Read it FIRST.
    - If it DOES NOT EXIST: Ask the user if this is a new project or a resumed one.
 2. **Never assume context from scratch.**

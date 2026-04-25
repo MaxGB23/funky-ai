@@ -8,8 +8,8 @@
 
 - **Versión:** v1.7.0
 - **Rama activa:** `main`
-- **Última sesión:** 2026-04-21
-- **Estado:** 🟢 Release. v1.7 consolidada (Project Canvas).
+- **Última sesión:** 2026-04-22
+- **Estado:** 🟢 Completada. Release v1.7.0 oficial con Canvas v2 y fixes de legacy pipeline.
 
 ---
 
@@ -59,7 +59,15 @@
 
 ## ⏳ Tareas Pendientes
 
-- [ ] **Smoke Test v1.7.0**: Ejecutar `funky init` en un proyecto nuevo desde cero para validar el flujo interactivo de `@clack/prompts` y la generación correcta del `PROJECT-CANVAS.md` en un entorno real fuera de tests.
+- [ ] **Cleanup de Archivos Huérfanos:** Hacer una auditoría y limpieza de archivos generados sueltos (como `report.md` u otros artifacts) en la raíz y en directorios obsoletos, para consolidarlos en el flujo estandarizado de `docs/openspec/changes/`.
+- [x] **Inclusión de Planning Guide en Scaffold:** Modificar `funky init` para que al ejecutarse copie automáticamente la guía de planeación (`canvas-planning-guide.md`) a la carpeta `docs/funky-ai/cli/` del nuevo workspace. (Fixeado en fase de pulido).
+- [x] **Fix Bug Crítico v1.7.0**: La función `runInit` sobreescribe el archivo `PROJECT-CANVAS.md` cuando se detecta el modo Headless (`canvasConfig.fromHeadless`). (Fixeado + TDD).
+- [x] **Auditoría de Inconsistencias**: Revisión exhaustiva completada. Se detectaron y mitigaron 3 vectores de falla destructivos y de UX en `init.js`.
+- [x] **Fix Template Sync Drift**: Script `sync-templates.js` creado y atado a `pretest`. Las reglas ahora se sincronizan automáticamente antes de cada test run. ✅
+- [x] **Fix Incomplete Scaffolding**: `init.js` ahora copia `plantilla-worker-handoff.md` al nuevo ecosistema. 17/17 tests en verde. ✅
+- [x] **Smoke Test v1.7.0 (Reintento Final)**: Ejecutar el flujo out-of-workspace completo luego de aplicar los fixes de scaffolding. (Aprobado en Escenarios v2).
+- [ ] **Arquitectura SDD — Test Planning (Backlog)**: Diseñar e integrar una fase formal de "Test Planning" (ej. `test-plan.md` o mejora de `spec.md`). Debe ser agnóstica al framework y adaptarse a proyectos con o sin TDD estricto, mitigando puntos ciegos lógicos.
+- [x] **Smoke Test v1.7.0 (Intento 1)**: ❌ CANCELADO. Se detectó bug destructivo en modo Headless mediante análisis de código previo a la ejecución.
 - [x] **Deuda Sistémica:** El template `funky-cli/src/templates/sdd/tasks.md` debe reforzar la Fase de Release con checklist explícito de README + release notes. El Orquestador volvió a omitirla en v1.6 a pesar de estar documentada en `[DISCOVERY][release-dod-gap]`.
 - [x] **Auditoría de Journey:** Levantar un Worker para actualizar `docs/funky-ai/journey` con los aprendizajes de TDD, arquitectura SDD y repasar los releases anteriores (v1.0 a v1.5) para asentar lecciones aprendidas.
 - [x] **v1.7 (Propuesta):** ✅ COMPLETADA — `funky init` genera `PROJECT-CANVAS.md` dinámico con modos interactivo y headless. Listo para merge y tag v1.7.0.
@@ -68,12 +76,11 @@
 - [ ] **Protocolo de Optimización por Tipo de Proyecto:** Definir estándares mínimos de optimización según el tipo de proyecto (frontend, backend, CLI, API), con límites explícitos de cuándo parar y un framework de tradeoff entre rendimiento, UX, DX y funcionalidad. → Contexto completo en [`docs/funky-ai/mierdilla/midudev.md` — Pendiente 2](./docs/funky-ai/mierdilla/midudev.md)
 - [ ] **Auditoría Legacy (Backlog):** Analizar el workspace del proyecto Next.js anterior. El objetivo es barrer el desastre de reglas/skills viejas, rescatar las decisiones arquitectónicas que eran joyas, y re-documentarlas usando el formato estructurado y liviano de Funky AI.
 - [ ] **Optimización del Memory Polling:** Comprobar que el agente efectivamente investigue en el engram cuando sea necesario, y auditar si `grep_search` consume demasiados tokens en archivos largos. Evaluar nuevas estrategias de búsqueda indexada o fragmentada (ya que no contamos con SQLite/vectores como Gentle AI) para no agotar la ventana de contexto.
-- [ ] **Auditoría de Sobrecarga Cognitiva (Worker Handoff):** Revisar si las reglas globales y la documentación de orquestación (`sdd-orchestrator.md`, rules) saturan la ventana de contexto de los agentes, provocando que se salten pasos críticos (como generar el `worker-handoff.md`). Evaluar simplificación de instrucciones.
+- [ ] **Auditoría de Sobrecarga Cognitiva (Worker Handoff):** Revisar si las reglas globales y la documentación de orquestación (`sdd-orchestrator.md`, rules) saturan la ventana de contexto de los agentes, provocando que se salten pasos críticos (como generar el `worker-handoff.md`, revisar templates criticos, etc). Evaluar simplificación de instrucciones.
 
 ---
 
 ## 🐛 Bugs Activos
-
 Ninguno.
 
 ---
@@ -89,4 +96,4 @@ Ninguno.
 | v1.4 | `funky init` + `funky phase` — CLI bootstrapper completo |
 | v1.5 | Templates SDD enriquecidos, Doc-Ops jerarquía Tier N y CLI README |
 | v1.6 | TDD (Vitest) + CI (GitHub Actions) + Refactor para Testabilidad |
-| v1.7 | Project Canvas Dinámico — `funky init` con flujo dual Headless/Interactivo (`@clack/prompts`), 14/14 tests |
+| v1.7 | Project Canvas v2 Dinámico y fixes de legacy pipeline. Tests refactorizados (18/18). |

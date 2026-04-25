@@ -8,7 +8,8 @@
     "funky": "./bin/funky.js"
   },
   "scripts": {
-    "test": "vitest run"
+    "sync": "node scripts/sync-templates.js",
+    "test": "npm run sync && vitest run"
   },
   "keywords": [],
   "author": "",
