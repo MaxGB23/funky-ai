@@ -36,6 +36,7 @@
 - [ ] **Git:** `git add -A && git commit -m "feat/fix: descripcion"`
 - [ ] **Git:** `git checkout main && git merge --no-ff feature/nombre-del-branch`
 - [ ] **Git:** `git tag -a vX.Y.Z -m "release: vX.Y.Z"`
+- [ ] **Git:** `git push origin main && git push origin vX.Y.Z`
 - [ ] **Sincronización:** Actualizar `ORCHESTRATOR-STATE.md` (estado estable, versión actualizada, asegurar que no quede stale).
 
 </MANDATORY_RELEASE_PROTOCOL>
