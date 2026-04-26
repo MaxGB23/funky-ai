@@ -29,3 +29,13 @@
   - [OMITIDO: razón] Tag — No aplica (el Orquestador gestiona el tag)
   - [OMITIDO: razón] ORCHESTRATOR-STATE.md — No aplica (el Orquestador lo actualiza en FASE X)
 - **Próxima acción:** El Orquestador debe ejecutar la Fase X de Release (merge, tag, archivado de openspec).
+
+---
+
+## Fase X — Release y Doc-Ops
+- **Status:** ✅ Completada
+- **Archivos creados/modificados:**
+  - `docs/funky-ai/releases/v1.8.0-release.md` (creado)
+  - `ORCHESTRATOR-STATE.md` (versión v1.8.0, rama main, estado 🟢 Completada)
+- **Bugs encontrados:** Ninguno
+- **Próxima acción:** Orquestador debe archivar `openspec/changes/cognitive-audit/` → `openspec/archive/`

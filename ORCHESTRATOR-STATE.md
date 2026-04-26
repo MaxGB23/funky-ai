@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v1.7.0 (candidato v1.8.0)
-- **Rama activa:** `feature/cognitive-audit`
+- **Versión:** v1.8.0
+- **Rama activa:** `main`
 - **Última sesión:** 2026-04-25
-- **Estado:** 🟡 En progreso. Auditoría de Sobrecarga Cognitiva en ejecución. Fases 1 y 2 completadas, pendiente Release.
+- **Estado:** 🟢 Completada. Release v1.8.0 — Auditoría de Sobrecarga Cognitiva aplicada.
 
 ---
 
@@ -97,3 +97,4 @@ Ninguno.
 | v1.5 | Templates SDD enriquecidos, Doc-Ops jerarquía Tier N y CLI README |
 | v1.6 | TDD (Vitest) + CI (GitHub Actions) + Refactor para Testabilidad |
 | v1.7 | Project Canvas v2 Dinámico y fixes de legacy pipeline. Tests refactorizados (18/18). |
+| v1.8.0 | Cognitive Audit: Token Diet en reglas globales, XML Roles, Action Forcing en templates. |
