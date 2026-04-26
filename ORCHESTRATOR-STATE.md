@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v1.7.0
-- **Rama activa:** `main`
-- **Última sesión:** 2026-04-22
-- **Estado:** 🟢 Completada. Release v1.7.0 oficial con Canvas v2 y fixes de legacy pipeline.
+- **Versión:** v1.7.0 (candidato v1.8.0)
+- **Rama activa:** `feature/cognitive-audit`
+- **Última sesión:** 2026-04-25
+- **Estado:** 🟡 En progreso. Auditoría de Sobrecarga Cognitiva en ejecución. Fases 1 y 2 completadas, pendiente Release.
 
 ---
 
@@ -76,7 +76,7 @@
 - [ ] **Protocolo de Optimización por Tipo de Proyecto:** Definir estándares mínimos de optimización según el tipo de proyecto (frontend, backend, CLI, API), con límites explícitos de cuándo parar y un framework de tradeoff entre rendimiento, UX, DX y funcionalidad. → Contexto completo en [`docs/funky-ai/mierdilla/midudev.md` — Pendiente 2](./docs/funky-ai/mierdilla/midudev.md)
 - [ ] **Auditoría Legacy (Backlog):** Analizar el workspace del proyecto Next.js anterior. El objetivo es barrer el desastre de reglas/skills viejas, rescatar las decisiones arquitectónicas que eran joyas, y re-documentarlas usando el formato estructurado y liviano de Funky AI.
 - [ ] **Optimización del Memory Polling:** Comprobar que el agente efectivamente investigue en el engram cuando sea necesario, y auditar si `grep_search` consume demasiados tokens en archivos largos. Evaluar nuevas estrategias de búsqueda indexada o fragmentada (ya que no contamos con SQLite/vectores como Gentle AI) para no agotar la ventana de contexto.
-- [ ] **Auditoría de Sobrecarga Cognitiva (Worker Handoff):** Revisar si las reglas globales y la documentación de orquestación (`sdd-orchestrator.md`, rules) saturan la ventana de contexto de los agentes, provocando que se salten pasos críticos (como generar el `worker-handoff.md`, revisar templates criticos, etc). Evaluar simplificación de instrucciones.
+- [x] **Auditoría de Sobrecarga Cognitiva (Worker Handoff):** Revisar si las reglas globales y la documentación de orquestación (`sdd-orchestrator.md`, rules) saturan la ventana de contexto de los agentes. ✅ Fases 1 y 2 completadas. Pendiente Release.
 
 ---
 

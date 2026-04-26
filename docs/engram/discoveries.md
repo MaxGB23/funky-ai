@@ -75,10 +75,10 @@ Aquí se registran los hallazgos técnicos y arquitectónicos que moldean el fut
 **Learned:** Cualquier archivo que una CLI distribuya necesita un script de sincronización automatizado atado al ciclo de tests (`pretest`). Si la sincronización es manual, va a fallar. La solución es el script `sync-templates.js` creado en v1.7.0.
 
 ### [DISCOVERY][agent-cognitive-load] La sobrecarga cognitiva del agente omite protocolos críticos
-**What:** El Orquestador creó el `worker-handoff.md` desde cero sin consultar la plantilla canónica del proyecto (83 líneas, estructura completa). Lo hizo a pesar de que la plantilla estaba documentada y disponible.
-**Why:** Cuando el contexto del agente está saturado con reglas globales, estado del proyecto y el problema técnico simultaneamente, las instrucciones de proceso de menor urgencia percibida se caen del foco de atención.
-**Where:** Protocolo de creación de Worker Handoffs. Reglas globales en `.agents/rules/`.
-**Learned:** (1) Las restricciones de proceso deben vivir lo más cerca posible de donde se usan (inyección Just-In-Time), no en archivos globales que se cargan siempre. (2) El humano es el guardián del proceso, no el agente. Si el agente se salta un protocolo, la solución es estructural (forzarlo con la herramienta), no conductual (esperar que lo recuerde).
+**What:** El Orquestador creaba Worker Handoffs sin consultar la plantilla canónica y los Workers saltaban pasos críticos como la Fase de Release, porque las directivas quedaban enterradas bajo texto narrativo en las reglas globales.
+**Why:** Cuando el contexto del agente está saturado con reglas globales, estado del proyecto y el problema técnico simultáneamente, las instrucciones de proceso de menor urgencia percibida se caen del foco de atención ("Lost in the Middle").
+**Where:** Protocolo de creación de Worker Handoffs. Reglas globales en `.agents/rules/`. Templates SDD en `funky-cli/src/templates/`.
+**Learned:** (1) Token Diet: las reglas globales deben ser imperativas y densas semánticamente, sin narrativa explicativa. (2) XML Tags (`<ROLE_ORCHESTRATOR>`, `<ROLE_WORKER>`) con directiva IGNORE permiten que un bloque global sea ignorado por el rol que no le corresponde. (3) Action Forcing en el Return Envelope (`MANDATORY: Tu última respuesta DEBE incluir...`) obliga a verificar la Fase de Release antes de declarar una fase completa. (4) La sintaxis pseudo-bash en los handoffs puede ser interpretada como comandos de terminal — usar directivas `ACTION: Execute tool_name on ...` exclusivamente.
 
 ### [DISCOVERY][pnpm-strict-usage] Mezclar gestores de paquetes (npm vs pnpm)
 **What:** El uso accidental de comandos de `npm` (ej. `npm run test`, `npm link`) en un repositorio inicializado y gestionado con `pnpm` (evidenciado por la existencia de `pnpm-lock.yaml`) es destructivo para la integridad del ecosistema local.
