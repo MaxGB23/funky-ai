@@ -14,15 +14,11 @@
 Antes de ejecutar **cualquier tarea**, el Worker DEBE cargar los tres pilares de contexto:
 
 ### A) Estado Global del Proyecto
-```
-view_file ORCHESTRATOR-STATE.md
-```
+`ACTION: Execute view_file on ORCHESTRATOR-STATE.md`
 
 ### B) Memoria Persistente (Memory Polling)
-```
-grep_search "[topic-key-relevante]" docs/engram/discoveries.md (IsRegex: false)
-grep_search "[topic-key-relevante]" docs/engram/bugfixes.md (IsRegex: false)
-```
+`ACTION: Execute the tool 'grep_search' on docs/engram/discoveries.md with the topic-key relevant to the current task (IsRegex: false)`
+`ACTION: Execute the tool 'grep_search' on docs/engram/bugfixes.md with the topic-key relevant to the current task (IsRegex: false)`
 
 ### C) Especificación de Tarea
 ```
@@ -79,4 +75,10 @@ Actualizá `docs/openspec/changes/{feature-name}/report.md` con:
   - `ruta/al/archivo.ext` (descripción del cambio)
 - **Bugs encontrados:** Ninguno / (schema engram si aplica)
 - **Próxima acción:** Qué debe hacer el Orquestador a continuación
+```
+
+---
+
+```
+RESPONSE_FORMAT: ONLY output the final report.md updates. NO conversational text.
 ```

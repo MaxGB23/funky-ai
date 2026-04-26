@@ -24,6 +24,8 @@
 
 ---
 
+<MANDATORY_RELEASE_PROTOCOL>
+
 ### FASE X — Release y Doc-Ops (Humano u Orquestador)
 > Objetivo: Merge de la funcionalidad, tageo de versión y actualización de deuda técnica documental.
 
@@ -36,11 +38,15 @@
 - [ ] **Git:** `git tag -a vX.Y.Z -m "release: vX.Y.Z"`
 - [ ] **Sincronización:** Actualizar `ORCHESTRATOR-STATE.md` (estado estable, versión actualizada, asegurar que no quede stale).
 
+</MANDATORY_RELEASE_PROTOCOL>
+
 ---
 
 ## 📋 Return Envelope (Para el Worker)
 
 Al finalizar cada fase, actualizar `report.md` con:
+
+> **MANDATORY:** Tu ÚLTIMA respuesta DEBE incluir un bloque con todos los ítems de `MANDATORY_RELEASE_PROTOCOL` marcados como `[x]` o `[OMITIDO: razón]`. Sin este bloque, la Fase NO se considera completa.
 
 ```markdown
 ## Fase [N] — [Nombre]
