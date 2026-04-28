@@ -77,7 +77,7 @@
 - [ ] **Auditoría Legacy (Backlog):** Analizar el workspace del proyecto Next.js anterior. El objetivo es barrer el desastre de reglas/skills viejas, rescatar las decisiones arquitectónicas que eran joyas, y re-documentarlas usando el formato estructurado y liviano de Funky AI.
 - [ ] **Optimización del Memory Polling:** Comprobar que el agente efectivamente investigue en el engram cuando sea necesario, y auditar si `grep_search` consume demasiados tokens en archivos largos. Evaluar nuevas estrategias de búsqueda indexada o fragmentada (ya que no contamos con SQLite/vectores como Gentle AI) para no agotar la ventana de contexto.
 - [x] **Auditoría de Sobrecarga Cognitiva (Worker Handoff):** Revisar si las reglas globales y la documentación de orquestación (`sdd-orchestrator.md`, rules) saturan la ventana de contexto de los agentes. ✅ Completada (v1.8.0).
-- [ ] **Agent DRY Pattern (Backlog v1.9.0):** Refactorizar el protocolo de `worker-handoff.md` a un formato de "puntero estricto" hacia `tasks.md` para evitar el síndrome del teléfono descompuesto y reducir la dependencia en la ventana de contexto del Orquestador.
+- [ ] **Agent DRY Pattern (Backlog v1.9.0):** Refactorizar el protocolo de Handoffs para evitar el síndrome del teléfono descompuesto en los LLMs. → Contexto completo en [`docs/openspec/backlog/agent-dry-handoffs.md`](./docs/openspec/backlog/agent-dry-handoffs.md)
 
 ---
 
