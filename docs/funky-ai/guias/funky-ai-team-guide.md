@@ -24,14 +24,14 @@ Consultar pilares y definiciones en [funky-ai.md](./funky-ai.md).
 
 ### 2. Delegación (Worker)
 1. Abrir **NUEVO CHAT** vacío.
-2. Inyectar tarea: `@tasks.md` + *"Ejecutá Paso X y generá reporte"*.
+2. Inyectar tarea: `@sdd-tasks.md` + *"Ejecutá Paso X y generá reporte"*.
 3. El Worker realiza el Memory Polling autónomo (vía .agents/rules/engram-protocol.md).
 4. Generar reporte físico ("Return Envelope"): status, executive_summary, artifacts, next_recommended, risks.
 
 ### 3. Sincronización (Cierre)
 1. **Borrar Chat Worker** inmediatamente.
 2. Volver al **Chat Orquestador**.
-3. Cargar reporte: `@report.md` + *"Paso completado. Actualizá estado"*.
+3. Cargar reporte: `@sdd-report.md` + *"Paso completado. Actualizá estado"*.
 
 ---
 
