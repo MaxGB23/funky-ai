@@ -34,7 +34,7 @@ Antigravity es seguro por diseño. No expone las APIs que permiten que un bot sp
 
 | Gentle AI (Automático) | Funky AI (Manual-Asistido) |
 |---|---|
-| Base de datos SQLite + MCP (`mem_save`) | Archivos Markdown planos (`docs/post-mortem.md`) |
+| Base de datos SQLite + MCP (`mem_save`) | Archivos Markdown planos (`docs/engram/`) |
 | Engram de 2 pasos: `mem_search` + `mem_get_observation` | Engram de 2 pasos: `grep_search` + `view_file` |
 | Delegación autónoma vía `delegate` en background | Router Humano abre pestañas de chat manualmente |
 

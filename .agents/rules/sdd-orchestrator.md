@@ -26,9 +26,9 @@ Tu memoria es el disco. Tu router es el Humano.
 
 | Comando | Acción |
 |---------|--------|
-| `/sdd-explore` | Crear `openspec/changes/{name}/explore.md` |
-| `/sdd-propose` | Crear `proposal.md` + `spec.md` en el mismo folder |
-| `/sdd-ff` | Crear `tasks.md` con fases ejecutables |
+| `/sdd-explore` | Crear `openspec/changes/{name}/sdd-explore.md` |
+| `/sdd-propose` | Crear `sdd-proposal.md` + `sdd-spec.md` en el mismo folder |
+| `/sdd-ff` | Crear `sdd-tasks.md` con fases ejecutables |
 
 ## ⚠️ Protocolo Obligatorio — Generación de Worker Handoffs
 Antes de escribir CUALQUIER `worker-handoff.md`, el Orquestador DEBE:
@@ -45,7 +45,7 @@ Al recibir el reporte de cada Fase, ANTES de delegar la siguiente:
 1. `ACTION: Execute view_file on report-faseN.md`
 2. Leer el campo `🔴 Cambio de Scope Detectado`.
    - Si es **No** → delegar la siguiente fase directamente.
-   - Si es **Sí** → PARAR. Revisar `tasks.md` y los handoffs afectados. Actualizar antes de continuar.
+   - Si es **Sí** → PARAR. Revisar `sdd-tasks.md` y los handoffs afectados. Actualizar antes de continuar.
 
 ## Escalation Matrix
 
@@ -63,7 +63,7 @@ Escribir en `docs/engram/` INMEDIATAMENTE si:
 ## Session Close (OBLIGATORIO)
 Antes de cerrar sesión:
 1. Extraer hallazgos al engram (`docs/engram/discoveries.md` / `docs/engram/bugfixes.md`).
-2. Actualizar `ORCHESTRATOR-STATE.md` con: estado actual, rama, versión, próximos pasos.
+2. Update `ORCHESTRATOR-STATE.md` con: estado actual, rama, versión, próximos pasos.
 
 > **REGLA DE ORO:** Orquestador sin `ORCHESTRATOR-STATE.md` actualizado = siguiente sesión ciega.
 
@@ -84,7 +84,7 @@ Antes de cualquier tarea, cargar los tres pilares:
 1. `ACTION: Execute view_file on ORCHESTRATOR-STATE.md`
 2. `ACTION: Execute grep_search on docs/engram/discoveries.md`
 3. `ACTION: Execute grep_search on docs/engram/bugfixes.md`
-4. `ACTION: Execute view_file on el archivo tasks.md referenciado`
+4. `ACTION: Execute view_file on el archivo sdd-tasks.md referenciado`
 
 ## Reglas de Ejecución
 
@@ -93,7 +93,7 @@ Antes de cualquier tarea, cargar los tres pilares:
 | 🔴 Cero Exploración | No uses tools sobre archivos no indicados en el handoff |
 | 🔴 Foco Láser | Scope delimitado en el handoff. Bugs fuera de scope → solo documentar |
 | 🔴 Acción Directa | Cada archivo se escribe con tools. Sin redactar en chat. |
-| 🟡 Bugs Encontrados | Registrar en `report.md` bajo `## Bugs Encontrados` (schema engram) |
+| 🟡 Bugs Encontrados | Registrar en `sdd-report.md` bajo `## Bugs Encontrados` (schema engram) |
 | 🟢 Idempotencia | Verificar si destino existe antes de sobreescribir. Documentar si se saltea. |
 
 ## Return Envelope (OBLIGATORIO al terminar)

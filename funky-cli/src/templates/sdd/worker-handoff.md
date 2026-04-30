@@ -1,7 +1,7 @@
 # 🤖 Funky AI — Worker Handoff: Fase [N] ([Nombre de la Fase])
 
 > **Instrucción para el LLM:** Sos un Worker **Tier [⚠️ COMPLETAR: T1 / T2 / T3]** de ejecución de Funky AI.
-> Tu única misión es leer este documento, ejecutar las tareas exactas detalladas abajo escribiendo al disco mediante tus tools, y luego actualizar el `report.md` final.
+> Tu única misión es leer este documento, ejecutar las tareas exactas detalladas abajo escribiendo al disco mediante tus tools, y luego actualizar el `sdd-report.md` final.
 > **NO redactes código ni explicaciones largas en el chat. Acción directa al disco.**
 
 > **[HUMANO]** Para ejecutar este worker, abrí un chat nuevo y pegá:
@@ -26,7 +26,7 @@ grep_search "[topic-key-relevante]" docs/engram/bugfixes.md (IsRegex: false)
 
 ### C) Especificación de Tarea
 ```
-view_file docs/openspec/changes/{feature-name}/tasks.md
+view_file docs/openspec/changes/{feature-name}/sdd-tasks.md
 view_file [archivo principal que vas a modificar]
 ```
 
@@ -49,7 +49,7 @@ view_file [archivo principal que vas a modificar]
 | 🔴 Cero Exploración | No uses `list_dir` ni `view_file` sobre archivos no indicados en §1 |
 | 🔴 Foco Láser | Tu scope está delimitado en §2. Si algo fuera de scope está roto, documentalo en el report, no lo arregles |
 | 🔴 Acción Directa | Cada archivo se escribe con tools de escritura directa. |
-| 🟡 Bugs Encontrados | Si encontrás un bug no relacionado con tu tarea → registralo en `report.md` bajo `## Bugs Encontrados` con schema engram (`What / Why / Where / Learned`) |
+| 🟡 Bugs Encontrados | Si encontrás un bug no relacionado con tu tarea → registralo en `sdd-report.md` bajo `## Bugs Encontrados` con schema engram (`What / Why / Where / Learned`) |
 | 🟢 Idempotencia | Verificá si el destino ya existe antes de sobreescribir. Documentá si salteás algo |
 
 ### 🔍 Jerarquía de Conocimiento (Doc-Ops)
@@ -62,7 +62,7 @@ view_file [archivo principal que vas a modificar]
 ## 4. Criterios de Éxito
 
 - [ ] Todos los archivos listados en §2 fueron creados/modificados en disco.
-- [ ] El `report.md` fue actualizado con la sección de esta Fase.
+- [ ] El `sdd-report.md` fue actualizado con la sección de esta Fase.
 - [ ] Ningún archivo fuera de scope fue modificado.
 - [ ] Si se encontraron bugs no relacionados, están documentados con schema engram.
 
@@ -70,7 +70,7 @@ view_file [archivo principal que vas a modificar]
 
 ## 5. Return Envelope (Al terminar)
 
-Actualizá `docs/openspec/changes/{feature-name}/report.md` con:
+Actualizá `docs/openspec/changes/{feature-name}/sdd-report.md` con:
 
 ```markdown
 ## Fase [N] — [Nombre de la Fase]
@@ -82,4 +82,4 @@ Actualizá `docs/openspec/changes/{feature-name}/report.md` con:
 - **Próxima acción:** Qué debe hacer el Orquestador a continuación
 ```
 
-> **[SISTEMA]** Si `🔴 Cambio de Scope Detectado` es **Sí**, el Orquestador DEBE revisar y actualizar `tasks.md` y los handoffs de fases siguientes ANTES de continuar la delegación.
+> **[SISTEMA]** Si `🔴 Cambio de Scope Detectado` es **Sí**, el Orquestador DEBE revisar y actualizar `sdd-tasks.md` y los handoffs de fases siguientes ANTES de continuar la delegación.

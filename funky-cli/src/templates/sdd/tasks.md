@@ -2,7 +2,7 @@
 
 **Estado:** 🟡 PENDIENTE
 **Rama:** `feature/nombre-del-branch`
-**Ref:** `proposal.md`
+**Ref:** `sdd-proposal.md`
 
 ---
 
@@ -45,7 +45,7 @@
 
 ## 📋 Return Envelope (Para el Worker)
 
-Al finalizar cada fase, actualizar `report.md` con:
+Al finalizar cada fase, actualizar `sdd-report.md` con:
 
 > **MANDATORY:** Tu ÚLTIMA respuesta DEBE incluir un bloque con todos los ítems de `MANDATORY_RELEASE_PROTOCOL` marcados como `[x]` o `[OMITIDO: razón]`. Sin este bloque, la Fase NO se considera completa.
 

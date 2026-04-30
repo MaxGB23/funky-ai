@@ -19,8 +19,8 @@ Consultar pilares y definiciones en [funky-ai.md](./funky-ai.md).
 ### 1. Planificación (Orquestador)
 1. Abrir chat "Orquestador".
 2. Cargar contexto: `@ORCHESTRATOR-STATE.md`.
-3. Ejecutar comandos SDD (ej. `/sdd-explore`, `/sdd-propose`).
-4. Generar archivos físicos: `explore.md`, `proposal.md`, `tasks.md`.
+3. Usar el CLI `funky phase [phase]` + Chat (`/sdd-[phase]`).
+4. Generar archivos físicos: `sdd-explore.md`, `sdd-proposal.md`, `sdd-tasks.md`.
 
 ### 2. Delegación (Worker)
 1. Abrir **NUEVO CHAT** vacío.

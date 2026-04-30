@@ -22,4 +22,4 @@
 ## 4. Riesgos
 - [Riesgo identificado y estrategia de mitigación]
 
-> **[SISTEMA - PARA EL ORQUESTADOR]** Si la propuesta es aprobada, procedé a generar el `tasks.md` dividiendo el trabajo en fases accionables.
+> **[SISTEMA - PARA EL ORQUESTADOR]** Si la propuesta es aprobada, procedé a generar el `sdd-tasks.md` dividiendo el trabajo en fases accionables.

@@ -19,6 +19,7 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 | [`docs/funky-ai/core-concepts/filosofia.md`](./docs/funky-ai/core-concepts/filosofia.md) | Cómo funciona Gentle AI por dentro y cómo lo adaptamos |
 | [`docs/funky-ai/core-concepts/rules-vs-skills.md`](./docs/funky-ai/core-concepts/rules-vs-skills.md) | Cuándo una lógica va en Rule vs en Skill |
 | [`docs/funky-ai/core-concepts/testing-landscape.md`](./docs/funky-ai/core-concepts/testing-landscape.md) | Landscape de testing: Vitest, TDD y CI en el ecosistema Funky AI |
+| [`docs/funky-ai/core-concepts/enforcement-vs-documentation.md`](./docs/funky-ai/core-concepts/enforcement-vs-documentation.md) | Por qué documentar no es suficiente sin forzar reglas |
 
 ---
 
@@ -27,10 +28,10 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 
 | Archivo | Propósito |
 |---|---|
-| [`docs/funky-ai/funky-ai.md`](./docs/funky-ai/funky-ai.md) | Protocolo completo: Pilares, Tiers, Engram y Return Envelopes |
-| [`docs/funky-ai/funky-ai-team-guide.md`](./docs/funky-ai/funky-ai-team-guide.md) | Paso a paso del Router Humano: cómo crear Workers, cuándo matarlos |
-| [`docs/funky-ai/funky-ai-tutorial-app.md`](./docs/funky-ai/funky-ai-tutorial-app.md) | Simulación End-to-End de un proyecto real |
-| [`docs/funky-ai/guia-flujo-completo.md`](./docs/funky-ai/guia-flujo-completo.md) | Guía End-to-End de inicio y SDD con el CLI |
+| [`docs/funky-ai/guias/funky-ai.md`](./docs/funky-ai/guias/funky-ai.md) | Protocolo completo: Pilares, Tiers, Engram y Return Envelopes |
+| [`docs/funky-ai/guias/funky-ai-team-guide.md`](./docs/funky-ai/guias/funky-ai-team-guide.md) | Paso a paso del Router Humano: cómo crear Workers, cuándo matarlos |
+| [`docs/funky-ai/workflows/guia-flujo-completo.md`](./docs/funky-ai/workflows/guia-flujo-completo.md) | Guía End-to-End de inicio y SDD con el CLI |
+| [`docs/funky-ai/workflows/funky-init-flow.md`](./docs/funky-ai/workflows/funky-init-flow.md) | Flujo detallado de la inicialización y el ecosistema |
 
 ---
 
@@ -42,6 +43,7 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 | [`docs/prompts/GEMINI-funky-global.md`](./docs/prompts/GEMINI-funky-global.md) | Perfil Global: Personalidad, Auto-Descubrimiento de Skills, Protocolo MCP |
 | [`.agents/rules/engram-protocol.md`](./.agents/rules/engram-protocol.md) | Rule Topológica: Dispara el polling de memoria en carpeta `docs/` |
 | [`.agents/rules/secops.md`](./.agents/rules/secops.md) | Rule de Seguridad: Obliga uso de `pnpm`, auditoría de `package.json` |
+| [`.agents/rules/sdd-orchestrator.md`](./.agents/rules/sdd-orchestrator.md) | Rule del Orquestador: Aplicar para planificación de proyectos |
 
 ---
 
@@ -56,13 +58,11 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 
 ---
 
-## 📦 5. Roadmap y Propuestas
-*Estado del proyecto y planificación de versiones futuras.*
+## 📦 5. Roadmap y Releases
+*Estado del proyecto y planificación de versiones.*
 
 | Archivo | Propósito |
 |---|---|
-| [`docs/BACKLOG.md`](./docs/BACKLOG.md) | ⭐ Backlog Maestro: TODO pendiente, en progreso y completado |
-| [`docs/funky-ai/propuestas/propuesta-v1.2-cli-ecosystem.md`](./docs/funky-ai/propuestas/propuesta-v1.2-cli-ecosystem.md) | Diseño de la v1.2: `funky-cli`, Slash Commands, Doc-Ops |
 | [`docs/funky-ai/releases/v1.1.0-release.md`](./docs/funky-ai/releases/v1.1.0-release.md) | Release Notes oficiales de la v1.1.0 |
 | [`docs/funky-ai/releases/v1.2.0-release.md`](./docs/funky-ai/releases/v1.2.0-release.md) | Release Notes oficiales de la v1.2.0 |
 | [`docs/funky-ai/releases/v1.3.0-release.md`](./docs/funky-ai/releases/v1.3.0-release.md) | Release Notes oficiales de la v1.3.0 |
@@ -70,6 +70,7 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 | [`docs/funky-ai/releases/v1.5.0-release.md`](./docs/funky-ai/releases/v1.5.0-release.md) | Release Notes oficiales de la v1.5.0 |
 | [`docs/funky-ai/releases/v1.6.0-release.md`](./docs/funky-ai/releases/v1.6.0-release.md) | Release Notes oficiales de la v1.6.0 (TDD + CI) |
 | [`docs/funky-ai/releases/v1.7.0-release.md`](./docs/funky-ai/releases/v1.7.0-release.md) | Release Notes oficiales de la v1.7.0 (Project Canvas) |
+| [`docs/funky-ai/releases/v1.8.0-release.md`](./docs/funky-ai/releases/v1.8.0-release.md) | Release Notes oficiales de la v1.8.0 (Token Diet & Action Forcing) |
 
 ---
 
@@ -87,14 +88,16 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 
 | Archivo | Propósito |
 |---|---|
-| [`docs/funky-ai/refactor/auditoria-claude-md.md`](./docs/funky-ai/refactor/auditoria-claude-md.md) | Estrategias portables extraídas de Gentle AI CLAUDE.md |
+| [`docs/funky-ai/auditoria-gentle-ai/auditoria-claude-md.md`](./docs/funky-ai/auditoria-gentle-ai/auditoria-claude-md.md) | Estrategias portables extraídas de Gentle AI CLAUDE.md |
 | [`docs/gentle-ai/`](./docs/gentle-ai/) | Documentación original de Gentle AI (solo referencia) |
 
 ---
 
-## 🗺️ 8. Journey (Diario de Madurez)
+## 🗺️ 8. Journey y Lecciones (Diario de Madurez)
 *Registro de decisiones arquitectónicas y evolución del pensamiento.*
 
 | Archivo | Contenido |
 |---|---|
 | [`docs/funky-ai/journey/01-orchestrator-vs-worker-boundary.md`](./docs/funky-ai/journey/01-orchestrator-vs-worker-boundary.md) | Cuándo el Orquestador puede escribir y cuándo debe delegar |
+| [`docs/funky-ai/journey/journey.md`](./docs/funky-ai/journey/journey.md) | Bitácora principal del viaje de construcción |
+| [`docs/funky-ai/retrospectivas-lecciones/v1.7.0-smoke-test.md`](./docs/funky-ai/retrospectivas-lecciones/v1.7.0-smoke-test.md) | Retrospectiva y smoke test de la versión 1.7.0 |

@@ -21,4 +21,4 @@
 - [Riesgo 1]: [Cómo mitigarlo]
 - [Riesgo 2]: [Cómo mitigarlo]
 
-> **[SISTEMA - PARA EL ORQUESTADOR]** Una vez finalizada la exploración, utilizá este documento como base para generar el `proposal.md`.
+> **[SISTEMA - PARA EL ORQUESTADOR]** Una vez finalizada la exploración, utilizá este documento como base para generar el `sdd-proposal.md`.

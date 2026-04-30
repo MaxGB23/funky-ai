@@ -20,7 +20,7 @@ La respuesta es: **Con un sistema de archivos Markdown y un Humano como Router.*
 | **El Router Humano** | Dirige la orquestación. Abre chats, copia Envelopes, toma decisiones críticas | El Gerente de Proyecto |
 | **El Orquestador (Tier 1)** | Planifica, diseña, genera especificaciones en disco. NUNCA pica código | El Arquitecto de la Obra |
 | **El Worker (Tier 2/3)** | Ejecuta instrucciones cerradas. NUNCA improvisa | El Albañil |
-| **El Falso Engram** | `docs/post-mortem.md` + skills. Memoria estructurada del proyecto en disco | La Base de Datos |
+| **El Falso Engram** | `docs/engram/` + skills. Memoria estructurada del proyecto en disco | La Base de Datos |
 
 ---
 
@@ -35,7 +35,7 @@ El chat del Orquestador solo puede crear archivos de arquitectura (`.md` de prop
 Está terminantemente prohibido que un Worker "devuelva su respuesta en el chat". Todo reporte de tarea terminada debe ser un archivo `.md` físico creado en disco con el formato estricto: `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`. El chat del Worker es descartable; el archivo en disco es el contrato.
 
 ### ❌ Regla 3: El Engram se Consulta ANTES de Modificar, No Después
-Antes de cualquier modificación estructural de código, el Worker está obligado a usar `grep_search` sobre `docs/post-mortem.md`. Nunca al revés. Documentar la lección aprendida después de haberla descubierto es la segunda obligación. Saltarse la consulta inicial es condenar al equipo a repetir errores ya resueltos.
+Antes de cualquier modificación estructural de código, el Worker está obligado a usar `grep_search` sobre los archivos en `docs/engram/`. Nunca al revés. Documentar la lección aprendida después de haberla descubierto es la segunda obligación. Saltarse la consulta inicial es condenar al equipo a repetir errores ya resueltos.
 
 ### ❌ Regla 4: El Contexto se Protege con Lectura en 2 Pasos
 Está prohibido hacer `view_file` sobre archivos desconocidos o masivos sin antes usar `grep_search` para confirmar la relevancia del contenido. La ventana de contexto de un LLM es el recurso más caro del sistema. Un `view_file` ciego sobre un archivo de 500 líneas puede destruir el 40% de la memoria de trabajo disponible.

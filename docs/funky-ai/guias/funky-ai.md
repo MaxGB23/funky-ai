@@ -14,9 +14,9 @@ Memoria estructurada tipo MCP en archivos canónicos. Reglas de acceso estrictas
 | Archivo | Equivalente | Propósito |
 |---|---|---|
 | `docs/ORCHESTRATOR-STATE.md` | `mem_search()` | Estado actual, tareas pendientes, archivos clave. |
-| `docs/post-mortem.md` | `mem_get_obs()` | Historial de bugs y decisiones arquitectónicas. |
+| `docs/engram/` (`discoveries`, `bugfixes`) | `mem_get_obs()` | Historial de bugs y decisiones arquitectónicas. |
 
-- **Escritura (Doctrina MCP):** Todo registro en `post-mortem.md` requiere campos: `What`, `Why`, `Where`, `Learned`.
+- **Escritura (Doctrina MCP):** Todo registro en `docs/engram/` requiere campos: `What`, `Why`, `Where`, `Learned`.
 - **Lectura (Safe-Contexting):** Prohibido leer archivos masivos. Usar `grep_search` masivo + `view_file` quirúrgico.
 
 ### 2. Sub-Agentes Descartables (Manipulación de Chats)
@@ -38,10 +38,10 @@ Hilo persistente de planificación y seguimiento.
 
 | Fase | Acción | Modelo | Resultado |
 | :--- | :--- | :--- | :--- |
-| **Explore** | Auditoría de contexto y análisis de código. | Gemini Flash | `explore.md` |
-| **Propose** | Diseño técnico y definición arquitectónica. | Gemini Pro | `proposal.md` |
-| **Tasks** | Desglose en unidades de implementación. | Gemini Flash | `tasks.md` |
-| **Report** | Ejecución de cambios y cierre de ciclo. | Gemini Flash/Pro | `report.md` |
+| **Explore** | Auditoría de contexto y análisis de código. | Gemini Flash | `sdd-explore.md` |
+| **Propose** | Diseño técnico y definición arquitectónica. | Gemini Pro | `sdd-proposal.md` |
+| **Tasks** | Desglose en unidades de implementación. | Gemini Flash | `sdd-tasks.md` |
+| **Report** | Ejecución de cambios y cierre de ciclo. | Gemini Flash/Pro | `sdd-report.md` |
 
 ---
 
@@ -51,7 +51,7 @@ Hilo persistente de planificación y seguimiento.
 | :--- | :--- | :--- |
 | **T0: Chat** | Consultas, entendimiento rápido. | Sin artefactos físicos. Chat efímero. |
 | **T1: Lite** | Refactors menores, scripts. | Planificación comprimida en un solo prompt/chat. |
-| **T2: Std** | Módulos nuevos, extensiones. | 1. `design-propose.md` | 2. `tasks.md`. |
+| **T2: Std** | Módulos nuevos, extensiones. | 1. `sdd-proposal.md` \| 2. `sdd-tasks.md`. |
 | **T3: Heavy** | Greenfield, Core refactor. | 1 phase = 1 file = 1 new chat (Aislamiento total). |
 
 ---
