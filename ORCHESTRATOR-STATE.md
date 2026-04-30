@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v1.8.1
+- **Versión:** v1.9.0
 - **Rama activa:** `main`
 - **Última sesión:** 2026-04-30
-- **Estado:** 🟢 Auditoría de incongruencias completada con éxito. Guardrails estructurales implementados.
+- **Estado:** 🟢 Agent DRY Pattern implementado. Handoffs ahora son punteros estrictos a sdd-tasks.md.
 
 ---
 
@@ -77,7 +77,7 @@
 - [ ] **Auditoría Legacy (Backlog):** Analizar el workspace del proyecto Next.js anterior. El objetivo es barrer el desastre de reglas/skills viejas, rescatar las decisiones arquitectónicas que eran joyas, y re-documentarlas usando el formato estructurado y liviano de Funky AI.
 - [ ] **Optimización del Memory Polling:** Comprobar que el agente efectivamente investigue en el engram cuando sea necesario, y auditar si `grep_search` consume demasiados tokens en archivos largos. Evaluar nuevas estrategias de búsqueda indexada o fragmentada (ya que no contamos con SQLite/vectores como Gentle AI) para no agotar la ventana de contexto.
 - [x] **Auditoría de Sobrecarga Cognitiva (Worker Handoff):** Revisar si las reglas globales y la documentación de orquestación (`sdd-orchestrator.md`, rules) saturan la ventana de contexto de los agentes. ✅ Completada (v1.8.0).
-- [ ] **Agent DRY Pattern (Backlog v1.9.0):** Refactorizar el protocolo de Handoffs para evitar el síndrome del teléfono descompuesto en los LLMs. → Contexto completo en [`docs/openspec/backlog/agent-dry-handoffs.md`](./docs/openspec/backlog/agent-dry-handoffs.md)
+- [x] **Agent DRY Pattern (Backlog v1.9.0):** Refactorizar el protocolo de Handoffs para evitar el síndrome del teléfono descompuesto en los LLMs. → Contexto completo en [`docs/openspec/backlog/agent-dry-handoffs.md`](./docs/openspec/backlog/agent-dry-handoffs.md)
 - [x] **Auditoría de Incongruencias Documentales:** Realizar un análisis robusto para detectar cualquier archivo legacy (ej. `sdd-proposal.md`), referencias a archivos deprecados (como `post-mortem.md`) e inconsistencias lógicas o choques entre las reglas/docs actuales y las versiones obsoletas del proyecto.
 - [x] **Actualización Estructural del README:** Actualizar el README principal para reflejar la nueva estructura de directorios resultante tras las auditorías y la limpieza de archivos huérfanos.
 
@@ -102,3 +102,4 @@ Ninguno.
 | v1.7 | Project Canvas v2 Dinámico y fixes de legacy pipeline. Tests refactorizados (18/18). |
 | v1.8.0 | Cognitive Audit: Token Diet en reglas globales, XML Roles, Action Forcing en templates. |
 | v1.8.1 | Auditoría de Documentación: Guardrails estructurales (Tier enforcement, Checkpoints) y limpieza de links legacy. |
+| v1.9.0 | Agent DRY Pattern: Handoffs refactorizados como punteros estrictos (Lost in the Middle evitado). |
