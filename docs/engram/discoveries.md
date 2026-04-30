@@ -91,3 +91,9 @@ Aquí se registran los hallazgos técnicos y arquitectónicos que moldean el fut
 **Why:** Cuando un Orquestador LLM debe transcribir acciones detalladas de un archivo maestro a un handoff, corre el riesgo de omitir pasos por saturación de ventana de contexto o fallos de memoria (Lost in the Middle). Esto se evidenció al omitir el paso del README en v1.8.0.
 **Where:** `worker-handoff.md` pattern y `tasks.md`.
 **Learned:** Patrón "Agent DRY" (Don't Repeat Yourself). El Handoff no debe duplicar instrucciones; debe decir: "Leé la Fase X en `tasks.md` y ejecutá exactamente lo que dice ahí". La fuente de la verdad debe ser única para evitar el teléfono descompuesto.
+
+### [DISCOVERY][skills-obsolescence-vs-templates] Las Skills de Plantillas son redundantes con el CLI
+**What:** Skills que dictan estructuras de archivos (ej. `sdd-proposal.md`) quedan obsoletas e introducen deuda técnica si el framework ya inyecta templates canónicos (ej. vía `funky phase`).
+**Why:** Mantener la estructura de un archivo definida en una Skill obliga a la IA a memorizarla y transcribirla. Un CLI inyecta el template base instantáneamente y sin costo de tokens, haciendo a la skill inútil.
+**Where:** Directorio `.agents/skills/`.
+**Learned:** Nunca crear una Skill para definir la estructura de un documento si podés usar un scaffolding automático o template estático en el disco. Las skills deben reservarse para lógica dinámica o workflows complejos.

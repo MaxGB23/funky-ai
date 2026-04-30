@@ -1,17 +1,17 @@
 # Auditoría de Archivos y Carpetas Huérfanos
 
 ## Carpetas Sospechosas / En Desuso (Raíz)
-- `M:\funky-ai\legacy\` (Identificado en Phase 1 como carpeta obsoleta)
-- `M:\funky-ai\testeo-de-features\` (Identificado en Phase 1 como carpeta obsoleta)
+- `M:\funky-ai\legacy\` (Identificado en Phase 1 como carpeta obsoleta) -> **MOVIDO**
+- `M:\funky-ai\testeo-de-features\` (Identificado en Phase 1 como carpeta obsoleta) -> **MOVIDO**
 - `M:\funky-ai\openspec\` (Parece ser una estructura SDD duplicada fuera de `docs/`)
-- `M:\funky-ai\color-highlight-v2\` (Posible feature huérfana en la raíz)
+- `M:\funky-ai\color-highlight-v2\` (Posible feature huérfana en la raíz) -> **MOVIDO**
 
 ## Archivos Artifacts Flotantes o Mal Ubicados
 Los siguientes archivos SDD (report, explore, spec, tasks, worker-handoff) fueron encontrados fuera del directorio correcto `docs\openspec\changes\`:
 
 **Posibles Basuras / Archivos a Eliminar:**
-- `M:\funky-ai\testeo-de-features\v1.7\headless\report.md`
-- `M:\funky-ai\docs\funky-ai\v1.1.0\report.md`
+- `M:\funky-ai\testeo-de-features\v1.7\headless\report.md` -> **MOVIDO**
+- `M:\funky-ai\docs\funky-ai\v1.1.0\report.md` -> **MOVIDO**
 
 **Artefactos SDD ubicados en `M:\funky-ai\openspec\` (Deberían estar en `docs\openspec\`):**
 - `M:\funky-ai\openspec\changes\v1-7-critical-audit\explore.md`
