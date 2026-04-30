@@ -32,9 +32,8 @@ view_file [archivo principal que vas a modificar]
 
 **Objetivo:** [Describir en una oración qué debe producir este Worker al final.]
 
-**Acciones exactas:**
-1. [Acción 1 con archivo destino explícito]
-2. [Acción 2]
+**Directiva Agent DRY:**
+Leé tus tareas a ejecutar directamente desde la Fase actual en `sdd-tasks.md` (cargado en §1.C).
 
 ---
 
