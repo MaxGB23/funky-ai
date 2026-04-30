@@ -103,3 +103,9 @@ Aquí se registran los hallazgos técnicos y arquitectónicos que moldean el fut
 **Why:** Aplicamos lógica de "parche textual": si algo se olvida, lo documentamos. Pero cada fix de texto hace el sistema más largo, lo que aumenta la probabilidad de ser ignorado por el efecto "Lost in the Middle" en la ventana de contexto. Es un loop vicioso: más documentación → más saturación → más errores → más documentación.
 **Where:** Protocolo de orquestación de Funky AI completo. Afecta especialmente las rules (`.agents/rules/`), templates SDD y el flujo de generación de worker handoffs.
 **Learned:** (1) Distinguir siempre entre documentación y enforcement — documentar no garantiza ejecución. (2) El fix correcto hace el error estructuralmente imposible, no documentalmente desaconsejado. (3) Evaluar cada fix desde los tres actores: Human Router, Orquestador LLM y Worker LLM. (4) Testear el protocolo como si fuera código: ¿un Orquestador en chat virgen genera un handoff correcto sin haber leído las guías? Si no podés responder eso, el protocolo no está validado. Ver documento completo: `docs/funky-ai/core-concepts/enforcement-vs-documentation.md`.
+
+### [DISCOVERY][versioning-policy] Política de Versionado: Mayor/Menor vs Patches
+**What:** En versiones mayores y menores (ej. `v1.8.0`, `v1.9.0`), se debe crear un archivo de release notes oficial (`docs/funky-ai/releases/vX.Y.Z-release.md`). Para parches y fixes (ej. `v1.8.1`), NO se crean release notes separados.
+**Why:** Crear archivos de release notes para patches menores genera ruido documental y fragmenta la lectura del proyecto.
+**Where:** Protocolo de Cierre de Sesión y Tareas de Release.
+**Learned:** Para fixes y patches, el registro debe vivir exclusivamente en tres lugares: (1) Extracción de aprendizaje al Engram (`discoveries.md` / `bugfixes.md`), (2) Bump de versión y registro en `ORCHESTRATOR-STATE.md`, y (3) Commits convencionales en Git.
