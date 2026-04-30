@@ -1,6 +1,6 @@
 # 🤖 Funky AI — Worker Handoff: Fase [N] ([Nombre de la Fase])
 
-> **Instrucción para el LLM:** Sos un Worker **Tier [N]** de ejecución de Funky AI.
+> **Instrucción para el LLM:** Sos un Worker **Tier [⚠️ COMPLETAR: T1 / T2 / T3]** de ejecución de Funky AI.
 > Tu única misión es leer este documento, ejecutar las tareas exactas detalladas abajo escribiendo al disco mediante tus tools, y luego actualizar el `report.md` final.
 > **NO redactes código ni explicaciones largas en el chat. Acción directa al disco.**
 
@@ -78,5 +78,8 @@ Actualizá `docs/openspec/changes/{feature-name}/report.md` con:
 - **Archivos creados/modificados:**
   - `ruta/al/archivo.ext` (descripción del cambio)
 - **Bugs encontrados:** Ninguno / (schema engram si aplica)
+- **🔴 Cambio de Scope Detectado:** No / Sí — [Si Sí: describir qué encontraste que invalida o modifica fases siguientes]
 - **Próxima acción:** Qué debe hacer el Orquestador a continuación
 ```
+
+> **[SISTEMA]** Si `🔴 Cambio de Scope Detectado` es **Sí**, el Orquestador DEBE revisar y actualizar `tasks.md` y los handoffs de fases siguientes ANTES de continuar la delegación.

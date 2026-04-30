@@ -1,17 +1,19 @@
-# 👷‍♂️ Misión del Worker: Fase 1 (Auditoría de Incongruencias)
+# 🕵️‍♂️ Misión del Worker — Tier T2 — Fase 1 (Auditoría de Prompts y Rules)
 
-**Contexto:** El proyecto Funky AI ha migrado su sistema de memoria (Engram) para que use `docs/engram/discoveries.md` y `bugfixes.md`, en lugar del viejo `docs/post-mortem.md`. Algunas de nuestras plantillas y configuraciones aún apuntan a la ruta legacy.
+> **Instrucción para el LLM:** Sos un Worker **Tier T2** de ejecución de Funky AI. Acción directa al disco. NO redactes explicaciones largas en el chat.
+
+**Contexto:** El ecosistema de Funky AI evolucionó. Ya no usamos `docs/post-mortem.md` (ahora usamos un Engram sharded en `docs/engram/discoveries.md` y `bugfixes.md`) y muchas lógicas estructurales pasaron a ser manejadas por el CLI `funky-cli` en lugar de Skills sueltas. Necesitamos que audites los cimientos del protocolo sin saturar el contexto del Orquestador.
 
 **Instrucción:**
-Debes ejecutar la Fase 1 definida en `docs/openspec/changes/v1.8-doc-audit/tasks.md`.
+Sos un agente investigativo. Debes ejecutar la **Fase 1** definida en `docs/openspec/changes/v1.8-doc-audit/tasks.md`.
 
-## 📌 Tareas a Ejecutar
-1. Busca en `docs/prompts/gemini-funky-backup.md` y `docs/prompts/GEMINI-funky-global.md` (si existe) referencias a `post-mortem.md`. Reemplazalas por `docs/engram/discoveries.md` o `docs/engram/bugfixes.md` o `docs/engram/` según corresponda.
-2. Actualiza `funky-cli/src/templates/bootstrap/agents-rules-sdd-orchestrator.md`. Actualiza el "Manual Engram Protocol" para que apunte a `discoveries.md` y `bugfixes.md`.
-3. Elimina físicamente `.agents/skills/sdd-proposal.md`.
-4. Al finalizar, crea (o actualiza) `docs/openspec/changes/v1.8-doc-audit/report.md` con un resumen estructurado (estado, archivos modificados, bugs encontrados si los hubiera).
+## 📌 Protocolo de Ejecución
+1. **Investiga el Scope:** Usa `list_dir` y `grep_search` en los directorios `.agents/rules/`, `.agents/skills/` y `docs/prompts/`.
+2. **Analiza:** Lee los archivos vitales. Buscá referencias a `post-mortem.md` o skills obsoletas como `sdd-proposal.md`. Evaluá si hay otras reglas o configuraciones que mencionen flujos legacy de orquestación manual que hoy ya no aplican.
+3. **Corrige:** Usa tus tools (`replace_file_content` o comandos de sistema si es borrar un archivo) para parchear las inconsistencias directamente en el disco.
+4. **Reporta:** Al finalizar, creá el archivo `docs/openspec/changes/v1.8-doc-audit/report-fase1.md` detallando exactamente qué archivos revisaste, qué incongruencias encontraste y cómo las corregiste.
 
-> **[SISTEMA]** MANDATORY_RETURN_ENVELOPE: Al finalizar, el último mensaje debe instruir al humano a volver al Orquestador con el reporte.
+> **[SISTEMA]** MANDATORY_RETURN_ENVELOPE: Al finalizar, tu último mensaje debe instruir al humano a volver al Orquestador con tu reporte.
 
 ---
 

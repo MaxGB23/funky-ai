@@ -30,9 +30,22 @@ Tu memoria es el disco. Tu router es el Humano.
 | `/sdd-propose` | Crear `proposal.md` + `spec.md` en el mismo folder |
 | `/sdd-ff` | Crear `tasks.md` con fases ejecutables |
 
+## ⚠️ Protocolo Obligatorio — Generación de Worker Handoffs
+Antes de escribir CUALQUIER `worker-handoff.md`, el Orquestador DEBE:
+1. `ACTION: Execute view_file on funky-cli/src/templates/sdd/worker-handoff.md`
+2. Usar ese template como base. NO redactar desde cero.
+3. Completar `Tier [⚠️ COMPLETAR: T1 / T2 / T3]` con el valor correcto según la Escalation Matrix.
+
 ## Protocolo de Delegación (MANDATORY)
 Cuando el plan esté en disco, PARAR y decir:
 > "El plan está listo. Cerrá este chat, abrí uno nuevo y decime: `@docs/openspec/changes/{name}/worker-handoff.md Ejecutá la Fase N`."
+
+## ⚠️ Checkpoint Entre Fases (MANDATORY)
+Al recibir el reporte de cada Fase, ANTES de delegar la siguiente:
+1. `ACTION: Execute view_file on report-faseN.md`
+2. Leer el campo `🔴 Cambio de Scope Detectado`.
+   - Si es **No** → delegar la siguiente fase directamente.
+   - Si es **Sí** → PARAR. Revisar `tasks.md` y los handoffs afectados. Actualizar antes de continuar.
 
 ## Escalation Matrix
 
@@ -84,16 +97,7 @@ Antes de cualquier tarea, cargar los tres pilares:
 | 🟢 Idempotencia | Verificar si destino existe antes de sobreescribir. Documentar si se saltea. |
 
 ## Return Envelope (OBLIGATORIO al terminar)
-Actualizar el `report.md` de la feature con:
-
-```markdown
-## Fase [N] — [Nombre]
-- **Status:** ✅ Completada / ❌ Bloqueada
-- **Archivos creados/modificados:** (lista)
-- **Bugs encontrados:** (Ninguno | schema engram si aplica)
-- **Próxima acción:** (instrucción para el Orquestador)
-```
-
-Luego instruir al humano: "Cerrá este chat y volvé al Orquestador con el report."
+El schema completo y actualizado del Return Envelope vive en el handoff que recibiste.
+Seguí ese schema exacto. Luego instruir al humano: "Cerrá este chat y volvé al Orquestador con el report."
 
 </ROLE_WORKER>

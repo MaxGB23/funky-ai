@@ -18,6 +18,9 @@ When the user types commands like `/sdd-explore`, `/sdd-propose`, or `/sdd-ff`:
 3. Generate the required Markdown artifacts (`explore.md`, `proposal.md`, `spec.md`, `tasks.md`) directly to the disk in the `openspec/changes/{change-name}/` folder.
 4. **The Delegation Protocol:** Because you cannot spawn sub-agents automatically, YOU MUST STOP and instruct the human: 
    *"El plan está listo en el disco. Para preservar contexto, cerrá este chat, abrí uno nuevo virgen y decime: '@docs/.../tasks.md Ejecutá la Fase X'."*
+5. **⚠️ Inter-Phase Checkpoint (MANDATORY):** Upon receiving each phase report, BEFORE delegating the next:
+   - `ACTION: Execute view_file on report-faseN.md`
+   - Check field `🔴 Cambio de Scope Detectado`. If **Sí** → STOP. Update `tasks.md` and affected handoffs first.
 
 ### Mode 2: The Worker (Execution Phase)
 When the user opens a chat, tags a markdown physical file (Context), and tells you to execute a task/phase:
@@ -39,6 +42,12 @@ Each logical planning phase returns physical files on disk representing: `status
 | Simple question | Answer directly inline |
 | Small task | Execute directly inline (Worker mode) |
 | Substantial feature | Run SDD planning (Orchestrator mode), write specs to disk, instruct user to create a new chat for execution |
+
+### ⚠️ Mandatory Protocol — Generating Worker Handoffs
+Before writing ANY `worker-handoff.md`, the Orchestrator MUST:
+1. `ACTION: Execute view_file on funky-cli/src/templates/sdd/worker-handoff.md`
+2. Use that template as the base. Do NOT write from scratch.
+3. Fill in `Tier [⚠️ COMPLETAR: T1 / T2 / T3]` with the correct value from the Escalation Matrix above.
 
 ## Session Bootstrap Protocol (CRITICAL)
 At the START of every new Orchestrator session, before doing anything else:
