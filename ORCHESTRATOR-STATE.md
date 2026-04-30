@@ -80,6 +80,9 @@
 - [x] **Agent DRY Pattern (Backlog v1.9.0):** Refactorizar el protocolo de Handoffs para evitar el síndrome del teléfono descompuesto en los LLMs. → Contexto completo en [`docs/openspec/backlog/agent-dry-handoffs.md`](./docs/openspec/backlog/agent-dry-handoffs.md)
 - [x] **Auditoría de Incongruencias Documentales:** Realizar un análisis robusto para detectar cualquier archivo legacy (ej. `sdd-proposal.md`), referencias a archivos deprecados (como `post-mortem.md`) e inconsistencias lógicas o choques entre las reglas/docs actuales y las versiones obsoletas del proyecto.
 - [x] **Actualización Estructural del README:** Actualizar el README principal para reflejar la nueva estructura de directorios resultante tras las auditorías y la limpieza de archivos huérfanos.
+- [ ] **Fase 0 Automation — Branch Delegation (Target: v1.10.0):** El template `sdd-tasks.md` marca la Fase 0 (creación de branch) como tarea del "Humano", lo que lleva al Orquestador a omitirla sin enforcement. Rediseñar para que sea un Worker Tier 1 quien ejecute `git checkout -b` al inicio del ciclo. Objetivo: eliminar todo trabajo manual evitable del Router Humano y asegurar que ninguna feature arranque sin branch propia.
+- [ ] **Templates de Release y README (Target: v1.10.0):** No existen templates canónicos para release notes ni para el README del proyecto. Cada release se construye observando versiones anteriores sin SSOT. Crear `funky-cli/src/templates/release.md` y `funky-cli/src/templates/README.md` siguiendo el estilo consolidado en v1.7–v1.9, e integrarlos al comando `funky phase` o a un nuevo comando `funky release`.
+
 
 ---
 
