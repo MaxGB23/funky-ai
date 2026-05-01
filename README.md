@@ -1,8 +1,8 @@
-# 👻 Funky AI v1.10.0: Índice y Mapa de Navegación
+# 👻 Funky AI v1.11.0: Índice y Mapa de Navegación
 
 Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia Artificial que te permite emular redes asíncronas de agentes (SDD) usando recursos manuales y archivos físicos locales sobre el IDE Antigravity.
 
-> **🚀 Estado del Arte (V1.10.0):** El núcleo de Funky AI ha evolucionado. Ahora utilizamos la herramienta `funky-cli` para automatizar el Scaffolding de Falsos Engrams, apoyando al Router Humano con *Slash Commands* de contexto y separación de archivos (*Sharding*) para escalabilidad de memoria. Desde v1.10.0 automatizamos la Fase 0 y hemos integrado el comando `funky release` para generar Release Notes estandarizados, reduciendo la fricción manual a cero. El sistema cuenta con el **Agent DRY Pattern**, CLI interactivo y headless con `PROJECT-CANVAS.md`, respaldado por **TDD (Vitest)** y un **pipeline de CI (GitHub Actions)**.
+> **🚀 Estado del Arte (V1.11.0):** El núcleo de Funky AI ha evolucionado. Ahora utilizamos la herramienta `funky-cli` para automatizar el Scaffolding de Falsos Engrams, apoyando al Router Humano con *Slash Commands* de contexto y separación de archivos (*Sharding*) para escalabilidad de memoria. Desde v1.10.0 automatizamos la Fase 0 y hemos integrado el comando `funky release` para generar Release Notes estandarizados, reduciendo la fricción manual a cero. El sistema cuenta con el **Agent DRY Pattern**, CLI interactivo y headless con `PROJECT-CANVAS.md`, respaldado por **TDD (Vitest)** y un **pipeline de CI (GitHub Actions)**.
 
 > **🛡️ CI Status:** ![CI](https://github.com/MaxGB23/funky-ai/actions/workflows/ci.yml/badge.svg)
 
@@ -82,6 +82,7 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 
 | Archivo | Propósito |
 |---|---|
+| [`docs/engram/index.md`](./docs/engram/index.md) | Índice liviano para Two-Stage Memory Polling |
 | [`docs/engram/`](./docs/engram/) | Memoria persistente sharded: discoveries y bugfixes del proyecto |
 
 ---

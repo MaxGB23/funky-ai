@@ -122,8 +122,20 @@ Aquí se registran los hallazgos técnicos y arquitectónicos que moldean el fut
 **Where:** Archivos de release generados manualmente.
 **Learned:** Fix en v1.10.0: Crear template canónico `release.md` + comando `funky release <version>` con interpolación de `{{version}}` y `{{date}}`.
 
+### [DISCOVERY][openspec-backlog-lifecycle] La carpeta backlog/ es un fantasma para el Orquestador
+**What:** La carpeta `docs/openspec/backlog/` existe como primera etapa del ciclo de vida de una feature (backlog → changes → archive), pero ningún archivo de protocolo la menciona. Ni `sdd-orchestrator.md`, ni el engram, ni `ORCHESTRATOR-STATE.md` tienen referencia a ella. Un Orquestador nuevo jamás sabrá que debe revisarla al planificar o cerrar un ciclo.
+**Why:** La carpeta fue creada orgánicamente para el item `agent-dry-handoffs.md` pero nunca se codificó el flujo de su ciclo de vida en el protocolo. Cuando el item pasó a "Implementado" en v1.9.0, nadie movió el archivo al archive ni documentó el patrón.
+**Where:** `docs/openspec/backlog/` — referenciada en `ORCHESTRATOR-STATE.md` línea 80 como tarea completada, pero el archivo físico nunca fue movido al archive hasta ser detectado manualmente.
+**Learned:** (1) El flujo canónico es `backlog/ → changes/ → archive/`. (2) Al cerrar una feature (Fase Release), el MANDATORY_RELEASE_PROTOCOL debe incluir: "¿Existe un item en `docs/openspec/backlog/` para esta feature? Si existe y está implementado, moverlo a `docs/openspec/archive/{version}-{feature}/`". (3) Agregar este check al template `sdd-tasks.md` en la sección de Release.
+
 ### [DISCOVERY][readme-template-context-drift] El clonaje ciego de READMEs
 **What:** Al crear el template canónico de `README.md`, el agente copió el README del CLI (`funky-cli/README.md`) en lugar de pensar en el propósito de un README a nivel ecosistema.
 **Why:** Los LLMs tienden a copiar el archivo más cercano en nombre cuando se les pide un template de un archivo omnipresente sin darles instrucciones del "rol" de ese archivo.
 **Where:** Fase 2 de v1.10.0 y posterior Auditoría (Fase 2.5).
 **Learned:** Un README de raíz en el contexto de Funky AI debe ser un "Architecture Hub", no un repositorio de comandos CLI. Validar siempre que los templates iniciales tengan sentido lógico para la raíz del workspace.
+
+### [DISCOVERY][memory-polling-index-layer] Two-Stage Polling para Eficiencia de Tokens
+**What:** Reemplazar el grep_search directo sobre discoveries.md (175 líneas) por un acceso Two-Stage: primero leer `docs/engram/index.md` (índice liviano ~30 líneas), luego hacer grep solo del tag exacto si es relevante.
+**Why:** Con grep_search directo sobre archivos que crecen, el costo de tokens del Memory Polling escala sin control. A 25 entries/18KB ya, en 6 meses podría superar 300 líneas. El Two-Stage mantiene el costo de Stage 1 fijo (~30 líneas siempre) e independiente del tamaño del engram.
+**Where:** `.agents/rules/sdd-orchestrator.md` — Memory Polling. `funky-cli/src/templates/sdd/worker-handoff.md` — §1.B.
+**Learned:** El índice es la SSOT del TOC del engram. Cada vez que se agrega una entrada al engram, DEBE actualizarse el índice en la misma operación. La disciplina de mantenimiento del índice es el único punto de falla de este patrón.

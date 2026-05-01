@@ -33,18 +33,31 @@
 
 <MANDATORY_RELEASE_PROTOCOL>
 
-### FASE X — Release y Doc-Ops (Humano u Orquestador)
-> Objetivo: Merge de la funcionalidad, tageo de versión y actualización de deuda técnica documental.
+### FASE X — Release y Doc-Ops [T1 — Modelo Estándar]
+> **Objetivo:** Producir los artefactos de documentación de la release.
+> **Modelo recomendado:** Estándar (Pro Low / Sonnet) — requiere redacción y criterio.
 
-**🚨 CHECKLIST DE RELEASE (OBLIGATORIO - NO OMITIR):**
-- [ ] **Release Notes:** Generar archivo de notas ejecutando `funky release <version>`. Si no es posible, usar como base estricta `funky-cli/src/templates/release.md`. *(SISTEMA: Redactar para consumo humano. IGNORAR Token Diet aquí).* 
-- [ ] **README:** Actualizar `README.md` en la raíz del proyecto. Asegurar de mantenerlo como un Architecture Hub siguiendo el estándar del template `funky-cli/src/templates/README.md`.
-- [ ] **Archivado:** Mover directorio de feature de `openspec/changes/` hacia `openspec/archive/` para preservar las decisiones arquitectónicas (ADRs).
-- [ ] **Git:** `git add -A && git commit -m "feat/fix: descripcion"`
-- [ ] **Git:** `git checkout main && git merge --no-ff feature/nombre-del-branch`
-- [ ] **Git:** `git tag -a vX.Y.Z -m "release: vX.Y.Z"`
-- [ ] **Git:** `git push origin main && git push origin vX.Y.Z`
-- [ ] **Sincronización:** Actualizar `ORCHESTRATOR-STATE.md` (estado estable, versión actualizada, asegurar que no quede stale).
+**🚨 CHECKLIST DOC-OPS (OBLIGATORIO - NO OMITIR):**
+- [ ] **Release Notes:** Generar `docs/funky-ai/releases/vX.Y.Z-release.md` usando como base `funky-cli/src/templates/release.md`. *(SISTEMA: Redactar para consumo humano. IGNORAR Token Diet aquí).*
+- [ ] **README:** Actualizar `README.md` en la raíz del proyecto manteniéndolo como Architecture Hub (template: `funky-cli/src/templates/README.md`).
+- [ ] **Archivado:** Mover `docs/openspec/changes/{feature}/` → `docs/openspec/archive/{version}-{feature}/`.
+- [ ] **Backlog:** ¿Revisaste `docs/openspec/backlog/` en busca de items implementados que deban moverse al `archive/`?
+- [ ] **Sincronización:** Actualizar `ORCHESTRATOR-STATE.md` (rama activa, estado estable, versión actualizada).
+
+---
+
+### FASE X+1 — Git-Ops [T1 — ⚡ Modelo Liviano]
+> **Objetivo:** Commit, merge, tag y push. Sin redacción, sin criterio — pura ejecución mecánica.
+> **Modelo recomendado:** Liviano (Flash / Haiku) — comandos sin ambigüedad, sin escritura creativa.
+
+**🚨 CHECKLIST GIT-OPS (OBLIGATORIO - NO OMITIR):**
+- [ ] **Verificar estado:** `git status` — confirmar que todos los archivos están listos.
+- [ ] **Commit:** `git add -A && git commit -m "feat: descripcion (vX.Y.Z)"`
+- [ ] **Merge:** `git checkout main && git merge --no-ff feat/vX.Y-{name}`
+- [ ] **Tag:** `git tag -a vX.Y.Z -m "release: vX.Y.Z"`
+- [ ] **Push:** `git push origin main && git push origin vX.Y.Z`
+
+> ⚠️ Esta fase NO produce artefactos de texto. Si algo falla, documentar el error en `sdd-report.md` y PARAR.
 
 </MANDATORY_RELEASE_PROTOCOL>
 

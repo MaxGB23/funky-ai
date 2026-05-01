@@ -1,11 +1,12 @@
-# 🤖 Funky AI — Worker Handoff: Fase [N] ([Nombre de la Fase])
+# 🤖 Funky AI — Worker Handoff: Memory Polling v2
 
-> **Instrucción para el LLM:** Sos un Worker **Tier [⚠️ COMPLETAR: T1 / T2 / T3]** de ejecución de Funky AI.
+> **Instrucción para el LLM:** Sos un Worker **Tier 1** de ejecución de Funky AI.
 > Tu única misión es leer este documento, ejecutar las tareas exactas detalladas abajo escribiendo al disco mediante tus tools, y luego actualizar el `sdd-report.md` final.
 > **NO redactes código ni explicaciones largas en el chat. Acción directa al disco.**
 
 > **[HUMANO]** Para ejecutar este worker, abrí un chat nuevo y pegá:
-> `@docs/openspec/changes/{feature-name}/worker-handoff.md Ejecutá la Fase [N]`
+> `@docs/openspec/changes/memory-polling-v2/worker-handoff.md Ejecutá la Fase N`
+> (reemplazá N con 0, 1, 2 o 3 según corresponda)
 
 ---
 
@@ -31,19 +32,19 @@ grep_search "[TAG-EXACTO-DEL-INDICE]" docs/engram/discoveries.md (IsRegex: false
 grep_search "[TAG-EXACTO-DEL-INDICE]" docs/engram/bugfixes.md (IsRegex: false)
 ```
 
-> Si agregás una entrada nueva al engram en esta Fase, TAMBIÉN actualizá `docs/engram/index.md`.
+Tags probablemente relevantes para esta feature: `[agent-cognitive-load]`, `[in-template-rule-injection]`, `[documentation-vs-enforcement]`, `[agent-dry-handoffs]`
 
 ### C) Especificación de Tarea
 ```
-view_file docs/openspec/changes/{feature-name}/sdd-tasks.md
-view_file [archivo principal que vas a modificar]
+view_file docs/openspec/changes/memory-polling-v2/sdd-tasks.md
+view_file docs/openspec/changes/memory-polling-v2/sdd-spec.md
 ```
 
 ---
 
 ## 2. La Misión (Surgical Task)
 
-**Objetivo:** [Describir en una oración qué debe producir este Worker al final.]
+**Objetivo general:** Implementar el protocolo Two-Stage Memory Polling: crear el índice liviano del engram y actualizar las reglas de orquestación para usarlo.
 
 **Directiva Agent DRY:**
 Leé tus tareas a ejecutar directamente desde la Fase actual en `sdd-tasks.md` (cargado en §1.C).
@@ -61,15 +62,13 @@ Leé tus tareas a ejecutar directamente desde la Fase actual en `sdd-tasks.md` (
 | 🟢 Idempotencia | Verificá si el destino ya existe antes de sobreescribir. Documentá si salteás algo |
 
 ### 🔍 Jerarquía de Conocimiento (Doc-Ops)
-1. **Prioridad 1 (Skills):** Antes de codear para una librería/framework, verificá si hay un estándar en `.agents/skills/`. Si existe, usalo.
-2. **Prioridad 2 (MCP context7):** Si NO hay Skill, y la API es nueva/compleja, o dudás de su sintaxis, estás **OBLIGADO** a usar el servidor MCP `context7` (`resolve-library-id` + `query-docs`) antes de escribir código.
-3. **Extracción:** Si descubrís un patrón nuevo usando `context7`, documentalo en tu Return Envelope para convertirlo en Skill.
+No aplica para esta feature — es puramente protocolo de documentación. No se usan librerías externas.
 
 ---
 
 ## 4. Criterios de Éxito
 
-- [ ] Todos los archivos listados en §2 fueron creados/modificados en disco.
+- [ ] Todos los archivos listados en `sdd-tasks.md` para la Fase correspondiente fueron creados/modificados en disco.
 - [ ] El `sdd-report.md` fue actualizado con la sección de esta Fase.
 - [ ] Ningún archivo fuera de scope fue modificado.
 - [ ] Si se encontraron bugs no relacionados, están documentados con schema engram.
@@ -78,7 +77,7 @@ Leé tus tareas a ejecutar directamente desde la Fase actual en `sdd-tasks.md` (
 
 ## 5. Return Envelope (Al terminar)
 
-Actualizá `docs/openspec/changes/{feature-name}/sdd-report.md` con:
+Actualizá `docs/openspec/changes/memory-polling-v2/sdd-report.md` con:
 
 ```markdown
 ## Fase [N] — [Nombre de la Fase]

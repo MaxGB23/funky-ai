@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v1.10.0
+- **Versión:** v1.11.0
 - **Rama activa:** `main`
-- **Última sesión:** 2026-04-30
-- **Estado:** ✅ Estable. Automatización Fase 0 y templates canónicos completados.
+- **Última sesión:** 2026-05-01
+- **Estado:** ✅ Estable. Two-Stage Memory Polling + Engram Index implementados. (v1.11.0)
 
 ---
 
@@ -23,6 +23,7 @@
 | `funky-cli/src/templates/sdd/` | Templates del ciclo SDD que `phase` inyecta |
 | `funky-cli/src/templates/sdd/worker-handoff.md` | Template oficial del patrón Worker Handoff |
 | `funky-cli/src/utils/canvas.js` | Función pura `generateCanvasMarkdown(config)` — Motor del Project Canvas |
+| `docs/engram/index.md` | Índice liviano Two-Stage Polling |
 | `docs/engram/discoveries.md` | Memoria de descubrimientos arquitectónicos |
 | `docs/engram/bugfixes.md` | Memoria de bugs y fixes |
 | `docs/funky-ai/releases/v1.7.0-release.md` | Release notes oficiales de v1.7 |
@@ -75,9 +76,9 @@
 - [ ] **Protocolo de Seguridad — Revisión de Repos Externos:** Crear un documento de protocolo (distinto de `secops.md`, que ya cubre npm) para auditar repos de GitHub, extensiones de VSCode y código de terceros. Incluye: detección de caracteres Unicode invisibles (Trojan Source), vectores de ejecución implícita en Python (import time / setup.py), y checklist para revisar repos ya clonados. → Contexto completo en [`docs/funky-ai/mierdilla/midudev.md` — Pendiente 1](./docs/funky-ai/mierdilla/midudev.md)
 - [ ] **Protocolo de Optimización por Tipo de Proyecto:** Definir estándares mínimos de optimización según el tipo de proyecto (frontend, backend, CLI, API), con límites explícitos de cuándo parar y un framework de tradeoff entre rendimiento, UX, DX y funcionalidad. → Contexto completo en [`docs/funky-ai/mierdilla/midudev.md` — Pendiente 2](./docs/funky-ai/mierdilla/midudev.md)
 - [ ] **Auditoría Legacy (Backlog):** Analizar el workspace del proyecto Next.js anterior. El objetivo es barrer el desastre de reglas/skills viejas, rescatar las decisiones arquitectónicas que eran joyas, y re-documentarlas usando el formato estructurado y liviano de Funky AI.
-- [ ] **Optimización del Memory Polling:** Comprobar que el agente efectivamente investigue en el engram cuando sea necesario, y auditar si `grep_search` consume demasiados tokens en archivos largos. Evaluar nuevas estrategias de búsqueda indexada o fragmentada (ya que no contamos con SQLite/vectores como Gentle AI) para no agotar la ventana de contexto.
+- [x] **Optimización del Memory Polling:** Comprobar que el agente efectivamente investigue en el engram cuando sea necesario, y auditar si `grep_search` consume demasiados tokens en archivos largos. Evaluar nuevas estrategias de búsqueda indexada o fragmentada (ya que no contamos con SQLite/vectores como Gentle AI) para no agotar la ventana de contexto.
 - [x] **Auditoría de Sobrecarga Cognitiva (Worker Handoff):** Revisar si las reglas globales y la documentación de orquestación (`sdd-orchestrator.md`, rules) saturan la ventana de contexto de los agentes. ✅ Completada (v1.8.0).
-- [x] **Agent DRY Pattern (Backlog v1.9.0):** Refactorizar el protocolo de Handoffs para evitar el síndrome del teléfono descompuesto en los LLMs. → Contexto completo en [`docs/openspec/backlog/agent-dry-handoffs.md`](./docs/openspec/backlog/agent-dry-handoffs.md)
+- [x] **Agent DRY Pattern (Backlog v1.9.0):** Refactorizar el protocolo de Handoffs para evitar el síndrome del teléfono descompuesto en los LLMs. → Contexto en [`docs/openspec/archive/v1.9-agent-dry/agent-dry-handoffs.md`](./docs/openspec/archive/v1.9-agent-dry/agent-dry-handoffs.md)
 - [x] **Auditoría de Incongruencias Documentales:** Realizar un análisis robusto para detectar cualquier archivo legacy (ej. `sdd-proposal.md`), referencias a archivos deprecados (como `post-mortem.md`) e inconsistencias lógicas o choques entre las reglas/docs actuales y las versiones obsoletas del proyecto.
 - [x] **Actualización Estructural del README:** Actualizar el README principal para reflejar la nueva estructura de directorios resultante tras las auditorías y la limpieza de archivos huérfanos.
 - [x] **Fase 0 Automation — Branch Delegation (Target: v1.10.0):** El template `sdd-tasks.md` marca la Fase 0 (creación de branch) como tarea del "Humano", lo que lleva al Orquestador a omitirla sin enforcement. Rediseñar para que sea un Worker Tier 1 quien ejecute `git checkout -b` al inicio del ciclo. Objetivo: eliminar todo trabajo manual evitable del Router Humano y asegurar que ninguna feature arranque sin branch propia.
@@ -107,3 +108,4 @@ Ninguno.
 | v1.8.1 | Auditoría de Documentación: Guardrails estructurales (Tier enforcement, Checkpoints) y limpieza de links legacy. |
 | v1.9.0 | Agent DRY Pattern: Handoffs refactorizados como punteros estrictos (Lost in the Middle evitado). |
 | v1.10.0 | Automatización Fase 0 y Comando funky release. |
+| v1.11.0 | Two-Stage Memory Polling con engram index. |
