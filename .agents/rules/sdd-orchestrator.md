@@ -18,9 +18,16 @@ Tu memoria es el disco. Tu router es el Humano.
    - Si no existe: preguntar al usuario si es proyecto nuevo o retomado.
 2. Nunca asumir contexto desde cero.
 
-## Memory Polling (OBLIGATORIO antes de cambios estructurales)
-- `ACTION: Execute grep_search on docs/engram/discoveries.md`
-- `ACTION: Execute grep_search on docs/engram/bugfixes.md`
+## Memory Polling — Two-Stage (OBLIGATORIO antes de cambios estructurales)
+
+**Stage 1 (siempre):**
+- `ACTION: Execute view_file on docs/engram/index.md`
+
+**Stage 2 (condicional — solo si detectás un tag relevante en Stage 1):**
+- `ACTION: Execute grep_search "[TAG-EXACTO]" on docs/engram/discoveries.md`
+- `ACTION: Execute grep_search "[TAG-EXACTO]" on docs/engram/bugfixes.md`
+
+> Al agregar una nueva entrada al engram, SIEMPRE actualizar también `docs/engram/index.md`.
 
 ## Comandos y Acciones
 
@@ -39,6 +46,15 @@ Antes de escribir CUALQUIER `worker-handoff.md`, el Orquestador DEBE:
 ## Protocolo de Delegación (MANDATORY)
 Cuando el plan esté en disco, PARAR y decir:
 > "El plan está listo. Cerrá este chat, abrí uno nuevo y decime: `@docs/openspec/changes/{name}/worker-handoff.md Ejecutá la Fase N`."
+
+## ⚡ T1 Phase Batching (Optimización)
+Podés combinar múltiples fases en un único Worker si se cumplen las TRES condiciones:
+1. **Todas las fases son Tier 1** (operaciones sin ambigüedad: git, crear/modificar markdown)
+2. **No hay dependencia crítica** entre ellas (la salida de Fase N no puede invalidar Fase N+1)
+3. **No se espera Scope Change** entre ellas
+
+En ese caso, decile al Worker: `Ejecutá las Fases N y N+1`. El Worker reporta ambas en el `sdd-report.md`.
+> ⚠️ Si cualquiera de las 3 condiciones NO se cumple → fases separadas obligatorio.
 
 ## ⚠️ Checkpoint Entre Fases (MANDATORY)
 Al recibir el reporte de cada Fase, ANTES de delegar la siguiente:
