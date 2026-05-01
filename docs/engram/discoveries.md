@@ -109,3 +109,21 @@ Aquí se registran los hallazgos técnicos y arquitectónicos que moldean el fut
 **Why:** Crear archivos de release notes para patches menores genera ruido documental y fragmenta la lectura del proyecto.
 **Where:** Protocolo de Cierre de Sesión y Tareas de Release.
 **Learned:** Para fixes y patches, el registro debe vivir exclusivamente en tres lugares: (1) Extracción de aprendizaje al Engram (`discoveries.md` / `bugfixes.md`), (2) Bump de versión y registro en `ORCHESTRATOR-STATE.md`, y (3) Commits convencionales en Git.
+
+### [DISCOVERY][phase0-t1-automation] Phase 0 siempre es T1
+**What:** La Fase 0 del template `tasks.md` era tarea del Humano, causando omisiones.
+**Why:** Depender de la intervención humana para pasos estructurados genera inconsistencias.
+**Where:** Template `sdd-tasks.md`.
+**Learned:** Fix en v1.10.0: Implementar Worker T1 con checklist git ejecutable para garantizar la creación del branch.
+
+### [DISCOVERY][release-template-ssot] Release Templates SSOT
+**What:** Los release artifacts construidos "mirando el anterior" generan drift y pérdida de formato.
+**Why:** La ausencia de una única fuente de verdad (SSOT) permite la divergencia estructural.
+**Where:** Archivos de release generados manualmente.
+**Learned:** Fix en v1.10.0: Crear template canónico `release.md` + comando `funky release <version>` con interpolación de `{{version}}` y `{{date}}`.
+
+### [DISCOVERY][readme-template-context-drift] El clonaje ciego de READMEs
+**What:** Al crear el template canónico de `README.md`, el agente copió el README del CLI (`funky-cli/README.md`) en lugar de pensar en el propósito de un README a nivel ecosistema.
+**Why:** Los LLMs tienden a copiar el archivo más cercano en nombre cuando se les pide un template de un archivo omnipresente sin darles instrucciones del "rol" de ese archivo.
+**Where:** Fase 2 de v1.10.0 y posterior Auditoría (Fase 2.5).
+**Learned:** Un README de raíz en el contexto de Funky AI debe ser un "Architecture Hub", no un repositorio de comandos CLI. Validar siempre que los templates iniciales tengan sentido lógico para la raíz del workspace.

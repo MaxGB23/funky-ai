@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v1.9.0
+- **Versión:** v1.10.0
 - **Rama activa:** `main`
 - **Última sesión:** 2026-04-30
-- **Estado:** 🟢 Agent DRY Pattern implementado. Handoffs ahora son punteros estrictos a sdd-tasks.md.
+- **Estado:** ✅ Estable. Automatización Fase 0 y templates canónicos completados.
 
 ---
 
@@ -80,8 +80,8 @@
 - [x] **Agent DRY Pattern (Backlog v1.9.0):** Refactorizar el protocolo de Handoffs para evitar el síndrome del teléfono descompuesto en los LLMs. → Contexto completo en [`docs/openspec/backlog/agent-dry-handoffs.md`](./docs/openspec/backlog/agent-dry-handoffs.md)
 - [x] **Auditoría de Incongruencias Documentales:** Realizar un análisis robusto para detectar cualquier archivo legacy (ej. `sdd-proposal.md`), referencias a archivos deprecados (como `post-mortem.md`) e inconsistencias lógicas o choques entre las reglas/docs actuales y las versiones obsoletas del proyecto.
 - [x] **Actualización Estructural del README:** Actualizar el README principal para reflejar la nueva estructura de directorios resultante tras las auditorías y la limpieza de archivos huérfanos.
-- [ ] **Fase 0 Automation — Branch Delegation (Target: v1.10.0):** El template `sdd-tasks.md` marca la Fase 0 (creación de branch) como tarea del "Humano", lo que lleva al Orquestador a omitirla sin enforcement. Rediseñar para que sea un Worker Tier 1 quien ejecute `git checkout -b` al inicio del ciclo. Objetivo: eliminar todo trabajo manual evitable del Router Humano y asegurar que ninguna feature arranque sin branch propia.
-- [ ] **Templates de Release y README (Target: v1.10.0):** No existen templates canónicos para release notes ni para el README del proyecto. Cada release se construye observando versiones anteriores sin SSOT. Crear `funky-cli/src/templates/release.md` y `funky-cli/src/templates/README.md` siguiendo el estilo consolidado en v1.7–v1.9, e integrarlos al comando `funky phase` o a un nuevo comando `funky release`.
+- [x] **Fase 0 Automation — Branch Delegation (Target: v1.10.0):** El template `sdd-tasks.md` marca la Fase 0 (creación de branch) como tarea del "Humano", lo que lleva al Orquestador a omitirla sin enforcement. Rediseñar para que sea un Worker Tier 1 quien ejecute `git checkout -b` al inicio del ciclo. Objetivo: eliminar todo trabajo manual evitable del Router Humano y asegurar que ninguna feature arranque sin branch propia.
+- [x] **Templates de Release y README (Target: v1.10.0):** No existen templates canónicos para release notes ni para el README del proyecto. Cada release se construye observando versiones anteriores sin SSOT. Crear `funky-cli/src/templates/release.md` y `funky-cli/src/templates/README.md` siguiendo el estilo consolidado en v1.7–v1.9, e integrarlos al comando `funky phase` o a un nuevo comando `funky release`.
 
 
 ---
@@ -106,3 +106,4 @@ Ninguno.
 | v1.8.0 | Cognitive Audit: Token Diet en reglas globales, XML Roles, Action Forcing en templates. |
 | v1.8.1 | Auditoría de Documentación: Guardrails estructurales (Tier enforcement, Checkpoints) y limpieza de links legacy. |
 | v1.9.0 | Agent DRY Pattern: Handoffs refactorizados como punteros estrictos (Lost in the Middle evitado). |
+| v1.10.0 | Automatización Fase 0 y Comando funky release. |

@@ -14,11 +14,15 @@
 Antes de ejecutar **cualquier tarea**, el Worker DEBE cargar los tres pilares de contexto:
 
 ### A) Estado Global del Proyecto
-`ACTION: Execute view_file on ORCHESTRATOR-STATE.md`
+```
+view_file ORCHESTRATOR-STATE.md
+```
 
 ### B) Memoria Persistente (Memory Polling)
-`ACTION: Execute the tool 'grep_search' on docs/engram/discoveries.md with the topic-key relevant to the current task (IsRegex: false)`
-`ACTION: Execute the tool 'grep_search' on docs/engram/bugfixes.md with the topic-key relevant to the current task (IsRegex: false)`
+```
+grep_search "[topic-key-relevante]" docs/engram/discoveries.md (IsRegex: false)
+grep_search "[topic-key-relevante]" docs/engram/bugfixes.md (IsRegex: false)
+```
 
 ### C) Especificación de Tarea
 ```
@@ -78,9 +82,3 @@ Actualizá `docs/openspec/changes/{feature-name}/sdd-report.md` con:
 ```
 
 > **[SISTEMA]** Si `🔴 Cambio de Scope Detectado` es **Sí**, el Orquestador DEBE revisar y actualizar `sdd-tasks.md` y los handoffs de fases siguientes ANTES de continuar la delegación.
-
----
-
-```
-RESPONSE_FORMAT: ONLY output the final sdd-report.md updates. NO conversational text.
-```

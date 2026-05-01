@@ -4,15 +4,17 @@ description: "Protocolo para lectura y escritura estructurada de memoria (Falso 
 globs: ["docs/*", "docs/**/*"]
 ---
 
-# Engram Protocol (Funky AI Memory Bus)
+# Engram Protocol — Funky AI Memory Bus
 
-## 1. Memory Polling (Lectura)
-- **OBLIGATORIO:** Antes de cambios estructurales, ejecutar `grep_search` en `docs/engram/`.
-- **OBJETIVO:** Evitar repetición de errores y colisión con decisiones previas.
+## 1. Memory Polling (Lectura — OBLIGATORIO)
+Antes de cualquier cambio estructural:
+- `ACTION: Execute grep_search on docs/engram/discoveries.md with relevant topic`
+- `ACTION: Execute grep_search on docs/engram/bugfixes.md with relevant topic`
 
-## 2. Escritura Indexada (Esquema MCP)
-- **DESTINO:** Archivo según tipo en `docs/engram/` (`bugfixes.md`, `decisions.md`, `architecture.md`, `discoveries.md`).
-- **FORMATO:**
+## 2. Escritura Indexada — Schema MCP
+
+**Destino:** `docs/engram/bugfixes.md` | `docs/engram/discoveries.md` | `docs/engram/decisions.md`
+
 ```markdown
 ### [{type}][{topic_key}] {title}
 **What:** [Cambio técnico concreto]
@@ -21,20 +23,26 @@ globs: ["docs/*", "docs/**/*"]
 **Learned:** [Aprendizajes/Caveats]
 ```
 
-## 3. Trigger Taxonomy (Cuándo guardar)
-- **Decisiones:** Arquitectura, convenciones, tradeoffs de librerías.
-- **Resultados:** Bugfixes (con causa raíz), features con lógica no-obvia, configuración de enviroment.
-- **Hallazgos:** Edge cases, patrones nuevos, restricciones técnicas.
+Tipos válidos: `BUG`, `DECISION`, `DISCOVERY`, `ARCH`
 
-### 🔑 Self-Check (Obligatorio Post-Tarea): Antes de cerrar el chat, pregúntate "¿Acabo de tomar una decisión, arreglar un bug o aprender algo no-obvio? Si sí -> Escribir en Engram AHORA."
+## 3. Cuándo Guardar (Triggers)
+
+| Evento | Acción |
+|--------|--------|
+| Decisión de arquitectura / convención | Escribir en `decisions.md` |
+| Bug arreglado (causa raíz no obvia) | Escribir en `bugfixes.md` |
+| Edge case / hallazgo / restricción técnica | Escribir en `discoveries.md` |
+
+> **Self-Check post-tarea:** ¿Tomé una decisión, arreglé un bug, o aprendí algo no-obvio? Si sí → escribir en Engram AHORA.
 
 ## 4. Upsert Pattern (Anti-Duplicación)
-1. **Search:** `grep_search` por `{topic_key}` en `docs/engram/`.
-2. **Regex:** Usar `IsRegex: true` si el key está anidado (ej: `\[tipo\]\[key\]`).
-3. **Write:** Si existe, `replace_file_content` sobre la entrada. Si no, append al final.
+1. `grep_search` por `{topic_key}` en `docs/engram/`.
+2. Si existe → `replace_file_content` sobre la entrada existente.
+3. Si no existe → append al final del archivo.
 
-## 5. Return Envelope (Reporte de Worker)
-Todo Worker DEBE finalizar escribiendo un reporte físico en `docs/openspec/changes/{change-name}/` o `docs/funky-ai/workers/` con este formato:
+## 5. Return Envelope (Worker — OBLIGATORIO)
+Todo Worker finaliza escribiendo su reporte físico:
+
 ```markdown
 ---
 Worker: [ID/Fase]
@@ -42,18 +50,21 @@ Estado: [✅ Completado | ❌ Error | ⚠️ Parcial]
 Archivos Mutados:
 - [path]: [cambio]
 Tokens Ahorrados (Est): [Solo en Fase de Dieta]
-Bugs Encontrados: [Ninguno | Descripción]
+Bugs Encontrados: [Ninguno | schema engram]
 ---
 ```
 
-## 6. Session Close (Orquestador)
-Actualizar `ORCHESTRATOR-STATE.md` antes de cerrar:
+**Destino:** `docs/openspec/changes/{change-name}/report.md`
+
+## 6. Session Close (Orquestador — OBLIGATORIO)
+Actualizar `ORCHESTRATOR-STATE.md`:
+
 ```markdown
 ## Objetivo: [Tema de la sesión]
-## Descubrimientos: [Hallazgos técnicos/aprendizajes]
+## Descubrimientos: [Hallazgos]
 ## Completado: [Items cerrados]
 ## Próximos Pasos: [Pendientes]
 ## Archivos Relevantes: [Path — Descripción]
-## Instrucciones Aprendidas: [Preferencias o restricciones del usuario]
 ```
+
 > **REGLA DE ORO:** Un Orquestador sin `ORCHESTRATOR-STATE.md` actualizado deja ciega la siguiente sesión.

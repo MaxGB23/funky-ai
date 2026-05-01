@@ -8,9 +8,16 @@
 
 ## ✅ Checklist de Ejecución
 
-### FASE 0 — Setup (Humano)
-- [ ] `git checkout -b feature/nombre-del-branch`
-- [ ] [Otras tareas de configuración manual inicial]
+### FASE 0 — Branch Setup [T1]
+> **Tier:** T1 — Git ops puras, cero ambigüedad. Delegable a Worker.
+
+- [ ] Verificar que git está disponible: `git --version` (si falla → documentar en Return Envelope y PARAR)
+- [ ] Verificar que el branch NO existe: `git branch --list feat/vX.Y-{name}`
+- [ ] Crear y cambiar al branch: `git checkout -b feat/vX.Y-{name}`
+- [ ] Confirmar branch activo: `git status`
+- [ ] Documentar en Return Envelope: branch confirmado ✅
+
+**🚫 Restricciones:** No modificar ningún archivo de código. Esta fase es SOLO setup de git.
 
 ---
 
@@ -30,8 +37,8 @@
 > Objetivo: Merge de la funcionalidad, tageo de versión y actualización de deuda técnica documental.
 
 **🚨 CHECKLIST DE RELEASE (OBLIGATORIO - NO OMITIR):**
-- [ ] **Release Notes:** Crear archivo de notas en `docs/funky-ai/releases/vX.Y.Z-release.md`. *(SISTEMA: Redactar para consumo humano. Usar formato rico, emojis, secciones claras [Resumen, Features, Fixes] y tono entusiasta. IGNORAR Token Diet aquí).* 
-- [ ] **README:** Actualizar `README.md` con la nueva versión y/o cambios en los comandos. *(SISTEMA: Documentación para humanos. Mantener foco en UX/DX, estructura clara y legible. IGNORAR Token Diet).* 
+- [ ] **Release Notes:** Generar archivo de notas ejecutando `funky release <version>`. Si no es posible, usar como base estricta `funky-cli/src/templates/release.md`. *(SISTEMA: Redactar para consumo humano. IGNORAR Token Diet aquí).* 
+- [ ] **README:** Actualizar `README.md` en la raíz del proyecto. Asegurar de mantenerlo como un Architecture Hub siguiendo el estándar del template `funky-cli/src/templates/README.md`.
 - [ ] **Archivado:** Mover directorio de feature de `openspec/changes/` hacia `openspec/archive/` para preservar las decisiones arquitectónicas (ADRs).
 - [ ] **Git:** `git add -A && git commit -m "feat/fix: descripcion"`
 - [ ] **Git:** `git checkout main && git merge --no-ff feature/nombre-del-branch`

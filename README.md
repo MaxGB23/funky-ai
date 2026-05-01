@@ -1,8 +1,8 @@
-# 👻 Funky AI v1.9.0: Índice y Mapa de Navegación
+# 👻 Funky AI v1.10.0: Índice y Mapa de Navegación
 
 Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia Artificial que te permite emular redes asíncronas de agentes (SDD) usando recursos manuales y archivos físicos locales sobre el IDE Antigravity.
 
-> **🚀 Estado del Arte (V1.9.0):** El núcleo de Funky AI ha evolucionado. Ahora utilizamos la herramienta `funky-cli` para automatizar el Scaffolding de Falsos Engrams, apoyando al Router Humano con *Slash Commands* de contexto y separación de archivos (*Sharding*) para escalabilidad de memoria. Desde v1.9.0, el sistema cuenta con el **Agent DRY Pattern** que convierte los Handoffs en punteros estrictos, erradicando el síndrome de "Teléfono Descompuesto" en la delegación de LLMs. El CLI tiene soporte para modos **Interactivo y Headless** mediante la generación de un `PROJECT-CANVAS.md`, respaldado por **TDD (Vitest)** y un **pipeline de CI (GitHub Actions)**.
+> **🚀 Estado del Arte (V1.10.0):** El núcleo de Funky AI ha evolucionado. Ahora utilizamos la herramienta `funky-cli` para automatizar el Scaffolding de Falsos Engrams, apoyando al Router Humano con *Slash Commands* de contexto y separación de archivos (*Sharding*) para escalabilidad de memoria. Desde v1.10.0 automatizamos la Fase 0 y hemos integrado el comando `funky release` para generar Release Notes estandarizados, reduciendo la fricción manual a cero. El sistema cuenta con el **Agent DRY Pattern**, CLI interactivo y headless con `PROJECT-CANVAS.md`, respaldado por **TDD (Vitest)** y un **pipeline de CI (GitHub Actions)**.
 
 > **🛡️ CI Status:** ![CI](https://github.com/MaxGB23/funky-ai/actions/workflows/ci.yml/badge.svg)
 
@@ -54,6 +54,7 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 |---|---|
 | `funky init` | Inyecta reglas, memoria (ecosystem) y genera/consume un `PROJECT-CANVAS.md` (modo interactivo y headless). |
 | `funky phase <fase>` | Inyecta templates SDD (explore, proposal, tasks, handoff, report). |
+| `funky release <version>` | Genera release notes estandarizados automáticamente. |
 | `pnpm test` *(en `funky-cli/`)* | Ejecuta la suite Vitest (TDD, desde v1.6). Corre automáticamente en CI vía GitHub Actions. |
 
 ---
@@ -72,6 +73,7 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 | [`docs/funky-ai/releases/v1.7.0-release.md`](./docs/funky-ai/releases/v1.7.0-release.md) | Release Notes oficiales de la v1.7.0 (Project Canvas) |
 | [`docs/funky-ai/releases/v1.8.0-release.md`](./docs/funky-ai/releases/v1.8.0-release.md) | Release Notes oficiales de la v1.8.0 (Token Diet & Action Forcing) |
 | [`docs/funky-ai/releases/v1.9.0-release.md`](./docs/funky-ai/releases/v1.9.0-release.md) | Release Notes oficiales de la v1.9.0 (Agent DRY Pattern) |
+| [`docs/funky-ai/releases/v1.10.0-release.md`](./docs/funky-ai/releases/v1.10.0-release.md) | Release Notes oficiales de la v1.10.0 (Automation & Templates) |
 
 ---
 
