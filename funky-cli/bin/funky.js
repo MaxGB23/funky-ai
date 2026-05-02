@@ -3,6 +3,7 @@ import { Command } from 'commander';
 import { initCommand } from '../src/commands/init.js';
 import { phaseCommand } from '../src/commands/phase.js';
 import { releaseCommand } from '../src/commands/release.js';
+import { assessCommand } from '../src/commands/assess.js';
 
 const program = new Command();
 
@@ -14,5 +15,6 @@ program
 program.addCommand(initCommand);
 program.addCommand(phaseCommand);
 program.addCommand(releaseCommand);
+program.addCommand(assessCommand);
 
 program.parse(process.argv);

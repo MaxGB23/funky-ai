@@ -18,11 +18,20 @@ Antes de ejecutar **cualquier tarea**, el Worker DEBE cargar los tres pilares de
 view_file ORCHESTRATOR-STATE.md
 ```
 
-### B) Memoria Persistente (Memory Polling)
+### B) Memoria Persistente (Memory Polling — Two-Stage)
+
+**Stage 1 (siempre ejecutar):**
 ```
-grep_search "[topic-key-relevante]" docs/engram/discoveries.md (IsRegex: false)
-grep_search "[topic-key-relevante]" docs/engram/bugfixes.md (IsRegex: false)
+view_file docs/engram/index.md
 ```
+
+**Stage 2 (solo si encontrás un tag relevante en Stage 1):**
+```
+grep_search "[TAG-EXACTO-DEL-INDICE]" docs/engram/discoveries.md (IsRegex: false)
+grep_search "[TAG-EXACTO-DEL-INDICE]" docs/engram/bugfixes.md (IsRegex: false)
+```
+
+> Si agregás una entrada nueva al engram en esta Fase, TAMBIÉN actualizá `docs/engram/index.md`.
 
 ### C) Especificación de Tarea
 ```

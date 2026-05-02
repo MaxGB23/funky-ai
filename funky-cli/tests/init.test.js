@@ -19,6 +19,7 @@ describe('runInit()', () => {
     { src: 'engram-bugfixes.md', dest: 'docs/engram/bugfixes.md' },
     { src: 'plantilla-worker-handoff.md', dest: 'docs/funky-ai/workers/plantilla-worker-handoff.md' },
     { src: 'canvas-planning-guide.md', dest: 'docs/funky-ai/cli/canvas-planning-guide.md' },
+    { src: '../sdd/architecture-assessment.md', dest: 'docs/architecture-assessment.md' },
   ];
 
   beforeEach(() => {

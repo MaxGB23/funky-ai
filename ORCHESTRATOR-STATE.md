@@ -7,8 +7,8 @@
 ## 🏷️ Estado Actual
 
 - **Versión:** v1.11.0
-- **Rama activa:** `main`
-- **Última sesión:** 2026-05-01
+- **Rama activa:** `feat/v1.12-arch-readiness`
+- **Última sesión:** 2026-05-02
 - **Estado:** ✅ Estable. Two-Stage Memory Polling + Engram Index implementados. (v1.11.0)
 
 ---
@@ -58,9 +58,14 @@
 
 ---
 
+## ✅ Tareas Completadas (v1.12)
+
+- [x] **001 Architecture Readiness Assessment:** Template de validación pre-desarrollo y motor de reglas CLI (`funky assess`) implementados.
+
+---
+
 ## ⏳ Tareas Pendientes
 
-- [x] **001 Architecture Readiness Assessment (Backlog):** Crear un template de validación pre-desarrollo (ej. `architecture-assessment-template.md` o un ADR ampliado) que fuerce a justificar la elección de stack, librerías, y estrategias de infraestructura (VPS, PaaS, DB) según NFRs (concurrencia, transacciones) antes de escribir código. → [Ver Proposal](./docs/openspec/proposals/001-architecture-readiness.md)
 - [ ] **002 Calculadora de Presupuestos (Backlog):** Crear un template o script interactivo (`project-cost-estimator.md`) para calcular el costo/precio a cobrar por un proyecto freelance/agencia, cruzando características solicitadas por el cliente, NFRs, presupuesto de infraestructura y seniority del equipo. → [Ver Proposal](./docs/openspec/proposals/002-project-cost-estimator.md)
 - [ ] **003 Protocolo de Seguridad — Revisión de Repos Externos:** Crear un documento de protocolo (distinto de `secops.md`, que ya cubre npm) para auditar repos de GitHub, extensiones de VSCode y código de terceros. Incluye: detección de caracteres Unicode invisibles (Trojan Source), vectores de ejecución implícita en Python (import time / setup.py), y checklist para revisar repos ya clonados. → Contexto completo en [`docs/funky-ai/mierdilla/midudev.md` — Pendiente 1](./docs/funky-ai/mierdilla/midudev.md)
 - [ ] **004 Protocolo de Optimización por Tipo de Proyecto:** Definir estándares mínimos de optimización según el tipo de proyecto (frontend, backend, CLI, API), con límites explícitos de cuándo parar y un framework de tradeoff entre rendimiento, UX, DX y funcionalidad. → Contexto completo en [`docs/funky-ai/mierdilla/midudev.md` — Pendiente 2](./docs/funky-ai/mierdilla/midudev.md)
