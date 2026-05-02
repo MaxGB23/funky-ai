@@ -1,5 +1,8 @@
 # La Filosofía de Funky AI
 
+## 🧠 El Propósito Humano: Evolucionar
+Funky AI no es simplemente un repositorio de scripts o un clon de otro sistema; es un **entorno de entrenamiento y evolución profesional**. Fue creado para resolver las necesidades reales del desarrollador del día a día, forzando la transición de una mentalidad Junior (escribir código rápido) a una mentalidad Senior / Arquitecto (planificar NFRs, justificar decisiones, organizar el trabajo y delegar en la IA). Cada template, regla y comando existe para internalizar buenas prácticas de ingeniería de software.
+
 ## 🧬 Origen e Inspiración: El Modelo Gentle AI
 
 Para entender Funky AI, primero hay que comprender la maquinaria real de su mayor influencia: **Gentle AI** (cuyo prompt maestro está preservado en `docs/gentle-ai/gentle-persona.md`).
