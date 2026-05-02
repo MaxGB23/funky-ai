@@ -31,6 +31,7 @@
 | [readme-template-context-drift] | README raíz = Architecture Hub, no clon del CLI README |
 | [memory-polling-index-layer] | Two-Stage Polling: index.md primero, grep por tag solo si relevante |
 | [openspec-backlog-lifecycle] | backlog/ → changes/ → archive/: mover items implementados al archive en el release |
+| [orchestrator-planning-checklist] | Enforcement al inicio del artefacto, no al final — Planning Checklist antes de delegar |
 
 ## Bugfixes
 | Tag | Resumen |

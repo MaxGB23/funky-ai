@@ -134,7 +134,11 @@ Aquí se registran los hallazgos técnicos y arquitectónicos que moldean el fut
 **Where:** Fase 2 de v1.10.0 y posterior Auditoría (Fase 2.5).
 **Learned:** Un README de raíz en el contexto de Funky AI debe ser un "Architecture Hub", no un repositorio de comandos CLI. Validar siempre que los templates iniciales tengan sentido lógico para la raíz del workspace.
 
-### [DISCOVERY][memory-polling-index-layer] Two-Stage Polling para Eficiencia de Tokens
+### [DISCOVERY][orchestrator-planning-checklist] Las instrucciones de enforcement deben vivir al inicio, no al final
+**What:** El Orquestador omitió generar `worker-handoff.md`, release notes y archivado de `openspec/changes/`, a pesar de que las instrucciones existían en el template `tasks.md`. La razón: la instrucción crítica estaba en la **línea 80** (el final del archivo), invisible por el efecto Lost in the Middle.
+**Why:** Los LLMs en contextos largos depriorizan el contenido enterrado en el medio o al final. Una instrucción de enforcement que depende de que el modelo la recuerde al finalizar su trabajo es inherentemente frágil.
+**Where:** `.agents/rules/sdd-orchestrator.md` y `funky-cli/src/templates/sdd/tasks.md`.
+**Learned:** Las instrucciones de enforcement deben estar en el **inicio del artefacto** que el rol va a leer, no al final. Fix: (1) Planning Checklist agregado al inicio de `sdd-orchestrator.md` con 4 verificaciones antes de delegar. (2) Instrucción `[SISTEMA]` movida al encabezado de `tasks.md` donde es lo primero que lee el Orquestador.
 **What:** Reemplazar el grep_search directo sobre discoveries.md (175 líneas) por un acceso Two-Stage: primero leer `docs/engram/index.md` (índice liviano ~30 líneas), luego hacer grep solo del tag exacto si es relevante.
 **Why:** Con grep_search directo sobre archivos que crecen, el costo de tokens del Memory Polling escala sin control. A 25 entries/18KB ya, en 6 meses podría superar 300 líneas. El Two-Stage mantiene el costo de Stage 1 fijo (~30 líneas siempre) e independiente del tamaño del engram.
 **Where:** `.agents/rules/sdd-orchestrator.md` — Memory Polling. `funky-cli/src/templates/sdd/worker-handoff.md` — §1.B.

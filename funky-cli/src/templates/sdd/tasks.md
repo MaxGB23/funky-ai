@@ -4,6 +4,8 @@
 **Rama:** `feature/nombre-del-branch`
 **Ref:** `sdd-proposal.md`
 
+> **[SISTEMA - PARA EL ORQUESTADOR]** Antes de delegar la primera fase, verificá el Planning Checklist en `.agents/rules/sdd-orchestrator.md`. Generá un `worker-handoff.md` basado en `funky-cli/src/templates/sdd/worker-handoff.md`. **NO delegues mediante prompts en el chat.**
+
 ---
 
 ## ✅ Checklist de Ejecución
@@ -76,5 +78,3 @@ Al finalizar cada fase, actualizar `sdd-report.md` con:
 - **Bugs encontrados:** (si aplica, usar schema engram. OBLIGATORIO: incluir intentos fallidos y anti-patrones descartados, no solo bugs finales)
 - **Próxima acción:** (qué debe hacer el Orquestador)
 ```
-
-> **[SISTEMA - PARA EL ORQUESTADOR]** Al finalizar, estás obligado a crear un archivo físico `worker-handoff.md` para cada fase de Worker. NO redactes prompts en chat.
