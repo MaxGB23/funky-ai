@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v1.11.0
-- **Rama activa:** `feat/v1.12-arch-readiness`
+- **Versión:** v1.12.0
+- **Rama activa:** `main`
 - **Última sesión:** 2026-05-02
-- **Estado:** ✅ Estable. Two-Stage Memory Polling + Engram Index implementados. (v1.11.0)
+- **Estado:** ✅ Estable. Architecture Readiness Gate (`funky assess`) implementado. (v1.12.0)
 
 ---
 
@@ -116,3 +116,4 @@ Ninguno.
 | v1.9.0 | Agent DRY Pattern: Handoffs refactorizados como punteros estrictos (Lost in the Middle evitado). |
 | v1.10.0 | Automatización Fase 0 y Comando funky release. |
 | v1.11.0 | Two-Stage Memory Polling con engram index. |
+| v1.12.0 | Architecture Readiness Gate: `funky assess` + motor de reglas (3 reglas MVP) + templates. |

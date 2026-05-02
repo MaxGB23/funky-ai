@@ -26,8 +26,7 @@
   - Modificar `funky-cli/src/commands/init.js` para que el archivo vacío `architecture-assessment.md` se copie a `docs/` junto con el `PROJECT-CANVAS.md` cuando se inicializa un proyecto.
   - Asegurarse de que todos los tests existentes de Vitest (`npm run test`) sigan pasando en verde, actualizando mocks si el comando `init` lo requiere.
 
-- [ ] **Fase 5: Actualización del Estado y Release** (Orquestador - Próxima Sesión)
-  - El Orquestador recogerá los `report.md` del Worker.
-  - Se volcarán aprendizajes en el Engram.
-  - Actualización de `ORCHESTRATOR-STATE.md`.
-  - Creación del tag / PR para el release de la feature.
+- [x] **Fase 5: Actualización del Estado y Release** (Orquestador - ✅ Completado)
+  - Engram auditado — `[pnpm-strict-usage]` ya cubierto, sin nuevas entradas.
+  - `ORCHESTRATOR-STATE.md` actualizado a v1.12.0.
+  - Merge a `main` completado. Tag pendiente (`v1.12.0`).
