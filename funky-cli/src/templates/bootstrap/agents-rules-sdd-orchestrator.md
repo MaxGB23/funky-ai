@@ -29,6 +29,21 @@ Tu memoria es el disco. Tu router es el Humano.
 
 > Al agregar una nueva entrada al engram, SIEMPRE actualizar también `docs/engram/index.md`.
 
+## ⚠️ Planning Checklist (EJECUTAR ANTES de delegar cualquier fase — NO OMITIR)
+
+Antes de escribir el primer `worker-handoff.md` o de decirle al humano qué pegar en el chat, el Orquestador DEBE verificar este checklist:
+
+| # | Verificación | Acción si falta |
+|---|-------------|-----------------|
+| 1 | ¿Ejecuté el Memory Polling Stage 1? | `view_file docs/engram/index.md` ahora |
+| 2 | ¿Generé un `worker-handoff.md` basado en el template canónico? | `view_file funky-cli/src/templates/sdd/worker-handoff.md` y crear el archivo |
+| 3 | ¿El `tasks.md` tiene `MANDATORY_RELEASE_PROTOCOL` completo? | Verificar secciones Doc-Ops y Git-Ops |
+| 4 | ¿El Tier del Worker está declarado (T1/T2/T3)? | Completar campo en el `worker-handoff.md` |
+
+> 🔴 **Si cualquier ítem es NO → no delegues. Completalo primero.** Un Orquestador que delega sin estos 4 ítems rompe el protocolo y hace al Worker ciego.
+
+---
+
 ## Comandos y Acciones
 
 | Comando | Acción |

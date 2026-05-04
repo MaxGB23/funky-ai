@@ -7,7 +7,7 @@ import { evaluateAssessment } from '../utils/assessRules.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-function parseFrontmatter(content) {
+export function parseFrontmatter(content) {
   const metadata = {};
   const regex = /^---\r?\n([\s\S]*?)\r?\n---/;
   const match = content.match(regex);
@@ -48,25 +48,29 @@ export const assessCommand = new Command('assess')
     
     const challenges = evaluateAssessment(metadata);
 
-    if (challenges.length > 0) {
-      const templatesDir = path.join(__dirname, '../templates/sdd');
-      const reviewTemplatePath = path.join(templatesDir, 'architecture-review-template.md');
-      let reviewContent = fs.readFileSync(reviewTemplatePath, 'utf8');
-      
-      const challengesText = challenges.map(c => `- ${c}`).join('\n');
-      reviewContent = reviewContent.replace('{{CHALLENGES}}', challengesText);
-      
-      const promptsDir = path.join(targetBase, '.agents', 'prompts');
-      fs.mkdirSync(promptsDir, { recursive: true });
-      const outputPath = path.join(promptsDir, 'architecture-review.md');
-      
-      fs.writeFileSync(outputPath, reviewContent);
-      
-      console.log(`⚠️ ${challenges.length} Challenges Críticos de Arquitectura generados.`);
-      console.log(`Levantá un agente Orquestador y referenciá \`.agents/prompts/architecture-review.md\` para iniciar la evaluación.`);
-      process.exit(1);
-    } else {
-      console.log('✅ Arquitectura validada sin problemas críticos.');
-      process.exit(0);
-    }
+    const templatesDir = path.join(__dirname, '../templates/sdd');
+    const reviewTemplatePath = path.join(templatesDir, 'architecture-review-template.md');
+    let reviewContent = fs.readFileSync(reviewTemplatePath, 'utf8');
+    
+    const challengesText = challenges.length > 0 
+      ? challenges.map(c => `- ${c}`).join('\n')
+      : 'Ninguno. (Aún así, revisá los NFRs y cruzá los datos para encontrar fallas invisibles)';
+
+    reviewContent = reviewContent
+      .replace('{{CHALLENGES}}', challengesText)
+      .replace('{{NFR_COMPLIANCE}}', metadata.compliance || 'No especificado')
+      .replace('{{NFR_CONCURRENCY}}', metadata.rps || 'No especificado')
+      .replace('{{NFR_SENIORITY}}', metadata.team_seniority || 'No especificado')
+      .replace('{{NFR_BUDGET}}', metadata.budget || 'No especificado')
+      .replace('{{NFR_SLA}}', metadata.sla || 'No especificado');
+    
+    const promptsDir = path.join(targetBase, '.agents', 'prompts');
+    fs.mkdirSync(promptsDir, { recursive: true });
+    const outputPath = path.join(promptsDir, 'architecture-review.md');
+    
+    fs.writeFileSync(outputPath, reviewContent);
+    
+    console.log('✅ Evaluación local completa. ⚠️ Generado prompt de revisión arquitectónica obligatoria.');
+    console.log('Levantá un agente y apuntalo a `.agents/prompts/architecture-review.md`');
+    process.exit(challenges.length > 0 ? 1 : 0);
   });

@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v1.12.0
+- **Versión:** v1.13.0
 - **Rama activa:** `main`
-- **Última sesión:** 2026-05-02
-- **Estado:** ✅ Estable. Architecture Readiness Gate (`funky assess`) implementado. (v1.12.0)
+- **Última sesión:** 2026-05-04
+- **Estado:** ✅ Estable. Architecture Readiness v2 (Context Expansion) implementado. (v1.13.0)
 
 ---
 
@@ -65,14 +65,20 @@
 
 ---
 
+## ✅ Tareas Completadas (v1.13)
+
+- [x] **007 Architecture Readiness v2 (Context Expansion):** Ampliada evaluación arquitectónica con NFRs (Compliance, Data Residency, Hosting Budget) e integración obligatoria de IA en CLI. (v1.13.0)
+
+---
+
 ## ⏳ Tareas Pendientes
 
-- [ ] **007 Architecture Readiness v2 (Context Expansion):** Ampliar el template `architecture-assessment.md` con campos de NFRs duros (Compliance, Data Residency, Hosting Budget, Team Seniority) y refactorizar `funky assess` para que SIEMPRE genere el prompt de review AI, sirviendo como base para el Estimador de Costos. (Target: v1.13.0) → [Ver Proposal](./docs/openspec/proposals/007-architecture-readiness-v2.md)
 - [ ] **002 Calculadora de Presupuestos (Backlog):** Crear un template o script interactivo (`project-cost-estimator.md`) para calcular el costo/precio a cobrar por un proyecto freelance/agencia, cruzando características solicitadas por el cliente, NFRs, presupuesto de infraestructura y seniority del equipo. → [Ver Proposal](./docs/openspec/proposals/002-project-cost-estimator.md)
 - [ ] **003 Protocolo de Seguridad — Revisión de Repos Externos:** Crear un documento de protocolo (distinto de `secops.md`, que ya cubre npm) para auditar repos de GitHub, extensiones de VSCode y código de terceros. Incluye: detección de caracteres Unicode invisibles (Trojan Source), vectores de ejecución implícita en Python (import time / setup.py), y checklist para revisar repos ya clonados. → Contexto completo en [`docs/funky-ai/mierdilla/midudev.md` — Pendiente 1](./docs/funky-ai/mierdilla/midudev.md)
 - [ ] **004 Protocolo de Optimización por Tipo de Proyecto:** Definir estándares mínimos de optimización según el tipo de proyecto (frontend, backend, CLI, API), con límites explícitos de cuándo parar y un framework de tradeoff entre rendimiento, UX, DX y funcionalidad. → Contexto completo en [`docs/funky-ai/mierdilla/midudev.md` — Pendiente 2](./docs/funky-ai/mierdilla/midudev.md)
 - [ ] **005 Auditoría Legacy (Backlog):** Analizar el workspace del proyecto Next.js anterior. El objetivo es barrer el desastre de reglas/skills viejas, rescatar las decisiones arquitectónicas que eran joyas, y re-documentarlas usando el formato estructurado y liviano de Funky AI.
 - [ ] **006 Arquitectura SDD — Test Planning (Backlog)**: Diseñar e integrar una fase formal de "Test Planning" (ej. `test-plan.md` o mejora de `spec.md`). Debe ser agnóstica al framework y adaptarse a proyectos con o sin TDD estricto, mitigando puntos ciegos lógicos.
+- [ ] **008 Renombrar Proposals a RFCs en Backlog:** Modificar la nomenclatura de los documentos de features pendientes en `docs/openspec/proposals/` a borradores/data cruda (RFCs). Esto evitará que los Orquestadores frescos alucinen madurez en la feature y salten las fases de `explore` y `proposal` orgánicas. → [Ver Reporte](./docs/issues/open/sdd_deviations_report.md)
 
 ---
 
@@ -99,3 +105,4 @@ Ninguno.
 | v1.10.0 | Automatización Fase 0 y Comando funky release. |
 | v1.11.0 | Two-Stage Memory Polling con engram index. |
 | v1.12.0 | Architecture Readiness Gate: `funky assess` + motor de reglas (3 reglas MVP) + templates. |
+| v1.13.0 | Architecture Readiness v2 (Context Expansion) + NFR parsing. |
