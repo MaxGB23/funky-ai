@@ -143,3 +143,9 @@ Aquí se registran los hallazgos técnicos y arquitectónicos que moldean el fut
 **Why:** Con grep_search directo sobre archivos que crecen, el costo de tokens del Memory Polling escala sin control. A 25 entries/18KB ya, en 6 meses podría superar 300 líneas. El Two-Stage mantiene el costo de Stage 1 fijo (~30 líneas siempre) e independiente del tamaño del engram.
 **Where:** `.agents/rules/sdd-orchestrator.md` — Memory Polling. `funky-cli/src/templates/sdd/worker-handoff.md` — §1.B.
 **Learned:** El índice es la SSOT del TOC del engram. Cada vez que se agrega una entrada al engram, DEBE actualizarse el índice en la misma operación. La disciplina de mantenimiento del índice es el único punto de falla de este patrón.
+
+### [DISCOVERY][assess-gate-context-expansion] El Readiness Gate requiere densidad de NFRs y siempre deriva en AI
+**What:** El template `architecture-assessment.md` debe expandirse con campos duros de NFRs (Compliance, Data Residency, Presupuesto Hosting, Team Seniority). Además, `funky assess` DEBE generar el prompt de review AI incluso cuando la validación del CLI pasa con éxito.
+**Why:** El CLI es solo la primera barrera superficial; la verdadera validación es el debate final con la IA. La IA no puede evaluar tradeoffs críticos (ej. Vercel vs VPS para datos gubernamentales) si no se le alimenta un contexto denso (Garbage In, Garbage Out).
+**Where:** Template `architecture-assessment.md` y comando `funky assess`.
+**Learned:** Las plantillas de assessment no deben temer ser exhaustivas; obligar al humano a aportar esa densidad de datos garantiza un debate arquitectónico de alto nivel. Esto además actuará como base para el futuro Project Cost Estimator (002).

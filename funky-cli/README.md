@@ -22,8 +22,10 @@ pnpm link --global
 
 | Comando | Descripción | Ejemplo |
 |---------|-------------|---------|
-| `funky init` | Inicia el ecosistema Funky AI en el directorio actual. Genera los `PROJECT-CANVAS.md` e `INFRA-CANVAS.md`, copia las reglas de agente, el `ORCHESTRATOR-STATE.md`, schemas de engram y una guía de planeación (`canvas-planning-guide.md`). Puede recibir el flag `--template` para generarlos en blanco. Es idempotente. | `funky init` -> "🚀 Funky Ecosystem inicializado!" |
-| `funky phase <nombre>` | Inyecta el template correspondiente a la fase SDD indicada en el directorio activo o en el predeterminado para las especificaciones, listos para ser editados. | `funky phase explore` -> "📄 Template 'explore' inyectado!" |
+| `funky init` | Inicia el ecosistema Funky AI en el directorio actual. Genera el `PROJECT-CANVAS.md` interactivo, copia reglas de agente, `ORCHESTRATOR-STATE.md`, y una guía de planeación. | `funky init` -> "🚀 Funky Ecosystem inicializado!" |
+| `funky phase <nombre>` | Inyecta el template correspondiente a la fase SDD indicada en el directorio activo. | `funky phase explore` -> "📄 Template 'explore' inyectado!" |
+| `funky release <version>` | Genera las notas de release estandarizadas automáticamente basándose en templates. | `funky release v1.12.0` -> "🚀 Release Notes v1.12.0 creados" |
+| `funky assess` | Architecture Readiness Gate. Evalúa `docs/architecture-assessment.md` contra el motor de reglas y genera challenges para el LLM. | `funky assess` -> "✅ Arquitectura validada..." |
 
 ## Fases SDD Disponibles
 

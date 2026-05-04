@@ -61,38 +61,18 @@
 ## ✅ Tareas Completadas (v1.12)
 
 - [x] **001 Architecture Readiness Assessment:** Template de validación pre-desarrollo y motor de reglas CLI (`funky assess`) implementados.
+- [x] **Smoke Test v1.12.0:** Ejecutar un flujo real fuera de tests automatizados para validar `funky assess` y la correcta generación/copia del template `architecture-assessment.md` en un directorio virgen.
 
 ---
 
 ## ⏳ Tareas Pendientes
 
-- [ ] **Smoke Test v1.12.0:** Ejecutar un flujo real fuera de tests automatizados para validar `funky assess` y la correcta generación/copia del template `architecture-assessment.md` en un directorio virgen.
-
+- [ ] **007 Architecture Readiness v2 (Context Expansion):** Ampliar el template `architecture-assessment.md` con campos de NFRs duros (Compliance, Data Residency, Hosting Budget, Team Seniority) y refactorizar `funky assess` para que SIEMPRE genere el prompt de review AI, sirviendo como base para el Estimador de Costos. (Target: v1.13.0) → [Ver Proposal](./docs/openspec/proposals/007-architecture-readiness-v2.md)
 - [ ] **002 Calculadora de Presupuestos (Backlog):** Crear un template o script interactivo (`project-cost-estimator.md`) para calcular el costo/precio a cobrar por un proyecto freelance/agencia, cruzando características solicitadas por el cliente, NFRs, presupuesto de infraestructura y seniority del equipo. → [Ver Proposal](./docs/openspec/proposals/002-project-cost-estimator.md)
 - [ ] **003 Protocolo de Seguridad — Revisión de Repos Externos:** Crear un documento de protocolo (distinto de `secops.md`, que ya cubre npm) para auditar repos de GitHub, extensiones de VSCode y código de terceros. Incluye: detección de caracteres Unicode invisibles (Trojan Source), vectores de ejecución implícita en Python (import time / setup.py), y checklist para revisar repos ya clonados. → Contexto completo en [`docs/funky-ai/mierdilla/midudev.md` — Pendiente 1](./docs/funky-ai/mierdilla/midudev.md)
 - [ ] **004 Protocolo de Optimización por Tipo de Proyecto:** Definir estándares mínimos de optimización según el tipo de proyecto (frontend, backend, CLI, API), con límites explícitos de cuándo parar y un framework de tradeoff entre rendimiento, UX, DX y funcionalidad. → Contexto completo en [`docs/funky-ai/mierdilla/midudev.md` — Pendiente 2](./docs/funky-ai/mierdilla/midudev.md)
 - [ ] **005 Auditoría Legacy (Backlog):** Analizar el workspace del proyecto Next.js anterior. El objetivo es barrer el desastre de reglas/skills viejas, rescatar las decisiones arquitectónicas que eran joyas, y re-documentarlas usando el formato estructurado y liviano de Funky AI.
 - [ ] **006 Arquitectura SDD — Test Planning (Backlog)**: Diseñar e integrar una fase formal de "Test Planning" (ej. `test-plan.md` o mejora de `spec.md`). Debe ser agnóstica al framework y adaptarse a proyectos con o sin TDD estricto, mitigando puntos ciegos lógicos.
-- [x] **Cleanup de Archivos Huérfanos:** Hacer una auditoría y limpieza de archivos generados sueltos (como `report.md` u otros artifacts) en la raíz y en directorios obsoletos, para consolidarlos en el flujo estandarizado de `docs/openspec/changes/`.
-- [x] **Inclusión de Planning Guide en Scaffold:** Modificar `funky init` para que al ejecutarse copie automáticamente la guía de planeación (`canvas-planning-guide.md`) a la carpeta `docs/funky-ai/cli/` del nuevo workspace. (Fixeado en fase de pulido).
-- [x] **Fix Bug Crítico v1.7.0**: La función `runInit` sobreescribe el archivo `PROJECT-CANVAS.md` cuando se detecta el modo Headless (`canvasConfig.fromHeadless`). (Fixeado + TDD).
-- [x] **Auditoría de Inconsistencias**: Revisión exhaustiva completada. Se detectaron y mitigaron 3 vectores de falla destructivos y de UX en `init.js`.
-- [x] **Fix Template Sync Drift**: Script `sync-templates.js` creado y atado a `pretest`. Las reglas ahora se sincronizan automáticamente antes de cada test run. ✅
-- [x] **Fix Incomplete Scaffolding**: `init.js` ahora copia `plantilla-worker-handoff.md` al nuevo ecosistema. 17/17 tests en verde. ✅
-- [x] **Smoke Test v1.7.0 (Reintento Final)**: Ejecutar el flujo out-of-workspace completo luego de aplicar los fixes de scaffolding. (Aprobado en Escenarios v2).
-- [x] **Smoke Test v1.7.0 (Intento 1)**: ❌ CANCELADO. Se detectó bug destructivo en modo Headless mediante análisis de código previo a la ejecución.
-- [x] **Deuda Sistémica:** El template `funky-cli/src/templates/sdd/tasks.md` debe reforzar la Fase de Release con checklist explícito de README + release notes. El Orquestador volvió a omitirla en v1.6 a pesar de estar documentada en `[DISCOVERY][release-dod-gap]`.
-- [x] **Auditoría de Journey:** Levantar un Worker para actualizar `docs/funky-ai/journey` con los aprendizajes de TDD, arquitectura SDD y repasar los releases anteriores (v1.0 a v1.5) para asentar lecciones aprendidas.
-- [x] **v1.7 (Propuesta):** ✅ COMPLETADA — `funky init` genera `PROJECT-CANVAS.md` dinámico con modos interactivo y headless. Listo para merge y tag v1.7.0.
-- [x] **v1.7 Testing:** ✅ COMPLETADA — Unit tests + Integration tests implementados. 14/14 tests pasando.
-- [x] **Optimización del Memory Polling:** Comprobar que el agente efectivamente investigue en el engram cuando sea necesario, y auditar si `grep_search` consume demasiados tokens en archivos largos. Evaluar nuevas estrategias de búsqueda indexada o fragmentada (ya que no contamos con SQLite/vectores como Gentle AI) para no agotar la ventana de contexto.
-- [x] **Auditoría de Sobrecarga Cognitiva (Worker Handoff):** Revisar si las reglas globales y la documentación de orquestación (`sdd-orchestrator.md`, rules) saturan la ventana de contexto de los agentes. ✅ Completada (v1.8.0).
-- [x] **Agent DRY Pattern (Backlog v1.9.0):** Refactorizar el protocolo de Handoffs para evitar el síndrome del teléfono descompuesto en los LLMs. → Contexto en [`docs/openspec/archive/v1.9-agent-dry/agent-dry-handoffs.md`](./docs/openspec/archive/v1.9-agent-dry/agent-dry-handoffs.md)
-- [x] **Auditoría de Incongruencias Documentales:** Realizar un análisis robusto para detectar cualquier archivo legacy (ej. `sdd-proposal.md`), referencias a archivos deprecados (como `post-mortem.md`) e inconsistencias lógicas o choques entre las reglas/docs actuales y las versiones obsoletas del proyecto.
-- [x] **Actualización Estructural del README:** Actualizar el README principal para reflejar la nueva estructura de directorios resultante tras las auditorías y la limpieza de archivos huérfanos.
-- [x] **Fase 0 Automation — Branch Delegation (Target: v1.10.0):** El template `sdd-tasks.md` marca la Fase 0 (creación de branch) como tarea del "Humano", lo que lleva al Orquestador a omitirla sin enforcement. Rediseñar para que sea un Worker Tier 1 quien ejecute `git checkout -b` al inicio del ciclo. Objetivo: eliminar todo trabajo manual evitable del Router Humano y asegurar que ninguna feature arranque sin branch propia.
-- [x] **Templates de Release y README (Target: v1.10.0):** No existen templates canónicos para release notes ni para el README del proyecto. Cada release se construye observando versiones anteriores sin SSOT. Crear `funky-cli/src/templates/release.md` y `funky-cli/src/templates/README.md` siguiendo el estilo consolidado en v1.7–v1.9, e integrarlos al comando `funky phase` o a un nuevo comando `funky release`.
-
 
 ---
 

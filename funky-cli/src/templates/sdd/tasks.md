@@ -40,8 +40,10 @@
 > **Modelo recomendado:** Estándar (Pro Low / Sonnet) — requiere redacción y criterio.
 
 **🚨 CHECKLIST DOC-OPS (OBLIGATORIO - NO OMITIR):**
+- [ ] **Package.json:** Actualizar el campo `"version"` en `funky-cli/package.json` con la nueva versión.
 - [ ] **Release Notes:** Generar `docs/funky-ai/releases/vX.Y.Z-release.md` usando como base `funky-cli/src/templates/release.md`. *(SISTEMA: Redactar para consumo humano. IGNORAR Token Diet aquí).*
 - [ ] **README:** Actualizar `README.md` en la raíz del proyecto manteniéndolo como Architecture Hub (template: `funky-cli/src/templates/README.md`).
+- [ ] **CLI Docs:** SI la release incluyó nuevos comandos o flags, actualizar la tabla en `funky-cli/README.md`.
 - [ ] **Archivado:** Mover `docs/openspec/changes/{feature}/` → `docs/openspec/archive/{version}-{feature}/`.
 - [ ] **Proposals:** Revisar `docs/openspec/proposals/` para mover cualquier proposal/RFC que haya sido implementado hacia `docs/openspec/archive/`.
 - [ ] **Sincronización:** Actualizar `ORCHESTRATOR-STATE.md` (rama activa, estado estable, versión actualizada).
