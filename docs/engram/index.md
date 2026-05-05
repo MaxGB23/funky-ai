@@ -33,6 +33,7 @@
 | [openspec-backlog-lifecycle] | backlog/ → changes/ → archive/: mover items implementados al archive en el release |
 | [orchestrator-planning-checklist] | Enforcement al inicio del artefacto, no al final — Planning Checklist antes de delegar |
 | [assess-gate-context-expansion] | assess requiere prompt AI siempre; template exige NFRs (Hosting, Compliance, Seniority) |
+| [sdd-failure-forensics-007] | 4 fallas de sesión 007 clasificadas por mecanismo: gate ausente, ambigüedad semántica, Lost in Middle, naming bias. Todos los fixes aplicados en v1.14–1.15. |
 
 ## Bugfixes
 | Tag | Resumen |

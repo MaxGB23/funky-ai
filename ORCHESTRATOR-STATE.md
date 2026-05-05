@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v1.14.0
+- **Versión:** v1.15.0
 - **Rama activa:** `main`
 - **Última sesión:** 2026-05-05
-- **Estado:** ✅ Estable. Housekeeping de Proposals → RFCs completado. (v1.14.0)
+- **Estado:** ✅ Estable. Release v1.15.0 completada.
 
 ---
 
@@ -77,6 +77,12 @@
 
 ---
 
+## ✅ Tareas Completadas (v1.15)
+
+- [x] **008 Análisis Forense y Enforcement:** Análisis de las 4 fallas de la sesión 007 (enforcement-vs-documentation). Fixes estructurales aplicados a las reglas de orquestación, `tasks.md` (Agent DRY), y descubrimiento agregado al engrama (`[sdd-failure-forensics-007]`).
+
+---
+
 ## ⏳ Tareas Pendientes
 
 
@@ -115,3 +121,4 @@ Ninguno.
 | v1.12.0 | Architecture Readiness Gate: `funky assess` + motor de reglas (3 reglas MVP) + templates. |
 | v1.13.0 | Architecture Readiness v2 (Context Expansion) + NFR parsing. |
 | v1.14.0 | Housekeeping: Proposals migradas a RFCs con headers explícitos de draft. |
+| v1.15.0 | Enforcement Analysis: Fixes estructurales post sesión 007 y fortalecimiento del SDD. |
