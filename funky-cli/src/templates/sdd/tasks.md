@@ -37,33 +37,37 @@
 
 <MANDATORY_RELEASE_PROTOCOL>
 
-### FASE X — Release y Doc-Ops [T1 — Modelo Estándar]
-> **Objetivo:** Producir los artefactos de documentación de la release.
-> **Modelo recomendado:** Estándar (Pro Low / Sonnet) — requiere redacción y criterio.
+### FASE X — Doc-Ops [ORQUESTADOR — Inline, modelo actual]
+> **Objetivo:** Producir todos los artefactos de la release y ejecutar los archivados. El Orquestador lo hace inline mientras el contexto está fresco — no se delega a un Worker.
+> **Modelo:** El que está activo en la sesión actual (contexto ya cargado = cero transcripción).
 
 **🚨 CHECKLIST DOC-OPS (OBLIGATORIO - NO OMITIR):**
-- [ ] **Package.json:** Actualizar el campo `"version"` en `funky-cli/package.json` con la nueva versión.
-- [ ] **Release Notes:** Generar `docs/funky-ai/releases/vX.Y.Z-release.md` usando como base `funky-cli/src/templates/release.md`. *(SISTEMA: Redactar para consumo humano. IGNORAR Token Diet aquí).*
-- [ ] **README:** Actualizar `README.md` en la raíz del proyecto manteniéndolo como Architecture Hub (template: `funky-cli/src/templates/README.md`).
-- [ ] **CLI Docs:** SI la release incluyó nuevos comandos o flags, actualizar la tabla en `funky-cli/README.md`.
-- [ ] **Archivado:** Mover `docs/openspec/changes/{feature}/` → `docs/openspec/archive/{version}-{feature}/`.
-- [ ] **RFCs:** Revisar `docs/openspec/rfcs/` para mover cualquier RFC que haya sido implementado en esta release hacia `docs/openspec/archive/`. (`docs/openspec/proposals/` está deprecado — no usar).
-- [ ] **Sincronización:** Actualizar `ORCHESTRATOR-STATE.md` (rama activa, estado estable, versión actualizada).
+- [ ] **Release Notes:** Generar `docs/funky-ai/releases/vX.Y.Z-release.md` usando como base `funky-cli/src/templates/release.md`. *(Redactar para consumo humano. IGNORAR Token Diet aquí.)*
+- [ ] **README:** Actualizar `README.md` raíz manteniéndolo como Architecture Hub (template: `funky-cli/src/templates/README.md`).
+- [ ] **CLI Docs:** SI la release incluyó nuevos comandos o flags → actualizar tabla en `funky-cli/README.md`. Si no → `[OMITIDO: sin nuevos comandos]`.
+- [ ] **Package.json:** Bumpar `"version"` en `funky-cli/package.json` a la nueva versión.
+- [ ] **Archivado:** Mover `docs/openspec/changes/{feature}/` → `docs/openspec/archive/{version}-{feature}/`. Ejecutar AHORA (antes del Worker).
+- [ ] **RFCs:** Decidir qué RFCs fueron implementados en esta release → moverlos a `docs/openspec/archive/`. Ejecutar AHORA. (`proposals/` está deprecado — no usar).
+- [ ] **Sincronización:** Actualizar `ORCHESTRATOR-STATE.md` (versión, rama, estado estable).
+- [ ] **Preparar datos para Worker Git-Ops:** Declarar en el handoff: versión exacta, mensaje de commit, nombre del branch, mensaje del tag.
+
+> ⚠️ **Regla de oro:** Todo lo que requiere criterio o genera texto → Orquestador inline. Todo lo mecánico post-archivado → Worker Git-Ops.
 
 ---
 
-### FASE X+1 — Git-Ops [T1 — ⚡ Modelo Liviano]
-> **Objetivo:** Commit, merge, tag y push. Sin redacción, sin criterio — pura ejecución mecánica.
-> **Modelo recomendado:** Liviano (Flash / Haiku) — comandos sin ambigüedad, sin escritura creativa.
+### FASE X+1 — Git-Ops [Worker T1 — ⚡ Flash / Haiku]
+> **Objetivo:** Comandos git puros. Sin edición de archivos, sin redacción, sin decisiones.
+> **Modelo:** Flash / Haiku — el más liviano disponible. Si comete un error → documentar y PARAR.
+> **Prerequisito:** El Orquestador completó la Fase Doc-Ops y los archivados ya están ejecutados.
 
 **🚨 CHECKLIST GIT-OPS (OBLIGATORIO - NO OMITIR):**
-- [ ] **Verificar estado:** `git status` — confirmar que todos los archivos están listos.
-- [ ] **Commit:** `git add -A && git commit -m "feat: descripcion (vX.Y.Z)"`
-- [ ] **Merge:** `git checkout main && git merge --no-ff feat/vX.Y-{name}`
-- [ ] **Tag:** `git tag -a vX.Y.Z -m "release: vX.Y.Z"`
-- [ ] **Push:** `git push origin main --tags` (OBLIGATORIO usar `--tags` para asegurar que el tag se suba al remoto).
+- [ ] **Verificar estado:** `git status` — confirmar limpio. Si hay archivos inesperados → documentar y PARAR.
+- [ ] **Commit:** `git add -A && git commit -m "{mensaje declarado por Orquestador}"`
+- [ ] **Merge:** `git checkout main && git merge --no-ff {branch-declarado}`
+- [ ] **Tag:** `git tag -a {version} -m "{mensaje-declarado}"`
+- [ ] **Push:** `git push origin main --tags`
 
-> ⚠️ Esta fase NO produce artefactos de texto. Si algo falla, documentar el error en `sdd-report.md` y PARAR.
+> ⚠️ Esta fase NO edita archivos de texto. Solo ejecuta comandos git. Si algo falla → documentar en `sdd-report.md` y PARAR.
 
 
 </MANDATORY_RELEASE_PROTOCOL>
