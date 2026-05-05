@@ -35,6 +35,7 @@ Antes de escribir el primer `worker-handoff.md` o de decirle al humano qué pega
 
 | # | Verificación | Acción si falta |
 |---|-------------|-----------------|
+| 0 | ¿Existe `docs/openspec/changes/{feature}/`? | **Crear la carpeta ANTES de escribir cualquier artefacto.** Sin esta carpeta no hay campo de batalla aislado. |
 | 1 | ¿Ejecuté el Memory Polling Stage 1? | `view_file docs/engram/index.md` ahora |
 | 2 | ¿Generé un `worker-handoff.md` basado en el template canónico? | `view_file funky-cli/src/templates/sdd/worker-handoff.md` y crear el archivo |
 | 3 | ¿El `tasks.md` tiene `MANDATORY_RELEASE_PROTOCOL` completo? | Verificar secciones Doc-Ops y Git-Ops |
@@ -50,7 +51,7 @@ Antes de escribir el primer `worker-handoff.md` o de decirle al humano qué pega
 |---------|--------|
 | `/sdd-explore` | Crear `openspec/changes/{name}/sdd-explore.md` |
 | `/sdd-propose` | Crear `sdd-proposal.md` + `sdd-spec.md` en el mismo folder |
-| `/sdd-ff` | Crear `sdd-tasks.md` con fases ejecutables |
+| `/sdd-ff` | **PRERREQUISITO:** Verificar que existen `sdd-explore.md`, `sdd-proposal.md` **Y** `sdd-spec.md` en `openspec/changes/{name}/`. Si alguno falta → generarlo primero. Solo entonces crear `sdd-tasks.md`. |
 
 ## ⚠️ Protocolo Obligatorio — Generación de Worker Handoffs
 Antes de escribir CUALQUIER `worker-handoff.md`, el Orquestador DEBE:

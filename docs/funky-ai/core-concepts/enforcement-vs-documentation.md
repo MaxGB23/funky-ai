@@ -174,3 +174,120 @@ Si no podés responder si eso se cumple sistemáticamente, el protocolo no está
 > - `docs/engram/discoveries.md` → `[DISCOVERY][documentation-vs-enforcement]`
 > - `docs/funky-ai/core-concepts/testing-landscape.md` → Landscape de testing del ecosistema
 > - `docs/funky-ai/core-concepts/manifiesto.md` → Regla 3: El Engram se consulta ANTES de modificar
+> - `docs/issues/closed/sdd_deviations_report.md` → Caso de estudio: 4 fallas de la sesión 007
+
+---
+
+## Análisis Forense — Caso de Estudio: Sesión 007 (v1.15)
+
+> **Fuente:** `docs/issues/closed/sdd_deviations_report.md`  
+> **Contexto:** El Orquestador de la sesión 007 (Architecture Readiness v2) cometió 4 desviaciones estructurales **a pesar de que todas las instrucciones relevantes existían en el protocolo**. Este análisis mapea cada falla a su mecanismo subyacente y propone el enforcement correcto.
+
+### Metodología aplicada
+
+Para cada falla se responde la pregunta del documento: **¿cuál es el mecanismo que hace posible este error?** (no el síntoma — el mecanismo). Luego se clasifica el tipo de fix y se propone el enforcement.
+
+---
+
+### Falla 1 — Omisión de estructura de directorios (`changes/{feature}/`)
+
+**Síntoma:** El Orquestador propuso ejecución directa sin crear `docs/openspec/changes/007-architecture-readiness-v2/`.  
+**Mecanismo real:** El ciclo de vida de directorios (`backlog/ → changes/ → archive/`) **no aparece como paso explícito en ningún artefacto que el Orquestador lee al inicio de una tarea**. Está documentado en el engram, pero el Memory Polling es condicional (Stage 2) — el Orquestador solo lo busca si el índice lo señala como relevante.
+
+| Clasificación | Detalle |
+|---|---|
+| **Tipo de falla** | Ausencia de gate físico |
+| **Actor afectado** | Orquestador LLM |
+| **¿Documentado?** | Sí — en el engram (`[openspec-backlog-lifecycle]`) |
+| **¿Enforceado?** | No — no existe ningún paso obligatorio pre-planning |
+
+**Propuesta de enforcement:**  
+Agregar en `sdd-orchestrator.md`, dentro del Planning Checklist (línea 32), un ítem obligatorio:
+```
+| 0 | ¿Existe `docs/openspec/changes/{feature}/`? | Crear la carpeta ANTES de escribir cualquier artefacto |
+```
+Este ítem debe ser el primero, antes que el Memory Polling.
+
+---
+
+### Falla 2 — Omisión de `spec.md` (salto de Proposal a Tasks)
+
+**Síntoma:** El Orquestador pasó del borrador del RFC directamente a `tasks.md`, ignorando la fase de `spec.md`.  
+**Mecanismo real:** El comando `/sdd-ff` (Fast Forward) en `sdd-orchestrator.md` mapea a "Crear `sdd-tasks.md` con fases ejecutables" — **sin mencionar que `sdd-spec.md` es un prerrequisito**. El flujo de comandos no enforcea el orden. Además, el RFC tenía suficiente detalle técnico para que el Orquestador lo confundiera con un spec ya escrito.
+
+| Clasificación | Detalle |
+|---|---|
+| **Tipo de falla** | Ambigüedad semántica + Sesgo de framing |
+| **Actor afectado** | Orquestador LLM |
+| **¿Documentado?** | Parcialmente — el flujo `explore → proposal → spec → tasks` existe en el manifiesto |
+| **¿Enforceado?** | No — `/sdd-ff` no verifica prerrequisitos |
+
+**Propuesta de enforcement:**  
+Modificar la tabla de Comandos en `sdd-orchestrator.md`:
+```
+| `/sdd-ff` | PRERREQUISITO: verificar que existen `sdd-explore.md`, `sdd-proposal.md` Y `sdd-spec.md` en la carpeta. Si alguno falta → crearlo antes de tasks. |
+```
+Y en el header de `sdd-tasks.md` (generado por `funky phase`), agregar:
+```
+> ⚠️ VERIFICAR antes de usar: ¿Existe `sdd-spec.md` en esta carpeta? Si no existe, generarlo PRIMERO.
+```
+
+---
+
+### Falla 3 — Omisión del `worker-handoff.md`
+
+**Síntoma:** El Orquestador escribió el `tasks.md` y declaró el fin de la fase sin generar el handoff.  
+**Mecanismo real:** La instrucción de generar el handoff vive en `sdd-orchestrator.md` bajo `## Protocolo Obligatorio` (línea 55-59) — **después** de la tabla de Comandos. El Orquestador procesa los comandos y, al terminar el `tasks.md`, su directiva interna de "comunicar al humano" se dispara antes de llegar a esa sección. El Planning Checklist (línea 32) sí incluye la verificación del handoff, pero solo si el Orquestador lo lee en su totalidad antes de empezar — lo cual no está enforceado.
+
+| Clasificación | Detalle |
+|---|---|
+| **Tipo de falla** | Posición (Lost in the Middle) |
+| **Actor afectado** | Orquestador LLM |
+| **¿Documentado?** | Sí — en múltiples lugares |
+| **¿Enforceado?** | Parcialmente — el Planning Checklist existe pero su lectura no está garantizada |
+
+**Propuesta de enforcement:**  
+El Planning Checklist tiene el ítem correcto (item 2: generar handoff). El problema es que el Checklist se ejecuta **si el Orquestador lo lee completo antes de arrancar**. La solución es agregar un bloque `[SISTEMA]` al **final** de `tasks.md` (donde el Orquestador termina de escribir):
+```markdown
+> [SISTEMA — ORQUESTADOR] Antes de comunicar al humano:
+> 1. ¿Generaste `worker-handoff.md`? Si NO → generarlo ahora antes de cualquier instrucción al humano.
+> 2. Revisá el Planning Checklist en `sdd-orchestrator.md § Planning Checklist`.
+```
+Esto actúa como **Action Forcing post-escritura**: justo cuando el Orquestador termina el archivo y está a punto de cometer el error, se lo frenamos.
+
+---
+
+### Falla 4 — Sesgo de Framing: "Falso Proposal" induce madurez percibida
+
+**Síntoma:** Al encontrar un archivo llamado `proposal`, el Orquestador asumió que `explore` ya había ocurrido y arrancó desde `tasks`.  
+**Mecanismo real:** El nombre del directorio (`proposals/`) y la ausencia de un disclaimer en el documento actuaban como señales de madurez. Un LLM hace inferencias por naming convention — "proposal" en SDD es una fase avanzada. El RFC crudo con ese nombre heredaba esa madurez semiótica.
+
+| Clasificación | Detalle |
+|---|---|
+| **Tipo de falla** | Sesgo de framing (naming convention) |
+| **Actor afectado** | Orquestador LLM |
+| **¿Documentado?** | Sí — fue el insight que generó la Tarea 008 |
+| **¿Enforceado?** | ✅ Resuelto en v1.14 — carpeta renombrada a `rfcs/`, headers RFC explícitos |
+
+**Estado:** Fix aplicado. Esta falla ya no es posible con la nueva convención.
+
+---
+
+## Matriz de Enforcement — Estado Post-Análisis
+
+| Falla | Tipo | Fix propuesto | Estado |
+|---|---|---|---|
+| Omisión de `changes/{feature}/` | Gate físico ausente | Ítem 0 en Planning Checklist | ✅ v1.15 |
+| Salto Proposal → Tasks sin Spec | Ambigüedad + Framing | Prerrequisito en `/sdd-ff` + warning en `tasks.md` | ✅ v1.15 |
+| Omisión de `worker-handoff.md` | Posición (Lost in Middle) | Bloque `[SISTEMA]` al final de `tasks.md` | ✅ v1.15 |
+| Falso Proposal induce madurez | Naming convention | Renombrado a `rfcs/` + headers RFC | ✅ v1.14 |
+
+---
+
+## Próximos Pasos
+
+Los tres fixes pendientes son cambios quirúrgicos en dos archivos:
+- `m:\funky-ai\.agents\rules\sdd-orchestrator.md` — Planning Checklist + tabla de Comandos
+- `m:\funky-ai\funky-cli\src\templates\sdd\tasks.md` — Bloque `[SISTEMA]` al final + warning de spec
+
+Ninguno requiere un ciclo SDD completo. Son cambios inline que pueden aplicarse y luego validarse con el "protocolo de chat virgen" descrito en este documento.
