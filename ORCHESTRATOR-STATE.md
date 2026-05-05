@@ -85,17 +85,19 @@
 
 ## ⏳ Tareas Pendientes
 
-
+- [ ] **002 Calculadora de Presupuestos (Backlog):** Crear un template o script interactivo (`project-cost-estimator.md`) para calcular el costo/precio a cobrar por un proyecto freelance/agencia, cruzando características solicitadas por el cliente, NFRs, presupuesto de infraestructura y seniority del equipo. → [Ver RFC](./docs/openspec/rfcs/002-project-cost-estimator.md)
+- [ ] **006 Arquitectura SDD — Test Planning (Backlog)**: Diseñar e integrar una fase formal de "Test Planning" (ej. `test-plan.md` o mejora de `spec.md`). Debe ser agnóstica al framework y adaptarse a proyectos con o sin TDD estricto, mitigando puntos ciegos lógicos.
+- [ ] **009 Base Templates & Customization Guide (Backlog):** Refactorizar el comando `init` para inyectar templates agnósticos (no acoplados a CLIs) y crear una "Guía de Customización". Esta guía dictará cómo mutar plantillas iniciales (como `tasks.md`) basándose en las decisiones del Project Canvas y Arch-Assessment, evitando el antipatrón de usar presets rígidos. → [Ver RFC](./docs/openspec/rfcs/009-project-templates-and-customization.md)
 - [ ] **010 Auditoría de Estructura del Repo (Backlog):** Recorrer el repositorio carpeta por carpeta y producir un documento de mapa estructural con el rol, propósito y estado de cada directorio. El objetivo es detectar "carpetas fantasma" (directorios sin documentar o sin uso activo), validar que la estructura real coincida con lo documentado en el README y otros artefactos vitales, y establecer una línea base para futuros refactors de organización.
 - [ ] **011 Comando de Bootstrap de Prompts (Backlog):** Añadir un comando al CLI que genere los documentos del directorio `docs/prompts`. Es un comando de uso poco frecuente (ej. al configurar una nueva laptop), pero vital para asegurar que el entorno de IA (prompts globales y de backup) esté disponible inmediatamente en cualquier equipo de trabajo.
-- [ ] **006 Arquitectura SDD — Test Planning (Backlog)**: Diseñar e integrar una fase formal de "Test Planning" (ej. `test-plan.md` o mejora de `spec.md`). Debe ser agnóstica al framework y adaptarse a proyectos con o sin TDD estricto, mitigando puntos ciegos lógicos.
+
 - [ ] **003 Protocolo de Seguridad — Revisión de Repos Externos:** Crear un documento de protocolo (distinto de `secops.md`, que ya cubre npm) para auditar repos de GitHub, extensiones de VSCode y código de terceros. Incluye: detección de caracteres Unicode invisibles (Trojan Source), vectores de ejecución implícita en Python (import time / setup.py), y checklist para revisar repos ya clonados. → Contexto completo en [`docs/funky-ai/mierdilla/midudev.md` — Pendiente 1](./docs/funky-ai/mierdilla/midudev.md)
-- [ ] **009 Base Templates & Customization Guide (Backlog):** Refactorizar el comando `init` para inyectar templates agnósticos (no acoplados a CLIs) y crear una "Guía de Customización". Esta guía dictará cómo mutar plantillas iniciales (como `tasks.md`) basándose en las decisiones del Project Canvas y Arch-Assessment, evitando el antipatrón de usar presets rígidos. → [Ver RFC](./docs/openspec/rfcs/009-project-templates-and-customization.md)
 - [ ] **004 Protocolo de Optimización por Tipo de Proyecto:** Definir estándares mínimos de optimización según el tipo de proyecto (frontend, backend, CLI, API), con límites explícitos de cuándo parar y un framework de tradeoff entre rendimiento, UX, DX y funcionalidad. → Contexto completo en [`docs/funky-ai/mierdilla/midudev.md` — Pendiente 2](./docs/funky-ai/mierdilla/midudev.md)
-- [ ] **002 Calculadora de Presupuestos (Backlog):** Crear un template o script interactivo (`project-cost-estimator.md`) para calcular el costo/precio a cobrar por un proyecto freelance/agencia, cruzando características solicitadas por el cliente, NFRs, presupuesto de infraestructura y seniority del equipo. → [Ver RFC](./docs/openspec/rfcs/002-project-cost-estimator.md)
 - [ ] **005 Auditoría Legacy (Backlog):** Analizar el workspace del proyecto Next.js anterior. El objetivo es barrer el desastre de reglas/skills viejas, rescatar las decisiones arquitectónicas que eran joyas, y re-documentarlas usando el formato estructurado y liviano de Funky AI.
+- [ ] **012 Protocolo de Auto-Tiering del Orquestador (Backlog):** Implementar una fase de "Razonamiento Pre-Vuelo" donde el Orquestador analice el pedido del usuario contra la *Escalation Matrix* y declare su Tier de operación (T1/T2/T3) de forma autónoma antes de generar cualquier artefacto. Objetivo: reducir la micro-gestión humana y garantizar consistencia en el rigor documental.
 
 ---
+
 
 ## 🐛 Bugs Activos
 Ninguno.
