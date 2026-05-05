@@ -59,9 +59,10 @@
 - [ ] **Commit:** `git add -A && git commit -m "feat: descripcion (vX.Y.Z)"`
 - [ ] **Merge:** `git checkout main && git merge --no-ff feat/vX.Y-{name}`
 - [ ] **Tag:** `git tag -a vX.Y.Z -m "release: vX.Y.Z"`
-- [ ] **Push:** `git push origin main && git push origin vX.Y.Z`
+- [ ] **Push:** `git push origin main --tags` (OBLIGATORIO usar `--tags` para asegurar que el tag se suba al remoto).
 
 > ⚠️ Esta fase NO produce artefactos de texto. Si algo falla, documentar el error en `sdd-report.md` y PARAR.
+
 
 </MANDATORY_RELEASE_PROTOCOL>
 
