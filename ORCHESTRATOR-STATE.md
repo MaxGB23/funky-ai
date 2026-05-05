@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v1.13.0
+- **Versión:** v1.14.0
 - **Rama activa:** `main`
-- **Última sesión:** 2026-05-04
-- **Estado:** ✅ Estable. Architecture Readiness v2 (Context Expansion) implementado. (v1.13.0)
+- **Última sesión:** 2026-05-05
+- **Estado:** ✅ Estable. Housekeeping de Proposals → RFCs completado. (v1.14.0)
 
 ---
 
@@ -71,15 +71,21 @@
 
 ---
 
+## ✅ Tareas Completadas (v1.14)
+
+- [x] **008 Renombrar Proposals a RFCs:** `002-project-cost-estimator` migrado a `docs/openspec/rfcs/` con header de RFC explícito (warning de draft crudo). `007-gentle-sdd-tier4` archivado en `docs/openspec/archive/`. Links actualizados en `ORCHESTRATOR-STATE.md`. Issue cerrado.
+
+---
+
 ## ⏳ Tareas Pendientes
 
-- [ ] **008 Renombrar Proposals a RFCs en Backlog:** Modificar la nomenclatura de los documentos de features pendientes en `docs/openspec/proposals/` a borradores/data cruda (RFCs). Esto evitará que los Orquestadores frescos alucinen madurez en la feature y salten las fases de `explore` y `proposal` orgánicas. → [Ver Reporte](./docs/issues/open/sdd_deviations_report.md)
+
 - [ ] **010 Auditoría de Estructura del Repo (Backlog):** Recorrer el repositorio carpeta por carpeta y producir un documento de mapa estructural con el rol, propósito y estado de cada directorio. El objetivo es detectar "carpetas fantasma" (directorios sin documentar o sin uso activo), validar que la estructura real coincida con lo documentado en el README y otros artefactos vitales, y establecer una línea base para futuros refactors de organización.
 - [ ] **006 Arquitectura SDD — Test Planning (Backlog)**: Diseñar e integrar una fase formal de "Test Planning" (ej. `test-plan.md` o mejora de `spec.md`). Debe ser agnóstica al framework y adaptarse a proyectos con o sin TDD estricto, mitigando puntos ciegos lógicos.
 - [ ] **003 Protocolo de Seguridad — Revisión de Repos Externos:** Crear un documento de protocolo (distinto de `secops.md`, que ya cubre npm) para auditar repos de GitHub, extensiones de VSCode y código de terceros. Incluye: detección de caracteres Unicode invisibles (Trojan Source), vectores de ejecución implícita en Python (import time / setup.py), y checklist para revisar repos ya clonados. → Contexto completo en [`docs/funky-ai/mierdilla/midudev.md` — Pendiente 1](./docs/funky-ai/mierdilla/midudev.md)
 - [ ] **009 Base Templates & Customization Guide (Backlog):** Refactorizar el comando `init` para inyectar templates agnósticos (no acoplados a CLIs) y crear una "Guía de Customización". Esta guía dictará cómo mutar plantillas iniciales (como `tasks.md`) basándose en las decisiones del Project Canvas y Arch-Assessment, evitando el antipatrón de usar presets rígidos. → [Ver RFC](./docs/openspec/rfcs/009-project-templates-and-customization.md)
 - [ ] **004 Protocolo de Optimización por Tipo de Proyecto:** Definir estándares mínimos de optimización según el tipo de proyecto (frontend, backend, CLI, API), con límites explícitos de cuándo parar y un framework de tradeoff entre rendimiento, UX, DX y funcionalidad. → Contexto completo en [`docs/funky-ai/mierdilla/midudev.md` — Pendiente 2](./docs/funky-ai/mierdilla/midudev.md)
-- [ ] **002 Calculadora de Presupuestos (Backlog):** Crear un template o script interactivo (`project-cost-estimator.md`) para calcular el costo/precio a cobrar por un proyecto freelance/agencia, cruzando características solicitadas por el cliente, NFRs, presupuesto de infraestructura y seniority del equipo. → [Ver Proposal](./docs/openspec/proposals/002-project-cost-estimator.md)
+- [ ] **002 Calculadora de Presupuestos (Backlog):** Crear un template o script interactivo (`project-cost-estimator.md`) para calcular el costo/precio a cobrar por un proyecto freelance/agencia, cruzando características solicitadas por el cliente, NFRs, presupuesto de infraestructura y seniority del equipo. → [Ver RFC](./docs/openspec/rfcs/002-project-cost-estimator.md)
 - [ ] **005 Auditoría Legacy (Backlog):** Analizar el workspace del proyecto Next.js anterior. El objetivo es barrer el desastre de reglas/skills viejas, rescatar las decisiones arquitectónicas que eran joyas, y re-documentarlas usando el formato estructurado y liviano de Funky AI.
 
 ---
@@ -108,3 +114,4 @@ Ninguno.
 | v1.11.0 | Two-Stage Memory Polling con engram index. |
 | v1.12.0 | Architecture Readiness Gate: `funky assess` + motor de reglas (3 reglas MVP) + templates. |
 | v1.13.0 | Architecture Readiness v2 (Context Expansion) + NFR parsing. |
+| v1.14.0 | Housekeeping: Proposals migradas a RFCs con headers explícitos de draft. |

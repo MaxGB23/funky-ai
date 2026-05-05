@@ -1,6 +1,9 @@
-# Proposal: Project Cost & Pricing Estimator
+# RFC 002: Project Cost & Pricing Estimator
 
-**Estado:** 🟡 DRAFT (En definición)
+> ⚠️ **DRAFT CRUDO — No es un Proposal SDD formal.**
+> Este documento es un RFC (Request for Comments): una idea con suficiente detalle para iniciar un ciclo SDD completo (`explore` → `proposal` → `spec` → `tasks`). **No asumir que las fases previas ya ocurrieron.** El Orquestador DEBE arrancar desde `explore` cuando retome esta feature.
+
+**Estado:** 🔵 RFC / Draft Inicial
 **Autor:** Orquestador / Humano
 **Fecha:** 2026-05-02
 
@@ -14,7 +17,7 @@ El riesgo de no estandarizar esto es:
 - Ignorar los NFRs que dictan el costo de infraestructura.
 - Perder clientes por no saber justificar el precio basado en el valor (Value-Based Pricing).
 
-## 2. Propuesta de Solución
+## 2. Idea de Solución (Sin Validar)
 Crear un template o script interactivo (`project-cost-estimator.md`) dentro de la CLI de Funky AI. Este estimador recogerá variables clave del entorno, el cliente y el proyecto, y calculará (o ayudará a calcular) un rango de precio justo y profesional.
 
 El estimador deberá cruzar los siguientes factores:
@@ -34,11 +37,11 @@ El estimador deberá cruzar los siguientes factores:
 - **Tamaño e Ingresos de la Empresa:** Capacidad de pago real del cliente.
 - **Magnitud de la Solución:** ¿Cuánto dinero les va a ahorrar (o hacer ganar) esta pieza de software? (Ej: Si un bot les ahorra $10,000 al mes en sueldos, cobrar $500 por el bot es absurdo).
 
-## 3. Impacto y Visión a Futuro
+## 3. Impacto y Visión a Futuro (Sin Validar)
 - **Fase de impacto:** Pre-desarrollo (Ventas / Discovery).
 - **Visión:** Eventualmente, esta matriz matemática podrá exportarse a un frontend (SaaS o Web Tool comunitaria) con un formulario interactivo para que los desarrolladores aprendan a cobrar como profesionales Senior y Arquitectos, entendiendo los trade-offs de negocio.
 
-## 4. Tareas Iniciales para Implementación
-1. Diseñar el markdown estructurado `project-cost-estimator.md`.
-2. Validar las fórmulas de ajuste (pesos por país, multiplicadores por valor).
-3. Integrarlo como un documento opcional o fase de descubrimiento en `funky phase discovery`.
+## 4. Preguntas Abiertas (Para el Explore)
+1. ¿Esto vive dentro de `funky-cli` o es un artefacto Markdown standalone?
+2. ¿Las fórmulas de ajuste regional son viables de manera estática, o requieren datos externos (API)?
+3. ¿Cuál es el MVP mínimo que aporta valor real sin convertirse en un Excel glorificado?

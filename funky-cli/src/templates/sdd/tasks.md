@@ -45,7 +45,7 @@
 - [ ] **README:** Actualizar `README.md` en la raíz del proyecto manteniéndolo como Architecture Hub (template: `funky-cli/src/templates/README.md`).
 - [ ] **CLI Docs:** SI la release incluyó nuevos comandos o flags, actualizar la tabla en `funky-cli/README.md`.
 - [ ] **Archivado:** Mover `docs/openspec/changes/{feature}/` → `docs/openspec/archive/{version}-{feature}/`.
-- [ ] **Proposals:** Revisar `docs/openspec/proposals/` para mover cualquier proposal/RFC que haya sido implementado hacia `docs/openspec/archive/`.
+- [ ] **RFCs:** Revisar `docs/openspec/rfcs/` para mover cualquier RFC que haya sido implementado en esta release hacia `docs/openspec/archive/`. (`docs/openspec/proposals/` está deprecado — no usar).
 - [ ] **Sincronización:** Actualizar `ORCHESTRATOR-STATE.md` (rama activa, estado estable, versión actualizada).
 
 ---
