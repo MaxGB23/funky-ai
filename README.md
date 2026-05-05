@@ -65,19 +65,12 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 
 | Archivo | Propósito |
 |---|---|
-| [`docs/funky-ai/releases/v1.1.0-release.md`](./docs/funky-ai/releases/v1.1.0-release.md) | Release Notes oficiales de la v1.1.0 |
-| [`docs/funky-ai/releases/v1.2.0-release.md`](./docs/funky-ai/releases/v1.2.0-release.md) | Release Notes oficiales de la v1.2.0 |
-| [`docs/funky-ai/releases/v1.3.0-release.md`](./docs/funky-ai/releases/v1.3.0-release.md) | Release Notes oficiales de la v1.3.0 |
-| [`docs/funky-ai/releases/v1.4.0-release.md`](./docs/funky-ai/releases/v1.4.0-release.md) | Release Notes oficiales de la v1.4.0 |
-| [`docs/funky-ai/releases/v1.5.0-release.md`](./docs/funky-ai/releases/v1.5.0-release.md) | Release Notes oficiales de la v1.5.0 |
-| [`docs/funky-ai/releases/v1.6.0-release.md`](./docs/funky-ai/releases/v1.6.0-release.md) | Release Notes oficiales de la v1.6.0 (TDD + CI) |
-| [`docs/funky-ai/releases/v1.7.0-release.md`](./docs/funky-ai/releases/v1.7.0-release.md) | Release Notes oficiales de la v1.7.0 (Project Canvas) |
-| [`docs/funky-ai/releases/v1.8.0-release.md`](./docs/funky-ai/releases/v1.8.0-release.md) | Release Notes oficiales de la v1.8.0 (Token Diet & Action Forcing) |
-| [`docs/funky-ai/releases/v1.9.0-release.md`](./docs/funky-ai/releases/v1.9.0-release.md) | Release Notes oficiales de la v1.9.0 (Agent DRY Pattern) |
-| [`docs/funky-ai/releases/v1.10.0-release.md`](./docs/funky-ai/releases/v1.10.0-release.md) | Release Notes oficiales de la v1.10.0 (Automation & Templates) |
-| [`docs/funky-ai/releases/v1.11.0-release.md`](./docs/funky-ai/releases/v1.11.0-release.md) | Release Notes oficiales de la v1.11.0 (Two-Stage Memory Polling) |
-| [`docs/funky-ai/releases/v1.12.0-release.md`](./docs/funky-ai/releases/v1.12.0-release.md) | Release Notes oficiales de la v1.12.0 (Architecture Readiness Gate) |
-| [`docs/funky-ai/releases/v1.13.0-release.md`](./docs/funky-ai/releases/v1.13.0-release.md) | Release Notes oficiales de la v1.13.0 (Architecture Readiness v2 — NFRs) |
+| [`v1.13.0-release.md`](./docs/funky-ai/releases/v1.13.0-release.md) | ⭐ **Actual** — Architecture Readiness v2 (NFRs obligatorios en `funky assess`) |
+| [`v1.12.0-release.md`](./docs/funky-ai/releases/v1.12.0-release.md) | Architecture Readiness Gate — nuevo comando `funky assess` |
+| [`v1.11.0-release.md`](./docs/funky-ai/releases/v1.11.0-release.md) | Two-Stage Memory Polling con índice liviano |
+
+> 📂 [Ver historial completo de releases](./docs/funky-ai/releases/)
+
 
 ---
 
