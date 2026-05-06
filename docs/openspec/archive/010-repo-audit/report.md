@@ -26,3 +26,9 @@ Remove-Item -Path "docs\github-logs" -Recurse -Force
 ## Artefactos Generados
 - `docs/repo-map.md` con la taxonomía oficial de directorios y su estado.
 - `raw-tree.txt` (temporal) usado para la inferencia.
+
+## Fase 5 — Deep-Dive y Resolución
+- **Status:** ✅ Completada
+- **Resolución de Testing:** Los archivos `assess.test.js` y `assessRules.test.js` en `funky-cli/test/` eran complementarios a la batería principal. Fueron movidos exitosamente a `funky-cli/tests/` y la carpeta `test/` fue eliminada para evitar redundancia.
+- **Archivos Mapeados:** Se escanearon 8 subdirectorios dentro de `docs/funky-ai/` (`auditoria-gentle-ai`, `core-concepts`, `guias`, `journey`, `mierdilla`, `releases`, `retrospectivas-lecciones`, `workflows`) y se añadieron como un nuevo nivel de detalle al `repo-map.md`. Adicionalmente, se preservó `gentle-ai` moviéndola a `docs/archive/gentle-ai/` y se marcó `github-logs/` como Activo (Standby) por su utilidad de fallback.
+- **Próxima acción:** Instruir al humano a regresar al Orquestador con el reporte final.

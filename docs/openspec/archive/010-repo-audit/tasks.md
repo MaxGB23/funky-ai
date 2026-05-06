@@ -21,3 +21,10 @@
 - [x] Actualizar el `ORCHESTRATOR-STATE.md`, moviendo la tarea **010** a la sección de "Tareas Completadas" de la versión correspondiente o actual.
 - [x] Extraer cualquier descubrimiento útil al engram (`docs/engram/discoveries.md`).
 - [x] Instruir al usuario a regresar al Orquestador con el reporte listo.
+
+## Fase 5 — Deep-Dive y Resolución de Conflictos (Análisis Humano)
+- [x] Escanear en detalle el directorio `docs/funky-ai/`. Identificar sus subdirectorios/archivos clave y agregarlos como un nuevo nivel de detalle en `docs/repo-map.md`.
+- [x] Analizar el código de `funky-cli/test/` vs `funky-cli/tests/`. Determinar si los tests son redundantes o complementarios. Proponer el plan exacto para unificarlos en `tests/` sin romper nada en el mergeo.
+- [x] Archivar `docs/gentle-ai/` moviéndolo a `docs/archive/gentle-ai/` (crear el directorio si no existe) para preservarlo sin que contamine la raíz de docs.
+- [x] Validar que `docs/github-logs/` esté correctamente documentado como directorio activo de logs en el mapa.
+- [x] Actualizar el `report.md` con los resultados de esta fase.

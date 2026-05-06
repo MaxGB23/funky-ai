@@ -81,6 +81,7 @@
 
 - [x] **008 Análisis Forense y Enforcement:** Análisis de las 4 fallas de la sesión 007 (enforcement-vs-documentation). Fixes estructurales aplicados a las reglas de orquestación, `tasks.md` (Agent DRY), y descubrimiento agregado al engrama (`[sdd-failure-forensics-007]`).
 - [x] **010 Auditoría de Estructura del Repo:** Repo escaneado, generado `docs/repo-map.md`. Propuestas de limpieza de carpetas legacy (`gentle-ai`, `github-logs`) y consolidación de testing (`test` en `tests`).
+- [x] **014 Reestructuración de Documentación:** Consolidación de 7 carpetas dispersas en 5 pilares semánticos (`conceptos`, `guias`, `operaciones`, `historico`, `drafts`) y actualización de `repo-map.md`.
 
 ---
 
