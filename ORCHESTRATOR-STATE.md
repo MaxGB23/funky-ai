@@ -15,65 +15,16 @@
 
 ## 📂 Archivos Clave
 
-| Archivo | Rol |
+| Archivo / Directorio | Rol |
 |---------|-----|
-| `funky-cli/src/commands/init.js` | Comando `funky init` — copia ecosystem bootstrap |
-| `funky-cli/src/commands/phase.js` | Comando `funky phase <nombre>` — inyecta templates SDD |
-| `funky-cli/src/templates/bootstrap/` | Templates canónicos v1.4 que `init` copia |
-| `funky-cli/src/templates/sdd/` | Templates del ciclo SDD que `phase` inyecta |
-| `funky-cli/src/templates/sdd/worker-handoff.md` | Template oficial del patrón Worker Handoff |
-| `funky-cli/src/utils/canvas.js` | Función pura `generateCanvasMarkdown(config)` — Motor del Project Canvas |
-| `docs/engram/index.md` | Índice liviano Two-Stage Polling |
-| `docs/engram/discoveries.md` | Memoria de descubrimientos arquitectónicos |
-| `docs/engram/bugfixes.md` | Memoria de bugs y fixes |
-| `docs/funky-ai/releases/v1.7.0-release.md` | Release notes oficiales de v1.7 |
-| `docs/post-mortem.md` | DEPRECATED — apunta al sharded engram |
-
----
-
-## ✅ Tareas Completadas (v1.5)
-
-- [x] Fase 1 — Templates SDD enriquecidos y con Doc-Ops
-- [x] Fase 2 — CLI README creado
-- [x] Fase 3 — Deuda de Release remediada
-- [x] Fase 4 — Tag v1.5.0 creado
-
----
-
-## ✅ Tareas Completadas (v1.6)
-
-- [x] Fase 0 — Feature branch `feat/v1.6-tdd-ci` creada
-- [x] Fase 1 — Setup Core TDD (Vitest)
-- [x] Fase 2 — Refactor de comandos para testabilidad + 10/10 tests
-- [x] Fase 3 — GitHub Actions CI Pipeline
-- [x] Fase 4 — Tag v1.6.0 creado, merge a `main`
-
-## ✅ Tareas Completadas (v1.7)
-
-- [x] Fase 0 — Rama `feat/v1.7-project-canvas` creada
-- [x] Fase 1 — Motor de Generación `generateCanvasMarkdown` + Unit Tests
-- [x] Fase 2 — Refactor `runInit` + Integration Tests contra disco real
-- [x] Fase 3 — CLI Interactivo con `@clack/prompts` (flujo dual Headless/Interactivo)
-- [x] Fase 4 — Tests 14/14 ✅, README bumped a v1.7.0, Release Notes creadas, Deuda Sistémica saldada
-
----
-
-## ✅ Tareas Completadas (v1.12)
-
-- [x] **001 Architecture Readiness Assessment:** Template de validación pre-desarrollo y motor de reglas CLI (`funky assess`) implementados.
-- [x] **Smoke Test v1.12.0:** Ejecutar un flujo real fuera de tests automatizados para validar `funky assess` y la correcta generación/copia del template `architecture-assessment.md` en un directorio virgen.
-
----
-
-## ✅ Tareas Completadas (v1.13)
-
-- [x] **007 Architecture Readiness v2 (Context Expansion):** Ampliada evaluación arquitectónica con NFRs (Compliance, Data Residency, Hosting Budget) e integración obligatoria de IA en CLI. (v1.13.0)
-
----
-
-## ✅ Tareas Completadas (v1.14)
-
-- [x] **008 Renombrar Proposals a RFCs:** `002-project-cost-estimator` migrado a `docs/openspec/rfcs/` con header de RFC explícito (warning de draft crudo). `007-gentle-sdd-tier4` archivado en `docs/openspec/archive/`. Links actualizados en `ORCHESTRATOR-STATE.md`. Issue cerrado.
+| `funky-cli/src/commands/` | Lógica core del CLI (`init`, `phase`) |
+| `funky-cli/src/templates/sdd/` | Templates inyectables del ciclo SDD (ej. `worker-handoff.md`) |
+| `funky-cli/src/utils/canvas.js` | Motor del Project Canvas (`generateCanvasMarkdown`) |
+| `docs/repo-map.md` | Mapa estructural oficial del repositorio (Fuente de la verdad) |
+| `docs/engram/` | Memoria persistente Two-Stage (`index`, `discoveries`, `bugfixes`) |
+| `docs/funky-ai/conceptos/` | Fundamentos del framework (Manifiesto, reglas base) |
+| `docs/funky-ai/historico/` | Cápsula del tiempo (Releases, Journey, Retrospectivas) |
+| `docs/openspec/changes/` | Zona activa de ejecución de features del ciclo SDD |
 
 ---
 
@@ -93,8 +44,8 @@
 - [ ] **011 Comando de Bootstrap de Prompts (Backlog):** Añadir un comando al CLI que genere los documentos del directorio `docs/prompts`. Es un comando de uso poco frecuente (ej. al configurar una nueva laptop), pero vital para asegurar que el entorno de IA (prompts globales y de backup) esté disponible inmediatamente en cualquier equipo de trabajo.
 - [ ] **013 Comando de Generación Dinámica de Árbol (Backlog):** Crear una tool o comando (ej. `funky tree`) que recorra el repositorio y genere un mapa detallado archivo-por-archivo, infiriendo el propósito a través de comentarios o cabeceras. Previene el *Doc Rot* al eliminar la necesidad de mapas estáticos. → [Ver RFC](./docs/openspec/rfcs/013-dynamic-repo-tree.md)
 
-- [ ] **003 Protocolo de Seguridad — Revisión de Repos Externos:** Crear un documento de protocolo (distinto de `secops.md`, que ya cubre npm) para auditar repos de GitHub, extensiones de VSCode y código de terceros. Incluye: detección de caracteres Unicode invisibles (Trojan Source), vectores de ejecución implícita en Python (import time / setup.py), y checklist para revisar repos ya clonados. → Contexto completo en [`docs/funky-ai/mierdilla/midudev.md` — Pendiente 1](./docs/funky-ai/mierdilla/midudev.md)
-- [ ] **004 Protocolo de Optimización por Tipo de Proyecto:** Definir estándares mínimos de optimización según el tipo de proyecto (frontend, backend, CLI, API), con límites explícitos de cuándo parar y un framework de tradeoff entre rendimiento, UX, DX y funcionalidad. → Contexto completo en [`docs/funky-ai/mierdilla/midudev.md` — Pendiente 2](./docs/funky-ai/mierdilla/midudev.md)
+- [ ] **003 Protocolo de Seguridad — Revisión de Repos Externos:** Crear un documento de protocolo (distinto de `secops.md`, que ya cubre npm) para auditar repos de GitHub, extensiones de VSCode y código de terceros. Incluye: detección de caracteres Unicode invisibles (Trojan Source), vectores de ejecución implícita en Python (import time / setup.py), y checklist para revisar repos ya clonados. → Contexto completo en [`docs/funky-ai/drafts/midudev.md` — Pendiente 1](./docs/funky-ai/drafts/midudev.md)
+- [ ] **004 Protocolo de Optimización por Tipo de Proyecto:** Definir estándares mínimos de optimización según el tipo de proyecto (frontend, backend, CLI, API), con límites explícitos de cuándo parar y un framework de tradeoff entre rendimiento, UX, DX y funcionalidad. → Contexto completo en [`docs/funky-ai/drafts/midudev.md` — Pendiente 2](./docs/funky-ai/drafts/midudev.md)
 - [ ] **005 Auditoría Legacy (Backlog):** Analizar el workspace del proyecto Next.js anterior. El objetivo es barrer el desastre de reglas/skills viejas, rescatar las decisiones arquitectónicas que eran joyas, y re-documentarlas usando el formato estructurado y liviano de Funky AI.
 - [ ] **012 Protocolo de Auto-Tiering del Orquestador (Backlog):** Implementar una fase de "Razonamiento Pre-Vuelo" donde el Orquestador analice el pedido del usuario contra la *Escalation Matrix* y declare su Tier de operación (T1/T2/T3) de forma autónoma antes de generar cualquier artefacto. Objetivo: reducir la micro-gestión humana y garantizar consistencia en el rigor documental.
 Tambien ver la manera de que el orquestador no se salte el paso de crear el handoff.
