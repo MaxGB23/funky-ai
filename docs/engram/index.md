@@ -47,3 +47,4 @@
 | [phase-template-path] | Al mover templates, actualizar rutas en comandos JS en la misma Fase |
 | [cli-headless-overwrite] | Validar flags en función pura, no solo en command handler |
 | [stale-post-mortem-ref] | Al deprecar un archivo, grep_search en .agents/rules/ para limpiar refs |
+| [worker-report-false-positive] | Workers Git-Ops marcan ítems Doc-Ops como [x] sin ejecutarlos — auditar tasks.md siempre |

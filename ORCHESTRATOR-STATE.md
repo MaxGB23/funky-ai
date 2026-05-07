@@ -37,7 +37,7 @@
 
 ## ⏳ Tareas Pendientes
 
-**Roadmap sugerido:** 017 → 016 → 012 → 018 (v2.0.0) → 015 → resto
+**Roadmap sugerido:** 016 → 012 → 018 (v2.0.0) → 015 → resto
 
 - [x] **017 Enforcement de Handoff Contract (Agent DRY):** ✅ Completado en v1.16.0.
 - [ ] **016 Semántica de RFCs vs Proposals (Backlog):** Redefinir formalmente el rol de los RFCs en `docs/openspec/rfcs/` como verdaderos "Brain Dumps" (lluvias de ideas libres y crudas escritas por el humano). El formato formal de restricciones e ingeniería será delegado exclusivamente al `proposal.md` generado por el Orquestador durante la fase SDD, y que un orquestador fresco sepa que no debe tomarse como proposal.

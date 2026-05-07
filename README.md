@@ -1,8 +1,8 @@
-# 👻 Funky AI v1.15.0: Índice y Mapa de Navegación
+# 👻 Funky AI v1.16.0: Índice y Mapa de Navegación
 
 Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia Artificial que te permite emular redes asíncronas de agentes (SDD) usando recursos manuales y archivos físicos locales sobre el IDE Antigravity.
 
-> **🚀 Estado del Arte (v1.15.0):** El núcleo de Funky AI ha evolucionado. El CLI incorpora el **Architecture Readiness Gate** (`funky assess`), una barrera determinística que evalúa decisiones de infraestructura, bases de datos y concurrencia antes de arrancar cualquier feature. Desde v1.11.0 el sistema usa **Two-Stage Memory Polling** con índice liviano para controlar el costo de tokens del engram a escala. El proceso de release está dividido en Doc-Ops y Git-Ops con hints de modelo, respaldado por **TDD (Vitest)**, un **pipeline de CI (GitHub Actions)** y el **Agent DRY Pattern**. Además, se han fortalecido las reglas de orquestación con enforcement estructural post-análisis forense.
+> **🚀 Estado del Arte (v1.16.0):** El núcleo de Funky AI ha evolucionado. El CLI incorpora el **Architecture Readiness Gate** (`funky assess`), una barrera determinística que evalúa decisiones de infraestructura, bases de datos y concurrencia antes de arrancar cualquier feature. Desde v1.11.0 el sistema usa **Two-Stage Memory Polling** con índice liviano para controlar el costo de tokens del engram a escala. El proceso de release está dividido en Doc-Ops y Git-Ops con hints de modelo, respaldado por **TDD (Vitest)**, un **pipeline de CI (GitHub Actions)** y el **Agent DRY Pattern**. Las reglas de orquestación incluyen enforcement estructural post-análisis forense y, desde v1.16.0, un **Return Statement bloqueante** (gates G1/G2/G3) que garantiza que el `worker-handoff.md` siempre se genere antes de delegar.
 
 > **🛡️ CI Status:** ![CI](https://github.com/MaxGB23/funky-ai/actions/workflows/ci.yml/badge.svg)
 
@@ -65,7 +65,8 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 
 | Archivo | Propósito |
 |---|---|
-| [`v1.15.0-release.md`](./docs/funky-ai/releases/v1.15.0-release.md) | ⭐ **Actual** — Enforcement Analysis & Housekeeping (v1.14.0 + v1.15.0) |
+| [`v1.16.0-release.md`](./docs/funky-ai/releases/v1.16.0-release.md) | ⭐ **Actual** — Handoff Enforcement: Return Statement G1/G2/G3 + prerequisito `view_file tasks.md` en `/sdd-ff` |
+| [`v1.15.0-release.md`](./docs/funky-ai/releases/v1.15.0-release.md) | Enforcement Analysis & Housekeeping (v1.14.0 + v1.15.0) |
 | [`v1.13.0-release.md`](./docs/funky-ai/releases/v1.13.0-release.md) | Architecture Readiness v2 (NFRs obligatorios en `funky assess`) |
 | [`v1.12.0-release.md`](./docs/funky-ai/releases/v1.12.0-release.md) | Architecture Readiness Gate — nuevo comando `funky assess` |
 
