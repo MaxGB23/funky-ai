@@ -37,9 +37,8 @@ Antes de escribir el primer `worker-handoff.md` o de decirle al humano qué pega
 |---|-------------|-----------------|
 | 0 | ¿Existe `docs/openspec/changes/{feature}/`? | **Crear la carpeta ANTES de escribir cualquier artefacto.** Sin esta carpeta no hay campo de batalla aislado. |
 | 1 | ¿Ejecuté el Memory Polling Stage 1? | `view_file docs/engram/index.md` ahora |
-| 2 | ¿Generé un `worker-handoff.md` basado en el template canónico? | `view_file funky-cli/src/templates/sdd/worker-handoff.md` y crear el archivo |
-| 3 | ¿El `tasks.md` tiene `MANDATORY_RELEASE_PROTOCOL` completo? | Verificar secciones Doc-Ops y Git-Ops |
-| 4 | ¿El Tier del Worker está declarado (T1/T2/T3)? | Completar campo en el `worker-handoff.md` |
+| 2 | ¿El `tasks.md` tiene `MANDATORY_RELEASE_PROTOCOL` completo? | Verificar secciones Doc-Ops y Git-Ops |
+| 3 | ¿El Tier del Worker está declarado (T1/T2/T3)? | Completar campo en el `worker-handoff.md` |
 
 > 🔴 **Si cualquier ítem es NO → no delegues. Completalo primero.** Un Orquestador que delega sin estos 4 ítems rompe el protocolo y hace al Worker ciego.
 
@@ -51,7 +50,7 @@ Antes de escribir el primer `worker-handoff.md` o de decirle al humano qué pega
 |---------|--------|
 | `/sdd-explore` | Crear `openspec/changes/{name}/sdd-explore.md` |
 | `/sdd-propose` | Crear `sdd-proposal.md` + `sdd-spec.md` en el mismo folder |
-| `/sdd-ff` | **PRERREQUISITO:** Verificar que existen `sdd-explore.md`, `sdd-proposal.md` **Y** `sdd-spec.md` en `openspec/changes/{name}/`. Si alguno falta → generarlo primero. Solo entonces crear `sdd-tasks.md`. |
+| `/sdd-ff` | **PRERREQUISITO:** Verificar que existen `sdd-explore.md`, `sdd-proposal.md` **Y** `sdd-spec.md` en `openspec/changes/{name}/`. Si alguno falta → generarlo primero. **LUEGO:** `ACTION: Execute view_file on funky-cli/src/templates/sdd/tasks.md`. Solo entonces crear `sdd-tasks.md`. |
 
 ## ⚠️ Protocolo Obligatorio — Generación de Worker Handoffs
 Antes de escribir CUALQUIER `worker-handoff.md`, el Orquestador DEBE:
@@ -59,9 +58,20 @@ Antes de escribir CUALQUIER `worker-handoff.md`, el Orquestador DEBE:
 2. Usar ese template como base. NO redactar desde cero.
 3. Completar `Tier [⚠️ COMPLETAR: T1 / T2 / T3]` con el valor correcto según la Escalation Matrix.
 
-## Protocolo de Delegación (MANDATORY)
-Cuando el plan esté en disco, PARAR y decir:
-> "El plan está listo. Cerrá este chat, abrí uno nuevo y decime: `@docs/openspec/changes/{name}/worker-handoff.md Ejecutá la Fase N`."
+## 🔴 Return Statement — Delegación (MANDATORY — BLOCKING)
+
+El Orquestador NO puede emitir el prompt de delegación sin verificar este Pre-Gate:
+
+| # | Verificación | Si falla |
+|---|-------------|----------|
+| G1 | `worker-handoff.md` existe en `openspec/changes/{name}/` | Generarlo AHORA (ver §Protocolo Obligatorio) |
+| G2 | El campo `Tier [⚠️ COMPLETAR]` fue reemplazado por T1, T2 o T3 | Completarlo AHORA |
+| G3 | §1.C del handoff tiene la ruta exacta del `sdd-tasks.md` de esta feature | Completarlo AHORA |
+
+> 🔴 Si G1, G2 o G3 fallan → NO emitas el prompt. Corregí primero. Solo entonces:
+
+> "El plan está listo. Cerrá este chat, abrí uno nuevo y decime:
+> `@docs/openspec/changes/{name}/worker-handoff.md Ejecutá la Fase N`."
 
 ## ⚡ T1 Phase Batching (Optimización)
 Podés combinar múltiples fases en un único Worker si se cumplen las TRES condiciones:
