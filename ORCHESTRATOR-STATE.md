@@ -48,8 +48,9 @@
 - [ ] **004 Protocolo de Optimización por Tipo de Proyecto:** Definir estándares mínimos de optimización según el tipo de proyecto (frontend, backend, CLI, API), con límites explícitos de cuándo parar y un framework de tradeoff entre rendimiento, UX, DX y funcionalidad. → Contexto completo en [`docs/funky-ai/drafts/midudev.md` — Pendiente 2](./docs/funky-ai/drafts/midudev.md)
 - [ ] **005 Auditoría Legacy (Backlog):** Analizar el workspace del proyecto Next.js anterior. El objetivo es barrer el desastre de reglas/skills viejas, rescatar las decisiones arquitectónicas que eran joyas, y re-documentarlas usando el formato estructurado y liviano de Funky AI.
 - [ ] **012 Protocolo de Auto-Tiering del Orquestador (Backlog):** Implementar una fase de "Razonamiento Pre-Vuelo" donde el Orquestador analice el pedido del usuario contra la *Escalation Matrix* y declare su Tier de operación (T1/T2/T3) de forma autónoma antes de generar cualquier artefacto. Objetivo: reducir la micro-gestión humana y garantizar consistencia en el rigor documental.
-Tambien ver la manera de que el orquestador no se salte el paso de crear el handoff.
-
+- [ ] **015 Protocolos On-Demand (Skills Inyectables) (Backlog):** Crear un mecanismo (ej. `.agents/skills/protocols/sdd-reviewer.md`) para protocolos de uso específico que no inflen el prompt global. Permite al humano invocar roles especializados (ej. "Abogado del Diablo" para auditar inconsistencias lógicas en un plan) solo cuando el escenario lo amerita, evitando el "Context Dilution".
+- [ ] **016 Semántica de RFCs vs Proposals (Backlog):** Redefinir formalmente el rol de los RFCs en `docs/openspec/rfcs/` como verdaderos "Brain Dumps" (lluvias de ideas libres y crudas escritas por el humano). El formato formal de restricciones e ingeniería será delegado exclusivamente al `proposal.md` generado por el Orquestador durante la fase SDD, y que un orquestador fresco sepa que no debe tomarse como proposal.
+- [ ] **017 Enforcement de Handoff Contract (Agent DRY) (Backlog):** Aplicar restricciones de salida (Action Forcing) en `.agents/rules/sdd-orchestrator.md` para evitar que el Orquestador se saltee la generación del `worker-handoff.md`. El Handoff debe configurarse como el "Return Statement" ineludible que cierra la fase de orquestación.
 ---
 
 
