@@ -167,3 +167,9 @@ Aquí se registran los hallazgos técnicos y arquitectónicos que moldean el fut
 **Why:** Los Orquestadores priorizan la creación de nueva estructura y evitan la eliminación destructiva a menos que se les ordene explícitamente. Esto causa bloat de contexto y ambigüedad.
 **Where:** Directorios raíz y subdirectorios de documentación.
 **Learned:** Todo refactor mayor o migración debe incluir obligatoriamente una sub-tarea explícita de "Hard Cleanup" (eliminación de los artefactos viejos) en su respectivo `tasks.md`. No confiar en limpiezas orgánicas.
+
+### [DISCOVERY][handoff-as-return-statement] El worker-handoff.md como único Return Statement válido
+**What:** El "Protocolo de Delegación" en `sdd-orchestrator.md` usaba la condición vaga "cuando el plan esté en disco" como trigger de salida. Esto permitía al Orquestador emitir el prompt de delegación sin haber generado el `worker-handoff.md`, dejando al Worker ciego.
+**Why:** La condición ambigua dejaba al modelo libre de interpretar que `sdd-tasks.md` era suficiente. Además, el comando `/sdd-ff` no tenía un prerequisito explícito de leer el template canónico `tasks.md` antes de generarlo — a diferencia del handoff, que sí lo tenía. Descubierto durante la planificación del pendiente 017.
+**Where:** `.agents/rules/sdd-orchestrator.md` — sección "Return Statement" y tabla de comandos `/sdd-ff`.
+**Learned:** (1) El `worker-handoff.md` es el **único Return Statement válido** de la fase de orquestación — sin él, la fase no está completa. (2) El enforcement estructural (gate bloqueante G1/G2/G3) es más robusto que documentar el paso en un checklist post-hoc. (3) Cualquier comando que genere un artefacto de plantilla debe tener como prerequisito explícito `view_file` del template canónico correspondiente. Ref: `[documentation-vs-enforcement]`, `[orchestrator-planning-checklist]`.

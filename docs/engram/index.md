@@ -35,6 +35,7 @@
 | [assess-gate-context-expansion] | assess requiere prompt AI siempre; template exige NFRs (Hosting, Compliance, Seniority) |
 | [sdd-failure-forensics-007] | 4 fallas de sesión 007 clasificadas por mecanismo: gate ausente, ambigüedad semántica, Lost in Middle, naming bias. Todos los fixes aplicados en v1.14–1.15. |
 | [release-actor-split] | Doc-Ops = Orquestador inline (criterio + archivados). Git-Ops = Worker Flash (solo comandos git). Nunca delegar redacción a un Worker cuando el contexto está fresco. |
+| [handoff-as-return-statement] | worker-handoff.md es el único Return Statement válido de la orquestación — gate G1/G2/G3 bloquea delegación sin él. |
 
 ## Bugfixes
 | Tag | Resumen |
