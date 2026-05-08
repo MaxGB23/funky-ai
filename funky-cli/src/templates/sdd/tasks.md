@@ -42,6 +42,9 @@
 > **Modelo:** El que está activo en la sesión actual (contexto ya cargado = cero transcripción).
 
 **🚨 CHECKLIST DOC-OPS (OBLIGATORIO - NO OMITIR):**
+- [ ] **Tests [CONDICIONAL]:** ¿Esta feature modificó código fuente testeable (comandos, utils, lógica de negocio)? 
+  - **SÍ aplica →** Ejecutar la suite completa antes de archivar: `npm run test` (o el script del proyecto). Si falla → PARAR y resolver el bug antes de continuar. El push nunca parte de una base rota.
+  - **NO aplica →** Marcar como `[OMITIDO: sin cambios en código fuente — solo docs/templates/config]`.
 - [ ] **Release Notes:** Generar notas de release en la ubicación acordada para el proyecto.
 - [ ] **Versión:** Actualizar manifest (`package.json` u otro) a la nueva versión.
 - [ ] **Archivado:** Mover `docs/openspec/changes/{feature}/` → `docs/openspec/archive/{version}-{feature}/`. Ejecutar AHORA (antes del Worker).
