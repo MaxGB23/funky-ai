@@ -39,6 +39,11 @@ view_file docs/openspec/changes/{feature-name}/sdd-tasks.md
 view_file [archivo principal que vas a modificar]
 ```
 
+### D) Skills Requeridas (Explicit Routing)
+```
+view_file [⚠️ COMPLETAR: RUTAS EXACTAS DE LAS SKILLS EN .agents/skills/ O DEJAR VACÍO SI NO APLICA]
+```
+
 ---
 
 ## 2. La Misión (Surgical Task)
@@ -61,9 +66,9 @@ Leé tus tareas a ejecutar directamente desde la Fase actual en `sdd-tasks.md` (
 | 🟢 Idempotencia | Verificá si el destino ya existe antes de sobreescribir. Documentá si salteás algo |
 
 ### 🔍 Jerarquía de Conocimiento (Doc-Ops)
-1. **Prioridad 1 (Skills):** Antes de codear para una librería/framework, verificá si hay un estándar en `.agents/skills/`. Si existe, usalo.
-2. **Prioridad 2 (MCP context7):** Si NO hay Skill, y la API es nueva/compleja, o dudás de su sintaxis, estás **OBLIGADO** a usar el servidor MCP `context7` (`resolve-library-id` + `query-docs`) antes de escribir código.
-3. **Extracción:** Si descubrís un patrón nuevo usando `context7`, documentalo en tu Return Envelope para convertirlo en Skill.
+1. **Prioridad 1 (Skills Estrictas):** Acatá religiosamente las skills inyectadas en la sección §1.D. Son leyes absolutas para tu ejecución.
+2. **Prioridad 2 (MCP context7):** Si la API es nueva/compleja, dudás de su sintaxis, y el Orquestador no te pasó ninguna skill en §1.D, estás **OBLIGADO** a usar el servidor MCP `context7` (`resolve-library-id` + `query-docs`) antes de escribir código.
+3. **Extracción:** Si descubrís un patrón nuevo usando `context7`, documentalo en tu Return Envelope para que el Orquestador lo convierta en una Skill.
 
 ---
 
