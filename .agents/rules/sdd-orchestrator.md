@@ -44,6 +44,19 @@ Antes de escribir el primer `worker-handoff.md` o de decirle al humano qué pega
 
 ---
 
+## ⚠️ Semántica: RFC vs Proposal (REGLA CRÍTICA)
+
+| Artefacto | Autor | Propósito | ¿Es ejecutable? |
+|-----------|-------|-----------|-----------------|
+| `docs/openspec/rfcs/NNN-*.md` | **Humano** | Brain Dump crudo — lluvia de ideas, links, notas sin filtrar | 🔴 **NO. Nunca.** |
+| `docs/openspec/changes/{name}/proposal.md` | **Orquestador** | Especificación formal validada, con feasibility y scope | ✅ Sí, es la base de `tasks.md` |
+
+> 🔴 **MANDATO:** Al leer un RFC, tu único rol es extraer la intención del humano, validar viabilidad y generar un `proposal.md` formal en `openspec/changes/{name}/`. **Nunca generes código ni tasks directamente desde un RFC.**
+
+> ⚠️ El header `> 🛑 WARNING PARA LA IA` dentro de cada RFC no es decorativo — es una instrucción de ejecución. Respetala siempre.
+
+---
+
 ## Comandos y Acciones
 
 | Comando | Acción |
