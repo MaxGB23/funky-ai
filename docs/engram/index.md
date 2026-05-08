@@ -37,6 +37,8 @@
 | [release-actor-split] | Doc-Ops = Orquestador inline (criterio + archivados). Git-Ops = Worker Flash (solo comandos git). Nunca delegar redacción a un Worker cuando el contexto está fresco. |
 | [handoff-as-return-statement] | worker-handoff.md es el único Return Statement válido de la orquestación — gate G1/G2/G3 bloquea delegación sin él. |
 | [rfc-semantics-enforcement] | RFC = Brain Dump, Proposal = Orquestador. Proteger con warning bloqueante en template distribuido por CLI. |
+| [cli-orchestrator-circular-dependency] | Aislar rules/templates locales (backup) antes de agnostizar la versión pública distribuida por el CLI. |
+
 
 ## Bugfixes
 | Tag | Resumen |

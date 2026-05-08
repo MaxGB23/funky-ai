@@ -34,3 +34,16 @@
 - **Bugs encontrados:** Ninguno
 - **🔴 Cambio de Scope Detectado:** No
 - **Próxima acción:** El Orquestador debe proceder a la ejecución de la Fase X (Doc-Ops) y Fase X+1 (Git-Ops) del MANDATORY_RELEASE_PROTOCOL de forma inline.
+
+## Fase X+1 — Git-Ops
+- **Status:** ✅ Completada
+- **Comandos Ejecutados:**
+  - `git add -A`
+  - `git commit -m "feat: base templates agnósticos y progressive disclosure (RFC 009)"`
+  - `git checkout main`
+  - `git merge --no-ff feature/v1.17.0-009-base-templates`
+  - `git tag -a v1.17.0 -m "Release v1.17.0 - Aislamiento de templates y refactor de init"`
+  - `git push origin main --tags`
+- **Bugs encontrados:** Ninguno.
+- **Próxima acción:** Finalizado. Tarea completada.
+
