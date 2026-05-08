@@ -28,7 +28,8 @@ export function runInit({ templatesDir, targetBase, canvasConfig }) {
     { src: 'engram-bugfixes.md', dest: path.join('docs', 'engram', 'bugfixes.md') },
     { src: 'plantilla-worker-handoff.md', dest: path.join('docs', 'funky-ai', 'workers', 'plantilla-worker-handoff.md') },
     { src: 'canvas-planning-guide.md', dest: path.join('docs', 'funky-ai', 'cli', 'canvas-planning-guide.md') },
-    { src: path.join('..', 'sdd', 'architecture-assessment.md'), dest: path.join('docs', 'architecture-assessment.md') }
+    { src: path.join('..', 'sdd', 'architecture-assessment.md'), dest: path.join('docs', 'architecture-assessment.md') },
+    { src: path.join('..', 'sdd', 'rfc-template.md'), dest: path.join('docs', 'openspec', 'rfcs', '000-TEMPLATE.md') }
   ];
 
   let createdCount = 0;
