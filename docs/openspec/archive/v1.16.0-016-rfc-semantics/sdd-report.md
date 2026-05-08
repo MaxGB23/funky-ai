@@ -11,7 +11,16 @@
   - `funky-cli/src/commands/init.js` (entrada `rfc-template.md` agregada al array `filesToCopy`, apunta a `docs/openspec/rfcs/000-TEMPLATE.md` como destino)
 - **Bugs encontrados:** Ninguno
 - **🔴 Cambio de Scope Detectado:** No
-- **Próxima acción:** El Orquestador debe ejecutar la FASE X (Doc-Ops) inline:
-  - Marcar 016 como completada en `ORCHESTRATOR-STATE.md`
-  - Declarar commit: `docs(sdd): define rfc semantics and guardrails`
-  - Luego delegar FASE X+1 (Git-Ops / Worker T1) para `git add -A`, commit y merge a `main`
+- **Próxima acción:** Tarea 016 consolidada en main.
+
+---
+
+## Fase X+1 — Git-Ops
+
+- **Status:** ✅ Completada
+- **Comandos ejecutados:**
+  - `git add -A`
+  - `git commit -m "docs(sdd): define rfc semantics and guardrails"`
+  - `git checkout main`
+  - `git merge --no-ff feat/v1.16.0-016-rfc-semantics`
+- **Bugs/Conflictos:** Ninguno. Merge limpio.
