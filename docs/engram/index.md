@@ -49,3 +49,4 @@
 | [cli-headless-overwrite] | Validar flags en función pura, no solo en command handler |
 | [stale-post-mortem-ref] | Al deprecar un archivo, grep_search en .agents/rules/ para limpiar refs |
 | [worker-report-false-positive] | Workers Git-Ops marcan ítems Doc-Ops como [x] sin ejecutarlos — auditar tasks.md siempre |
+| [test-mock-drift] | Actualizar arreglos de mocks de FS al añadir archivos a templates copiados por CLI |

@@ -20,6 +20,9 @@ describe('runInit()', () => {
     { src: 'plantilla-worker-handoff.md', dest: 'docs/funky-ai/workers/plantilla-worker-handoff.md' },
     { src: 'canvas-planning-guide.md', dest: 'docs/funky-ai/cli/canvas-planning-guide.md' },
     { src: '../sdd/architecture-assessment.md', dest: 'docs/architecture-assessment.md' },
+    { src: '../sdd/rfc-template.md', dest: 'docs/openspec/rfcs/000-TEMPLATE.md' },
+    { src: 'TEMPLATE_GUIDE.md', dest: 'TEMPLATE_GUIDE.md' },
+    { src: '../README.md', dest: 'README.md' }
   ];
 
   beforeEach(() => {

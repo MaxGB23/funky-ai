@@ -1,11 +1,11 @@
-# 🤖 Funky AI — Worker Handoff: Fase [N] ([Nombre de la Fase])
+# 🤖 Funky AI — Worker Handoff: Fase X (009.b CLI Scaffolding)
 
-> **Instrucción para el LLM:** Sos un Worker **Tier [⚠️ COMPLETAR: T1 / T2 / T3]** de ejecución de Funky AI.
+> **Instrucción para el LLM:** Sos un Worker **Tier T2** de ejecución de Funky AI.
 > Tu única misión es leer este documento, ejecutar las tareas exactas detalladas abajo escribiendo al disco mediante tus tools, y luego actualizar el `sdd-report.md` final.
 > **NO redactes código ni explicaciones largas en el chat. Acción directa al disco.**
 
 > **[HUMANO]** Para ejecutar este worker, abrí un chat nuevo y pegá:
-> `@docs/openspec/changes/{feature-name}/worker-handoff.md Ejecutá la Fase [N]`
+> `@docs/openspec/changes/009.b-cli-scaffolding/worker-handoff.md Ejecutá la Fase [N]`
 
 ---
 
@@ -35,23 +35,23 @@ grep_search "[TAG-EXACTO-DEL-INDICE]" docs/engram/bugfixes.md (IsRegex: false)
 
 ### C) Especificación de Tarea
 ```
-view_file docs/openspec/changes/{feature-name}/sdd-tasks.md
-view_file [archivo principal que vas a modificar]
+view_file docs/openspec/changes/009.b-cli-scaffolding/tasks.md
+view_file docs/openspec/changes/009.b-cli-scaffolding/spec.md
 ```
 
 ### D) Skills Requeridas (Explicit Routing)
 ```
-view_file [⚠️ COMPLETAR: RUTAS EXACTAS DE LAS SKILLS EN .agents/skills/ O DEJAR VACÍO SI NO APLICA]
+view_file .agents/skills/vitest/SKILL.md
 ```
 
 ---
 
 ## 2. La Misión (Surgical Task)
 
-**Objetivo:** [Describir en una oración qué debe producir este Worker al final.]
+**Objetivo:** Ejecutar la Fase solicitada por el humano para implementar el comando `funky feature`.
 
 **Directiva Agent DRY:**
-Leé tus tareas a ejecutar directamente desde la Fase actual en `sdd-tasks.md` (cargado en §1.C).
+Leé tus tareas a ejecutar directamente desde la Fase actual en `tasks.md` (cargado en §1.C).
 
 ---
 
@@ -74,7 +74,7 @@ Leé tus tareas a ejecutar directamente desde la Fase actual en `sdd-tasks.md` (
 
 ## 4. Criterios de Éxito
 
-- [ ] Todos los archivos listados en §2 fueron creados/modificados en disco.
+- [ ] Todos los archivos listados en §2 (según la fase en `tasks.md`) fueron creados/modificados en disco.
 - [ ] El `sdd-report.md` fue actualizado con la sección de esta Fase.
 - [ ] Ningún archivo fuera de scope fue modificado.
 - [ ] Si se encontraron bugs no relacionados, están documentados con schema engram.
@@ -83,7 +83,7 @@ Leé tus tareas a ejecutar directamente desde la Fase actual en `sdd-tasks.md` (
 
 ## 5. Return Envelope (Al terminar)
 
-Actualizá `docs/openspec/changes/{feature-name}/sdd-report.md` con:
+Actualizá `docs/openspec/changes/009.b-cli-scaffolding/sdd-report.md` con:
 
 ```markdown
 ## Fase [N] — [Nombre de la Fase]

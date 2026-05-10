@@ -36,7 +36,7 @@ El archivo `tasks.md` base es un esqueleto con una Fase 0 genérica y el protoco
 El `README.md` generado por defecto está vacío de contexto específico. Debe evolucionar para convertirse en el **Architecture Hub** del proyecto:
 
 * Insertar el diagrama de la arquitectura (mermaid).
-* Listar los comandos locales específicos del repositorio (ej. `npm run dev`, scripts de docker).
+* Listar los comandos locales específicos del repositorio (ej. `pnpm dev`, scripts de docker).
 * Incluir enlaces a los documentos clave generados durante las primeras fases de SDD.
 
 ### 4. Actualización del Engram y ORCHESTRATOR-STATE

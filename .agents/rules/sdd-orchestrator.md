@@ -35,12 +35,12 @@ Antes de escribir el primer `worker-handoff.md` o de decirle al humano qué pega
 
 | # | Verificación | Acción si falta |
 |---|-------------|-----------------|
-| 0 | ¿Existe `docs/openspec/changes/{feature}/`? | **Crear la carpeta ANTES de escribir cualquier artefacto.** Sin esta carpeta no hay campo de batalla aislado. |
+| 0 | ¿Existe `docs/openspec/changes/{feature}/explore.md`? | **PEDIR AL HUMANO que corra `funky feature <name>`.** El scaffolding (carpetas y archivos en blanco) es responsabilidad exclusiva del CLI. El Orquestador SOLO DEBE sobrescribir los archivos ya creados, NUNCA generarlos desde cero. |
 | 1 | ¿Ejecuté el Memory Polling Stage 1? | `view_file docs/engram/index.md` ahora |
 | 2 | ¿El `tasks.md` tiene `MANDATORY_RELEASE_PROTOCOL` completo? | Verificar secciones Doc-Ops y Git-Ops |
 | 3 | ¿El Tier del Worker está declarado (T1/T2/T3)? | Completar campo en el `worker-handoff.md` |
 
-> 🔴 **Si cualquier ítem es NO → no delegues. Completalo primero.** Un Orquestador que delega sin estos 4 ítems rompe el protocolo y hace al Worker ciego.
+> 🔴 **Si cualquier ítem es NO → no delegues. Completalo (o pedí al humano que lo complete) primero.** Un Orquestador que delega sin estos 4 ítems rompe el protocolo y hace al Worker ciego.
 
 ---
 
@@ -61,9 +61,9 @@ Antes de escribir el primer `worker-handoff.md` o de decirle al humano qué pega
 
 | Comando | Acción |
 |---------|--------|
-| `/sdd-explore` | Crear `openspec/changes/{name}/sdd-explore.md` |
-| `/sdd-propose` | Crear `sdd-proposal.md` + `sdd-spec.md` en el mismo folder |
-| `/sdd-ff` | **PRERREQUISITO:** Verificar que existen `sdd-explore.md`, `sdd-proposal.md` **Y** `sdd-spec.md` en `openspec/changes/{name}/`. Si alguno falta → generarlo primero. **LUEGO:** `ACTION: Execute view_file on .agents/templates/sdd/tasks.md`. Solo entonces crear `sdd-tasks.md`. |
+| `/sdd-explore` | **PRERREQUISITO:** Verificar que el archivo existe. Si no, pedir al humano `funky feature <name>`. **Acción:** Sobrescribir `openspec/changes/{name}/explore.md` |
+| `/sdd-propose` | **PRERREQUISITO:** Verificar que existen los archivos. **Acción:** Sobrescribir `proposal.md` + `spec.md` en el mismo folder |
+| `/sdd-ff` | **PRERREQUISITO:** Verificar que existen `explore.md`, `proposal.md` **Y** `spec.md` en `openspec/changes/{name}/` con contenido. **LUEGO:** `ACTION: Execute view_file on .agents/templates/sdd/tasks.md`. Solo entonces sobrescribir `tasks.md`. |
 
 ## ⚠️ Protocolo Obligatorio — Generación de Worker Handoffs
 Antes de escribir CUALQUIER `worker-handoff.md`, el Orquestador DEBE:

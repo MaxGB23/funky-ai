@@ -35,12 +35,25 @@ Antes de escribir el primer `worker-handoff.md` o de decirle al humano qué pega
 
 | # | Verificación | Acción si falta |
 |---|-------------|-----------------|
+| 0 | ¿Existe `docs/openspec/changes/{feature}/explore.md`? | **PEDIR AL HUMANO que corra `funky feature <name>`.** El scaffolding (carpetas y archivos en blanco) es responsabilidad exclusiva del CLI. El Orquestador SOLO DEBE sobrescribir los archivos ya creados, NUNCA generarlos desde cero. |
 | 1 | ¿Ejecuté el Memory Polling Stage 1? | `view_file docs/engram/index.md` ahora |
-| 2 | ¿Generé un `worker-handoff.md` basado en el template canónico? | `view_file funky-cli/src/templates/sdd/worker-handoff.md` y crear el archivo |
-| 3 | ¿El `tasks.md` tiene `MANDATORY_RELEASE_PROTOCOL` completo? | Verificar secciones Doc-Ops y Git-Ops |
-| 4 | ¿El Tier del Worker está declarado (T1/T2/T3)? | Completar campo en el `worker-handoff.md` |
+| 2 | ¿El `tasks.md` tiene `MANDATORY_RELEASE_PROTOCOL` completo? | Verificar secciones Doc-Ops y Git-Ops |
+| 3 | ¿El Tier del Worker está declarado (T1/T2/T3)? | Completar campo en el `worker-handoff.md` |
 
-> 🔴 **Si cualquier ítem es NO → no delegues. Completalo primero.** Un Orquestador que delega sin estos 4 ítems rompe el protocolo y hace al Worker ciego.
+> 🔴 **Si cualquier ítem es NO → no delegues. Completalo (o pedí al humano que lo complete) primero.** Un Orquestador que delega sin estos 4 ítems rompe el protocolo y hace al Worker ciego.
+
+---
+
+## ⚠️ Semántica: RFC vs Proposal (REGLA CRÍTICA)
+
+| Artefacto | Autor | Propósito | ¿Es ejecutable? |
+|-----------|-------|-----------|-----------------|
+| `docs/openspec/rfcs/NNN-*.md` | **Humano** | Brain Dump crudo — lluvia de ideas, links, notas sin filtrar | 🔴 **NO. Nunca.** |
+| `docs/openspec/changes/{name}/proposal.md` | **Orquestador** | Especificación formal validada, con feasibility y scope | ✅ Sí, es la base de `tasks.md` |
+
+> 🔴 **MANDATO:** Al leer un RFC, tu único rol es extraer la intención del humano, validar viabilidad y generar un `proposal.md` formal en `openspec/changes/{name}/`. **Nunca generes código ni tasks directamente desde un RFC.**
+
+> ⚠️ El header `> 🛑 WARNING PARA LA IA` dentro de cada RFC no es decorativo — es una instrucción de ejecución. Respetala siempre.
 
 ---
 
@@ -48,19 +61,30 @@ Antes de escribir el primer `worker-handoff.md` o de decirle al humano qué pega
 
 | Comando | Acción |
 |---------|--------|
-| `/sdd-explore` | Crear `openspec/changes/{name}/sdd-explore.md` |
-| `/sdd-propose` | Crear `sdd-proposal.md` + `sdd-spec.md` en el mismo folder |
-| `/sdd-ff` | Crear `sdd-tasks.md` con fases ejecutables |
+| `/sdd-explore` | **PRERREQUISITO:** Verificar que el archivo existe. Si no, pedir al humano `funky feature <name>`. **Acción:** Sobrescribir `openspec/changes/{name}/explore.md` |
+| `/sdd-propose` | **PRERREQUISITO:** Verificar que existen los archivos. **Acción:** Sobrescribir `proposal.md` + `spec.md` en el mismo folder |
+| `/sdd-ff` | **PRERREQUISITO:** Verificar que existen `explore.md`, `proposal.md` **Y** `spec.md` en `openspec/changes/{name}/` con contenido. **LUEGO:** `ACTION: Execute view_file on .agents/templates/sdd/tasks.md`. Solo entonces sobrescribir `tasks.md`. |
 
 ## ⚠️ Protocolo Obligatorio — Generación de Worker Handoffs
 Antes de escribir CUALQUIER `worker-handoff.md`, el Orquestador DEBE:
-1. `ACTION: Execute view_file on funky-cli/src/templates/sdd/worker-handoff.md`
+1. `ACTION: Execute view_file on .agents/templates/sdd/worker-handoff.md`
 2. Usar ese template como base. NO redactar desde cero.
 3. Completar `Tier [⚠️ COMPLETAR: T1 / T2 / T3]` con el valor correcto según la Escalation Matrix.
 
-## Protocolo de Delegación (MANDATORY)
-Cuando el plan esté en disco, PARAR y decir:
-> "El plan está listo. Cerrá este chat, abrí uno nuevo y decime: `@docs/openspec/changes/{name}/worker-handoff.md Ejecutá la Fase N`."
+## 🔴 Return Statement — Delegación (MANDATORY — BLOCKING)
+
+El Orquestador NO puede emitir el prompt de delegación sin verificar este Pre-Gate:
+
+| # | Verificación | Si falla |
+|---|-------------|----------|
+| G1 | `worker-handoff.md` existe en `openspec/changes/{name}/` | Generarlo AHORA (ver §Protocolo Obligatorio) |
+| G2 | El campo `Tier [⚠️ COMPLETAR]` fue reemplazado por T1, T2 o T3 | Completarlo AHORA |
+| G3 | §1.C del handoff tiene la ruta exacta del `sdd-tasks.md` de esta feature | Completarlo AHORA |
+
+> 🔴 Si G1, G2 o G3 fallan → NO emitas el prompt. Corregí primero. Solo entonces:
+
+> "El plan está listo. Cerrá este chat, abrí uno nuevo y decime:
+> `@docs/openspec/changes/{name}/worker-handoff.md Ejecutá la Fase N`."
 
 ## ⚡ T1 Phase Batching (Optimización)
 Podés combinar múltiples fases en un único Worker si se cumplen las TRES condiciones:
