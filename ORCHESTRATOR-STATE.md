@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v1.17.0
-- **Rama activa:** `feature/v1.17.0-009-base-templates`
-- **Última sesión:** 2026-05-08
-- **Estado:** ✅ Estable. Release v1.17.0 completada.
+- **Versión:** v1.18.0
+- **Rama activa:** `main`
+- **Última sesión:** 2026-05-09
+- **Estado:** ✅ Estable. Release v1.18.0 completada.
 
 ---
 
@@ -34,6 +34,7 @@
 - [x] **014 Reestructuración de Documentación:** Consolidación de 7 carpetas dispersas en 5 pilares semánticos (`conceptos`, `guias`, `operaciones`, `historico`, `drafts`) y actualización de `repo-map.md`.
 - [x] **017 Enforcement de Handoff Contract (Agent DRY):** Return Statement bloqueante con gates G1/G2/G3 en `sdd-orchestrator.md`. Prerequisito `view_file tasks.md` agregado al comando `/sdd-ff`. Engram actualizado con `[handoff-as-return-statement]`.
 - [x] **016 Semántica de RFCs vs Proposals (Backlog):** Separación estricta de responsabilidades (Brain Dump vs Artifact). Guardrails en Orchestrator y Template dinámico en el CLI.
+- [x] **009.b Scaffolding Dinámico:** Implementado el comando `funky feature <name>` para inicializar scaffolding completo de fases SDD en lugar de crearlo a mano o mediante el Orquestador.
 
 ---
 
@@ -41,12 +42,11 @@
 
 **Roadmap sugerido:** 009 → 012 → 018 (v2.0.0) → 015 → resto
 
-- [ ] **012 Protocolo de Auto-Tiering del Orquestador (Backlog):** Implementar una fase de "Razonamiento Pre-Vuelo" donde el Orquestador analice el pedido del usuario contra la *Escalation Matrix* y declare su Tier de operación (T1/T2/T3) de forma autónoma antes de generar cualquier artefacto. Objetivo: reducir la micro-gestión humana y garantizar consistencia en el rigor documental. Al tener tiers, debatir si el orquestador debería delegar cada una de las fases a workers o si el puede hacer algunas, con pros y contras.
+- [] **012 Protocolo de Auto-Tiering del Orquestador (Backlog):** Implementar una fase de "Razonamiento Pre-Vuelo" donde el Orquestador analice el pedido del usuario contra la *Escalation Matrix* y declare su Tier de operación (T1/T2/T3) de forma autónoma antes de generar cualquier artefacto. Objetivo: reducir la micro-gestión humana y garantizar consistencia en el rigor documental. Al tener tiers, debatir si el orquestador debería delegar cada una de las fases a workers o si el puede hacer algunas, con pros y contras.
 - [ ] **018 Arquitectura de Agentes v2.0.0 — Rediseño Monumental del Sistema de Configuración (Backlog):** Auditoría profunda y redistribución inteligente de TODOS los archivos de configuración de agentes (`GEMINI-funky-global.md`, `.agents/rules/sdd-orchestrator.md`, `.agents/rules/secops.md`, y demás). El objetivo es diseñar un sistema de tres capas aprovechando nativamente los **Workflows de Antigravity** (campo `Description` + campo `Content` en Markdown): **(1) Global (siempre activo):** Solo Personalidad, Tono y Filosofía. Token Diet estricta. **(2) Workspace Rules (condicionales):** Reglas específicas del repo, como `sdd-orchestrator.md` y `secops.md`, que se activan solo cuando el contexto lo amerita. **(3) Workflows Antigravity (on-demand):** Las instrucciones pesadas del Orquestador y del Worker viven como Workflows `/funky-orchestrator` y `/funky-worker`, inyectándose solo cuando el humano los invoca. Este cambio elimina el *Context Dilution*, resuelve el límite de tokens del IDE y es un **Breaking Change** de UX que justifica el salto a **v2.0.0**.
 - [ ] **015 Protocolos On-Demand (Skills Inyectables) (Backlog):** Crear un mecanismo (ej. `.agents/skills/protocols/sdd-reviewer.md`) para protocolos de uso específico que no inflen el prompt global. Permite al humano invocar roles especializados (ej. "Abogado del Diablo" para auditar inconsistencias lógicas en un plan) solo cuando el escenario lo amerita, evitando el "Context Dilution".
 - [ ] **002 Calculadora de Presupuestos (Backlog):** Crear un template o script interactivo (`project-cost-estimator.md`) para calcular el costo/precio a cobrar por un proyecto freelance/agencia, cruzando características solicitadas por el cliente, NFRs, presupuesto de infraestructura y seniority del equipo. → [Ver RFC](./docs/openspec/rfcs/002-project-cost-estimator.md)
 - [ ] **006 Arquitectura SDD — Test Planning (Backlog)**: Diseñar e integrar una fase formal de "Test Planning" (ej. `test-plan.md` o mejora de `spec.md`). Debe ser agnóstica al framework y adaptarse a proyectos con o sin TDD estricto, mitigando puntos ciegos lógicos.
-- [ ] **009.b Scaffolding Dinámico (Fase Futura Post-009):** Evaluar CLI-first scaffolding para fases SDD (`funky phase ff <name>` genera `sdd-tasks.md` en `docs/openspec/changes/{name}/`). Compatibilizar el scaffold base con las adaptaciones post-Canvas que 009 define. Ver análisis en `docs/funky-ai/drafts/cli-sdd-scaffolding-debate.md`.
 - [ ] **011 Comando de Bootstrap de Prompts (Backlog):** Añadir un comando al CLI que genere los documentos del directorio `docs/prompts`. Es un comando de uso poco frecuente (ej. al configurar una nueva laptop), pero vital para asegurar que el entorno de IA (prompts globales y de backup) esté disponible inmediatamente en cualquier equipo de trabajo.
 - [ ] **013 Comando de Generación Dinámica de Árbol (Backlog):** Crear una tool o comando (ej. `funky tree`) que recorra el repositorio y genere un mapa detallado archivo-por-archivo, infiriendo el propósito a través de comentarios o cabeceras. Previene el *Doc Rot* al eliminar la necesidad de mapas estáticos. → [Ver RFC](./docs/openspec/rfcs/013-dynamic-repo-tree.md)
 - [ ] **003 Protocolo de Seguridad — Revisión de Repos Externos:** Crear un documento de protocolo (distinto de `secops.md`, que ya cubre npm) para auditar repos de GitHub, extensiones de VSCode y código de terceros. Incluye: detección de caracteres Unicode invisibles (Trojan Source), vectores de ejecución implícita en Python (import time / setup.py), y checklist para revisar repos ya clonados. → Contexto completo en [`docs/funky-ai/drafts/midudev.md` — Pendiente 1](./docs/funky-ai/drafts/midudev.md)

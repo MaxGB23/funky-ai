@@ -43,7 +43,7 @@
 
 **🚨 CHECKLIST DOC-OPS (OBLIGATORIO - NO OMITIR):**
 - [ ] **Tests [CONDICIONAL]:** ¿Esta feature modificó código fuente testeable (comandos, utils, lógica de negocio)? 
-  - **SÍ aplica →** Ejecutar la suite completa antes de archivar: `npm run test` (o el script del proyecto). Si falla → PARAR y resolver el bug antes de continuar. El push nunca parte de una base rota.
+  - **SÍ aplica →** Ejecutar la suite completa antes de archivar: `pnpm run test` (o el script del proyecto). Si falla → PARAR y resolver el bug antes de continuar. El push nunca parte de una base rota.
   - **NO aplica →** Marcar como `[OMITIDO: sin cambios en código fuente — solo docs/templates/config]`.
 - [ ] **Release Notes:** Generar `docs/funky-ai/releases/vX.Y.Z-release.md` usando como base `funky-cli/src/templates/release.md`. *(Redactar para consumo humano. IGNORAR Token Diet aquí.)*
 - [ ] **README:** Actualizar `README.md` raíz manteniéndolo como Architecture Hub (template: `funky-cli/src/templates/README.md`).
@@ -52,6 +52,7 @@
 - [ ] **Archivado:** Mover `docs/openspec/changes/{feature}/` → `docs/openspec/archive/{version}-{feature}/`. Ejecutar AHORA (antes del Worker).
 - [ ] **RFCs:** Decidir qué RFCs fueron implementados en esta release → moverlos a `docs/openspec/archive/`. Ejecutar AHORA. (`proposals/` está deprecado — no usar).
 - [ ] **Sincronización:** Actualizar `ORCHESTRATOR-STATE.md` (versión, rama, estado estable).
+- [ ] **Smoke Test [CONDICIONAL]:** Si la feature altera el flujo E2E del proyecto, agregar escenario de QA a `docs/operaciones/master-smoke-test.md`. Si no → `[OMITIDO: sin cambios de integración E2E]`.
 - [ ] **Preparar datos para Worker Git-Ops:** Declarar en el handoff: versión exacta, mensaje de commit, nombre del branch, mensaje del tag.
 
 > ⚠️ **Regla de oro:** Todo lo que requiere criterio o genera texto → Orquestador inline. Todo lo mecánico post-archivado → Worker Git-Ops.
