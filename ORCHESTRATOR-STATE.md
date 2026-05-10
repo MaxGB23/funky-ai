@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v1.17.0
-- **Rama activa:** `feature/v1.17.0-009-base-templates`
-- **Última sesión:** 2026-05-08
-- **Estado:** ✅ Estable. Release v1.17.0 completada.
+- **Versión:** v1.18.0
+- **Rama activa:** `main`
+- **Última sesión:** 2026-05-09
+- **Estado:** ✅ Estable. Release v1.18.0 completada.
 
 ---
 
