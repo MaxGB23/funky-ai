@@ -1,8 +1,8 @@
 # 📘 Flujo Interno: `funky init`
 
-> **Versión documentada:** v1.7.0  
-> **Última actualización:** 2026-04-23  
-> **Estado:** ⚠️ Bugs conocidos documentados en sección 4
+> **Versión documentada:** v1.17.0+  
+> **Última actualización:** 2026-05-11  
+> **Estado:** ✅ Estable
 
 ---
 
@@ -28,30 +28,45 @@ funky init [--template?]
 │
 ├─ ¿flag --template?
 │   └─ SÍ
-│       ├─ ¿existe PROJECT-CANVAS.md?
+│       ├─ ¿existe PROJECT-CANVAS.md o INFRA-CANVAS.md?
 │       │   ├─ SÍ  → ❌ Error: "ya existe" → process.exit(1)
-│       │   └─ NO  → generateCanvasMarkdown({}) → escribe canvas vacío → process.exit(0)
-│       └─ (fin, no continúa al scaffolding)
+│       │   └─ NO  → generateProjectCanvasMarkdown({}) → PROJECT-CANVAS.md
+│       │           → generateInfraCanvasMarkdown({})   → INFRA-CANVAS.md
+│       │           → copyFileSync(canvas-planning-guide.md) → raíz del proyecto
+│       │           → process.exit(0)  ← fin, NO continúa al scaffolding
+│       └─ (fin)
 │
-└─ ¿existe PROJECT-CANVAS.md en cwd?
+└─ ¿existen PROJECT-CANVAS.md E INFRA-CANVAS.md en cwd?
     │
-    ├─ SÍ → Modo Headless
-    │       canvasConfig = { fromHeadless: true }
-    │       └─ runInit()
-    │           ├─ Copia 7 archivos estáticos (skip si ya existen)
-    │           └─ "⚡ Salteando: PROJECT-CANVAS.md"
+    ├─ AMBOS → Modo Headless
+    │           canvasConfig = { skipProjectCanvas: true, skipInfraCanvas: true }
+    │           └─ runInit()
+    │               ├─ Copia 12 archivos estáticos (skip si ya existen)
+    │               └─ ⚡ Salteando: PROJECT-CANVAS.md, INFRA-CANVAS.md
     │
-    └─ NO → Modo Interactivo
-            └─ @clack/prompts group:
-                ├─ select: Patrón Arquitectónico (pattern)
-                ├─ select: Framework UI (ui)
-                └─ confirm: TDD (testing) → devuelve boolean
-            │
-            canvasConfig = { pattern, ui, testing }
-            │
-            └─ runInit()
-                ├─ Copia 7 archivos estáticos (skip si ya existen)
-                └─ generateCanvasMarkdown(canvasConfig) → escribe PROJECT-CANVAS.md
+    ├─ SOLO PROJECT-CANVAS → Modo Migración Legacy
+    │           Genera INFRA-CANVAS.md con header ⚠️ MIGRACIÓN PENDIENTE
+    │           └─ runInit() (mismo que Headless)
+    │
+    └─ NINGUNO → Modo Interactivo
+                └─ @clack/prompts group 1 (Core):
+                    ├─ select: Framework Base
+                    ├─ select: Patrón Arquitectónico
+                    ├─ select: Estrategia UI
+                    ├─ select: Gestión de Estado
+                    └─ select: Testing
+                └─ @clack/prompts group 2 (Infra):
+                    ├─ select: Base de Datos / ORM
+                    ├─ select: Autenticación
+                    ├─ select: Linter / Formatter
+                    └─ select: Deployment & CI/CD
+                │
+                canvasConfig = { projectData: {...}, infraData: {...} }
+                │
+                └─ runInit()
+                    ├─ Copia 12 archivos estáticos
+                    ├─ generateProjectCanvasMarkdown(projectData) → PROJECT-CANVAS.md
+                    └─ generateInfraCanvasMarkdown(infraData)     → INFRA-CANVAS.md
 ```
 
 ---
@@ -78,57 +93,34 @@ Ubicación: `src/templates/bootstrap/`
 | `engram-discoveries.md` | `docs/engram/discoveries.md` |
 | `engram-bugfixes.md` | `docs/engram/bugfixes.md` |
 | `plantilla-worker-handoff.md` | `docs/funky-ai/workers/plantilla-worker-handoff.md` |
+| `canvas-planning-guide.md` | `docs/funky-ai/cli/canvas-planning-guide.md` |
+| `../sdd/architecture-assessment.md` | `docs/architecture-assessment.md` |
+| `../sdd/rfc-template.md` | `docs/openspec/rfcs/000-TEMPLATE.md` |
+| `TEMPLATE_GUIDE.md` | `TEMPLATE_GUIDE.md` |
+| `../README.md` | `README.md` |
 
 > ⚠️ Todos son **estáticos**. Se copian con `fs.copyFileSync`, sin interpolación de variables. El canvas NO alimenta ninguno de estos archivos.
 
-### 3.3 Archivo dinámico
+### 3.3 Archivos dinámicos
 
 | Archivo | Generado por | Con datos de |
 |---|---|---|
-| `PROJECT-CANVAS.md` | `generateCanvasMarkdown(config)` | Respuestas de los prompts (modo interactivo) o vacío `{}` (modo `--template`) |
+| `PROJECT-CANVAS.md` | `generateProjectCanvasMarkdown(config)` | Respuestas del grupo 1 de prompts (framework, patrón, UI, estado, testing) o vacío `{}` (modo `--template`) |
+| `INFRA-CANVAS.md` | `generateInfraCanvasMarkdown(config)` | Respuestas del grupo 2 de prompts (DB, auth, linter, deployment) o vacío `{}` (modo `--template`) |
 
 ---
 
-## 4. Bugs Conocidos (v1.7.0)
+## 4. Bugs Históricos
 
-### BUG-01 — Mismatch de clave `ui` → `styling`
+### ~~BUG-01 — Mismatch de clave `ui` → `styling`~~ [RESUELTO en v1.7.0]
 
-**Síntoma:** El usuario elige "Tailwind" en el prompt de UI, pero la sección 4 del canvas muestra `No definido`.
-
-**Causa:** Desacoplamiento entre la clave que guarda `init.js` y la que lee `canvas.js`.
-
-```js
-// init.js — guarda con clave "ui":
-canvasConfig = { pattern, ui: group.ui, testing }
-
-// canvas.js — lee con clave "styling":
-## 4. Estrategia de Estilos y UI
-${config.styling || 'No definido'}  // → "ui" nunca llega acá
-```
-
-**Fix:** Unificar la clave a `styling` en `init.js`, o viceversa. Requiere decisión de naming canónico.
+El campo de UI del canvas mostraba `No definido` porque `init.js` guardaba con clave `ui` pero `canvas.js` leía `styling`. Corregido unificando a `styling` en ambos archivos.
 
 ---
 
-### BUG-02 — `testing` se guarda como `boolean`, no como texto
+### ~~BUG-02 — `testing` se guarda como `boolean`, no como texto~~ [RESUELTO en v1.7.0]
 
-**Síntoma:** La sección 5 del canvas muestra el literal `true` en lugar de texto descriptivo.
-
-**Causa:** `p.confirm()` de `@clack/prompts` devuelve `boolean`. Se interpola directamente sin transformación.
-
-```js
-// Valor recibido:
-testing: true  // (boolean)
-
-// Canvas resultante:
-## 5. Testing y CI/CD
-true            // ← no es texto legible
-```
-
-**Fix:** Transformar el boolean antes de pasarlo al canvas:
-```js
-testing: group.testing ? 'TDD — Test-Driven Development' : 'Sin estrategia de testing definida'
-```
+El prompt `p.confirm()` devolvía `true/false` que se interpolaba literal en el canvas. Corregido con transformación a texto descriptivo antes de pasarlo al generador.
 
 ---
 
@@ -183,12 +175,23 @@ proyecto/
 │       ├── secops.md
 │       └── sdd-orchestrator.md
 ├── docs/
+│   ├── architecture-assessment.md
 │   ├── engram/
 │   │   ├── discoveries.md
 │   │   └── bugfixes.md
-│   └── funky-ai/
-│       └── workers/
-│           └── plantilla-worker-handoff.md
+│   ├── funky-ai/
+│   │   ├── cli/
+│   │   │   └── canvas-planning-guide.md
+│   │   └── workers/
+│   │       └── plantilla-worker-handoff.md
+│   └── openspec/
+│       └── rfcs/
+│           └── 000-TEMPLATE.md
 ├── ORCHESTRATOR-STATE.md
-└── PROJECT-CANVAS.md
+├── PROJECT-CANVAS.md
+├── INFRA-CANVAS.md
+├── TEMPLATE_GUIDE.md
+└── README.md
 ```
+
+> ⚠️ En modo `--template`, solo se generan `PROJECT-CANVAS.md`, `INFRA-CANVAS.md` y `canvas-planning-guide.md` en la raíz. El resto de la estructura se crea al ejecutar `funky init` (sin flag) con los Canvas ya llenos.

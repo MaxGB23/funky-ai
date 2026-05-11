@@ -109,6 +109,12 @@ export const initCommand = new Command('init')
         }
         fs.writeFileSync(projectCanvasPath, generateProjectCanvasMarkdown({}));
         fs.writeFileSync(infraCanvasPath, generateInfraCanvasMarkdown({}));
+        const guideSrc = path.join(templatesDir, 'canvas-planning-guide.md');
+        const guideDest = path.join(targetBase, 'canvas-planning-guide.md');
+        if (!fs.existsSync(guideDest)) {
+          fs.copyFileSync(guideSrc, guideDest);
+          console.log('✅ canvas-planning-guide.md copiado. Úsala como referencia para llenar los Canvas.');
+        }
         console.log('✅ Templates generados. Llénalos y vuelve a ejecutar `funky init`.');
         process.exit(0);
       } catch (error) {

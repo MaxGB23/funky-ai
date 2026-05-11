@@ -56,6 +56,8 @@ git init
 
 ### Paso 2.2 — Inicializar el ecosistema Funky AI
 
+> 💡 **¿No tenés claro el stack todavía?** Ejecutá `funky init --template` primero. Te genera los Canvas vacíos y la guía de llenado. Completá los Canvas, después continuá con el paso siguiente. Ver [Escenario 1 en escenarios-de-uso.md](./escenarios-de-uso.md).
+
 ```bash
 funky init
 ```
@@ -69,8 +71,16 @@ funky init
 ✅ Creado: .agents/rules/sdd-orchestrator.md
 ✅ Creado: docs/engram/discoveries.md
 ✅ Creado: docs/engram/bugfixes.md
+✅ Creado: docs/funky-ai/cli/canvas-planning-guide.md
+✅ Creado: docs/funky-ai/workers/plantilla-worker-handoff.md
+✅ Creado: docs/architecture-assessment.md
+✅ Creado: docs/openspec/rfcs/000-TEMPLATE.md
+✅ Creado: TEMPLATE_GUIDE.md
+✅ Creado: README.md
+✅ Creado: PROJECT-CANVAS.md (Dinámico)
+✅ Creado: INFRA-CANVAS.md (Dinámico)
 
-✅ Funky AI inicializado. 6 archivos creados, 0 ya existían.
+✅ Funky AI inicializado. 14 archivos creados, 0 ya existían.
 ```
 
 ### Paso 2.3 — Verificar la estructura creada
@@ -78,15 +88,28 @@ funky init
 ```
 mi-nuevo-proyecto/
 ├── ORCHESTRATOR-STATE.md          ← Estado del Orquestador
+├── PROJECT-CANVAS.md              ← Canvas Core: Framework, Arquitectura, Testing
+├── INFRA-CANVAS.md                ← Canvas Infra: DB, Auth, Deployment
+├── TEMPLATE_GUIDE.md
+├── README.md
 ├── .agents/
 │   └── rules/
 │       ├── engram-protocol.md     ← Protocolo de memoria
 │       ├── secops.md              ← Reglas de seguridad
 │       └── sdd-orchestrator.md   ← Protocolo SDD
 └── docs/
-    └── engram/
-        ├── discoveries.md         ← Registro de descubrimientos
-        └── bugfixes.md            ← Registro de bugs
+    ├── architecture-assessment.md
+    ├── engram/
+    │   ├── discoveries.md         ← Registro de descubrimientos
+    │   └── bugfixes.md            ← Registro de bugs
+    ├── funky-ai/
+    │   ├── cli/
+    │   │   └── canvas-planning-guide.md
+    │   └── workers/
+    │       └── plantilla-worker-handoff.md
+    └── openspec/
+        └── rfcs/
+            └── 000-TEMPLATE.md
 ```
 
 ### Paso 2.4 — Crear la rama de feature

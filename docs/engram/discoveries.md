@@ -185,3 +185,9 @@ Aquí se registran los hallazgos técnicos y arquitectónicos que moldean el fut
 **Why:** El CLI y el Orquestador local comparten la misma fuente de verdad. El Orquestador necesita reglas rígidas y específicas, mientras que el CLI público debe inyectar esqueletos agnósticos.
 **Where:** Rutas de templates en `.agents/rules/sdd-orchestrator.md` y `funky-cli/src/templates/`.
 **Learned:** Siempre realizar una "Fase de Aislamiento y Backup": copiar todos los templates vitales a un directorio protegido (`.agents/templates/`) y re-mapear las reglas locales del Orquestador ANTES de purgar la versión pública. Esto previene la rotura del propio ciclo SDD y mantiene un registro legacy.
+
+### [DISCOVERY][doc-update-index-manual-drift] El índice de Docs Vivos en OPTIONAL_DOC_UPDATE es mantenimiento manual
+**What:** El bloque `<OPTIONAL_DOC_UPDATE>` en `.agents/templates/sdd/tasks.md` contiene una tabla de 6 docs ("Índice de Docs Vivos") que el Orquestador usa para decidir si necesita actualizar documentación sin abrir ningún archivo. Ese índice es estático y requiere actualización manual cada vez que se agrega un nuevo doc de flujo al proyecto.
+**Why:** No existe ningún mecanismo automático que detecte nuevos docs en `docs/funky-ai/operaciones/` o `docs/funky-ai/guias/` y los agregue al índice. Es la contraparte de `[memory-polling-index-layer]` pero aplicada a docs operacionales, no al engram.
+**Where:** `.agents/templates/sdd/tasks.md` — bloque `<OPTIONAL_DOC_UPDATE>`, tabla "Índice de Docs Vivos".
+**Learned:** Al crear un nuevo doc de flujo/operacional que deba ser mantenido activo, agregar una fila al índice en la misma operación. El índice tiene exactamente un punto de falla: que el autor del nuevo doc se olvide de registrarlo. Como mitigación, incluir este check en el `MANDATORY_RELEASE_PROTOCOL` Doc-Ops: "¿Esta release agrega un nuevo doc de flujo? Si SÍ → actualizar el índice de `OPTIONAL_DOC_UPDATE` en `.agents/templates/sdd/tasks.md`".

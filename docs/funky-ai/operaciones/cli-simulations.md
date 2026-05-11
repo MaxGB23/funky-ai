@@ -2,11 +2,11 @@
 
 A continuación se detallan los vectores de falla detectados durante la auditoría estática de `init.js` y `phase.js`, con foco en evitar flujos destructivos.
 
-## Vector 1: Sobreescritura Destructiva (El Bug Crítico)
+## Vector 1: ~~Sobreescritura Destructiva~~ [RESUELTO en v1.7.0]
 - **Simulación:** El usuario ya corrió `funky init --template`, llenó su `PROJECT-CANVAS.md` con detalles importantes y vuelve a ejecutar `funky init` para inicializar el scaffolding.
 - **Acción:** `funky init` detecta el archivo existente.
-- **Resultado Actual:** `init.js` detecta el archivo, setea `canvasConfig = { fromHeadless: true }` y llama a `runInit`. `runInit` no chequea el flag `fromHeadless`, llama a `generateCanvasMarkdown()` y sobreescribe el `PROJECT-CANVAS.md` borrando todo el contenido del usuario.
-- **Resultado Esperado (UX):** `runInit` debería detectar que `canvasConfig.fromHeadless` es `true` y omitir la re-generación/sobreescritura del archivo `PROJECT-CANVAS.md`, procediendo únicamente a copiar los archivos faltantes.
+- **Resultado Actual:** ✅ El CLI detecta ambos Canvas y activa modo Headless — no sobreescribe ninguno. La validación de existencia es individual por archivo.
+- **Fix aplicado:** Validación con `skipProjectCanvas` / `skipInfraCanvas` en `runInit()`. Resuelto en v1.7.0.
 
 ## Vector 2: Interrupción de UX (Ctrl+C en Prompts)
 - **Simulación:** El usuario inicia `funky init` en modo interactivo, pero se arrepiente en la mitad del prompt de framework y aprieta `Ctrl+C`.

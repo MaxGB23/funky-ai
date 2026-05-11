@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v1.18.0
+- **Versión:** v1.18.1
 - **Rama activa:** `main`
-- **Última sesión:** 2026-05-09
-- **Estado:** ✅ Estable. Release v1.18.0 completada.
+- **Última sesión:** 2026-05-11
+- **Estado:** ✅ Estable. Auditoría documental + fixes completados.
 
 ---
 
@@ -35,6 +35,7 @@
 - [x] **017 Enforcement de Handoff Contract (Agent DRY):** Return Statement bloqueante con gates G1/G2/G3 en `sdd-orchestrator.md`. Prerequisito `view_file tasks.md` agregado al comando `/sdd-ff`. Engram actualizado con `[handoff-as-return-statement]`.
 - [x] **016 Semántica de RFCs vs Proposals (Backlog):** Separación estricta de responsabilidades (Brain Dump vs Artifact). Guardrails en Orchestrator y Template dinámico en el CLI.
 - [x] **009.b Scaffolding Dinámico:** Implementado el comando `funky feature <name>` para inicializar scaffolding completo de fases SDD en lugar de crearlo a mano o mediante el Orquestador.
+- [x] **Doc-Update v1.18.1:** Auditoría documental completa. Fix `funky init --template` (inyecta `canvas-planning-guide.md`). Creado `escenarios-de-uso.md`. Parche mayor `funky-init-flow.md` (v1.7.0 → actual). Parche `guia-flujo-completo.md`. `OPTIONAL_DOC_UPDATE` agregado a `tasks.md` con índice de 7 docs vivos. Engram actualizado con `[doc-update-index-manual-drift]`.
 
 ---
 
@@ -83,4 +84,6 @@ Ninguno.
 | v1.14.0 | Housekeeping: Proposals migradas a RFCs con headers explícitos de draft. |
 | v1.15.0 | Enforcement Analysis: Fixes estructurales post sesión 007 y fortalecimiento del SDD. |
 | v1.16.0 | Handoff Enforcement: Return Statement bloqueante (G1/G2/G3) + prerequisito `view_file tasks.md` en `/sdd-ff`. Debate CLI-first scaffolding documentado para 009. |
-| v1.17.0 | Aislamiento y Agnostización de Base Templates (RFC 009). Creado backup interno de templates inmutables. |}
+| v1.17.0 | Aislamiento y Agnostización de Base Templates (RFC 009). Creado backup interno de templates inmutables. |
+| v1.18.0 | `funky feature <name>` + arquitectura modular de scaffolding SDD. |
+| v1.18.1 | Doc-patch: fix `--template`, nuevo `escenarios-de-uso.md`, `funky-init-flow.md` actualizado, `OPTIONAL_DOC_UPDATE` en tasks template, engram `[doc-update-index-manual-drift]`. |
