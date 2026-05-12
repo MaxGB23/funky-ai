@@ -5,7 +5,7 @@
 
 ---
 
-## 🛠️ Épica Actual: Motor de Scaffolding y Templates (009, 009.b, 011, 018)
+## 🛠️ Épica Actual: Motor de Scaffolding y Templates (009, 009.b, 002, 011, 018)
 *(Estado: ACUMULANDO. Ejecutar este bloque de validación una vez finalizados todos los issues del backlog relacionados a la inyección y configuración de templates)*
 
 ### Escenario 1: Inicialización Limpia (`funky init`)
@@ -23,6 +23,15 @@
 1. [ ] En el mismo directorio inicializado del Escenario 1, ejecutar `funky feature test-feature`.
 2. [ ] **Validación:** Comprobar que el comando copia correctamente los "Golden Templates" desde `.agents/templates/sdd/` hacia `docs/openspec/changes/test-feature/`.
 3. [ ] **Validación:** Confirmar que no inyecta los templates crudos/vacíos de `funky-cli/src/templates/sdd/` si existen los Golden.
+
+### Escenario 3: Estimación de Costos (`funky estimate`)
+**Origen:** Feature 002 (Cost Estimator)
+1. [ ] En el mismo directorio inicializado, asegurar que existan los archivos `PROJECT-CANVAS.md` e `INFRA-CANVAS.md` con contenido de prueba.
+2. [ ] Ejecutar `funky estimate`.
+3. [ ] **Validación:** Comprobar que se presenten los prompts interactivos para los factores de negocio (Región, Tamaño, Urgencia).
+4. [ ] **Validación:** Completar los inputs interactivos de consola y verificar que el comando no falle por un cuelgue del TTY (headless timeout).
+5. [ ] **Validación:** Verificar la creación exitosa del artefacto `docs/pricing-analysis.md`.
+6. [ ] **Validación:** Abrir `docs/pricing-analysis.md` y corroborar que se haya inyectado correctamente el prompt de mentoría y la estimación calculada.
 
 ---
 *(Agregar nuevos escenarios aquí a medida que se desarrollen nuevas features complejas)*
