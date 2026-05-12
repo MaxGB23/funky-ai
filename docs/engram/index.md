@@ -39,7 +39,7 @@
 | [rfc-semantics-enforcement] | RFC = Brain Dump, Proposal = Orquestador. Proteger con warning bloqueante en template distribuido por CLI. |
 | [cli-orchestrator-circular-dependency] | Aislar rules/templates locales (backup) antes de agnostizar la versión pública distribuida por el CLI. |
 | [doc-update-index-manual-drift] | Índice de Docs Vivos en OPTIONAL_DOC_UPDATE es estático — actualizar en la misma operación cuando se crea un nuevo doc de flujo. |
-
+| [inquirer-integration] | Uso de inquirer en CLI permite flujos interactivos guiados vs comandos headless. |
 
 ## Bugfixes
 | Tag | Resumen |
