@@ -7,7 +7,7 @@
 ## 🗺️ Mapa del Flujo
 
 ```
-[Chat virgen]  →  exploración  →  funky init  →  funky phase  →  Workers  →  Release
+[Chat virgen]  →  exploración  →  [funky estimate (Opcional)]  →  funky init  →  funky phase  →  Workers  →  Release
 ```
 
 ---
@@ -39,6 +39,22 @@ Cuando tengas claridad, pedí:
 ```
 
 ✅ **Criterio de salida:** Sabés qué construir, con qué tecnología y por qué.
+
+---
+
+## ETAPA 1.5 — Estimación de Costo y Pricing (Opcional)
+
+**Objetivo:** Obtener un piso base orientativo para presupuestar el proyecto basándose en la complejidad de los Canvas.
+
+### Paso 1.5.1 — Ejecutar el Estimador
+
+Si ya tenés los archivos `PROJECT-CANVAS.md` e `INFRA-CANVAS.md` creados, podés correr:
+
+```bash
+funky estimate
+```
+
+La CLI extraerá los factores técnicos, te hará preguntas de contexto de negocio y generará `docs/pricing-analysis.md`. Usá ese archivo en el chat del Orquestador para debatir el Value-Based Pricing final.
 
 ---
 

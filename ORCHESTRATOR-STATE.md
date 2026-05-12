@@ -6,8 +6,8 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v1.18.1
-- **Rama activa:** `main`
+- **Versión:** v1.19.0
+- **Rama activa:** `feature/v1.19.0-002-cost-estimator`
 - **Última sesión:** 2026-05-11
 - **Estado:** ✅ Estable. Auditoría documental + fixes completados.
 
@@ -18,7 +18,7 @@
 | Archivo / Directorio | Rol |
 |---------|-----|
 | `funky-cli/src/commands/` | Lógica core del CLI (`init`, `phase`) |
-| `funky-cli/src/templates/sdd/` | Templates inyectables del ciclo SDD (ej. `worker-handoff.md`) |
+| `funky-cli/src/templates/sdd/` | Templates inyectables del ciclo SDD (ej. `explore, worker-handoff.md`) |
 | `funky-cli/src/utils/canvas.js` | Motor del Project Canvas (`generateCanvasMarkdown`) |
 | `docs/repo-map.md` | Mapa estructural oficial del repositorio (Fuente de la verdad) |
 | `docs/engram/` | Memoria persistente Two-Stage (`index`, `discoveries`, `bugfixes`) |
@@ -37,6 +37,9 @@
 - [x] **009.b Scaffolding Dinámico:** Implementado el comando `funky feature <name>` para inicializar scaffolding completo de fases SDD en lugar de crearlo a mano o mediante el Orquestador.
 - [x] **Doc-Update v1.18.1:** Auditoría documental completa. Fix `funky init --template` (inyecta `canvas-planning-guide.md`). Creado `escenarios-de-uso.md`. Parche mayor `funky-init-flow.md` (v1.7.0 → actual). Parche `guia-flujo-completo.md`. `OPTIONAL_DOC_UPDATE` agregado a `tasks.md` con índice de 7 docs vivos. Engram actualizado con `[doc-update-index-manual-drift]`.
 
+- [x] **002 Planificación Cost Estimator:** Fase de Orchestrator completada para RFC 002. Artefactos SDD (explore, proposal, spec, tasks) generados en `docs/openspec/changes/002-cost-estimator/`. Listo para ejecución.
+- [x] **002 Calculadora de Presupuestos:** Comando `funky estimate` implementado (Fases Worker y Doc-Ops completadas). Integración con @inquirer/prompts y Value-Based Pricing. Lanzado en v1.19.0.
+
 ---
 
 ## ⏳ Tareas Pendientes
@@ -46,13 +49,13 @@
 - [] **012 Protocolo de Auto-Tiering del Orquestador (Backlog):** Implementar una fase de "Razonamiento Pre-Vuelo" donde el Orquestador analice el pedido del usuario contra la *Escalation Matrix* y declare su Tier de operación (T1/T2/T3) de forma autónoma antes de generar cualquier artefacto. Objetivo: reducir la micro-gestión humana y garantizar consistencia en el rigor documental. Al tener tiers, debatir si el orquestador debería delegar cada una de las fases a workers o si el puede hacer algunas, con pros y contras.
 - [ ] **018 Arquitectura de Agentes v2.0.0 — Rediseño Monumental del Sistema de Configuración (Backlog):** Auditoría profunda y redistribución inteligente de TODOS los archivos de configuración de agentes (`GEMINI-funky-global.md`, `.agents/rules/sdd-orchestrator.md`, `.agents/rules/secops.md`, y demás). El objetivo es diseñar un sistema de tres capas aprovechando nativamente los **Workflows de Antigravity** (campo `Description` + campo `Content` en Markdown): **(1) Global (siempre activo):** Solo Personalidad, Tono y Filosofía. Token Diet estricta. **(2) Workspace Rules (condicionales):** Reglas específicas del repo, como `sdd-orchestrator.md` y `secops.md`, que se activan solo cuando el contexto lo amerita. **(3) Workflows Antigravity (on-demand):** Las instrucciones pesadas del Orquestador y del Worker viven como Workflows `/funky-orchestrator` y `/funky-worker`, inyectándose solo cuando el humano los invoca. Este cambio elimina el *Context Dilution*, resuelve el límite de tokens del IDE y es un **Breaking Change** de UX que justifica el salto a **v2.0.0**.
 - [ ] **015 Protocolos On-Demand (Skills Inyectables) (Backlog):** Crear un mecanismo (ej. `.agents/skills/protocols/sdd-reviewer.md`) para protocolos de uso específico que no inflen el prompt global. Permite al humano invocar roles especializados (ej. "Abogado del Diablo" para auditar inconsistencias lógicas en un plan) solo cuando el escenario lo amerita, evitando el "Context Dilution".
-- [ ] **002 Calculadora de Presupuestos (Backlog):** Crear un template o script interactivo (`project-cost-estimator.md`) para calcular el costo/precio a cobrar por un proyecto freelance/agencia, cruzando características solicitadas por el cliente, NFRs, presupuesto de infraestructura y seniority del equipo. → [Ver RFC](./docs/openspec/rfcs/002-project-cost-estimator.md)
 - [ ] **006 Arquitectura SDD — Test Planning (Backlog)**: Diseñar e integrar una fase formal de "Test Planning" (ej. `test-plan.md` o mejora de `spec.md`). Debe ser agnóstica al framework y adaptarse a proyectos con o sin TDD estricto, mitigando puntos ciegos lógicos.
 - [ ] **011 Comando de Bootstrap de Prompts (Backlog):** Añadir un comando al CLI que genere los documentos del directorio `docs/prompts`. Es un comando de uso poco frecuente (ej. al configurar una nueva laptop), pero vital para asegurar que el entorno de IA (prompts globales y de backup) esté disponible inmediatamente en cualquier equipo de trabajo.
 - [ ] **013 Comando de Generación Dinámica de Árbol (Backlog):** Crear una tool o comando (ej. `funky tree`) que recorra el repositorio y genere un mapa detallado archivo-por-archivo, infiriendo el propósito a través de comentarios o cabeceras. Previene el *Doc Rot* al eliminar la necesidad de mapas estáticos. → [Ver RFC](./docs/openspec/rfcs/013-dynamic-repo-tree.md)
 - [ ] **003 Protocolo de Seguridad — Revisión de Repos Externos:** Crear un documento de protocolo (distinto de `secops.md`, que ya cubre npm) para auditar repos de GitHub, extensiones de VSCode y código de terceros. Incluye: detección de caracteres Unicode invisibles (Trojan Source), vectores de ejecución implícita en Python (import time / setup.py), y checklist para revisar repos ya clonados. → Contexto completo en [`docs/funky-ai/drafts/midudev.md` — Pendiente 1](./docs/funky-ai/drafts/midudev.md)
 - [ ] **004 Protocolo de Optimización por Tipo de Proyecto:** Definir estándares mínimos de optimización según el tipo de proyecto (frontend, backend, CLI, API), con límites explícitos de cuándo parar y un framework de tradeoff entre rendimiento, UX, DX y funcionalidad. → Contexto completo en [`docs/funky-ai/drafts/midudev.md` — Pendiente 2](./docs/funky-ai/drafts/midudev.md)
 - [ ] **005 Auditoría Legacy (Backlog):** Analizar el workspace del proyecto Next.js anterior. El objetivo es barrer el desastre de reglas/skills viejas, rescatar las decisiones arquitectónicas que eran joyas, y re-documentarlas usando el formato estructurado y liviano de Funky AI.
+- [ ] Añadir el template de architect-assessment-guide al comando funky assess.
 
 ---
 
@@ -87,3 +90,4 @@ Ninguno.
 | v1.17.0 | Aislamiento y Agnostización de Base Templates (RFC 009). Creado backup interno de templates inmutables. |
 | v1.18.0 | `funky feature <name>` + arquitectura modular de scaffolding SDD. |
 | v1.18.1 | Doc-patch: fix `--template`, nuevo `escenarios-de-uso.md`, `funky-init-flow.md` actualizado, `OPTIONAL_DOC_UPDATE` en tasks template, engram `[doc-update-index-manual-drift]`. |
+| v1.19.0 | Comando `funky estimate` interactivo, generación de `pricing-analysis.md` y Value-Based Pricing. |

@@ -23,6 +23,7 @@ pnpm link --global
 | Comando | Descripción | Ejemplo |
 |---------|-------------|---------|
 | `funky init` | Inicia el ecosistema Funky AI en el directorio actual. Genera el `PROJECT-CANVAS.md` interactivo, copia reglas de agente, `ORCHESTRATOR-STATE.md`, y una guía de planeación. | `funky init` -> "🚀 Funky Ecosystem inicializado!" |
+| `funky estimate` | Calcula el costo estimado y riesgo cruzando el Canvas técnico con factores de negocio. Genera un análisis de Pricing. | `funky estimate` -> "💰 Piso Base Calculado..." |
 | `funky feature <nombre>` | Inicializa el scaffolding completo para una nueva feature SDD en `docs/openspec/changes/<nombre>`, copiando todos los templates necesarios. | `funky feature auth` -> "🚀 Scaffolding de feature creado..." |
 | `funky phase <nombre>` | Inyecta el template correspondiente a la fase SDD indicada en el directorio activo. | `funky phase explore` -> "📄 Template 'explore' inyectado!" |
 | `funky release <version>` | Genera las notas de release estandarizadas automáticamente basándose en templates. | `funky release v1.12.0` -> "🚀 Release Notes v1.12.0 creados" |

@@ -191,3 +191,9 @@ Aquí se registran los hallazgos técnicos y arquitectónicos que moldean el fut
 **Why:** No existe ningún mecanismo automático que detecte nuevos docs en `docs/funky-ai/operaciones/` o `docs/funky-ai/guias/` y los agregue al índice. Es la contraparte de `[memory-polling-index-layer]` pero aplicada a docs operacionales, no al engram.
 **Where:** `.agents/templates/sdd/tasks.md` — bloque `<OPTIONAL_DOC_UPDATE>`, tabla "Índice de Docs Vivos".
 **Learned:** Al crear un nuevo doc de flujo/operacional que deba ser mantenido activo, agregar una fila al índice en la misma operación. El índice tiene exactamente un punto de falla: que el autor del nuevo doc se olvide de registrarlo. Como mitigación, incluir este check en el `MANDATORY_RELEASE_PROTOCOL` Doc-Ops: "¿Esta release agrega un nuevo doc de flujo? Si SÍ → actualizar el índice de `OPTIONAL_DOC_UPDATE` en `.agents/templates/sdd/tasks.md`".
+
+### [DISCOVERY][inquirer-integration] Interacción Humano-LLM en Herramientas de CLI
+**What:** La integración de `@inquirer/prompts` permite convertir un CLI estático en una herramienta guiada. En lugar de procesar todo vía flags, el CLI asume el rol de entrevistador.
+**Why:** Especialmente útil en herramientas analíticas (como `funky estimate`) donde el usuario no conoce los factores técnicos (extraídos automáticamente) pero sí los factores de negocio, combinando ambos para nutrir el contexto del LLM.
+**Where:** Comando `funky estimate` en v1.19.0.
+**Learned:** Usar Inquirer para inyectar "Factores de Contexto" y cruzar con "Factores Técnicos", persistiendo el resultado en disco (`pricing-analysis.md`) para abrir un debate de mayor valor (Value-Based Pricing) en el chat con la IA, actuando la CLI como puente.
