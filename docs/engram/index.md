@@ -40,6 +40,7 @@
 | [cli-orchestrator-circular-dependency] | Aislar rules/templates locales (backup) antes de agnostizar la versión pública distribuida por el CLI. |
 | [doc-update-index-manual-drift] | Índice de Docs Vivos en OPTIONAL_DOC_UPDATE es estático — actualizar en la misma operación cuando se crea un nuevo doc de flujo. |
 | [inquirer-integration] | Uso de inquirer en CLI permite flujos interactivos guiados vs comandos headless. |
+| [t1-scaffolding-purge] | Si el CLI inyecta scaffolding pero el Orquestador dictamina T1, los artefactos vacíos se ignoran y purgan al archivar. |
 
 ## Bugfixes
 | Tag | Resumen |

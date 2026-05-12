@@ -197,3 +197,9 @@ Aquí se registran los hallazgos técnicos y arquitectónicos que moldean el fut
 **Why:** Especialmente útil en herramientas analíticas (como `funky estimate`) donde el usuario no conoce los factores técnicos (extraídos automáticamente) pero sí los factores de negocio, combinando ambos para nutrir el contexto del LLM.
 **Where:** Comando `funky estimate` en v1.19.0.
 **Learned:** Usar Inquirer para inyectar "Factores de Contexto" y cruzar con "Factores Técnicos", persistiendo el resultado en disco (`pricing-analysis.md`) para abrir un debate de mayor valor (Value-Based Pricing) en el chat con la IA, actuando la CLI como puente.
+### [t1-scaffolding-purge]
+**What:** Manejo de artefactos vac�os cuando el CLI asume T2 pero el Orquestador dictamina T1.
+**Why:** Para mantener la simplicidad del scaffolding CLI, el Orquestador en T1 saltea Explore/Proposal e instruye en tasks.md que la basura sea purgada.
+**Where:** .agents/rules/sdd-orchestrator.md y flujos T1.
+**Learned:** Es m�s seguro corregir el exceso de andamiaje con limpieza post-ejecuci�n que modificar el CLI.
+
