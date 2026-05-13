@@ -132,11 +132,11 @@
 > **Prerequisito:** Orquestador completó Doc-Ops y archivados.
 
 **🚨 CHECKLIST GIT-OPS (OBLIGATORIO - NO OMITIR):**
-- [ ] **Verificar estado:** `git status` — confirmar limpio. Si hay archivos inesperados → PARAR.
-- [ ] **Commit:** `git add -A && git commit -m "feat(cli): add funky gentle command for Tier 4 Deep SDD"`
-- [ ] **Merge:** `git checkout main && git merge --no-ff feature/v1.20.0-012b-funky-gentle`
-- [ ] **Tag:** `git tag -a v1.20.0 -m "v1.20.0 — funky gentle (Tier 4 Deep SDD)"`
-- [ ] **Push:** `git push origin main --tags`
+- [x] **Verificar estado:** `git status` — confirmar limpio. Si hay archivos inesperados → PARAR.
+- [x] **Commit:** `git add -A && git commit -m "feat(cli): add funky gentle command for Tier 4 Deep SDD"`
+- [x] **Merge:** `git checkout main && git merge --no-ff feature/v1.20.0-012b-funky-gentle`
+- [x] **Tag:** `git tag -a v1.20.0 -m "v1.20.0 — funky gentle (Tier 4 Deep SDD)"`
+- [x] **Push:** `git push origin main --tags`
 
 > ⚠️ Esta fase NO edita archivos de texto. Solo git. Si algo falla → documentar en `report.md` y PARAR.
 

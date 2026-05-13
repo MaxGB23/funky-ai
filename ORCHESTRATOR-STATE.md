@@ -7,9 +7,9 @@
 ## 🏷️ Estado Actual
 
 - **Versión:** v1.20.0
-- **Rama activa:** `feature/v1.20.0-012b-funky-gentle` (pendiente merge a main via Worker Git-Ops)
+- **Rama activa:** `main` (feature/v1.20.0-012b-funky-gentle mergeada y taggeada)
 - **Última sesión:** 2026-05-12
-- **Estado:** ✅ Doc-Ops completados. Pendiente: Fase 6 Git-Ops (Worker Flash).
+- **Estado:** ✅ Versión v1.20.0 lanzada. Todo en verde.
 
 ---
 

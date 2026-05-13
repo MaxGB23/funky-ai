@@ -203,3 +203,10 @@ Aquí se registran los hallazgos técnicos y arquitectónicos que moldean el fut
 **Where:** .agents/rules/sdd-orchestrator.md y flujos T1.
 **Learned:** Es m�s seguro corregir el exceso de andamiaje con limpieza post-ejecuci�n que modificar el CLI.
 
+
+---
+
+### [cli-base-immutable]
+**What:** El template CLI base (unky-cli/src/templates/) debe ser agnóstico. Solo recibe cambios universales (enforcement, contrato del Return Envelope). Los ítems workspace-específicos (README raíz, CLI Docs, RFCs, Smoke Test) viven exclusivamente en el golden (.agents/templates/).
+**Why:** El CLI base se distribuye a cualquier repo. Pollutarlo con paths o convenciones del repo unky-ai rompe la portabilidad para otros proyectos.
+**Where:** unky-cli/src/templates/sdd/tasks.md vs .agents/templates/sdd/tasks.md`n**Learned:** Regla: si el ítem es solo válido en este workspace → va al golden. Si es válido en cualquier repo → va al CLI base. El enforcement de marcar [x] inmediatamente es universal → va en ambos.

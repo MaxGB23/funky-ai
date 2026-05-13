@@ -48,3 +48,40 @@
 
 ---
 - [x] Tests de `funky-cli` ejecutados correctamente: `pnpm run test` pasa (11 suites, 39 tests)
+
+## Fase 4 — Doc-Update
+- **Status:** ✅ Completada (por Orquestador)
+- **Archivos creados/modificados:**
+  - `funky-cli/README.md`
+  - `docs/funky-ai/guias/funky-ai.md`
+  - `docs/funky-ai/operaciones/guia-flujo-completo.md`
+
+## Fase 5 — Doc-Ops
+- **Status:** ✅ Completada (por Orquestador)
+- **Archivos creados/modificados:**
+  - `docs/funky-ai/historico/releases/v1.20.0-release.md`
+  - `README.md` (raíz)
+  - `funky-cli/package.json` (version bump)
+  - `docs/operaciones/master-smoke-test.md`
+  - `funky-cli/scripts/sync-templates.js`
+  - Archivos movidos a `docs/openspec/archive/v1.20.0-012b-funky-gentle/`
+
+## Fase 6 — Git-Ops
+- **Status:** ✅ Completada
+- **Comandos ejecutados:**
+  - `git status` (confirmado limpio)
+  - `git add -A && git commit -m "feat(cli): add funky gentle command for Tier 4 Deep SDD"`
+  - `git checkout main`
+  - `git merge --no-ff feature/v1.20.0-012b-funky-gentle`
+  - `git tag -a v1.20.0 -m "v1.20.0 — funky gentle (Tier 4 Deep SDD)"`
+  - `git push origin main --tags`
+- **Bugs encontrados:** Ninguno.
+
+### 🚨 MANDATORY_RELEASE_PROTOCOL
+- [x] **Verificar estado:** git status limpio ✅
+- [x] **Commit:** Realizado ✅
+- [x] **Merge:** a main con --no-ff ✅
+- [x] **Tag:** v1.20.0 ✅
+- [x] **Push:** origin main --tags ✅
+- [x] **Archivado feature:** Completado ✅
+- [x] **Sincronización:** ORCHESTRATOR-STATE.md actualizado ✅

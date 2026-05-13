@@ -41,6 +41,7 @@
 | [doc-update-index-manual-drift] | Índice de Docs Vivos en OPTIONAL_DOC_UPDATE es estático — actualizar en la misma operación cuando se crea un nuevo doc de flujo. |
 | [inquirer-integration] | Uso de inquirer en CLI permite flujos interactivos guiados vs comandos headless. |
 | [t1-scaffolding-purge] | Si el CLI inyecta scaffolding pero el Orquestador dictamina T1, los artefactos vacíos se ignoran y purgan al archivar. |
+| [cli-base-immutable] | CLI base templates deben ser agnósticos. Cambios y enforcements específicos de repo solo en templates golden locales. |
 
 ## Bugfixes
 | Tag | Resumen |
