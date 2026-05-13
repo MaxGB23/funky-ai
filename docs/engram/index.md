@@ -54,3 +54,4 @@
 | [stale-post-mortem-ref] | Al deprecar un archivo, grep_search en .agents/rules/ para limpiar refs |
 | [worker-report-false-positive] | Workers Git-Ops marcan ítems Doc-Ops como [x] sin ejecutarlos — auditar tasks.md siempre |
 | [test-mock-drift] | Actualizar arreglos de mocks de FS al añadir archivos a templates copiados por CLI |
+| [silent-spec-skip] | `feature.js` lista `spec.md` en `filesToCopy` pero no existe en templates → se saltea silenciosamente. Pendiente crear template `spec.md` como feature separada. |

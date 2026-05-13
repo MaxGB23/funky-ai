@@ -59,6 +59,8 @@ Antes de escribir el primer `worker-handoff.md` o de decirle al humano qué pega
 
 > 🔴 **MANDATO:** Al leer un RFC, tu único rol es extraer la intención del humano, validar viabilidad y generar un `proposal.md` formal en `openspec/changes/{name}/`. **Nunca generes código ni tasks directamente desde un RFC.**
 
+> ⚠️ **Un RFC detallado NO reemplaza el `explore.md`.** El RFC responde "qué/por qué" (concepto/negocio). El `explore.md` responde "dónde/cómo" (impacto técnico en el código actual). Son dimensiones ortogonales — aunque el RFC sea exhaustivo, el `explore.md` sigue siendo obligatorio.
+
 > ⚠️ El header `> 🛑 WARNING PARA LA IA` dentro de cada RFC no es decorativo — es una instrucción de ejecución. Respetala siempre.
 
 ---
@@ -69,7 +71,7 @@ Antes de escribir el primer `worker-handoff.md` o de decirle al humano qué pega
 |---------|--------|
 | `/sdd-explore` | **PRERREQUISITO:** Verificar que el archivo existe. Si no, pedir al humano `funky feature <name>`. **Acción:** Sobrescribir `openspec/changes/{name}/explore.md` |
 | `/sdd-propose` | **PRERREQUISITO:** Verificar que existen los archivos. **Acción:** Sobrescribir `proposal.md` + `spec.md` en el mismo folder |
-| `/sdd-ff` | **PRERREQUISITO:** Verificar que existen `explore.md`, `proposal.md` **Y** `spec.md` en `openspec/changes/{name}/` con contenido. **LUEGO:** `ACTION: Execute view_file on .agents/templates/sdd/tasks.md`. Solo entonces sobrescribir `tasks.md`. |
+| `/sdd-ff` | **PRERREQUISITO:** Verificar que existen `explore.md`, `proposal.md` **Y** `spec.md` en `openspec/changes/{name}/` con contenido. **LUEGO:** `ACTION: Execute view_file on docs/openspec/changes/{name}/tasks.md` (ya inyectado por `funky feature` — no leer el golden por separado, es el mismo contenido). Solo entonces sobrescribir `tasks.md`. |
 
 ## ⚠️ Protocolo Obligatorio — Generación de Worker Handoffs
 Antes de escribir CUALQUIER `worker-handoff.md`, el Orquestador DEBE:

@@ -12,6 +12,12 @@
 
 ## ✅ Checklist de Ejecución
 
+> **[SISTEMA — ORQUESTADOR — ENFORCEMENT]** Al completar cada ítem:
+> 1. Marcarlo `[x]` en este archivo **INMEDIATAMENTE**.
+> 2. Guardar el archivo al disco antes de continuar al siguiente ítem.
+> Un `tasks.md` desactualizado = próxima sesión ciega. Sin excusas.
+
+
 ### FASE 0 — Branch Setup [T1]
 > **Tier:** T1 — Git ops puras, cero ambigüedad. Delegable a Worker.
 
@@ -42,14 +48,16 @@
 > **Modelo:** El que está activo en la sesión actual (contexto ya cargado = cero transcripción).
 
 **🚨 CHECKLIST DOC-OPS (OBLIGATORIO - NO OMITIR):**
-- [ ] **Tests [CONDICIONAL]:** ¿Esta feature modificó código fuente testeable (comandos, utils, lógica de negocio)? 
-  - **SÍ aplica →** Ejecutar la suite completa antes de archivar: `npm run test` (o el script del proyecto). Si falla → PARAR y resolver el bug antes de continuar. El push nunca parte de una base rota.
+- [ ] **Tests [CONDICIONAL]:** ¿Esta feature modificó código fuente testeable (comandos, utils, lógica de negocio)?
+  - **SÍ aplica →** Ejecutar la suite completa antes de archivar: `pnpm run test` (o el script del proyecto). Si falla → PARAR y resolver el bug antes de continuar. El push nunca parte de una base rota.
   - **NO aplica →** Marcar como `[OMITIDO: sin cambios en código fuente — solo docs/templates/config]`.
 - [ ] **Release Notes:** Generar notas de release en la ubicación acordada para el proyecto.
 - [ ] **Versión:** Actualizar manifest (`package.json` u otro) a la nueva versión.
 - [ ] **Archivado:** Mover `docs/openspec/changes/{feature}/` → `docs/openspec/archive/{version}-{feature}/`. Ejecutar AHORA (antes del Worker).
 - [ ] **Sincronización:** Actualizar `ORCHESTRATOR-STATE.md` (versión, rama, estado estable).
 - [ ] **Preparar datos para Worker Git-Ops:** Declarar en el handoff: versión exacta, mensaje de commit, nombre del branch, mensaje del tag.
+
+
 
 > ⚠️ **Regla de oro:** Todo lo que requiere criterio o genera texto → Orquestador inline. Todo lo mecánico post-archivado → Worker Git-Ops.
 

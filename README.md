@@ -1,8 +1,8 @@
-# 👻 Funky AI v1.17.0: Índice y Mapa de Navegación
+# 👻 Funky AI v1.20.0: Índice y Mapa de Navegación
 
 Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia Artificial que te permite emular redes asíncronas de agentes (SDD) usando recursos manuales y archivos físicos locales sobre el IDE Antigravity.
 
-> **🚀 Estado del Arte (v1.19.0):** El núcleo de Funky AI ha evolucionado. El CLI incorpora el **Architecture Readiness Gate** (`funky assess`), una barrera determinística que evalúa decisiones de infraestructura, bases de datos y concurrencia antes de arrancar cualquier feature. Desde v1.11.0 el sistema usa **Two-Stage Memory Polling** con índice liviano para controlar el costo de tokens del engram a escala. El proceso de release está dividido en Doc-Ops y Git-Ops con hints de modelo, respaldado por **TDD (Vitest)**, un **pipeline de CI (GitHub Actions)** y el **Agent DRY Pattern**. Las reglas de orquestación incluyen enforcement estructural post-análisis forense y un **Return Statement bloqueante** (gates G1/G2/G3). Desde v1.17.0, los templates públicos del CLI son **completamente agnósticos** (RFC 009): `funky init` inyecta un `TEMPLATE_GUIDE.md` de Progressive Disclosure y el Orquestador local opera sobre un backup inmutable en `.agents/templates/`, desacoplado de la evolución del CLI.
+> **🚀 Estado del Arte (v1.20.0):** El núcleo de Funky AI ha evolucionado. El CLI incorpora el **Architecture Readiness Gate** (`funky assess`), el **Estimador de Costos** (`funky estimate`) y ahora el **Tier 4 (Gentle SDD)** (`funky gentle`) para tareas hipercríticas de alto riesgo. Desde v1.12.0 el sistema usa **Two-Stage Memory Polling** con índice liviano. El proceso de release está dividido en Doc-Ops y Git-Ops, respaldado por **TDD (Vitest)** y un **pipeline de CI (GitHub Actions)**. Desde v1.17.0, los templates públicos del CLI son **completamente agnósticos**: `funky init` inyecta un `TEMPLATE_GUIDE.md` y el Orquestador opera sobre un backup inmutable en `.agents/templates/`. El **Auto-Tiering** (v1.19.0) permite al Orquestador declarar su Tier de operación de forma autónoma.
 
 > **🛡️ CI Status:** ![CI](https://github.com/MaxGB23/funky-ai/actions/workflows/ci.yml/badge.svg)
 
@@ -53,10 +53,13 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 | Comando | Propósito |
 |---|---|
 | `funky init` | Inyecta reglas, memoria (ecosystem) y genera/consume un `PROJECT-CANVAS.md` (modo interactivo y headless). |
-| `funky assess` | Evalúa el `architecture-assessment.md` con 3 reglas determinísticas (Overengineering, Cuello de Botella, Underengineering). Genera un Challenge Pack de revisión arquitectónica si detecta riesgos. |
-| `funky phase <fase>` | Inyecta templates SDD (explore, proposal, tasks, handoff, report). |
+| `funky assess` | Evalúa el `architecture-assessment.md` con 3 reglas determinísticas. Genera un Challenge Pack si detecta riesgos. |
+| `funky estimate` | Calcula costo estimado cruzando el Canvas técnico con factores de negocio. Genera `pricing-analysis.md`. |
+| `funky feature <name>` | Inicializa el scaffolding SDD estándar (Tier 1–3) en `docs/openspec/changes/<name>/`. |
+| `funky gentle <name>` | Inicializa el scaffolding **Tier 4 (Gentle SDD)** en `docs/openspec/gentle/<name>/`. 7 roles aislados para tareas hipercríticas. |
+| `funky phase <fase>` | Inyecta templates SDD individuales (explore, proposal, tasks, handoff, report). |
 | `funky release <version>` | Genera release notes estandarizados automáticamente. |
-| `pnpm test` *(en `funky-cli/`)* | Ejecuta la suite Vitest (TDD, desde v1.6). Corre automáticamente en CI vía GitHub Actions. |
+| `pnpm test` *(en `funky-cli/`)* | Ejecuta la suite Vitest (TDD). Corre automáticamente en CI vía GitHub Actions. |
 
 ---
 
