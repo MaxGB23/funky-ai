@@ -53,6 +53,7 @@ Hilo persistente de planificación y seguimiento.
 | **T1: Lite** | Refactors menores, scripts. | Planificación comprimida en un solo prompt/chat. |
 | **T2: Std** | Módulos nuevos, extensiones. | 1. `sdd-proposal.md` \| 2. `sdd-tasks.md`. |
 | **T3: Heavy** | Greenfield, Core refactor. | 1 phase = 1 file = 1 new chat (Aislamiento total). |
+| **T4: Gentle SDD** | Migraciones, rewrites, riesgo crítico. | 7 roles aislados secuenciales (`funky gentle`). "Glass to break in case of emergency". |
 
 ---
 
@@ -61,6 +62,7 @@ Hilo persistente de planificación y seguimiento.
 1. **¿Afecta >2 archivos o Arquitectura?** ➔ Activar SDD (**Tier 2+**).
 2. **¿Punto de entrada desconocido?** ➔ Activar SDD (**Tier 1**).
 3. **¿Proyecto Greenfield / Core Migración?** ➔ Activar SDD (**Tier 3**).
+4. **¿Fallo en producción es catastrófico?** ➔ Activar Gentle SDD (**Tier 4** — `funky gentle`).
 
 ---
 

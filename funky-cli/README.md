@@ -25,6 +25,7 @@ pnpm link --global
 | `funky init` | Inicia el ecosistema Funky AI en el directorio actual. Genera el `PROJECT-CANVAS.md` interactivo, copia reglas de agente, `ORCHESTRATOR-STATE.md`, y una guía de planeación. | `funky init` -> "🚀 Funky Ecosystem inicializado!" |
 | `funky estimate` | Calcula el costo estimado y riesgo cruzando el Canvas técnico con factores de negocio. Genera un análisis de Pricing. | `funky estimate` -> "💰 Piso Base Calculado..." |
 | `funky feature <nombre>` | Inicializa el scaffolding completo para una nueva feature SDD en `docs/openspec/changes/<nombre>`, copiando todos los templates necesarios. | `funky feature auth` -> "🚀 Scaffolding de feature creado..." |
+| `funky gentle <nombre>` | Inicializa el scaffolding de **Tier 4 Deep SDD** en `docs/openspec/gentle/<nombre>`. Genera los 7 templates de roles aislados (Explorer → Verifier) para tareas hipercríticas. | `funky gentle db-migration` -> "🚀 Scaffolding de Tier 4 Deep SDD creado..." |
 | `funky phase <nombre>` | Inyecta el template correspondiente a la fase SDD indicada en el directorio activo. | `funky phase explore` -> "📄 Template 'explore' inyectado!" |
 | `funky release <version>` | Genera las notas de release estandarizadas automáticamente basándose en templates. | `funky release v1.12.0` -> "🚀 Release Notes v1.12.0 creados" |
 | `funky assess` | Architecture Readiness Gate. Evalúa `docs/architecture-assessment.md` contra el motor de reglas y genera challenges para el LLM. | `funky assess` -> "✅ Arquitectura validada..." |

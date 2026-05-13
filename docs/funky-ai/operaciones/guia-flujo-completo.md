@@ -7,7 +7,8 @@
 ## 🗺️ Mapa del Flujo
 
 ```
-[Chat virgen]  →  exploración  →  [funky estimate (Opcional)]  →  funky init  →  funky phase  →  Workers  →  Release
+[Chat virgen]  →  exploración  →  [funky estimate (Opcional)]  →  funky init  →  funky feature <name>  →  Workers  →  Release
+                                                                                        └─ (Tier 4 hipercrítico) →  funky gentle <name>  →  7 Workers secuenciales  →  Release
 ```
 
 ---
@@ -239,7 +240,9 @@ Eliminá los archivos `sdd-*.md` del directorio raíz una vez mergeado. Son arte
 | Comando | ¿Cuándo usarlo? |
 |---------|-----------------|
 | `funky init` | Una sola vez al crear el proyecto |
-| `funky phase explore` | Al inicio de cada feature — para volcar el contexto |
+| `funky feature <name>` | Al iniciar cualquier feature SDD (Tier 1–3) — inyecta todos los templates de golpe |
+| `funky gentle <name>` | Al iniciar una tarea hipercrítica (Tier 4) — inyecta los 7 templates de roles aislados |
+| `funky phase explore` | Si preferís inyectar templates individualmente |
 | `funky phase proposal` | Después de explorar — decisiones técnicas |
 | `funky phase tasks` | Después de la propuesta — checklist de Fases |
 | `funky phase worker-handoff` | Antes de cada delegación a un Worker |

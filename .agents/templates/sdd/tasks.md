@@ -12,6 +12,11 @@
 
 ## ✅ Checklist de Ejecución
 
+> **[SISTEMA — ORQUESTADOR — ENFORCEMENT]** Al completar cada ítem:
+> 1. Marcarlo `[x]` en este archivo **INMEDIATAMENTE**.
+> 2. Guardar el archivo al disco antes de continuar al siguiente ítem.
+> Un `tasks.md` desactualizado = próxima sesión ciega. Sin excusas.
+
 ### FASE 0 — Branch Setup [T1]
 > **Tier:** T1 — Git ops puras, cero ambigüedad. Delegable a Worker.
 
@@ -75,7 +80,8 @@
   - **SÍ aplica →** Ejecutar la suite completa antes de archivar: `pnpm run test` (o el script del proyecto). Si falla → PARAR y resolver el bug antes de continuar. El push nunca parte de una base rota.
   - **NO aplica →** Marcar como `[OMITIDO: sin cambios en código fuente — solo docs/templates/config]`.
 - [ ] **Release Notes:** Generar `docs/funky-ai/releases/vX.Y.Z-release.md` usando como base `funky-cli/src/templates/release.md`. *(Redactar para consumo humano. IGNORAR Token Diet aquí.)*
-- [ ] **README:** Actualizar `README.md` raíz manteniéndolo como Architecture Hub (template: `funky-cli/src/templates/README.md`).
+- [ ] **README [CONDICIONAL]:** ¿La release cambió la versión, comandos disponibles o arquitectura conceptual? → Actualizar `README.md` raíz manteniéndolo como Architecture Hub. Si no → `[OMITIDO: sin cambios estructurales]`.
+
 - [ ] **CLI Docs:** SI la release incluyó nuevos comandos o flags → actualizar tabla en `funky-cli/README.md`. Si no → `[OMITIDO: sin nuevos comandos]`.
 - [ ] **Package.json:** Bumpar `"version"` en `funky-cli/package.json` a la nueva versión.
 - [ ] **Archivado:** Mover `docs/openspec/changes/{feature}/` → `docs/openspec/archive/{version}-{feature}/`. Ejecutar AHORA (antes del Worker).

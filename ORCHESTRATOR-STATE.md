@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v1.19.0
-- **Rama activa:** `feature/v1.19.0-012-auto-tiering`
+- **Versión:** v1.20.0
+- **Rama activa:** `feature/v1.20.0-012b-funky-gentle` (pendiente merge a main via Worker Git-Ops)
 - **Última sesión:** 2026-05-12
-- **Estado:** ✅ Estable. Auditoría documental + fixes completados.
+- **Estado:** ✅ Doc-Ops completados. Pendiente: Fase 6 Git-Ops (Worker Flash).
 
 ---
 
@@ -47,7 +47,7 @@
 **Roadmap sugerido:** 012 → 018 (v2.0.0) → 015 → resto
 
 - [x] **012 Protocolo de Auto-Tiering del Orquestador (Backlog):** Implementar una fase de "Razonamiento Pre-Vuelo" donde el Orquestador analice el pedido del usuario contra la *Escalation Matrix* y declare su Tier de operación (T1/T2/T3) de forma autónoma antes de generar cualquier artefacto. Objetivo: reducir la micro-gestión humana y garantizar consistencia en el rigor documental. Al tener tiers, debatir si el orquestador debería delegar cada una de las fases a workers o si el puede hacer algunas, con pros y contras.
-- [ ] **012.b Implementación de Tier 4 (Deep SDD) en CLI (Backlog):** Añadir soporte en `funky-cli` para flujos de alto riesgo (Proposal 007). Requiere crear 7 templates de roles aislados (Explorer, Proposer, etc.) y el comando `funky gentle <feature>`. Depende de la base de 012.
+- [x] **012.b Implementación de Tier 4 (Deep SDD) en CLI:** Comando `funky gentle <feature>` implementado. 14 templates con `<system_prompt>` de roles aislados. Tests: 11 suites, 39 tests en verde. Pendiente: Git-Ops (Fase 6).
 - [ ] **018 Arquitectura de Agentes v2.0.0 — Rediseño Monumental del Sistema de Configuración (Backlog):** Auditoría profunda y redistribución inteligente de TODOS los archivos de configuración de agentes (`GEMINI-funky-global.md`, `.agents/rules/sdd-orchestrator.md`, `.agents/rules/secops.md`, y demás). El objetivo es diseñar un sistema de tres capas aprovechando nativamente los **Workflows de Antigravity** (campo `Description` + campo `Content` en Markdown): **(1) Global (siempre activo):** Solo Personalidad, Tono y Filosofía. Token Diet estricta. **(2) Workspace Rules (condicionales):** Reglas específicas del repo, como `sdd-orchestrator.md` y `secops.md`, que se activan solo cuando el contexto lo amerita. **(3) Workflows Antigravity (on-demand):** Las instrucciones pesadas del Orquestador y del Worker viven como Workflows `/funky-orchestrator` y `/funky-worker`, inyectándose solo cuando el humano los invoca. Este cambio elimina el *Context Dilution*, resuelve el límite de tokens del IDE y es un **Breaking Change** de UX que justifica el salto a **v2.0.0**.
 - [ ] **015 Protocolos On-Demand (Skills Inyectables) (Backlog):** Crear un mecanismo (ej. `.agents/skills/protocols/sdd-reviewer.md`) para protocolos de uso específico que no inflen el prompt global. Permite al humano invocar roles especializados (ej. "Abogado del Diablo" para auditar inconsistencias lógicas en un plan) solo cuando el escenario lo amerita, evitando el "Context Dilution".
 - [ ] **006 Arquitectura SDD — Test Planning (Backlog)**: Diseñar e integrar una fase formal de "Test Planning" (ej. `test-plan.md` o mejora de `spec.md`). Debe ser agnóstica al framework y adaptarse a proyectos con o sin TDD estricto, mitigando puntos ciegos lógicos.
@@ -57,6 +57,7 @@
 - [ ] **004 Protocolo de Optimización por Tipo de Proyecto:** Definir estándares mínimos de optimización según el tipo de proyecto (frontend, backend, CLI, API), con límites explícitos de cuándo parar y un framework de tradeoff entre rendimiento, UX, DX y funcionalidad. → Contexto completo en [`docs/funky-ai/drafts/midudev.md` — Pendiente 2](./docs/funky-ai/drafts/midudev.md)
 - [ ] **005 Auditoría Legacy (Backlog):** Analizar el workspace del proyecto Next.js anterior. El objetivo es barrer el desastre de reglas/skills viejas, rescatar las decisiones arquitectónicas que eran joyas, y re-documentarlas usando el formato estructurado y liviano de Funky AI.
 - [ ] Añadir el template de architect-assessment-guide al comando funky assess.
+- [ ] **Auditoría Stale-Template-Refs (Quick):** `grep_search` en `docs/` y `.agents/` buscando textos como "copiar templates", "revisar templates", "crear manualmente los archivos" que ya son responsabilidad de `funky feature`. Actualizar o eliminar las referencias obsoletas. → Contexto: mejora detectada durante sesión 012.b.
 
 ---
 
@@ -92,3 +93,4 @@ Ninguno.
 | v1.18.0 | `funky feature <name>` + arquitectura modular de scaffolding SDD. |
 | v1.18.1 | Doc-patch: fix `--template`, nuevo `escenarios-de-uso.md`, `funky-init-flow.md` actualizado, `OPTIONAL_DOC_UPDATE` en tasks template, engram `[doc-update-index-manual-drift]`. |
 | v1.19.0 | Comando `funky estimate` interactivo, generación de `pricing-analysis.md` y Value-Based Pricing. |
+| v1.20.0 | Comando `funky gentle` (Tier 4 Deep SDD): 7 roles aislados, golden/fallback pattern, sync ampliado, 2 mejoras en `sdd-orchestrator.md`. |

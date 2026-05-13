@@ -16,6 +16,12 @@ const filesToSync = [
   { src: 'docs/funky-ai/cli/canvas-planning-guide.md', dest: 'canvas-planning-guide.md' }
 ];
 
+const gentleTemplatesDest = path.resolve(__dirname, '../src/templates/gentle');
+const gentleTemplatesToSync = [
+  '01-explore.md', '02-proposal.md', '03-spec.md', '04-design.md',
+  '05-tasks.md', '06-implement.md', '07-verify.md'
+].map(file => ({ src: `.agents/templates/gentle/${file}`, dest: file }));
+
 try {
   if (!fs.existsSync(templatesDest)) {
     fs.mkdirSync(templatesDest, { recursive: true });
@@ -30,6 +36,23 @@ try {
       console.log(`✅ Synced: ${file.dest}`);
     } else {
       console.warn(`⚠️ Warning: Source file not found: ${srcPath}`);
+    }
+  });
+
+  // Sync gentle templates
+  if (!fs.existsSync(gentleTemplatesDest)) {
+    fs.mkdirSync(gentleTemplatesDest, { recursive: true });
+  }
+
+  gentleTemplatesToSync.forEach(file => {
+    const srcPath = path.join(workspaceRoot, file.src);
+    const destPath = path.join(gentleTemplatesDest, file.dest);
+    
+    if (fs.existsSync(srcPath)) {
+      fs.copyFileSync(srcPath, destPath);
+      console.log(`✅ Synced (gentle): ${file.dest}`);
+    } else {
+      console.warn(`⚠️ Warning: Source gentle template not found: ${srcPath}`);
     }
   });
   
