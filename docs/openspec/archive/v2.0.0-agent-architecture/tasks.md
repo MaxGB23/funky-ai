@@ -1,8 +1,8 @@
-# Tasks: [Nombre de la Funcionalidad o Cambio]
+# Tasks: Arquitectura de Agentes v2.0.0
 
 **Estado:** 🟡 PENDIENTE
-**Rama:** `feature/nombre-del-branch`
-**Ref:** `sdd-proposal.md`
+**Rama:** `feature/v2.0.0-agent-architecture`
+**Ref:** `proposal.md`, `spec.md`
 
 > **[SISTEMA - PARA EL ORQUESTADOR]** Antes de delegar la primera fase, verificá el Planning Checklist en `.agents/rules/sdd-orchestrator.md`. Generá un `worker-handoff.md` basado en `funky-cli/src/templates/sdd/worker-handoff.md`. **NO delegues mediante prompts en el chat.**
 
@@ -20,52 +20,56 @@
 ### FASE 0 — Branch Setup [T1]
 > **Tier:** T1 — Git ops puras, cero ambigüedad. Delegable a Worker.
 
-- [ ] Verificar que git está disponible: `git --version` (si falla → documentar en Return Envelope y PARAR)
-- [ ] Verificar que el branch NO existe: `git branch --list feat/vX.Y-{name}`
-- [ ] Crear y cambiar al branch: `git checkout -b feat/vX.Y-{name}`
-- [ ] Confirmar branch activo: `git status`
-- [ ] Documentar en Return Envelope: branch confirmado ✅
+- [x] Verificar que git está disponible: `git --version` (si falla → documentar en Return Envelope y PARAR)
+- [x] Verificar que el branch NO existe: `git branch --list feature/v2.0.0-agent-architecture`
+- [x] Crear y cambiar al branch: `git checkout -b feature/v2.0.0-agent-architecture`
+- [x] Confirmar branch activo: `git status`
+- [x] Documentar en Return Envelope: branch confirmado ✅
 
 **🚫 Restricciones:** No modificar ningún archivo de código. Esta fase es SOLO setup de git.
 
 ---
 
-### FASE 1 — [Nombre de la Fase 1] (Worker)
-> Objetivo: [Objetivo de esta fase]
+### FASE 1 — Capa 1: Refactor Global (Worker - T2)
+> Objetivo: Limpiar `GEMINI-funky-global.md` manteniendo solo el core.
 
-- [ ] [Tarea específica 1]
-- [ ] [Tarea específica 2]
+- [x] Eliminar de `docs/prompts/GEMINI-funky-global.md` toda la sección referida a "Funky AI Protocol — Manual SDD Orchestrator Rule", "Dual Persona", "Orchestrator vs Worker".
+- [x] Asegurar que permanezcan intactas las secciones de: Rules, Personalidad, Language, Tone, Philosophy y Expertise.
+- [x] **Restricción Crítica:** NO TOCAR `docs/prompts/gemini-funky-backup.md`.
 
-**🚫 Restricciones:** [Ej: No modificar código fuente, solo tests.]
+**🚫 Restricciones:** Estricta adherencia a "no eliminar" la personalidad y tono.
 
 ---
 
-<OPTIONAL_DOC_UPDATE>
+### FASE 2 — Capa 2: Workspace Rules Fragmentación (Worker - T3)
+> Objetivo: Dividir `sdd-orchestrator.md` sin perder información útil.
 
-> **[SISTEMA — ORQUESTADOR — DECISIÓN REQUERIDA]**
-> Analizá los cambios de esta feature contra el índice de abajo. Si algún doc cubre exactamente lo que cambió → expandí esta fase con tareas concretas. Si ninguno aplica → **eliminá este bloque completo del archivo.**
-> **Regla de contexto:** NO abras ningún doc del índice todavía. La columna "Aplica si..." es suficiente para decidir. Solo abrís el archivo en el momento exacto de editarlo.
+- [x] Crear `.agents/rules/orchestrator-core.md`.
+- [x] Mover a `orchestrator-core.md` las reglas estructurales indispensables (ej: Bootstrap, Semántica RFC vs Proposal, Auto-Tiering).
+- [x] **Restricción Crítica (Anti-Alucinación):** NO eliminar lógica operativa de Worker o planificación profunda. Debe ser movida/refactorizada para inyectarla después en Capa 3. Nada se pierde, todo se reubica.
+- [ ] Eliminar `.agents/rules/sdd-orchestrator.md` original SÓLO cuando su contenido esté salvado o mapeado a Capa 3.
 
-### 📚 Índice de Docs Vivos
+**🚫 Restricciones:** Evitar sobreoptimización. Respetar el contenido de las reglas que hacen al protocolo seguro.
 
-| # | Doc | Cubre | Aplica si... |
-|---|-----|-------|--------------|
-| 1 | `docs/funky-ai/operaciones/funky-init-flow.md` | Árbol de decisión de `funky init`, tabla de archivos estáticos del bootstrap, modos Headless / Interactivo / `--template` | Se modificó `init.js`, cambió qué archivos copia el bootstrap, o cambió el comportamiento del flag `--template` o modo Headless |
-| 2 | `docs/funky-ai/operaciones/guia-flujo-completo.md` | Ciclo de vida end-to-end: exploración → init → phase → workers → release, con comandos y output esperado | Cambió la secuencia de comandos recomendada, se agregó un nuevo modo o flag al CLI, o cambió el flujo de uso habitual |
-| 3 | `funky-cli/README.md` | Tabla de comandos y flags disponibles, fases SDD, estructura de carpetas resultante del `funky init` | Se agregó, modificó o eliminó un comando, flag o fase SDD del CLI |
-| 4 | `docs/funky-ai/guias/funky-ai.md` | Pilares del ecosistema, Tiers de complejidad (T0–T3), criterio de decisión Chat vs SDD | Cambió la arquitectura conceptual del protocolo Funky AI o se añadió un pilar nuevo |
-| 5 | `docs/funky-ai/operaciones/cli-simulations.md` | Vectores de falla conocidos y simulaciones de bugs del CLI | Se encontró un nuevo vector de falla, se cerró uno existente, o se modificó el comportamiento ante errores |
-| 6 | `funky-cli/src/templates/bootstrap/canvas-planning-guide.md` | Opciones disponibles para cada campo de PROJECT-CANVAS e INFRA-CANVAS | Se agregaron / eliminaron opciones en los Canvas o cambió el schema de alguno |
-| 7 | `docs/funky-ai/operaciones/escenarios-de-uso.md` | Escenarios de uso del CLI mapeados al estado inicial del usuario (sin definir, definido, repo existente) | Se agrega un nuevo comando o modo al CLI que cambia alguno de los flujos de entrada |
+---
 
-### FASE N+1 — Doc-Update [ORQUESTADOR — Inline]
-> Completar SOLO si al menos un doc del índice aplica. Para cada doc afectado, identificar la sección exacta y qué debe cambiar.
+### FASE 3 — Capa 3 y Templates de Delegación (Worker - T2)
+> Objetivo: Crear Workflows de Antigravity y actualizar strings de Handoff.
 
-- [ ] **Doc [#N]** — `{ruta}`: Actualizar sección `{sección exacta}` → `{qué dice ahora vs. qué debe decir}`
+- [x] Crear en `docs/openspec/changes/funky-cli-v2.0.0/` los borradores `funky-orchestrator.md` y `funky-worker.md` con las lógicas extraídas en la Fase 2.
+- [x] Actualizar `.agents/templates/sdd/worker-handoff.md`, reemplazando el texto de Handoff final por: `/funky-worker @.../worker-handoff.md Ejecuta la fase N`.
+- [x] Actualizar `funky-cli/src/templates/sdd/worker-handoff.md` con el mismo reemplazo.
+- [x] Actualizar `.agents/templates/bootstrap/agents-rules-sdd-orchestrator.md` con el mismo reemplazo.
 
-**🚫 Restricción:** Abrir cada archivo SOLO en el momento de editarlo (Safe-Contexting). No cargar todo el índice a la vez.
+**🚫 Restricciones:** No tocar código JS de la CLI.
 
-</OPTIONAL_DOC_UPDATE>
+---
+
+### FASE 4 — Doc-Update [ORQUESTADOR — Inline]
+> Doc-Update completado con la actualización a la nueva arquitectura.
+
+- [x] **Doc 2** — `docs/funky-ai/operaciones/guia-flujo-completo.md`: Actualizada la sección 4.2 para reflejar el comando de delegación `/funky-worker`.
+- [x] **Doc 4** — `docs/funky-ai/guias/funky-ai.md`: Actualizada la sección de configuración para explicar la Arquitectura de 3 Capas y el concepto de Token Diet.
 
 ---
 
@@ -133,4 +137,4 @@ Al finalizar cada fase, actualizar `sdd-report.md` con:
 > Antes de escribir cualquier instrucción al humano, verificar **en este orden**:
 > 1. ¿`worker-handoff.md` generado en `docs/openspec/changes/{feature}/`? Si **NO** → generarlo AHORA. No se delega ninguna fase sin handoff.
 > 2. ¿Revisaste el Planning Checklist (items 0–4) en `.agents/rules/sdd-orchestrator.md`? Si **NO** → leerlo antes de continuar.
-> 3. Solo después de confirmar los dos puntos anteriores, instruir al humano: *"Cerrá este chat, abrí uno nuevo y decíme: `@docs/openspec/changes/{feature}/worker-handoff.md Ejecutá la Fase N`"*
+> 3. Solo después de confirmar los dos puntos anteriores, instruir al humano: *"Cerrá este chat, abrí uno nuevo y decíme: `/funky-worker @docs/openspec/changes/{feature}/worker-handoff.md Ejecuta la fase N`"*

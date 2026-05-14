@@ -9,13 +9,13 @@ Basado en la exploración, implementaremos la **Opción B (Arquitectura de 3 Cap
 |------|----------|---------------------|
 | **Capa 1: Global** | Token Diet extrema. Solo Tono y Personalidad (Rioplatense, filosofía, senior architect). | Garantiza consistencia en toda interacción sin inflar el contexto con lógicas operativas. |
 | **Capa 2: Workspace Rules** | División del `sdd-orchestrator.md` masivo en partes referenciables. | Evitar cargar todas las reglas del Orquestador si solo se va a ejecutar una acción puntual. |
-| **Capa 3: Workflows On-Demand** | Migrar los roles operativos a Workflows Antigravity (`/orchestrator`, `/worker`). | Aislamiento perfecto. El modelo lee exactamente las reglas de su rol actual y nada más. |
-| **Delegación Handoff** | Reemplazar "Ejecutá la Fase N" por un comando tipo slash: `/worker-execute <ruta/al/handoff>`. | Aprovecha los triggers nativos de Workflows de Antigravity, forzando la inyección del contexto correcto en el nuevo chat. |
+| **Capa 3: Workflows On-Demand** | Migrar los roles operativos a Workflows Antigravity (`/funky-orchestrator`, `/funky-worker`). | Aislamiento perfecto. El modelo lee exactamente las reglas de su rol actual y nada más. |
+| **Delegación Handoff** | Reemplazar "Ejecutá la Fase N" por un comando tipo slash: `funky-worker <ruta/al/handoff> Ejecuta la fase N`. | Aprovecha los triggers nativos de Workflows de Antigravity, forzando la inyección del contexto correcto en el nuevo chat. |
 
 ## 3. Stack / Scope
 **Mapeo de Capas (Scope de esta task):**
-- **Global:** Refactor de `GEMINI-funky-global.md`
-- **Workspace:** Limpieza y fragmentación de `.agents/rules/*.md`
+- **Global:** Refactor de `GEMINI-funky-global.md`, sin tocar el backup
+- **Workspace:** Limpieza y fragmentación de `.agents/rules/*.md`, este no debe eliminar informacion util, ya que con limpieza workers alucinan y sobreoptimizan, lo que hace que se pierdan partes importantes, lo que esta feature debe hacer es que se separen correctamente las reglas, y si es necesario algo referenciarlo para que se utilice unicamente cuando sea necesario.
 - **Workflows:** Creación de los archivos en `~/.gemini/antigravity/global_workflows/` para Orquestador y Worker.
 
 **Fuera de Scope (Non-Goals):**

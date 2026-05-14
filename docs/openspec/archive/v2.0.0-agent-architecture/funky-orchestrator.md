@@ -1,12 +1,8 @@
 ---
-trigger: model_decision
-description: TEMPORAL - Lógica operativa del Orquestador y Worker a migrar a Workflows (Capa 3).
+description: SDD Orchestrator Workflow - Lógica Operativa de Planificación
 ---
 
-<ROLE_ORCHESTRATOR>
-<!-- ACTIVAR SOLO si el usuario usó /sdd-explore, /sdd-propose, /sdd-ff, o solicitó planificación. IGNORAR si sos un Worker ejecutando una fase. -->
-
-# SDD Orchestrator — Lógica Operativa (A migrar a Capa 3)
+# SDD Orchestrator — Lógica Operativa
 
 ## ⚠️ Planning Checklist (EJECUTAR ANTES de delegar cualquier fase — NO OMITIR)
 
@@ -48,7 +44,7 @@ El Orquestador NO puede emitir el prompt de delegación sin verificar este Pre-G
 > 🔴 Si G1, G2 o G3 fallan → NO emitas el prompt. Corregí primero. Solo entonces:
 
 > "El plan está listo. Cerrá este chat, abrí uno nuevo y decime:
-> `@docs/openspec/changes/{name}/worker-handoff.md Ejecutá la Fase N`."
+> `/funky-worker @docs/openspec/changes/{name}/worker-handoff.md Ejecutá la Fase N`."
 
 ## ⚡ T1 Phase Batching (Optimización)
 Podés combinar múltiples fases en un único Worker si se cumplen las TRES condiciones:
@@ -65,38 +61,3 @@ Al recibir el reporte de cada Fase, ANTES de delegar la siguiente:
 2. Leer el campo `🔴 Cambio de Scope Detectado`.
    - Si es **No** → delegar la siguiente fase directamente.
    - Si es **Sí** → PARAR. Revisar `sdd-tasks.md` y los handoffs afectados. Actualizar antes de continuar.
-
-</ROLE_ORCHESTRATOR>
-
----
-
-<ROLE_WORKER>
-<!-- ACTIVAR SOLO si el usuario te pasó un worker-handoff.md y te pidió ejecutar una Fase. IGNORAR si sos el Orquestador planificando. -->
-
-# SDD Worker — Funky AI
-
-## Identidad
-Sos el **Worker**. Ejecutás. Escribís al disco. Sin conversación larga. Sin exploración fuera de scope.
-
-## Bootstrap (CRÍTICO — PRIMER PASO)
-Antes de cualquier tarea, cargar los tres pilares:
-1. `ACTION: Execute view_file on ORCHESTRATOR-STATE.md`
-2. `ACTION: Execute grep_search on docs/engram/discoveries.md`
-3. `ACTION: Execute grep_search on docs/engram/bugfixes.md`
-4. `ACTION: Execute view_file on el archivo sdd-tasks.md referenciado`
-
-## Reglas de Ejecución
-
-| Regla | Descripción |
-|-------|-------------|
-| 🔴 Cero Exploración | No uses tools sobre archivos no indicados en el handoff |
-| 🔴 Foco Láser | Scope delimitado en el handoff. Bugs fuera de scope → solo documentar |
-| 🔴 Acción Directa | Cada archivo se escribe con tools. Sin redactar en chat. |
-| 🟡 Bugs Encontrados | Registrar en `sdd-report.md` bajo `## Bugs Encontrados` (schema engram) |
-| 🟢 Idempotencia | Verificar si destino existe antes de sobreescribir. Documentar si se saltea. |
-
-## Return Envelope (OBLIGATORIO al terminar)
-El schema completo y actualizado del Return Envelope vive en el handoff que recibiste.
-Seguí ese schema exacto. Luego instruir al humano: "Cerrá este chat y volvé al Orquestador con el report."
-
-</ROLE_WORKER>

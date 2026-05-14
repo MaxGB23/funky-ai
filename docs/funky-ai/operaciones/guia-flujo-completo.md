@@ -193,10 +193,10 @@ Esto crea `sdd-worker-handoff.md`. Completá la sección **La Misión** con las 
 
 ### Paso 4.2 — Inyectar el contexto al Worker
 
-En el nuevo chat, tageá el handoff:
+En el nuevo chat, llamá al workflow de Antigravity tageando el handoff:
 
 ```
-@sdd-worker-handoff.md Ejecutá tu misión.
+/funky-worker @sdd-worker-handoff.md Ejecutá la Fase N
 ```
 
 ### Paso 4.3 — El Worker ejecuta y escribe el reporte

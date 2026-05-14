@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v1.20.0
-- **Rama activa:** `main` (feature/v1.20.0-012b-funky-gentle mergeada y taggeada)
-- **Última sesión:** 2026-05-12
-- **Estado:** ✅ Versión v1.20.0 lanzada. Todo en verde.
+- **Versión:** v2.0.0
+- **Rama activa:** `main` (feature/v2.0.0-agent-architecture mergeada y taggeada)
+- **Última sesión:** 2026-05-14
+- **Estado:** ✅ Versión v2.0.0 lanzada. Todo en verde.
 
 ---
 
@@ -39,6 +39,7 @@
 
 - [x] **002 Planificación Cost Estimator:** Fase de Orchestrator completada para RFC 002. Artefactos SDD (explore, proposal, spec, tasks) generados en `docs/openspec/changes/002-cost-estimator/`. Listo para ejecución.
 - [x] **002 Calculadora de Presupuestos:** Comando `funky estimate` implementado (Fases Worker y Doc-Ops completadas). Integración con @inquirer/prompts y Value-Based Pricing. Lanzado en v1.19.0.
+- [x] **018 Arquitectura de Agentes v2.0.0 — Rediseño Monumental del Sistema de Configuración:** Redistribución inteligente de archivos de configuración aprovechando nativamente los Workflows de Antigravity (Capa 1: Global, Capa 2: Workspace Rules, Capa 3: Workflows On-Demand). Elimina el Context Dilution y resuelve el límite de tokens. Breaking Change de UX. Lanzado en v2.0.0.
 
 ---
 
@@ -49,7 +50,6 @@
 - [ ] **Fix inmediato** Añadir el template de SDD spec.md al comando del cli que corresponda, ya que el template no existe y por lo tanto no se inyecta en .agents/templates.
 - [x] **012 Protocolo de Auto-Tiering del Orquestador (Backlog):** Implementar una fase de "Razonamiento Pre-Vuelo" donde el Orquestador analice el pedido del usuario contra la *Escalation Matrix* y declare su Tier de operación (T1/T2/T3) de forma autónoma antes de generar cualquier artefacto. Objetivo: reducir la micro-gestión humana y garantizar consistencia en el rigor documental. Al tener tiers, debatir si el orquestador debería delegar cada una de las fases a workers o si el puede hacer algunas, con pros y contras.
 - [x] **012.b Implementación de Tier 4 (Deep SDD) en CLI:** Comando `funky gentle <feature>` implementado. 14 templates con `<system_prompt>` de roles aislados. Tests: 11 suites, 39 tests en verde. Pendiente: Git-Ops (Fase 6).
-- [ ] **018 Arquitectura de Agentes v2.0.0 — Rediseño Monumental del Sistema de Configuración (Backlog):** Auditoría profunda y redistribución inteligente de TODOS los archivos de configuración de agentes (`GEMINI-funky-global.md`, `.agents/rules/sdd-orchestrator.md`, `.agents/rules/secops.md`, y demás). El objetivo es diseñar un sistema de tres capas aprovechando nativamente los **Workflows de Antigravity** (campo `Description` + campo `Content` en Markdown): **(1) Global (siempre activo):** Solo Personalidad, Tono y Filosofía. Token Diet estricta. **(2) Workspace Rules (condicionales):** Reglas específicas del repo, como `sdd-orchestrator.md` y `secops.md`, que se activan solo cuando el contexto lo amerita. **(3) Workflows Antigravity (on-demand):** Las instrucciones pesadas del Orquestador y del Worker viven como Workflows `/funky-orchestrator` y `/funky-worker`, inyectándose solo cuando el humano los invoca. Este cambio elimina el *Context Dilution*, resuelve el límite de tokens del IDE y es un **Breaking Change** de UX que justifica el salto a **v2.0.0**.
 - [ ] **015 Protocolos On-Demand (Skills Inyectables) (Backlog):** Crear un mecanismo (ej. `.agents/skills/protocols/sdd-reviewer.md`) para protocolos de uso específico que no inflen el prompt global. Permite al humano invocar roles especializados (ej. "Abogado del Diablo" para auditar inconsistencias lógicas en un plan) solo cuando el escenario lo amerita, evitando el "Context Dilution".
 - [ ] **006 Arquitectura SDD — Test Planning (Backlog)**: Diseñar e integrar una fase formal de "Test Planning" (ej. `test-plan.md` o mejora de `spec.md`). Debe ser agnóstica al framework y adaptarse a proyectos con o sin TDD estricto, mitigando puntos ciegos lógicos.
 - [ ] **011 Comando de Bootstrap de Prompts (Backlog):** Añadir un comando al CLI que genere los documentos del directorio `docs/prompts` o archivos de config como workers/orquestadores de la v2.0.0. Es un comando de uso poco frecuente (ej. al configurar una nueva laptop), pero vital para asegurar que el entorno de IA (prompts globales y de backup) esté disponible inmediatamente en cualquier equipo de trabajo.
@@ -95,3 +95,4 @@ Ninguno.
 | v1.18.1 | Doc-patch: fix `--template`, nuevo `escenarios-de-uso.md`, `funky-init-flow.md` actualizado, `OPTIONAL_DOC_UPDATE` en tasks template, engram `[doc-update-index-manual-drift]`. |
 | v1.19.0 | Comando `funky estimate` interactivo, generación de `pricing-analysis.md` y Value-Based Pricing. |
 | v1.20.0 | Comando `funky gentle` (Tier 4 Deep SDD): 7 roles aislados, golden/fallback pattern, sync ampliado, 2 mejoras en `sdd-orchestrator.md`. |
+| v2.0.0 | Arquitectura de 3 Capas (Global, Workspace Rules, Workflows On-Demand). Migración de flujos SDD a Antigravity Workflows para prevenir el Context Dilution. |

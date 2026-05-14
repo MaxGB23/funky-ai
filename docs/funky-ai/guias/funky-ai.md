@@ -66,10 +66,13 @@ Hilo persistente de planificación y seguimiento.
 
 ---
 
-## ⚙️ Configuración (`GEMINI.md`)
+## ⚙️ Arquitectura de 3 Capas (v2.0.0)
 
-- **Global:** Perfil, Tono, Filosofía, Skills. **PROHIBIDO** poner restricciones de orquestación aquí.
-- **Workspace:** `.agents/rules/` para protocolos SDD específicos. Aísla restricciones sin romper la ejecución global.
+El sistema usa **Token Diet** extremo para evitar "Context Dilution":
+
+1. **Capa 1 (Global):** Perfil, Tono, Filosofía (`docs/prompts/GEMINI-funky-global.md`). Siempre activo, súper liviano.
+2. **Capa 2 (Workspace Rules):** Identidad básica y routing (`.agents/rules/orchestrator-core.md`). Se activa automáticamente al detectar tareas de planificación.
+3. **Capa 3 (Workflows On-Demand):** Lógica operativa profunda y checklists. Viven en Antigravity Workflows (`/funky-orchestrator`, `/funky-worker`). Solo se inyectan en el prompt cuando el humano los llama explícitamente.
 
 ---
 

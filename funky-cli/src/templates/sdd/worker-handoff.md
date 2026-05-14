@@ -5,7 +5,7 @@
 > **NO redactes código ni explicaciones largas en el chat. Acción directa al disco.**
 
 > **[HUMANO]** Para ejecutar este worker, abrí un chat nuevo y pegá:
-> `@docs/openspec/changes/{feature-name}/worker-handoff.md Ejecutá la Fase [N]`
+> `/funky-worker @docs/openspec/changes/{feature-name}/worker-handoff.md Ejecutá la Fase [N]`
 
 ---
 
