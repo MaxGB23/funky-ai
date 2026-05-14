@@ -1,8 +1,8 @@
-# 👻 Funky AI v1.20.0: Índice y Mapa de Navegación
+# 👻 Funky AI v2.0.0: Índice y Mapa de Navegación
 
 Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia Artificial que te permite emular redes asíncronas de agentes (SDD) usando recursos manuales y archivos físicos locales sobre el IDE Antigravity.
 
-> **🚀 Estado del Arte (v1.20.0):** El núcleo de Funky AI ha evolucionado. El CLI incorpora el **Architecture Readiness Gate** (`funky assess`), el **Estimador de Costos** (`funky estimate`) y ahora el **Tier 4 (Gentle SDD)** (`funky gentle`) para tareas hipercríticas de alto riesgo. Desde v1.12.0 el sistema usa **Two-Stage Memory Polling** con índice liviano. El proceso de release está dividido en Doc-Ops y Git-Ops, respaldado por **TDD (Vitest)** y un **pipeline de CI (GitHub Actions)**. Desde v1.17.0, los templates públicos del CLI son **completamente agnósticos**: `funky init` inyecta un `TEMPLATE_GUIDE.md` y el Orquestador opera sobre un backup inmutable en `.agents/templates/`. El **Auto-Tiering** (v1.19.0) permite al Orquestador declarar su Tier de operación de forma autónoma.
+> **🚀 Estado del Arte (v2.0.0):** El núcleo de Funky AI ha evolucionado. La v2.0.0 introduce la **Arquitectura de 3 Capas** para combatir el Context Dilution, separando el conocimiento en: Capa 1 Global, Capa 2 Workspace Rules, y Capa 3 Workflows On-Demand (`/funky-orchestrator` y `/funky-worker`). El CLI incorpora el **Architecture Readiness Gate** (`funky assess`), el **Estimador de Costos** (`funky estimate`) y el **Tier 4 (Gentle SDD)** (`funky gentle`) para tareas hipercríticas de alto riesgo. El proceso de release está dividido en Doc-Ops y Git-Ops, respaldado por **TDD (Vitest)** y un **pipeline de CI (GitHub Actions)**. El **Auto-Tiering** permite al Orquestador declarar su Tier de operación de forma autónoma.
 
 > **🛡️ CI Status:** ![CI](https://github.com/MaxGB23/funky-ai/actions/workflows/ci.yml/badge.svg)
 
@@ -68,7 +68,8 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 
 | Archivo | Propósito |
 |---|---|
-| [`v1.16.0-release.md`](./docs/funky-ai/releases/v1.16.0-release.md) | ⭐ **Actual** — Handoff Enforcement: Return Statement G1/G2/G3 + prerequisito `view_file tasks.md` en `/sdd-ff` |
+| [`v2.0.0-release.md`](./docs/funky-ai/releases/v2.0.0-release.md) | ⭐ **Actual** — Arquitectura de Agentes v2.0.0 (Workflows On-Demand y Fragmentación) |
+| [`v1.16.0-release.md`](./docs/funky-ai/releases/v1.16.0-release.md) | Handoff Enforcement: Return Statement G1/G2/G3 + prerequisito `view_file tasks.md` en `/sdd-ff` |
 | [`v1.15.0-release.md`](./docs/funky-ai/releases/v1.15.0-release.md) | Enforcement Analysis & Housekeeping (v1.14.0 + v1.15.0) |
 | [`v1.13.0-release.md`](./docs/funky-ai/releases/v1.13.0-release.md) | Architecture Readiness v2 (NFRs obligatorios en `funky assess`) |
 | [`v1.12.0-release.md`](./docs/funky-ai/releases/v1.12.0-release.md) | Architecture Readiness Gate — nuevo comando `funky assess` |

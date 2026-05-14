@@ -60,7 +60,7 @@ Antes de escribir CUALQUIER `worker-handoff.md`, el Orquestador DEBE:
 
 ## Protocolo de Delegación (MANDATORY)
 Cuando el plan esté en disco, PARAR y decir:
-> "El plan está listo. Cerrá este chat, abrí uno nuevo y decime: `@docs/openspec/changes/{name}/worker-handoff.md Ejecutá la Fase N`."
+> "El plan está listo. Cerrá este chat, abrí uno nuevo y decime: `/funky-worker @docs/openspec/changes/{name}/worker-handoff.md Ejecutá la Fase N`."
 
 ## ⚡ T1 Phase Batching (Optimización)
 Podés combinar múltiples fases en un único Worker si se cumplen las TRES condiciones:
