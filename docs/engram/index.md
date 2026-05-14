@@ -42,6 +42,7 @@
 | [inquirer-integration] | Uso de inquirer en CLI permite flujos interactivos guiados vs comandos headless. |
 | [t1-scaffolding-purge] | Si el CLI inyecta scaffolding pero el Orquestador dictamina T1, los artefactos vacíos se ignoran y purgan al archivar. |
 | [cli-base-immutable] | CLI base templates deben ser agnósticos. Cambios y enforcements específicos de repo solo en templates golden locales. |
+| [orchestrator-context-overload] | Sobrecarga de texto/contexto causa que el Orquestador se adelante. Solución: Arquitectura v2.0.0. |
 
 ## Bugfixes
 | Tag | Resumen |

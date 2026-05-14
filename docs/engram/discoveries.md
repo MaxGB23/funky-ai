@@ -210,3 +210,9 @@ Aquí se registran los hallazgos técnicos y arquitectónicos que moldean el fut
 **What:** El template CLI base (unky-cli/src/templates/) debe ser agnóstico. Solo recibe cambios universales (enforcement, contrato del Return Envelope). Los ítems workspace-específicos (README raíz, CLI Docs, RFCs, Smoke Test) viven exclusivamente en el golden (.agents/templates/).
 **Why:** El CLI base se distribuye a cualquier repo. Pollutarlo con paths o convenciones del repo unky-ai rompe la portabilidad para otros proyectos.
 **Where:** unky-cli/src/templates/sdd/tasks.md vs .agents/templates/sdd/tasks.md`n**Learned:** Regla: si el ítem es solo válido en este workspace → va al golden. Si es válido en cualquier repo → va al CLI base. El enforcement de marcar [x] inmediatamente es universal → va en ambos.
+
+### [orchestrator-context-overload]
+**What:** El Orquestador a veces se salta sus propios protocolos restrictivos (ej. pedir al usuario que cree archivos) debido a la sobrecarga cognitiva.
+**Why:** El límite de tokens y la mezcla de reglas globales, contexto, e historial de chat generan ansiedad en el modelo, haciendo que asuma proactividad destructiva.
+**Where:** Interacciones del Orquestador previas a la Arquitectura v2.0.0.
+**Learned:** La solución no es añadir más texto ("No te saltes X"), sino estructurar las reglas por capas (v2.0.0), aislando el contexto en Workflows bajo demanda para reducir la presión del token window.
