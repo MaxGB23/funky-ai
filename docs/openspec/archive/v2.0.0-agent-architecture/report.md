@@ -54,3 +54,10 @@
 - [OMITIDO: Fase 0 y 1 no desencadenan la pipeline de release] Tag
 - [OMITIDO: Fase 0 y 1 no desencadenan la pipeline de release] Push
 </MANDATORY_RELEASE_PROTOCOL>
+
+## Fase 5 — Git-Ops
+- **Status:** ✅ Completada
+- **Comandos ejecutados:** Commit, Merge, Tag, Push.
+- **Bugs/Errores:** Ninguno.
+- **Próxima acción:** Fin del release.
+

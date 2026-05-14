@@ -104,11 +104,11 @@
 > **Prerequisito:** El Orquestador completó la Fase Doc-Ops y los archivados ya están ejecutados.
 
 **🚨 CHECKLIST GIT-OPS (OBLIGATORIO - NO OMITIR):**
-- [ ] **Verificar estado:** `git status` — confirmar limpio. Si hay archivos inesperados → documentar y PARAR.
-- [ ] **Commit:** `git add -A && git commit -m "{mensaje declarado por Orquestador}"`
-- [ ] **Merge:** `git checkout main && git merge --no-ff {branch-declarado}`
-- [ ] **Tag:** `git tag -a {version} -m "{mensaje-declarado}"`
-- [ ] **Push:** `git push origin main --tags`
+- [x] **Verificar estado:** `git status` — confirmar limpio. Si hay archivos inesperados → documentar y PARAR.
+- [x] **Commit:** `git add -A && git commit -m "{mensaje declarado por Orquestador}"`
+- [x] **Merge:** `git checkout main && git merge --no-ff {branch-declarado}`
+- [x] **Tag:** `git tag -a {version} -m "{mensaje-declarado}"`
+- [x] **Push:** `git push origin main --tags`
 
 > ⚠️ Esta fase NO edita archivos de texto. Solo ejecuta comandos git. Si algo falla → documentar en `sdd-report.md` y PARAR.
 
