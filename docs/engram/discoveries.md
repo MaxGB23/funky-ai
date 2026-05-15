@@ -216,3 +216,7 @@ Aquí se registran los hallazgos técnicos y arquitectónicos que moldean el fut
 **Why:** El límite de tokens y la mezcla de reglas globales, contexto, e historial de chat generan ansiedad en el modelo, haciendo que asuma proactividad destructiva.
 **Where:** Interacciones del Orquestador previas a la Arquitectura v2.0.0.
 **Learned:** La solución no es añadir más texto ("No te saltes X"), sino estructurar las reglas por capas (v2.0.0), aislando el contexto en Workflows bajo demanda para reducir la presión del token window.
+
+### [system-prompt-vs-chat-history]
+**Descubrimiento:** La inyecci�n de reglas mediante Slash Commands (ej. /funky-orchestrator) introduce las reglas en el *Conversational History* como un mensaje de usuario. Esto sufre de *Context Fading* severo en sesiones largas (el LLM olvida su rol por Positional Bias).
+**Regla/Decisi�n:** Las reglas operativas pesadas o de ruteo que deben persistir durante sesiones largas (como el Orquestador) **deben inyectarse mediante triggers del IDE (Capa 2: .agents/rules/ con `model_decision`)**. Esto las aloja permanentemente en el *System Prompt*, garantizando que el LLM jam�s las pierda de vista. NUNCA usar comandos en el chat para inyectar un rol de larga duraci�n ni intentar forzar la lectura del archivo desde el Global Prompt (lo cual adem�s de *Context Fading* causa *Contaminaci�n Cruzada* entre repositorios).

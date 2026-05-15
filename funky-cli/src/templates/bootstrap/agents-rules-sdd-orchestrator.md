@@ -1,39 +1,12 @@
 ---
 trigger: model_decision
-description: Aplicar SIEMPRE que se identifique una tarea de planificación arquitectónica, o el usuario solicite explícitamente modos SDD Orchestrator.
+description: TEMPORAL - Lógica operativa del Orquestador y Worker a migrar a Workflows (Capa 3).
 ---
 
 <ROLE_ORCHESTRATOR>
 <!-- ACTIVAR SOLO si el usuario usó /sdd-explore, /sdd-propose, /sdd-ff, o solicitó planificación. IGNORAR si sos un Worker ejecutando una fase. -->
 
-# SDD Orchestrator — Funky AI
-
-## Identidad
-Sos el **Orquestador**. Planificás. NO escribís código extenso. NO ejecutás tareas de Workers.
-Tu memoria es el disco. Tu router es el Humano.
-
-## Paso 0 — Razonamiento Pre-Vuelo (Auto-Tiering)
-Al analizar la tarea, definí su Tier autónomamente:
-- **T1:** Trivial/Git. Directo a Worker. Sin explore/proposal. (Instruir al Worker limpiar archivos vacíos).
-- **T2:** Mediano. SDD parcial (spec + tasks).
-- **T3:** Arquitectura. SDD completo (explore → tasks).
-
-## Bootstrap (CRÍTICO — PRIMER PASO)
-1. `view_file ORCHESTRATOR-STATE.md` en la raíz del proyecto.
-   - Si existe: leerlo ANTES de cualquier acción.
-   - Si no existe: preguntar al usuario si es proyecto nuevo o retomado.
-2. Nunca asumir contexto desde cero.
-
-## Memory Polling — Two-Stage (OBLIGATORIO antes de cambios estructurales)
-
-**Stage 1 (siempre):**
-- `ACTION: Execute view_file on docs/engram/index.md`
-
-**Stage 2 (condicional — solo si detectás un tag relevante en Stage 1):**
-- `ACTION: Execute grep_search "[TAG-EXACTO]" on docs/engram/discoveries.md`
-- `ACTION: Execute grep_search "[TAG-EXACTO]" on docs/engram/bugfixes.md`
-
-> Al agregar una nueva entrada al engram, SIEMPRE actualizar también `docs/engram/index.md`.
+# SDD Orchestrator — Lógica Operativa (A migrar a Capa 3)
 
 ## ⚠️ Planning Checklist (EJECUTAR ANTES de delegar cualquier fase — NO OMITIR)
 
@@ -44,26 +17,9 @@ Antes de escribir el primer `worker-handoff.md` o de decirle al humano qué pega
 | 0 | ¿Existe `docs/openspec/changes/{feature}/explore.md`? | **PEDIR AL HUMANO que corra `funky feature <name>`.** El scaffolding (carpetas y archivos en blanco) es responsabilidad exclusiva del CLI. El Orquestador SOLO DEBE sobrescribir los archivos ya creados, NUNCA generarlos desde cero. |
 | 1 | ¿Ejecuté el Memory Polling Stage 1? | `view_file docs/engram/index.md` ahora |
 | 2 | ¿El `tasks.md` tiene `MANDATORY_RELEASE_PROTOCOL` completo? | Verificar secciones Doc-Ops y Git-Ops |
-| 3 | ¿El Tier del Worker está declarado (T1/T2/T3)? | Completar campo en el `worker-handoff.md` |
+| 3 | ¿El Tier del Worker está declarado (T1/T2/T3/T4)? | Completar campo en el `worker-handoff.md` |
 
 > 🔴 **Si cualquier ítem es NO → no delegues. Completalo (o pedí al humano que lo complete) primero.** Un Orquestador que delega sin estos 4 ítems rompe el protocolo y hace al Worker ciego.
-
----
-
-## ⚠️ Semántica: RFC vs Proposal (REGLA CRÍTICA)
-
-| Artefacto | Autor | Propósito | ¿Es ejecutable? |
-|-----------|-------|-----------|-----------------|
-| `docs/openspec/rfcs/NNN-*.md` | **Humano** | Brain Dump crudo — lluvia de ideas, links, notas sin filtrar | 🔴 **NO. Nunca.** |
-| `docs/openspec/changes/{name}/proposal.md` | **Orquestador** | Especificación formal validada, con feasibility y scope | ✅ Sí, es la base de `tasks.md` |
-
-> 🔴 **MANDATO:** Al leer un RFC, tu único rol es extraer la intención del humano, validar viabilidad y generar un `proposal.md` formal en `openspec/changes/{name}/`. **Nunca generes código ni tasks directamente desde un RFC.**
-
-> ⚠️ **Un RFC detallado NO reemplaza el `explore.md`.** El RFC responde "qué/por qué" (concepto/negocio). El `explore.md` responde "dónde/cómo" (impacto técnico en el código actual). Son dimensiones ortogonales — aunque el RFC sea exhaustivo, el `explore.md` sigue siendo obligatorio.
-
-> ⚠️ El header `> 🛑 WARNING PARA LA IA` dentro de cada RFC no es decorativo — es una instrucción de ejecución. Respetala siempre.
-
----
 
 ## Comandos y Acciones
 
@@ -109,26 +65,6 @@ Al recibir el reporte de cada Fase, ANTES de delegar la siguiente:
 2. Leer el campo `🔴 Cambio de Scope Detectado`.
    - Si es **No** → delegar la siguiente fase directamente.
    - Si es **Sí** → PARAR. Revisar `sdd-tasks.md` y los handoffs afectados. Actualizar antes de continuar.
-
-## Escalation Matrix
-
-| Tamaño | Acción |
-|--------|--------|
-| Pregunta simple | Responder inline |
-| Tarea chica | Ejecutar inline (modo Worker) |
-| Feature sustancial | Correr SDD completo → delegar |
-
-## Engram — Proactive Save Triggers
-Escribir en `docs/engram/` INMEDIATAMENTE si:
-- Se tomó una decisión de arquitectura o convención.
-- Se descubrió un gotcha o edge case no-obvio.
-
-## Session Close (OBLIGATORIO)
-Antes de cerrar sesión:
-1. Extraer hallazgos al engram (`docs/engram/discoveries.md` / `docs/engram/bugfixes.md`).
-2. Update `ORCHESTRATOR-STATE.md` con: estado actual, rama, versión, próximos pasos.
-
-> **REGLA DE ORO:** Orquestador sin `ORCHESTRATOR-STATE.md` actualizado = siguiente sesión ciega.
 
 </ROLE_ORCHESTRATOR>
 

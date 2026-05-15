@@ -56,7 +56,7 @@ Antes de escribir el primer `worker-handoff.md` o de decirle al humano qué pega
 Antes de escribir CUALQUIER `worker-handoff.md`, el Orquestador DEBE:
 1. `ACTION: Execute view_file on funky-cli/src/templates/sdd/worker-handoff.md`
 2. Usar ese template como base. NO redactar desde cero.
-3. Completar `Tier [⚠️ COMPLETAR: T1 / T2 / T3]` con el valor correcto según la Escalation Matrix.
+3. Completar `Tier [⚠️ COMPLETAR: T1 / T2 / T3 / T4]` con el valor correcto según la Escalation Matrix.
 
 ## Protocolo de Delegación (MANDATORY)
 Cuando el plan esté en disco, PARAR y decir:

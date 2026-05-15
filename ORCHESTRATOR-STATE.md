@@ -47,8 +47,9 @@
 
 **Roadmap sugerido:** 018 (v2.0.0) → 015 → resto
 
-- [ ] **Fix inmediato** Añadir el template de SDD spec.md al comando del cli que corresponda, ya que el template no existe y por lo tanto no se inyecta en .agents/templates.
-- [x] **012 Protocolo de Auto-Tiering del Orquestador (Backlog):** Implementar una fase de "Razonamiento Pre-Vuelo" donde el Orquestador analice el pedido del usuario contra la *Escalation Matrix* y declare su Tier de operación (T1/T2/T3) de forma autónoma antes de generar cualquier artefacto. Objetivo: reducir la micro-gestión humana y garantizar consistencia en el rigor documental. Al tener tiers, debatir si el orquestador debería delegar cada una de las fases a workers o si el puede hacer algunas, con pros y contras.
+- [ ] Discutir con agente la posibilidad de implementar una fase intermedia tipo sdd, por ejemplo, en la v2.0.0 el orquestador genero todos los artefactos correctamente pero en las tasks habia una tarea que era critica revisar, por lo que a mi parecer esa simpple task podría requerir todo un pensamiento complejo para una mejor ejecucion, como si fuera algo que requiriera algo tipo sdd, ya que delegarla directo a un worker podría generar alucinaciones o algo que no es aceptable, por lo que necesito de tu ayuda para que me ayudes a ver como plantear estas situaciones.
+- [x] **Fix inmediato** Añadir el template de SDD spec.md al comando del cli que corresponda, ya que el template no existe y por lo tanto no se inyecta en .agents/templates.
+- [ ] **012 Protocolo de Auto-Tiering del Orquestador (REGRESIÓN V2.0.0):** Implementar una fase de "Razonamiento Pre-Vuelo" donde el Orquestador analice el pedido del usuario contra la *Escalation Matrix* y declare su Tier de operación (T1/T2/T3) de forma autónoma antes de generar cualquier artefacto. (Nota: Se perdió la Escalation Matrix en la migración a Workflows. Reparar).
 - [x] **012.b Implementación de Tier 4 (Deep SDD) en CLI:** Comando `funky gentle <feature>` implementado. 14 templates con `<system_prompt>` de roles aislados. Tests: 11 suites, 39 tests en verde. Pendiente: Git-Ops (Fase 6).
 - [ ] **015 Protocolos On-Demand (Skills Inyectables) (Backlog):** Crear un mecanismo (ej. `.agents/skills/protocols/sdd-reviewer.md`) para protocolos de uso específico que no inflen el prompt global. Permite al humano invocar roles especializados (ej. "Abogado del Diablo" para auditar inconsistencias lógicas en un plan) solo cuando el escenario lo amerita, evitando el "Context Dilution".
 - [ ] **006 Arquitectura SDD — Test Planning (Backlog)**: Diseñar e integrar una fase formal de "Test Planning" (ej. `test-plan.md` o mejora de `spec.md`). Debe ser agnóstica al framework y adaptarse a proyectos con o sin TDD estricto, mitigando puntos ciegos lógicos.
@@ -59,6 +60,9 @@
 - [ ] **005 Auditoría Legacy (Backlog):** Analizar el workspace del proyecto Next.js anterior. El objetivo es barrer el desastre de reglas/skills viejas, rescatar las decisiones arquitectónicas que eran joyas, y re-documentarlas usando el formato estructurado y liviano de Funky AI.
 - [ ] Añadir el template de architect-assessment-guide al comando funky assess.
 - [ ] **Auditoría Stale-Template-Refs (Quick):** `grep_search` en `docs/` y `.agents/` buscando textos como "copiar templates", "revisar templates", "crear manualmente los archivos" que ya son responsabilidad de `funky feature`. Actualizar o eliminar las referencias obsoletas. → Contexto: mejora detectada durante sesión 012.b.
+- [ ] **Revisión de Templates SDD:** Revisar todos los templates SDD para reforzarlos en caso de que tuvieran puntos flojos (instrucciones ambiguas, falta de guardrails, etc).
+- [ ] **RFC 016: `funky engram add`**
+  - Implementar un comando nativo en el CLI para inyectar descubrimientos al Engram atómicamente (`funky engram add --tag "[xxx]" --desc "..."`). Esto evita que los Agentes tengan que cargar todo el archivo `discoveries.md` en memoria para hacer un append, reduciendo el Context Pollution y protegiendo contra errores de codificación.
 
 ---
 
