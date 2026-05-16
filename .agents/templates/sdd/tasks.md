@@ -88,7 +88,7 @@
 - [ ] **RFCs:** Decidir qué RFCs fueron implementados en esta release → moverlos a `docs/openspec/archive/`. Ejecutar AHORA. (`proposals/` está deprecado — no usar).
 - [ ] **Sincronización:** Actualizar `ORCHESTRATOR-STATE.md` (versión, rama, estado estable).
 - [ ] **Smoke Test [CONDICIONAL]:** Si la feature altera el flujo E2E del proyecto, agregar escenario de QA a `docs/operaciones/master-smoke-test.md`. Si no → `[OMITIDO: sin cambios de integración E2E]`.
-- [ ] **Preparar datos para Worker Git-Ops:** Declarar en el handoff: versión exacta, mensaje de commit, nombre del branch, mensaje del tag.
+- [ ] **Preparar datos para Git-Ops:** Declarar en este mismo `tasks.md` (sección Git-Ops abajo): versión exacta, mensaje de commit, nombre del branch, mensaje del tag. El Worker puede recibir este archivo directamente — no se necesita `worker-handoff.md` separado para T1 git puro.
 
 > ⚠️ **Regla de oro:** Todo lo que requiere criterio o genera texto → Orquestador inline. Todo lo mecánico post-archivado → Worker Git-Ops.
 
@@ -98,6 +98,9 @@
 > **Objetivo:** Comandos git puros. Sin edición de archivos, sin redacción, sin decisiones.
 > **Modelo:** Flash / Haiku — el más liviano disponible. Si comete un error → documentar y PARAR.
 > **Prerequisito:** El Orquestador completó la Fase Doc-Ops y los archivados ya están ejecutados.
+
+> 💡 **Invocación directa (sin handoff separado):**
+> `/funky-worker @docs/openspec/archive/{feature}/tasks.md Ejecutá el Git-Ops`
 
 **🚨 CHECKLIST GIT-OPS (OBLIGATORIO - NO OMITIR):**
 - [ ] **Verificar estado:** `git status` — confirmar limpio. Si hay archivos inesperados → documentar y PARAR.

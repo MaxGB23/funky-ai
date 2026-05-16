@@ -12,7 +12,7 @@ El Big Bang. Se ejecuta una sola vez por repositorio para inicializar la matriz 
 | Archivo(s) Inyectado(s) | Función | Cómo se complementan |
 |-------------------------|---------|----------------------|
 | `PROJECT-CANVAS.md`<br>`INFRA-CANVAS.md` | Base de datos declarativa del proyecto (Stack, Arquitectura, Testing). | Le dicen al Orquestador y a los Workers **QUÉ** tecnologías usar, evitando que el LLM invente dependencias. |
-| `.agents/rules/orchestrator-core.md`<br>`.agents/rules/secops.md`<br>`.agents/rules/engram-protocol.md` | Guardrails arquitectónicos (Capa 2). Reglas duras de seguridad y comportamiento. | Fuerzan el **CÓMO**. Le enseñan al IDE a inyectar contexto condicional según la acción que estés haciendo. |
+| `.agents/rules/sdd-orchestrator.md`<br>`.agents/rules/secops.md`<br>`.agents/rules/engram-protocol.md` | Guardrails arquitectónicos (Capa 2). Reglas duras de seguridad y comportamiento. | Fuerzan el **CÓMO**. Le enseñan al IDE a inyectar contexto condicional según la acción que estés haciendo. |
 | `ORCHESTRATOR-STATE.md` | El "Save State" del proyecto. Versión actual, tareas pendientes y estado del release. | Funciona como el cerebro de corto plazo del Orquestador al iniciar una sesión. |
 | `docs/engram/discoveries.md`<br>`docs/engram/bugfixes.md` | Memoria a largo plazo (Two-Stage Memory Polling). | Evita que los agentes cometan el mismo error dos veces en el mismo proyecto. |
 

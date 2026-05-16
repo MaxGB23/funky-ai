@@ -44,6 +44,8 @@
 | [cli-base-immutable] | CLI base templates deben ser agnósticos. Cambios y enforcements específicos de repo solo en templates golden locales. |
 | [orchestrator-context-overload] | Sobrecarga de texto/contexto causa que el Orquestador se adelante. Solución: Arquitectura v2.0.0. |
 | [system-prompt-vs-chat-history] | Rules largas (Orquestador) = Capa 2 (System Prompt). Slash Commands = Capa 3 efímera. Evita Context Fading. |
+| [context-economy] | T1 puro (git ops) = Worker siempre. Orquestador no ejecuta mecánico aunque pueda. Worker puede recibir tasks.md directo sin handoff. |
+| [orchestrator-role-boundary] | Orquestador nunca cambia de rol sin consentimiento del Humano. Tarea trivial → PREGUNTAR, no hacer. Ver RFC 017. |
 
 ## Bugfixes
 | Tag | Resumen |

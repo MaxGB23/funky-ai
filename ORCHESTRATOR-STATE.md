@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v2.0.0
-- **Rama activa:** `main` (feature/v2.0.0-agent-architecture mergeada y taggeada)
-- **Última sesión:** 2026-05-14
-- **Estado:** ✅ Versión v2.0.0 lanzada. Todo en verde.
+- **Versión:** v2.0.1
+- **Rama activa:** `feature/v2.0.1-context-fix` (pendiente merge a `main`)
+- **Última sesión:** 2026-05-15
+- **Estado:** 🟡 Doc-Ops completa. Pendiente Git-Ops (merge + tag + push).
 
 ---
 
@@ -40,6 +40,7 @@
 - [x] **002 Planificación Cost Estimator:** Fase de Orchestrator completada para RFC 002. Artefactos SDD (explore, proposal, spec, tasks) generados en `docs/openspec/changes/002-cost-estimator/`. Listo para ejecución.
 - [x] **002 Calculadora de Presupuestos:** Comando `funky estimate` implementado (Fases Worker y Doc-Ops completadas). Integración con @inquirer/prompts y Value-Based Pricing. Lanzado en v1.19.0.
 - [x] **018 Arquitectura de Agentes v2.0.0 — Rediseño Monumental del Sistema de Configuración:** Redistribución inteligente de archivos de configuración aprovechando nativamente los Workflows de Antigravity (Capa 1: Global, Capa 2: Workspace Rules, Capa 3: Workflows On-Demand). Elimina el Context Dilution y resuelve el límite de tokens. Breaking Change de UX. Lanzado en v2.0.0.
+- [x] **Fix v2.0.1 — Asimetría Operativa (Context Fix):** Orquestador de vuelta a Capa 2 (`.agents/rules/sdd-orchestrator.md`). Rescate Feature 012 (Auto-Tiering + Escalation Matrix). Sincronización CLI template. Nuevo doc `agent-config-architecture.md`. Stale-ref corregida en `comando-vs-archivos.md`.
 
 ---
 
@@ -49,7 +50,7 @@
 
 - [ ] Discutir con agente la posibilidad de implementar una fase intermedia tipo sdd, por ejemplo, en la v2.0.0 el orquestador genero todos los artefactos correctamente pero en las tasks habia una tarea que era critica revisar, por lo que a mi parecer esa simpple task podría requerir todo un pensamiento complejo para una mejor ejecucion, como si fuera algo que requiriera algo tipo sdd, ya que delegarla directo a un worker podría generar alucinaciones o algo que no es aceptable, por lo que necesito de tu ayuda para que me ayudes a ver como plantear estas situaciones.
 - [x] **Fix inmediato** Añadir el template de SDD spec.md al comando del cli que corresponda, ya que el template no existe y por lo tanto no se inyecta en .agents/templates.
-- [ ] **012 Protocolo de Auto-Tiering del Orquestador (REGRESIÓN V2.0.0):** Implementar una fase de "Razonamiento Pre-Vuelo" donde el Orquestador analice el pedido del usuario contra la *Escalation Matrix* y declare su Tier de operación (T1/T2/T3) de forma autónoma antes de generar cualquier artefacto. (Nota: Se perdió la Escalation Matrix en la migración a Workflows. Reparar).
+- [x] **012 Protocolo de Auto-Tiering del Orquestador (REGRESIÓN V2.0.0):** ✅ Rescatado en v2.0.1. Escalation Matrix (T1/T2/T3) y Paso 0 re-inyectados en `sdd-orchestrator.md` y CLI template.
 - [x] **012.b Implementación de Tier 4 (Deep SDD) en CLI:** Comando `funky gentle <feature>` implementado. 14 templates con `<system_prompt>` de roles aislados. Tests: 11 suites, 39 tests en verde. Pendiente: Git-Ops (Fase 6).
 - [ ] **015 Protocolos On-Demand (Skills Inyectables) (Backlog):** Crear un mecanismo (ej. `.agents/skills/protocols/sdd-reviewer.md`) para protocolos de uso específico que no inflen el prompt global. Permite al humano invocar roles especializados (ej. "Abogado del Diablo" para auditar inconsistencias lógicas en un plan) solo cuando el escenario lo amerita, evitando el "Context Dilution".
 - [ ] **006 Arquitectura SDD — Test Planning (Backlog)**: Diseñar e integrar una fase formal de "Test Planning" (ej. `test-plan.md` o mejora de `spec.md`). Debe ser agnóstica al framework y adaptarse a proyectos con o sin TDD estricto, mitigando puntos ciegos lógicos.
@@ -60,9 +61,12 @@
 - [ ] **005 Auditoría Legacy (Backlog):** Analizar el workspace del proyecto Next.js anterior. El objetivo es barrer el desastre de reglas/skills viejas, rescatar las decisiones arquitectónicas que eran joyas, y re-documentarlas usando el formato estructurado y liviano de Funky AI.
 - [ ] Añadir el template de architect-assessment-guide al comando funky assess.
 - [ ] **Auditoría Stale-Template-Refs (Quick):** `grep_search` en `docs/` y `.agents/` buscando textos como "copiar templates", "revisar templates", "crear manualmente los archivos" que ya son responsabilidad de `funky feature`. Actualizar o eliminar las referencias obsoletas. → Contexto: mejora detectada durante sesión 012.b.
+Revisar todos los templates para verificar que no haya referencias obsoletas o deprecadas post v2.0.0. El analisis lo hará el humano y el orquestador tiene que unicamente darle sugerencias, es una tarea de pares, idea tras idea, tal vez no requiera sdd ni workers.
 - [ ] **Revisión de Templates SDD:** Revisar todos los templates SDD para reforzarlos en caso de que tuvieran puntos flojos (instrucciones ambiguas, falta de guardrails, etc).
 - [ ] **RFC 016: `funky engram add`**
   - Implementar un comando nativo en el CLI para inyectar descubrimientos al Engram atómicamente (`funky engram add --tag "[xxx]" --desc "..."`). Esto evita que los Agentes tengan que cargar todo el archivo `discoveries.md` en memoria para hacer un append, reduciendo el Context Pollution y protegiendo contra errores de codificación.
+- [ ] **RFC 017: Modo Worker Inline Condicional (Escalation Matrix T0)**
+  - Agregar un cuarto nivel implícito a la Escalation Matrix del Orquestador: cuando detecta que una tarea es trivial (máx. 1 archivo, sin lógica de negocio, reversible sin riesgo), en lugar de delegar a un Worker o ejecutar sin avisar, debe **preguntar al humano**: *"¿Querés que lo ejecute yo directamente o preferís abrir un Worker?"*. Preserva el rol del humano como decisor y evita overhead innecesario para tareas realmente atómicas. **Guardrail clave:** el criterio de "trivial" debe ser objetivo y acotado en la regla para evitar que el Orquestador se auto-justifique para saltarse el SDD. → Ver `[context-economy]` y `[orchestrator-role-boundary]` en Engram.
 
 ---
 

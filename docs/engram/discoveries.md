@@ -220,3 +220,16 @@ Aquí se registran los hallazgos técnicos y arquitectónicos que moldean el fut
 ### [system-prompt-vs-chat-history]
 **Descubrimiento:** La inyecci�n de reglas mediante Slash Commands (ej. /funky-orchestrator) introduce las reglas en el *Conversational History* como un mensaje de usuario. Esto sufre de *Context Fading* severo en sesiones largas (el LLM olvida su rol por Positional Bias).
 **Regla/Decisi�n:** Las reglas operativas pesadas o de ruteo que deben persistir durante sesiones largas (como el Orquestador) **deben inyectarse mediante triggers del IDE (Capa 2: .agents/rules/ con `model_decision`)**. Esto las aloja permanentemente en el *System Prompt*, garantizando que el LLM jam�s las pierda de vista. NUNCA usar comandos en el chat para inyectar un rol de larga duraci�n ni intentar forzar la lectura del archivo desde el Global Prompt (lo cual adem�s de *Context Fading* causa *Contaminaci�n Cruzada* entre repositorios).
+
+
+### [context-economy]
+**What:** Para tareas T1 puras (ej. git ops), el Orquestador NO debe ejecutar los comandos inline aunque tenga acceso técnico a la herramienta de terminal. El Worker T1 (Flash/Haiku) es el ejecutor correcto.
+**Why:** Usar tokens de un modelo caro (Pro/Sonnet) en operaciones mecánicas sin razonamiento viola el principio de separación de responsabilidades y desperdicia recursos. El Orquestador existe para razonar y planificar, no para correr git commit.
+**Where:** Fase Git-Ops del MANDATORY_RELEASE_PROTOCOL. Cualquier tarea T1 en general.
+**Learned:** La regla práctica: si la tarea no requiere razonamiento ni criterio → Worker, siempre. Para minimizar overhead del handoff en T1, el Worker puede recibir directamente el 	asks.md sin necesidad de un worker-handoff.md separado: /funky-worker @tasks.md Ejecutá el Git-Ops.
+
+### [orchestrator-role-boundary]
+**What:** El Orquestador nunca debe cambiar de rol de forma autónoma (ej. convertirse en Worker inline para ejecutar una tarea pequeña). Si detecta que una tarea es trivial, la opción correcta es PREGUNTAR al humano si prefiere ejecución inline o Worker separado.
+**Why:** El cambio de rol autónomo sin consentimiento del humano rompe la separación de responsabilidades y reabre la puerta al modo dual del monolito pre-v2.0.0 (que generaba Context Fading). El Humano es siempre el router.
+**Where:** Escalation Matrix del Orquestador. Discutido en sesión v2.0.1. Ver RFC 017.
+**Learned:** Incluso para tareas triviales, la pregunta explícita "¿me pongo en modo Worker?" preserva el contrato arquitectónico. El Orquestador sin el consentimiento del Humano NO tiene autorización para salir de su rol.
