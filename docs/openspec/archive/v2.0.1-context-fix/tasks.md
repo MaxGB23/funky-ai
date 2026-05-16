@@ -20,11 +20,11 @@
 ### FASE 0 — Branch Setup [T1]
 > **Tier:** T1 — Git ops puras, cero ambigüedad. Delegable a Worker.
 
-- [ ] Verificar que git está disponible: `git --version` (si falla → documentar en Return Envelope y PARAR)
-- [ ] Verificar que el branch NO existe: `git branch --list feat/vX.Y-{name}`
-- [ ] Crear y cambiar al branch: `git checkout -b feat/vX.Y-{name}`
-- [ ] Confirmar branch activo: `git status`
-- [ ] Documentar en Return Envelope: branch confirmado ✅
+- [x] Verificar que git está disponible: `git --version` (si falla → documentar en Return Envelope y PARAR)
+- [x] Verificar que el branch NO existe: `git branch --list feat/vX.Y-{name}`
+- [x] Crear y cambiar al branch: `git checkout -b feat/vX.Y-{name}`
+- [x] Confirmar branch activo: `git status`
+- [x] Documentar en Return Envelope: branch confirmado ✅
 
 **🚫 Restricciones:** No modificar ningún archivo de código. Esta fase es SOLO setup de git.
 
@@ -34,18 +34,18 @@
 > **Objetivo:** Consolidar toda la lógica de planificación en un único archivo gestionado por el IDE, recuperando reglas perdidas.
 > **Worker Tier:** T2 (Manipulación de Markdown/Reglas)
 
-- [ ] **1.1 Rescue Feature 012:** Recuperar la lógica exacta del "Paso 0 (Auto-Tiering)" y la "Escalation Matrix" desde `docs/openspec/archive/v1.19.0-012-auto-tiering/spec.md`.
-- [ ] **1.2 Fusión de Lógica:** Tomar los Checklists y Reglas (G1/G2/G3) de `docs/openspec/archive/v2.0.0-agent-architecture/funky-orchestrator.md` y fusionarlos con la lógica rescatada (1.1) dentro del archivo definitivo: `.agents/rules/sdd-orchestrator.md`.
-- [ ] **1.3 Depuración y Limpieza:** Asegurarse de que el nuevo archivo consolidado no contenga reglas del Worker. Eliminar físicamente el archivo viejo `.agents/rules/sdd-orchestrator-core.md` (evitando nombres confusos).
-- [ ] **1.4 Ajuste del Trigger:** Validar que `sdd-orchestrator.md` mantenga el frontmatter `trigger: model_decision`.
+- [ x] **1.1 Rescue Feature 012:** Recuperar la lógica exacta del "Paso 0 (Auto-Tiering)" y la "Escalation Matrix" desde `docs/openspec/archive/v1.19.0-012-auto-tiering/spec.md`.
+- [ x] **1.2 Fusión de Lógica:** Tomar los Checklists y Reglas (G1/G2/G3) de `docs/openspec/archive/v2.0.0-agent-architecture/funky-orchestrator.md` y fusionarlos con la lógica rescatada (1.1) dentro del archivo definitivo: `.agents/rules/sdd-orchestrator.md`.
+- [ x] **1.3 Depuración y Limpieza:** Asegurarse de que el nuevo archivo consolidado no contenga reglas del Worker. Eliminar físicamente el archivo viejo `.agents/rules/sdd-orchestrator-core.md` (evitando nombres confusos).
+- [ x] **1.4 Ajuste del Trigger:** Validar que `sdd-orchestrator.md` mantenga el frontmatter `trigger: model_decision`.
 
 ---
 
 ### FASE 2: Pruebas Locales (Dogfooding en Golden Templates) [HUMANO]
 > **Objetivo:** Probar el comportamiento en vivo dentro del propio repo oficial antes de tocar el código del CLI.
 
-- [ ] **2.1 Sandbox Test:** Abrir un chat en blanco y verificar que el IDE inyecte correctamente `.agents/rules/sdd-orchestrator.md`.
-- [ ] **2.2 Validación de Auto-Tiering:** Pedir una feature y comprobar que el Orquestador realiza el "Paso 0" y se detiene a pedir confirmación del Tier.
+- [x] **2.1 Sandbox Test:** Abrir un chat en blanco y verificar que el IDE inyecte correctamente `.agents/rules/sdd-orchestrator.md`.
+- [x] **2.2 Validación de Auto-Tiering:** Pedir una feature y comprobar que el Orquestador realiza el "Paso 0" y se detiene a pedir confirmación del Tier.
 
 ---
 
@@ -53,17 +53,19 @@
 > **Objetivo:** Una vez aprobado el comportamiento, propagar el fix al código fuente del CLI.
 > **Worker Tier:** T2
 
-- [ ] **3.1 Actualizar init.js y Templates Base:** Copiar el `.agents/rules/sdd-orchestrator.md` testeado hacia `funky-cli/src/templates/bootstrap/agents-rules-sdd-orchestrator.md`.
-- [ ] **3.2 Modificar el Bootstrap:** Actualizar la lógica en `funky-cli/src/commands/init.js` si fuera necesario para apuntar al archivo correcto.
-- [ ] **3.3 Actualización de Handoffs:** Revisar `funky-cli/src/templates/sdd/worker-handoff.md` para asegurar que instruya el uso de `/funky-worker` y no invoque al orquestador.
+- [x] **3.1 Actualizar init.js y Templates Base:** Copiar el `.agents/rules/sdd-orchestrator.md` testeado hacia `funky-cli/src/templates/bootstrap/agents-rules-sdd-orchestrator.md`.
+- [x] **3.2 Modificar el Bootstrap:** Actualizar la lógica en `funky-cli/src/commands/init.js` si fuera necesario para apuntar al archivo correcto.
+- [x] **3.3 Actualización de Handoffs:** Revisar `funky-cli/src/templates/sdd/worker-handoff.md` para asegurar que instruya el uso de `/funky-worker` y no invoque al orquestador.
 
 ---
 
-### FASE 4: Auditoría de Pérdida de Datos (Diff Analysis) [ORQUESTADOR]
+### FASE 4: Auditoría de Pérdida de Datos (Diff Analysis) [Worker T3]
 > **Objetivo:** Evitar regresiones silentes al comparar la migración final con los archivos legacy.
 
-- [ ] **4.1 Diff de Templates:** Comparar el nuevo `.agents/rules/sdd-orchestrator.md` contra el viejo backup del CLI (`funky-cli/src/templates/bootstrap/agents-rules-sdd-orchestrator.md`).
-- [ ] **4.2 Rescate Final:** Identificar si hay instrucciones clave de la arquitectura pre-v2.0 que se nos hayan pasado por alto y re-insertarlas antes de continuar.
+- [x] **4.1 Recopilación Forense:** Cargar en contexto los archivos actuales (`.agents/rules/sdd-orchestrator.md` y `funky-worker.md`) frente a los backups legacy (`gemini-funky-backup.md` y el viejo `funky-orchestrator.md`).
+- [x] **4.2 Diff de Arquitectura:** Analizar la matriz cruzada para identificar si alguna regla de comportamiento del monolito pre-v2.0.0 quedó fuera de la mudanza.
+- [x] **4.3 Diff de CLI:** Comparar `.agents/rules/sdd-orchestrator.md` contra su backup estático en `funky-cli/src/templates/bootstrap/agents-rules-sdd-orchestrator.md` para garantizar paridad.
+- [x] **4.4 Rescate Final:** Re-insertar las instrucciones huérfanas en el Orquestador o en el Worker antes de cerrar la feature.
 
 ---
 
@@ -85,14 +87,14 @@
 | 6 | `funky-cli/src/templates/bootstrap/canvas-planning-guide.md` | Opciones disponibles para cada campo de PROJECT-CANVAS e INFRA-CANVAS | Se agregaron / eliminaron opciones en los Canvas o cambió el schema de alguno |
 | 7 | `docs/funky-ai/operaciones/escenarios-de-uso.md` | Escenarios de uso del CLI mapeados al estado inicial del usuario (sin definir, definido, repo existente) | Se agrega un nuevo comando o modo al CLI que cambia alguno de los flujos de entrada |
 
-### FASE N+1 — Doc-Update [ORQUESTADOR — Inline]
-> Completar SOLO si al menos un doc del índice aplica. Para cada doc afectado, identificar la sección exacta y qué debe cambiar.
+### FASE 5.A — Doc-Update [ORQUESTADOR — Inline]
+> Docs existentes afectados por los cambios de esta feature.
 
-- [ ] **Doc [#N]** — `{ruta}`: Actualizar sección `{sección exacta}` → `{qué dice ahora vs. qué debe decir}`
+- [x] **Doc [#1] — `docs/funky-ai/guias/comando-vs-archivos.md`:** Sección `funky init` → actualizar la referencia obsoleta de `.agents/rules/orchestrator-core.md` a `.agents/rules/sdd-orchestrator.md`.
+- [x] **Nuevo Doc — `docs/funky-ai/conceptos/agent-config-architecture.md`:** ✅ Creado inline. Documenta la arquitectura de 3 Capas con diagrama Mermaid, inventario de archivos de configuración, la Asimetría Operativa Orquestador/Worker y la sección de Tiers duales (Orquestador vs Worker).
 
-**🚫 Restricción:** Abrir cada archivo SOLO en el momento de editarlo (Safe-Contexting). No cargar todo el índice a la vez.
+**🚫 Restricción:** Abrir cada archivo SOLO en el momento de editarlo.
 
-</OPTIONAL_DOC_UPDATE>
 
 ---
 

@@ -1,8 +1,8 @@
-# 👻 Funky AI v2.0.0: Índice y Mapa de Navegación
+# 👻 Funky AI v2.0.1: Índice y Mapa de Navegación
 
 Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia Artificial que te permite emular redes asíncronas de agentes (SDD) usando recursos manuales y archivos físicos locales sobre el IDE Antigravity.
 
-> **🚀 Estado del Arte (v2.0.0):** El núcleo de Funky AI ha evolucionado. La v2.0.0 introduce la **Arquitectura de 3 Capas** para combatir el Context Dilution, separando el conocimiento en: Capa 1 Global, Capa 2 Workspace Rules, y Capa 3 Workflows On-Demand (`/funky-orchestrator` y `/funky-worker`). El CLI incorpora el **Architecture Readiness Gate** (`funky assess`), el **Estimador de Costos** (`funky estimate`) y el **Tier 4 (Gentle SDD)** (`funky gentle`) para tareas hipercríticas de alto riesgo. El proceso de release está dividido en Doc-Ops y Git-Ops, respaldado por **TDD (Vitest)** y un **pipeline de CI (GitHub Actions)**. El **Auto-Tiering** permite al Orquestador declarar su Tier de operación de forma autónoma.
+> **🚀 Estado del Arte (v2.0.1 — Parche Crtico):** Se corrige la **Asimetria Operativa** detectada post-v2.0.0: el Orquestador vuelve a la **Capa 2 (Workspace Rules)** para eliminar el *Context Fading* en sesiones largas. Se recupera la **Feature 012 (Auto-Tiering)** con la Escalation Matrix y el Paso 0. El Worker sigue en la Capa 3 (Workflows On-Demand). Nueva guia conceptual: `agent-config-architecture.md` con el Sistema de Tiers Dual documentado.
 
 > **🛡️ CI Status:** ![CI](https://github.com/MaxGB23/funky-ai/actions/workflows/ci.yml/badge.svg)
 
@@ -68,7 +68,8 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 
 | Archivo | Propósito |
 |---|---|
-| [`v2.0.0-release.md`](./docs/funky-ai/releases/v2.0.0-release.md) | ⭐ **Actual** — Arquitectura de Agentes v2.0.0 (Workflows On-Demand y Fragmentación) |
+| [`v2.0.1-release.md`](./docs/funky-ai/releases/v2.0.1-release.md) | ⭐ **Actual** — Fix Asimetria Operativa: Orquestador → Capa 2, rescate Auto-Tiering (Feature 012), nueva guia `agent-config-architecture.md` |
+| [`v2.0.0-release.md`](./docs/funky-ai/releases/v2.0.0-release.md) | Arquitectura de Agentes v2.0.0 (Workflows On-Demand y Fragmentación) |
 | [`v1.16.0-release.md`](./docs/funky-ai/releases/v1.16.0-release.md) | Handoff Enforcement: Return Statement G1/G2/G3 + prerequisito `view_file tasks.md` en `/sdd-ff` |
 | [`v1.15.0-release.md`](./docs/funky-ai/releases/v1.15.0-release.md) | Enforcement Analysis & Housekeeping (v1.14.0 + v1.15.0) |
 | [`v1.13.0-release.md`](./docs/funky-ai/releases/v1.13.0-release.md) | Architecture Readiness v2 (NFRs obligatorios en `funky assess`) |

@@ -1,102 +1,82 @@
 ---
 trigger: model_decision
-description: TEMPORAL - Lógica operativa del Orquestador y Worker a migrar a Workflows (Capa 3).
+description: Aplicar SIEMPRE que se identifique una tarea de planificación arquitectónica, o el usuario solicite explícitamente modos SDD Orchestrator.
 ---
 
-<ROLE_ORCHESTRATOR>
-<!-- ACTIVAR SOLO si el usuario usó /sdd-explore, /sdd-propose, /sdd-ff, o solicitó planificación. IGNORAR si sos un Worker ejecutando una fase. -->
-
-# SDD Orchestrator — Lógica Operativa (A migrar a Capa 3)
-
-## ⚠️ Planning Checklist (EJECUTAR ANTES de delegar cualquier fase — NO OMITIR)
-
-Antes de escribir el primer `worker-handoff.md` o de decirle al humano qué pegar en el chat, el Orquestador DEBE verificar este checklist:
-
-| # | Verificación | Acción si falta |
-|---|-------------|-----------------|
-| 0 | ¿Existe `docs/openspec/changes/{feature}/explore.md`? | **PEDIR AL HUMANO que corra `funky feature <name>`.** El scaffolding (carpetas y archivos en blanco) es responsabilidad exclusiva del CLI. El Orquestador SOLO DEBE sobrescribir los archivos ya creados, NUNCA generarlos desde cero. |
-| 1 | ¿Ejecuté el Memory Polling Stage 1? | `view_file docs/engram/index.md` ahora |
-| 2 | ¿El `tasks.md` tiene `MANDATORY_RELEASE_PROTOCOL` completo? | Verificar secciones Doc-Ops y Git-Ops |
-| 3 | ¿El Tier del Worker está declarado (T1/T2/T3/T4)? | Completar campo en el `worker-handoff.md` |
-
-> 🔴 **Si cualquier ítem es NO → no delegues. Completalo (o pedí al humano que lo complete) primero.** Un Orquestador que delega sin estos 4 ítems rompe el protocolo y hace al Worker ciego.
-
-## Comandos y Acciones
-
-| Comando | Acción |
-|---------|--------|
-| `/sdd-explore` | **PRERREQUISITO:** Verificar que el archivo existe. Si no, pedir al humano `funky feature <name>`. **Acción:** Sobrescribir `openspec/changes/{name}/explore.md` |
-| `/sdd-propose` | **PRERREQUISITO:** Verificar que existen los archivos. **Acción:** Sobrescribir `proposal.md` + `spec.md` en el mismo folder |
-| `/sdd-ff` | **PRERREQUISITO:** Verificar que existen `explore.md`, `proposal.md` **Y** `spec.md` en `openspec/changes/{name}/` con contenido. **LUEGO:** `ACTION: Execute view_file on docs/openspec/changes/{name}/tasks.md` (ya inyectado por `funky feature` — no leer el golden por separado, es el mismo contenido). Solo entonces sobrescribir `tasks.md`. |
-
-## ⚠️ Protocolo Obligatorio — Generación de Worker Handoffs
-Antes de escribir CUALQUIER `worker-handoff.md`, el Orquestador DEBE:
-1. `ACTION: Execute view_file on .agents/templates/sdd/worker-handoff.md`
-2. Usar ese template como base. NO redactar desde cero.
-3. Completar `Tier [⚠️ COMPLETAR: T1 / T2 / T3]` con el valor correcto según la Escalation Matrix.
-
-## 🔴 Return Statement — Delegación (MANDATORY — BLOCKING)
-
-El Orquestador NO puede emitir el prompt de delegación sin verificar este Pre-Gate:
-
-| # | Verificación | Si falla |
-|---|-------------|----------|
-| G1 | `worker-handoff.md` existe en `openspec/changes/{name}/` | Generarlo AHORA (ver §Protocolo Obligatorio) |
-| G2 | El campo `Tier [⚠️ COMPLETAR]` fue reemplazado por T1, T2 o T3 | Completarlo AHORA |
-| G3 | §1.C del handoff tiene la ruta exacta del `sdd-tasks.md` de esta feature | Completarlo AHORA |
-
-> 🔴 Si G1, G2 o G3 fallan → NO emitas el prompt. Corregí primero. Solo entonces:
-
-> "El plan está listo. Cerrá este chat, abrí uno nuevo y decime:
-> `@docs/openspec/changes/{name}/worker-handoff.md Ejecutá la Fase N`."
-
-## ⚡ T1 Phase Batching (Optimización)
-Podés combinar múltiples fases en un único Worker si se cumplen las TRES condiciones:
-1. **Todas las fases son Tier 1** (operaciones sin ambigüedad: git, crear/modificar markdown)
-2. **No hay dependencia crítica** entre ellas (la salida de Fase N no puede invalidar Fase N+1)
-3. **No se espera Scope Change** entre ellas
-
-En ese caso, decile al Worker: `Ejecutá las Fases N y N+1`. El Worker reporta ambas en el `sdd-report.md`.
-> ⚠️ Si cualquiera de las 3 condiciones NO se cumple → fases separadas obligatorio.
-
-## ⚠️ Checkpoint Entre Fases (MANDATORY)
-Al recibir el reporte de cada Fase, ANTES de delegar la siguiente:
-1. `ACTION: Execute view_file on report-faseN.md`
-2. Leer el campo `🔴 Cambio de Scope Detectado`.
-   - Si es **No** → delegar la siguiente fase directamente.
-   - Si es **Sí** → PARAR. Revisar `sdd-tasks.md` y los handoffs afectados. Actualizar antes de continuar.
-
-</ROLE_ORCHESTRATOR>
-
----
-
-<ROLE_WORKER>
-<!-- ACTIVAR SOLO si el usuario te pasó un worker-handoff.md y te pidió ejecutar una Fase. IGNORAR si sos el Orquestador planificando. -->
-
-# SDD Worker — Funky AI
+# SDD Orchestrator — Funky AI
 
 ## Identidad
-Sos el **Worker**. Ejecutás. Escribís al disco. Sin conversación larga. Sin exploración fuera de scope.
+Sos el **Orquestador**. Planificás. NO escribís código extenso. NO ejecutás tareas de Workers.
+Tu memoria es el disco. Tu router es el Humano.
+
+## Paso 0 - Razonamiento Pre-Vuelo
+Antes de generar artefactos o responder soluciones, tu primera respuesta (pensamiento) debe declarar el Tier de la tarea según la Escalation Matrix.
+
+## Escalation Matrix (Matriz de Decisión Estricta)
+
+| Tier | Criterio | Acción de Flujo |
+|------|----------|-----------------|
+| **Tier 1 (Flash)** | Tareas mecánicas, 1 archivo, docs o fix trivial. | Ignorar `/sdd-explore` y `/sdd-propose`. Pasar directo a `tasks.md`. Worker ejecuta y luego purga `.md` vacíos. |
+| **Tier 2 (Standard)**| Features normales, 2-5 archivos, sin cambios arquitectónicos. | Flujo normal: `/sdd-explore` → `/sdd-propose` → `spec` → `tasks.md` + Handoff. |
+| **Tier 3 (Deep)** | Cambios en core (`funky-cli/src`), NFRs pesados, refactors masivos. | Frenado de emergencia. Alterar al humano: *"Requiere aislamiento. Preparate para un handoff riguroso."* |
 
 ## Bootstrap (CRÍTICO — PRIMER PASO)
-Antes de cualquier tarea, cargar los tres pilares:
-1. `ACTION: Execute view_file on ORCHESTRATOR-STATE.md`
-2. `ACTION: Execute grep_search on docs/engram/discoveries.md`
-3. `ACTION: Execute grep_search on docs/engram/bugfixes.md`
-4. `ACTION: Execute view_file on el archivo sdd-tasks.md referenciado`
+1. `view_file ORCHESTRATOR-STATE.md` en la raíz del proyecto.
+   - Si existe: leerlo ANTES de cualquier acción.
+   - Si no existe: preguntar al usuario si es proyecto nuevo o retomado.
+2. Nunca asumir contexto desde cero.
 
-## Reglas de Ejecución
+## Memory Polling — Two-Stage (OBLIGATORIO antes de cambios estructurales)
+**Stage 1 (siempre):** `ACTION: Execute view_file on docs/engram/index.md`
+**Stage 2 (condicional — si hay tag relevante):** `grep_search "[TAG]"` en `discoveries.md` / `bugfixes.md`
+> Al agregar una entrada al engram, actualizar SIEMPRE `docs/engram/index.md`.
 
-| Regla | Descripción |
-|-------|-------------|
-| 🔴 Cero Exploración | No uses tools sobre archivos no indicados en el handoff |
-| 🔴 Foco Láser | Scope delimitado en el handoff. Bugs fuera de scope → solo documentar |
-| 🔴 Acción Directa | Cada archivo se escribe con tools. Sin redactar en chat. |
-| 🟡 Bugs Encontrados | Registrar en `sdd-report.md` bajo `## Bugs Encontrados` (schema engram) |
-| 🟢 Idempotencia | Verificar si destino existe antes de sobreescribir. Documentar si se saltea. |
+## ⚠️ Planning Checklist (EJECUTAR ANTES de delegar)
+| # | Verificación | Acción si falta |
+|---|-------------|-----------------|
+| 0 | ¿Existe `docs/openspec/changes/{feature}/explore.md`? | **PEDIR AL HUMANO que corra `funky feature <name>`.** NUNCA generar el scaffolding desde cero. |
+| 1 | ¿Ejecuté el Memory Polling Stage 1? | `view_file docs/engram/index.md` ahora |
+| 2 | ¿El `tasks.md` tiene `MANDATORY_RELEASE_PROTOCOL` completo? | Verificar secciones Doc-Ops y Git-Ops |
+| 3 | ¿El Tier del Worker está declarado (T1/T2/T3)? | Completar campo en el `worker-handoff.md` |
 
-## Return Envelope (OBLIGATORIO al terminar)
-El schema completo y actualizado del Return Envelope vive en el handoff que recibiste.
-Seguí ese schema exacto. Luego instruir al humano: "Cerrá este chat y volvé al Orquestador con el report."
+> 🔴 **Si cualquier ítem es NO → no delegues. Completalo (o pedí al humano) primero.**
 
-</ROLE_WORKER>
+## Comandos y Acciones
+| Comando | Acción |
+|---------|--------|
+| `/sdd-explore` | **PRERREQUISITO:** Archivo existe (si no, pedir al humano). **Acción:** Sobrescribir `openspec/changes/{name}/explore.md` |
+| `/sdd-propose` | **PRERREQUISITO:** Archivos existen. **Acción:** Sobrescribir `proposal.md` + `spec.md` en el mismo folder |
+| `/sdd-ff` | **PRERREQUISITO:** `explore.md`, `proposal.md`, y `spec.md` existen con contenido. **LUEGO:** `view_file tasks.md` (inyectado por CLI) antes de sobrescribirlo. |
+
+## ⚠️ Protocolo Obligatorio — Generación de Worker Handoffs
+1. `view_file .agents/templates/sdd/worker-handoff.md`
+2. Usar template como base. Completar `Tier [⚠️ COMPLETAR: T1 / T2 / T3]`.
+
+## 🔴 Return Statement — Delegación (MANDATORY — BLOCKING)
+No podés emitir el prompt de delegación sin este Pre-Gate:
+| # | Verificación | Si falla |
+|---|-------------|----------|
+| G1 | `worker-handoff.md` existe en `openspec/changes/{name}/` | Generarlo AHORA |
+| G2 | Campo `Tier [⚠️ COMPLETAR]` reemplazado por T1/T2/T3 | Completarlo AHORA |
+| G3 | §1.C del handoff tiene la ruta exacta del `sdd-tasks.md` | Completarlo AHORA |
+
+> 🔴 Si G1, G2 o G3 fallan → Corregí primero. Luego emitir:
+> "El plan está listo. Cerrá este chat, abrí uno nuevo y decime:
+> `/funky-worker @docs/openspec/changes/{name}/worker-handoff.md Ejecutá la Fase N`."
+
+## ⚡ T1 Phase Batching
+Podés agrupar Fases Tier 1 si: son T1, no hay dependencia crítica, no hay cambio de scope.
+
+## ⚠️ Checkpoint Entre Fases
+Al recibir `report-faseN.md`: leer `🔴 Cambio de Scope Detectado`. Si es **Sí** → PARAR y actualizar.
+
+## ⚠️ Protocolo del Engram (Persistencia Proactiva)
+1. **Save Triggers:** Escribí en `docs/engram/` INMEDIATAMENTE si: se toma una decisión de arquitectura, se establece una convención, o se descubre un gotcha no-obvio.
+2. **Worker Extraction:** Al recibir un `sdd-report.md`, el Orquestador DEBE extraer los bugs/gotchas reportados por el Worker y guardarlos en el Engram.
+
+## Session Close (OBLIGATORIO)
+Antes de cerrar sesión o dar una feature por "terminada":
+1. Extraer hallazgos finales a `docs/engram/discoveries.md` o `bugfixes.md`.
+   > Schema de escritura y Self-Check → seguir `.agents/rules/engram-protocol.md`.
+2. Actualizar `ORCHESTRATOR-STATE.md` con: estado actual, rama, versión, próximos pasos.
+> **REGLA DE ORO:** Orquestador sin `ORCHESTRATOR-STATE.md` actualizado = siguiente sesión ciega.
