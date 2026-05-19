@@ -1,8 +1,8 @@
-# 👻 Funky AI v2.0.1: Índice y Mapa de Navegación
+# 👻 Funky AI v2.1.0: Índice y Mapa de Navegación
 
 Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia Artificial que te permite emular redes asíncronas de agentes (SDD) usando recursos manuales y archivos físicos locales sobre el IDE Antigravity.
 
-> **🚀 Estado del Arte (v2.0.1 — Parche Crtico):** Se corrige la **Asimetria Operativa** detectada post-v2.0.0: el Orquestador vuelve a la **Capa 2 (Workspace Rules)** para eliminar el *Context Fading* en sesiones largas. Se recupera la **Feature 012 (Auto-Tiering)** con la Escalation Matrix y el Paso 0. El Worker sigue en la Capa 3 (Workflows On-Demand). Nueva guia conceptual: `agent-config-architecture.md` con el Sistema de Tiers Dual documentado.
+> **🚀 Estado del Arte (v2.1.0 — Protocolos On-Demand):** Introducción de Protocolos On-Demand. Se habilita al Orquestador a sugerir roles especializados (ej. "Abogado del Diablo") solo para tareas de alto riesgo, protegiendo el prompt global del *Context Dilution*. CLI `funky init` actualizado con selector interactivo de protocolos opt-in.
 
 > **🛡️ CI Status:** ![CI](https://github.com/MaxGB23/funky-ai/actions/workflows/ci.yml/badge.svg)
 
@@ -44,6 +44,7 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 | [`.agents/rules/engram-protocol.md`](./.agents/rules/engram-protocol.md) | Rule Topológica: Dispara el polling de memoria en carpeta `docs/` |
 | [`.agents/rules/secops.md`](./.agents/rules/secops.md) | Rule de Seguridad: Obliga uso de `pnpm`, auditoría de `package.json` |
 | [`.agents/rules/sdd-orchestrator.md`](./.agents/rules/sdd-orchestrator.md) | Rule del Orquestador: Aplicar para planificación de proyectos |
+| [`.agents/protocols/index.md`](./.agents/protocols/index.md) | Catálogo de Protocolos On-Demand (Roles sugeridos dinámicamente) |
 
 ---
 
@@ -68,7 +69,8 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 
 | Archivo | Propósito |
 |---|---|
-| [`v2.0.1-release.md`](./docs/funky-ai/releases/v2.0.1-release.md) | ⭐ **Actual** — Fix Asimetria Operativa: Orquestador → Capa 2, rescate Auto-Tiering (Feature 012), nueva guia `agent-config-architecture.md` |
+| [`v2.1.0-release.md`](./docs/funky-ai/releases/v2.1.0-release.md) | ⭐ **Actual** — Protocolos On-Demand: Protocolos selectivos, selector interactivo en CLI y `devil-advocate.md` |
+| [`v2.0.1-release.md`](./docs/funky-ai/releases/v2.0.1-release.md) | Fix Asimetria Operativa: Orquestador → Capa 2, rescate Auto-Tiering (Feature 012), nueva guia `agent-config-architecture.md` |
 | [`v2.0.0-release.md`](./docs/funky-ai/releases/v2.0.0-release.md) | Arquitectura de Agentes v2.0.0 (Workflows On-Demand y Fragmentación) |
 | [`v1.16.0-release.md`](./docs/funky-ai/releases/v1.16.0-release.md) | Handoff Enforcement: Return Statement G1/G2/G3 + prerequisito `view_file tasks.md` en `/sdd-ff` |
 | [`v1.15.0-release.md`](./docs/funky-ai/releases/v1.15.0-release.md) | Enforcement Analysis & Housekeeping (v1.14.0 + v1.15.0) |
