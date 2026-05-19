@@ -1,4 +1,5 @@
 # Explore: [Nombre de la Funcionalidad o Cambio]
+**TIER DE ORQUESTACIÓN ELEGIDO: "N"**
 
 ## 1. Contexto del Problema
 [Describe brevemente qué problema estamos intentando resolver, por qué es necesario, y cuál es el impacto esperado.]

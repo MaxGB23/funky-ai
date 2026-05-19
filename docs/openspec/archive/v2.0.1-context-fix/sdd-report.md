@@ -35,4 +35,14 @@
   - `docs/openspec/changes/v2.0.1-context-fix/diff-analysis.md` (Reporte forense generado)
 - **Bugs encontrados:** Ninguno. Se detectaron 3 huérfanos menores (T1 purge logic, context blindness emphasis, engram self-check) que el Orquestador debe decidir si re-insertar.
 - **🔴 Cambio de Scope Detectado:** No
-- **Próxima acción:** El Orquestador debe revisar `diff-analysis.md` y proceder con el `MANDATORY_RELEASE_PROTOCOL` (Fase Doc-Ops y Git-Ops).
+---
+
+## Fase X+1 — Git-Ops
+- **Status:** ✅ Completada
+- **Acciones:**
+  - Branch mergeado: `feature/v2.0.1-context-fix` -> `main`
+  - Tag creado: `v2.0.1`
+  - Push confirmado: ✅ `origin main --tags`
+  - Branch local eliminado: ✅ `feature/v2.0.1-context-fix`
+- **Bugs encontrados:** Ninguno.
+- **Próxima acción:** Cerrar este chat y volver al Orquestador con el reporte.

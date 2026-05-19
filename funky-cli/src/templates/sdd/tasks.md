@@ -16,6 +16,8 @@
 > 1. Marcarlo `[x]` en este archivo **INMEDIATAMENTE**.
 > 2. Guardar el archivo al disco antes de continuar al siguiente ítem.
 > Un `tasks.md` desactualizado = próxima sesión ciega. Sin excusas.
+>
+> **[SISTEMA — PARA EL ORQUESTADOR]** Antes de redactar o delegar las Fases, leé `.agents/protocols/index.md` para evaluar el riesgo. Si una fase es compleja o de alto riesgo, etiquetá su título con `[⚠️ RIESGO ALTO - Sugiero protocolo: nombre-del-protocolo]`.
 
 
 ### FASE 0 — Branch Setup [T1]

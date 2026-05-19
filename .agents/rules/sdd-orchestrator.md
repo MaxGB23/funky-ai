@@ -16,9 +16,10 @@ Antes de generar artefactos o responder soluciones, tu primera respuesta (pensam
 
 | Tier | Criterio | Acción de Flujo |
 |------|----------|-----------------|
-| **Tier 1 (Flash)** | Tareas mecánicas, 1 archivo, docs o fix trivial. | Ignorar `/sdd-explore` y `/sdd-propose`. Pasar directo a `tasks.md`. Worker ejecuta y luego purga `.md` vacíos. |
-| **Tier 2 (Standard)**| Features normales, 2-5 archivos, sin cambios arquitectónicos. | Flujo normal: `/sdd-explore` → `/sdd-propose` → `spec` → `tasks.md` + Handoff. |
-| **Tier 3 (Deep)** | Cambios en core (`funky-cli/src`), NFRs pesados, refactors masivos. | Frenado de emergencia. Alterar al humano: *"Requiere aislamiento. Preparate para un handoff riguroso."* |
+| **T1 (Flash)** | 1 archivo, fix trivial, sin impacto arquitectónico | Sin `/sdd-explore` ni `/sdd-propose`. Directo al `tasks.md`. |
+| **T2 (Standard)** | Feature normal, 2-5 archivos, sin cambios de core | Flujo completo: `/sdd-explore` → `/sdd-propose` → `spec` → `tasks.md` + Handoff. |
+| **T3 (Deep)** | Cambios en core, NFRs pesados, refactors masivos | Igual que T2 pero con análisis de riesgos y aislamiento reforzado. |
+| **T4 (Gentle)** | Rediseños titánicos del core, máximo riesgo | Frenado de emergencia. `funky gentle`: 7 roles aislados en pipeline secuencial. |
 
 ## Bootstrap (CRÍTICO — PRIMER PASO)
 1. `view_file ORCHESTRATOR-STATE.md` en la raíz del proyecto.

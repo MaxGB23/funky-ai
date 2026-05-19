@@ -105,19 +105,16 @@
 > **Modelo:** El que está activo en la sesión actual (contexto ya cargado = cero transcripción).
 
 **🚨 CHECKLIST DOC-OPS (OBLIGATORIO - NO OMITIR):**
-- [ ] **Tests [CONDICIONAL]:** ¿Esta feature modificó código fuente testeable (comandos, utils, lógica de negocio)? 
-  - **SÍ aplica →** Ejecutar la suite completa antes de archivar: `pnpm run test` (o el script del proyecto). Si falla → PARAR y resolver el bug antes de continuar. El push nunca parte de una base rota.
-  - **NO aplica →** Marcar como `[OMITIDO: sin cambios en código fuente — solo docs/templates/config]`.
-- [ ] **Release Notes:** Generar `docs/funky-ai/releases/vX.Y.Z-release.md` usando como base `funky-cli/src/templates/release.md`. *(Redactar para consumo humano. IGNORAR Token Diet aquí.)*
-- [ ] **README [CONDICIONAL]:** ¿La release cambió la versión, comandos disponibles o arquitectura conceptual? → Actualizar `README.md` raíz manteniéndolo como Architecture Hub. Si no → `[OMITIDO: sin cambios estructurales]`.
-
-- [ ] **CLI Docs:** SI la release incluyó nuevos comandos o flags → actualizar tabla en `funky-cli/README.md`. Si no → `[OMITIDO: sin nuevos comandos]`.
-- [ ] **Package.json:** Bumpar `"version"` en `funky-cli/package.json` a la nueva versión.
-- [ ] **Archivado:** Mover `docs/openspec/changes/{feature}/` → `docs/openspec/archive/{version}-{feature}/`. Ejecutar AHORA (antes del Worker).
-- [ ] **RFCs:** Decidir qué RFCs fueron implementados en esta release → moverlos a `docs/openspec/archive/`. Ejecutar AHORA. (`proposals/` está deprecado — no usar).
-- [ ] **Sincronización:** Actualizar `ORCHESTRATOR-STATE.md` (versión, rama, estado estable).
-- [ ] **Smoke Test [CONDICIONAL]:** Si la feature altera el flujo E2E del proyecto, agregar escenario de QA a `docs/operaciones/master-smoke-test.md`. Si no → `[OMITIDO: sin cambios de integración E2E]`.
-- [ ] **Preparar datos para Worker Git-Ops:** Declarar en el handoff: versión exacta, mensaje de commit, nombre del branch, mensaje del tag.
+- [x] **Tests [CONDICIONAL]:** [OMITIDO: sin cambios en código fuente — solo docs/templates/config].
+- [x] **Release Notes:** Generar `docs/funky-ai/releases/v2.0.1-release.md`.
+- [x] **README [CONDICIONAL]:** Actualizar `README.md` raíz.
+- [x] **CLI Docs:** [OMITIDO: sin nuevos comandos].
+- [x] **Package.json:** Bumpar `"version"` en `funky-cli/package.json` a v2.0.1.
+- [x] **Archivado:** Mover `docs/openspec/changes/v2.0.1-context-fix/` → `docs/openspec/archive/v2.0.1-context-fix/`.
+- [x] **RFCs:** [OMITIDO: sin RFCs específicos en esta release].
+- [x] **Sincronización:** Actualizar `ORCHESTRATOR-STATE.md`.
+- [x] **Smoke Test [CONDICIONAL]:** [OMITIDO: sin cambios de integración E2E].
+- [x] **Preparar datos para Worker Git-Ops:** Declarado en `worker-handoff.md`.
 
 > ⚠️ **Regla de oro:** Todo lo que requiere criterio o genera texto → Orquestador inline. Todo lo mecánico post-archivado → Worker Git-Ops.
 
@@ -129,11 +126,11 @@
 > **Prerequisito:** El Orquestador completó la Fase Doc-Ops y los archivados ya están ejecutados.
 
 **🚨 CHECKLIST GIT-OPS (OBLIGATORIO - NO OMITIR):**
-- [ ] **Verificar estado:** `git status` — confirmar limpio. Si hay archivos inesperados → documentar y PARAR.
-- [ ] **Commit:** `git add -A && git commit -m "{mensaje declarado por Orquestador}"`
-- [ ] **Merge:** `git checkout main && git merge --no-ff {branch-declarado}`
-- [ ] **Tag:** `git tag -a {version} -m "{mensaje-declarado}"`
-- [ ] **Push:** `git push origin main --tags`
+- [x] **Verificar estado:** `git status` — confirmado limpio.
+- [x] **Commit:** `git add -A && git commit -m "fix(orchestrator): restore Layer 2 placement and rescue Auto-Tiering (v2.0.1)"`
+- [x] **Merge:** `git checkout main && git merge --no-ff feature/v2.0.1-context-fix -m "release: v2.0.1 context fix"`
+- [x] **Tag:** `git tag -a v2.0.1 -m "v2.0.1: Fix Context Fading, rescue Feature 012 Auto-Tiering"`
+- [x] **Push:** `git push origin main --tags`
 
 > ⚠️ Esta fase NO edita archivos de texto. Solo ejecuta comandos git. Si algo falla → documentar en `sdd-report.md` y PARAR.
 

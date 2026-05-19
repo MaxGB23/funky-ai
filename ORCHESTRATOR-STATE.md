@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v2.0.1
-- **Rama activa:** `feature/v2.0.1-context-fix` (pendiente merge a `main`)
-- **Última sesión:** 2026-05-15
-- **Estado:** 🟡 Doc-Ops completa. Pendiente Git-Ops (merge + tag + push).
+- **Versión:** v2.1.0
+- **Rama activa:** `feature/v2.1.0-015-on-demand-protocols` (pendiente merge)
+- **Última sesión:** 2026-05-19
+- **Estado:** 🟡 v2.1.0 en proceso de Git-Ops. Doc-Ops completado.
 
 ---
 
@@ -17,6 +17,7 @@
 
 | Archivo / Directorio | Rol |
 |---------|-----|
+| `.agents/protocols/index.md` | Índice de protocolos on-demand |
 | `funky-cli/src/commands/` | Lógica core del CLI (`init`, `phase`) |
 | `funky-cli/src/templates/sdd/` | Templates inyectables del ciclo SDD (ej. `explore, worker-handoff.md`) |
 | `funky-cli/src/utils/canvas.js` | Motor del Project Canvas (`generateCanvasMarkdown`) |
@@ -41,6 +42,7 @@
 - [x] **002 Calculadora de Presupuestos:** Comando `funky estimate` implementado (Fases Worker y Doc-Ops completadas). Integración con @inquirer/prompts y Value-Based Pricing. Lanzado en v1.19.0.
 - [x] **018 Arquitectura de Agentes v2.0.0 — Rediseño Monumental del Sistema de Configuración:** Redistribución inteligente de archivos de configuración aprovechando nativamente los Workflows de Antigravity (Capa 1: Global, Capa 2: Workspace Rules, Capa 3: Workflows On-Demand). Elimina el Context Dilution y resuelve el límite de tokens. Breaking Change de UX. Lanzado en v2.0.0.
 - [x] **Fix v2.0.1 — Asimetría Operativa (Context Fix):** Orquestador de vuelta a Capa 2 (`.agents/rules/sdd-orchestrator.md`). Rescate Feature 012 (Auto-Tiering + Escalation Matrix). Sincronización CLI template. Nuevo doc `agent-config-architecture.md`. Stale-ref corregida en `comando-vs-archivos.md`.
+- [x] **015 Protocolos On-Demand v2.1.0:** `.agents/protocols/` local + `devil-advocate.md`. Etiquetado proactivo `[⚠️ RIESGO ALTO]` en templates SDD. CLI `funky init` con selector interactivo `p.multiselect` de protocolos. Templates distribuibles en `funky-cli/src/templates/protocols/`.
 
 ---
 
@@ -52,7 +54,7 @@
 - [x] **Fix inmediato** Añadir el template de SDD spec.md al comando del cli que corresponda, ya que el template no existe y por lo tanto no se inyecta en .agents/templates.
 - [x] **012 Protocolo de Auto-Tiering del Orquestador (REGRESIÓN V2.0.0):** ✅ Rescatado en v2.0.1. Escalation Matrix (T1/T2/T3) y Paso 0 re-inyectados en `sdd-orchestrator.md` y CLI template.
 - [x] **012.b Implementación de Tier 4 (Deep SDD) en CLI:** Comando `funky gentle <feature>` implementado. 14 templates con `<system_prompt>` de roles aislados. Tests: 11 suites, 39 tests en verde. Pendiente: Git-Ops (Fase 6).
-- [ ] **015 Protocolos On-Demand (Skills Inyectables) (Backlog):** Crear un mecanismo (ej. `.agents/skills/protocols/sdd-reviewer.md`) para protocolos de uso específico que no inflen el prompt global. Permite al humano invocar roles especializados (ej. "Abogado del Diablo" para auditar inconsistencias lógicas en un plan) solo cuando el escenario lo amerita, evitando el "Context Dilution".
+- [x] **015 Protocolos On-Demand:** ✅ Completado en v2.1.0. Ver release notes.
 - [ ] **006 Arquitectura SDD — Test Planning (Backlog)**: Diseñar e integrar una fase formal de "Test Planning" (ej. `test-plan.md` o mejora de `spec.md`). Debe ser agnóstica al framework y adaptarse a proyectos con o sin TDD estricto, mitigando puntos ciegos lógicos.
 - [ ] **011 Comando de Bootstrap de Prompts (Backlog):** Añadir un comando al CLI que genere los documentos del directorio `docs/prompts` o archivos de config como workers/orquestadores de la v2.0.0. Es un comando de uso poco frecuente (ej. al configurar una nueva laptop), pero vital para asegurar que el entorno de IA (prompts globales y de backup) esté disponible inmediatamente en cualquier equipo de trabajo.
 - [ ] **013 Comando de Generación Dinámica de Árbol (Backlog):** Crear una tool o comando (ej. `funky tree`) que recorra el repositorio y genere un mapa detallado archivo-por-archivo, infiriendo el propósito a través de comentarios o cabeceras. Previene el *Doc Rot* al eliminar la necesidad de mapas estáticos. → [Ver RFC](./docs/openspec/rfcs/013-dynamic-repo-tree.md)
@@ -104,3 +106,5 @@ Ninguno.
 | v1.19.0 | Comando `funky estimate` interactivo, generación de `pricing-analysis.md` y Value-Based Pricing. |
 | v1.20.0 | Comando `funky gentle` (Tier 4 Deep SDD): 7 roles aislados, golden/fallback pattern, sync ampliado, 2 mejoras en `sdd-orchestrator.md`. |
 | v2.0.0 | Arquitectura de 3 Capas (Global, Workspace Rules, Workflows On-Demand). Migración de flujos SDD a Antigravity Workflows para prevenir el Context Dilution. |
+| v2.0.1 | Fix Asimetría Operativa: Orquestador a Capa 2, rescate Auto-Tiering (Feature 012), nuevo `agent-config-architecture.md`. |
+| v2.1.0 | Protocolos On-Demand: `.agents/protocols/`, `devil-advocate.md`, etiquetado `[⚠️ RIESGO ALTO]` en templates SDD, selector interactivo en `funky init`. |

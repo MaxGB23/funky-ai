@@ -16,9 +16,10 @@ const __dirname = path.dirname(__filename);
  * @param {string} opts.templatesDir - Directorio absoluto de templates de bootstrap.
  * @param {string} opts.targetBase   - Directorio destino (normalmente process.cwd()).
  * @param {object} opts.canvasConfig - Opcional. Configuración para generar PROJECT-CANVAS.md dinámico.
+ * @param {string[]} [opts.selectedProtocols] - Array de nombres de archivo de protocolo a copiar.
  * @returns {{ created: number, skipped: number }}
  */
-export function runInit({ templatesDir, targetBase, canvasConfig }) {
+export function runInit({ templatesDir, targetBase, canvasConfig, selectedProtocols = [] }) {
   const filesToCopy = [
     { src: 'ORCHESTRATOR-STATE.md', dest: 'ORCHESTRATOR-STATE.md' },
     { src: 'agents-rules-engram-protocol.md', dest: path.join('.agents', 'rules', 'engram-protocol.md') },
@@ -84,8 +85,51 @@ export function runInit({ templatesDir, targetBase, canvasConfig }) {
     }
   }
 
+  // Copia de protocolos on-demand seleccionados
+  if (selectedProtocols && selectedProtocols.length > 0) {
+    const protocolsSrcDir = path.join(templatesDir, '..', 'protocols');
+    const protocolsDestDir = path.join(targetBase, '.agents', 'protocols');
+    
+    for (const protocolFile of selectedProtocols) {
+      const srcPath = path.join(protocolsSrcDir, protocolFile);
+      const destPath = path.join(protocolsDestDir, protocolFile);
+      if (fs.existsSync(destPath)) {
+        console.log(`⚡ Salteando (ya existe): .agents/protocols/${protocolFile}`);
+        skippedCount++;
+      } else {
+        fs.mkdirSync(protocolsDestDir, { recursive: true });
+        fs.copyFileSync(srcPath, destPath);
+        console.log(`✅ Creado: .agents/protocols/${protocolFile}`);
+        createdCount++;
+      }
+    }
+
+    // También copiar/regenerar index.md en destino listando solo los protocolos importados
+    const indexDestPath = path.join(protocolsDestDir, 'index.md');
+    const indexSrcPath = path.join(protocolsSrcDir, 'index.md');
+    if (!fs.existsSync(indexDestPath) && fs.existsSync(indexSrcPath)) {
+      fs.mkdirSync(protocolsDestDir, { recursive: true });
+      fs.copyFileSync(indexSrcPath, indexDestPath);
+      console.log(`✅ Creado: .agents/protocols/index.md`);
+      createdCount++;
+    }
+  }
+
   console.log(`\n✅ Funky AI inicializado. ${createdCount} archivos creados, ${skippedCount} ya existían.`);
   return { created: createdCount, skipped: skippedCount };
+}
+
+/**
+ * Lee los templates de protocolos disponibles en el CLI y genera opciones para el prompt.
+ * @returns {{ value: string, label: string }[]}
+ */
+function getProtocolOptions() {
+  const protocolsDir = path.join(__dirname, '../templates/protocols');
+  if (!fs.existsSync(protocolsDir)) return [];
+  return fs
+    .readdirSync(protocolsDir)
+    .filter(f => f.endsWith('.md') && f !== 'index.md')
+    .map(f => ({ value: f, label: f.replace('.md', '') }));
 }
 
 export const initCommand = new Command('init')
@@ -124,6 +168,7 @@ export const initCommand = new Command('init')
     }
 
     let canvasConfig = null;
+    let selectedProtocols = [];
 
     try {
       if (hasProjectCanvas && hasInfraCanvas) {
@@ -249,6 +294,19 @@ export const initCommand = new Command('init')
           }
         );
 
+        const protocolOptions = getProtocolOptions();
+
+        if (protocolOptions.length > 0) {
+          const protocolsAnswer = await p.multiselect({
+            message: '¿Qué protocolos on-demand querés importar? (Opcional)',
+            options: protocolOptions,
+            required: false,
+          });
+          if (!p.isCancel(protocolsAnswer)) {
+            selectedProtocols = protocolsAnswer;
+          }
+        }
+
         p.outro('📝 Generando Canvas...');
         canvasConfig = {
           skipProjectCanvas: false,
@@ -269,7 +327,7 @@ export const initCommand = new Command('init')
         };
       }
 
-      runInit({ templatesDir, targetBase, canvasConfig });
+      runInit({ templatesDir, targetBase, canvasConfig, selectedProtocols });
     } catch (error) {
       console.error('❌ Error al inicializar Funky AI:', error.message);
       process.exit(1);
