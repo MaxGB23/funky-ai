@@ -32,3 +32,21 @@
   - `docs/openspec/changes/015-on-demand-protocols/tasks.md`
 - **🔴 Cambio de Scope Detectado:** No
 - **Próxima acción:** Avisar al Orquestador para ejecutar Doc-Ops (Fase X)
+
+## Fase X — Doc-Ops
+- **Status:** ✅ Completada (por el Orquestador)
+- **Archivos creados/modificados:** 
+  - `funky-cli/package.json`
+  - `docs/funky-ai/releases/v2.1.0-release.md`
+  - `ORCHESTRATOR-STATE.md`
+- **🔴 Cambio de Scope Detectado:** No
+- **Próxima acción:** Delegar Git-Ops (Fase X+1) al Worker
+
+## Fase X+1 — Git-Ops
+- **Status:** ✅ Completada (por el Worker)
+- **Archivos creados/modificados:** 
+  - `docs/openspec/changes/015-on-demand-protocols/tasks.md`
+  - `docs/openspec/changes/015-on-demand-protocols/sdd-report.md`
+- **🔴 Cambio de Scope Detectado:** No
+- **Bugs Encontrados:** Ninguno.
+- **Próxima acción:** Proceso finalizado. Cerrar ciclo SDD de la feature v2.1.0.

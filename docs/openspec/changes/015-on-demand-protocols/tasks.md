@@ -1,6 +1,6 @@
 # Tasks: 015 Protocolos On-Demand
 
-**Estado:** 🟡 PENDIENTE
+**Estado:** 🟢 COMPLETADO
 **Rama:** `feature/v2.1.0-015-on-demand-protocols`
 **Ref:** `sdd-proposal.md`
 
@@ -87,10 +87,10 @@
 > **Objetivo:** Comandos git puros.
 
 **🚨 CHECKLIST GIT-OPS:**
-- [ ] **Verificar estado:** `git status`
-- [ ] **Commit:** `git commit`
-- [ ] **Merge:** `git merge`
-- [ ] **Tag:** `git tag`
-- [ ] **Push:** `git push`
+- [x] **Verificar estado:** `git status`
+- [x] **Commit:** `git commit`
+- [x] **Merge:** `git merge`
+- [x] **Tag:** `git tag`
+- [x] **Push:** `git push`
 
 </MANDATORY_RELEASE_PROTOCOL>
