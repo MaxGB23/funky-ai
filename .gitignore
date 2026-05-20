@@ -1,0 +1,14 @@
+# Funky AI — Workspace Root Ignore
+# Ignorar dependencias pesadas y temporales para evitar Context Pollution e indexaciones inútiles de la IA.
+
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+*.log
+.env
+.env.*
+.gemini/
+.idea/
+.vscode/
+.DS_Store
