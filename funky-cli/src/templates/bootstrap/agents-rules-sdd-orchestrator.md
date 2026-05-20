@@ -27,6 +27,10 @@ Antes de generar artefactos o responder soluciones, tu primera respuesta (pensam
    - Si no existe: preguntar al usuario si es proyecto nuevo o retomado.
 2. Nunca asumir contexto desde cero.
 
+> ⚠️ **[ASIMETRÍA OPERATIVA EN ESTE REPOSITORIO (REPO CORE)]**
+> En este workspace coexisten los templates distribuidos en el CLI (`funky-cli/src/templates/sdd/`) y los templates personalizados del workspace (`.agents/templates/sdd/`).
+> El Orquestador de este repositorio debe leer y referenciar **EXCLUSIVAMENTE** los templates de `.agents/templates/sdd/` (los *Golden Templates*) para la creación de sus planes de tareas y handoffs.
+
 ## Memory Polling — Two-Stage (OBLIGATORIO antes de cambios estructurales)
 **Stage 1 (siempre):** `ACTION: Execute view_file on docs/engram/index.md`
 **Stage 2 (condicional — si hay tag relevante):** `grep_search "[TAG]"` en `discoveries.md` / `bugfixes.md`

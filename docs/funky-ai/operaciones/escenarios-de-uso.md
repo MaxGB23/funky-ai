@@ -79,7 +79,7 @@ El comando evalúa `docs/architecture-assessment.md` contra el motor de reglas y
 
 **Paso 1.5 — Inicializá el ecosistema completo**
 
-Con los Canvas llenos, el CLI detecta el modo Headless automáticamente:
+Con los Canvas llenos, el CLI detecta el modo Headless automáticamente (y asume de forma retrocompatible `'ide'` para no pausar terminales no interactivas):
 
 ```bash
 funky init
@@ -90,7 +90,7 @@ funky init
 📄 Ambos Canvas detectados, inicializando en modo Headless...
 ✅ Creado: .agents/rules/engram-protocol.md
 ✅ Creado: .agents/rules/secops.md
-... (resto de la estructura)
+... (resto de la estructura, leyéndose desde bootstrap/ide/)
 ✅ Funky AI inicializado.
 ```
 
@@ -117,6 +117,7 @@ funky init
 El CLI arranca un wizard interactivo con `@clack/prompts`:
 
 ```
+Selección de Entorno:     → [seleccionar: IDE o CLI]
 Framework Base:          → [seleccionar]
 Patrón Arquitectónico:   → [seleccionar]
 Gestión de Estado:       → [seleccionar]
@@ -127,6 +128,8 @@ Autenticación:           → [seleccionar]
 Linter / Formatter:      → [seleccionar]
 Deployment & CI/CD:      → [seleccionar]
 ```
+
+> 💡 **Nota sobre el entorno:** Si seleccionás `IDE`, se inyectarán reglas enfocadas a entornos de edición locales síncronos (Cursor, Cline). Si seleccionás `CLI`, se inyectarán reglas preparadas para dispatch asíncrono y comunicación asíncrona de subagentes.
 
 El CLI genera `PROJECT-CANVAS.md` e `INFRA-CANVAS.md` con las respuestas y copia toda la estructura de Funky AI.
 
@@ -183,7 +186,7 @@ No estás decidiendo — estás documentando lo que ya existe. Cada campo del Ca
 funky init
 ```
 
-El CLI detecta ambos Canvas y activa el modo Headless: copia toda la estructura de Funky AI sin sobreescribir ningún archivo existente.
+El CLI detecta ambos Canvas y activa el modo Headless: copia toda la estructura de Funky AI sin sobreescribir ningún archivo existente y asumiendo `'ide'` de manera determinista y retrocompatible (evitando colgar prompts en CI/CD).
 
 > ⚠️ **Migración Legacy:** Si solo existe `PROJECT-CANVAS.md` pero no `INFRA-CANVAS.md` (proyecto pre-v1.7), el CLI genera automáticamente `INFRA-CANVAS.md` con una advertencia de migración en el encabezado. Completá los campos de infra antes de continuar.
 

@@ -17,14 +17,15 @@ const __dirname = path.dirname(__filename);
  * @param {string} opts.targetBase   - Directorio destino (normalmente process.cwd()).
  * @param {object} opts.canvasConfig - Opcional. Configuración para generar PROJECT-CANVAS.md dinámico.
  * @param {string[]} [opts.selectedProtocols] - Array de nombres de archivo de protocolo a copiar.
+ * @param {string} [opts.environment='ide'] - Entorno seleccionado ('ide' | 'cli').
  * @returns {{ created: number, skipped: number }}
  */
-export function runInit({ templatesDir, targetBase, canvasConfig, selectedProtocols = [] }) {
+export function runInit({ templatesDir, targetBase, canvasConfig, selectedProtocols = [], environment = 'ide' }) {
   const filesToCopy = [
     { src: 'ORCHESTRATOR-STATE.md', dest: 'ORCHESTRATOR-STATE.md' },
-    { src: 'agents-rules-engram-protocol.md', dest: path.join('.agents', 'rules', 'engram-protocol.md') },
+    { src: path.join(environment, 'agents-rules-engram-protocol.md'), dest: path.join('.agents', 'rules', 'engram-protocol.md') },
     { src: 'agents-rules-secops.md', dest: path.join('.agents', 'rules', 'secops.md') },
-    { src: 'agents-rules-sdd-orchestrator.md', dest: path.join('.agents', 'rules', 'sdd-orchestrator.md') },
+    { src: path.join(environment, 'agents-rules-sdd-orchestrator.md'), dest: path.join('.agents', 'rules', 'sdd-orchestrator.md') },
     { src: 'engram-discoveries.md', dest: path.join('docs', 'engram', 'discoveries.md') },
     { src: 'engram-bugfixes.md', dest: path.join('docs', 'engram', 'bugfixes.md') },
     { src: 'plantilla-worker-handoff.md', dest: path.join('docs', 'funky-ai', 'workers', 'plantilla-worker-handoff.md') },
@@ -169,6 +170,7 @@ export const initCommand = new Command('init')
 
     let canvasConfig = null;
     let selectedProtocols = [];
+    let environment = 'ide';
 
     try {
       if (hasProjectCanvas && hasInfraCanvas) {
@@ -182,6 +184,20 @@ export const initCommand = new Command('init')
       } else {
         console.clear();
         p.intro('🚀 Bienvenido a Funky AI CLI');
+
+        const selectedEnv = await p.select({
+          message: 'Selecciona tu entorno de ejecución para Funky AI:',
+          options: [
+            { value: 'ide', label: 'Antigravity IDE (Extensión UI)', hint: 'Return Envelopes manuales en disco' },
+            { value: 'cli', label: 'Antigravity CLI (Terminal)', hint: 'Soporte asíncrono y subagentes en background' }
+          ]
+        });
+
+        if (p.isCancel(selectedEnv)) {
+          p.cancel('Operación cancelada.');
+          process.exit(1);
+        }
+        environment = selectedEnv;
 
         const coreGroup = await p.group(
           {
@@ -327,7 +343,7 @@ export const initCommand = new Command('init')
         };
       }
 
-      runInit({ templatesDir, targetBase, canvasConfig, selectedProtocols });
+      runInit({ templatesDir, targetBase, canvasConfig, selectedProtocols, environment });
     } catch (error) {
       console.error('❌ Error al inicializar Funky AI:', error.message);
       process.exit(1);
