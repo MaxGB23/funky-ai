@@ -96,22 +96,20 @@
 
 ---
 
-### FASE X+1 — Git-Ops [Worker T1 — ⚡ Flash / Haiku]
-> **Objetivo:** Comandos git puros. Sin edición de archivos, sin redacción, sin decisiones.
-> **Modelo:** Flash / Haiku — el más liviano disponible. Si comete un error → documentar y PARAR.
-> **Prerequisito:** El Orquestador completó la Fase Doc-Ops y los archivados ya están ejecutados.
+### FASE X+1 — Git-Ops [HUMANO — Ejecución local]
+> **Objetivo:** Comandos git puros en la terminal local del Humano.
+> **Razón arquitectónica:** Evita la contaminación de contexto (Context Pollution) en el Orquestador generada por las respuestas de comandos en la terminal de IA, y elimina el overhead innecesario de despachar un subagente pesado para tareas mecánicas secuenciales.
+> **Acción del Orquestador:** Al terminar la Fase X (Doc-Ops), el Orquestador DEBE resolver e imprimir un bloque de código Markdown con los comandos listos para copiar y pegar (con las variables reales ya completadas).
 
-> 💡 **Invocación directa (sin handoff separado):**
-> `/funky-worker @docs/openspec/archive/{feature}/tasks.md Ejecutá el Git-Ops`
-
-**🚨 CHECKLIST GIT-OPS (OBLIGATORIO - NO OMITIR):**
-- [ ] **Verificar estado:** `git status` — confirmar limpio. Si hay archivos inesperados → documentar y PARAR.
+**🚨 CHECKLIST GIT-OPS (HUMANO - COPIAR Y PEGAR):**
+- [ ] **Verificar estado:** `git status` — confirmar limpio y que no haya archivos inesperados fuera de stage.
 - [ ] **Commit:** `git add -A && git commit -m "{mensaje declarado por Orquestador}"`
 - [ ] **Merge:** `git checkout main && git merge --no-ff {branch-declarado}`
 - [ ] **Tag:** `git tag -a {version} -m "{mensaje-declarado}"`
 - [ ] **Push:** `git push origin main --tags`
+- [ ] **Limpieza (Opcional):** `git branch -d {branch-declarado}`
 
-> ⚠️ Esta fase NO edita archivos de texto. Solo ejecuta comandos git. Si algo falla → documentar en `sdd-report.md` y PARAR.
+> ⚠️ Esta fase es de ejecución puramente humana y local. Al finalizar el push, notificar al Orquestador en un chat nuevo para iniciar la planificación del siguiente ciclo.
 
 
 </MANDATORY_RELEASE_PROTOCOL>
