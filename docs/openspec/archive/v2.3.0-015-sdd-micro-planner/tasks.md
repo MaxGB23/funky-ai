@@ -20,23 +20,24 @@
 ### FASE 0 — Branch Setup [T1]
 > **Tier:** T1 — Git ops puras, cero ambigüedad. Delegable a Worker.
 
-- [ ] Verificar que git está disponible: `git --version` (si falla → documentar en Return Envelope y PARAR)
-- [ ] Verificar que el branch NO existe: `git branch --list feat/vX.Y-{name}`
-- [ ] Crear y cambiar al branch: `git checkout -b feat/vX.Y-{name}`
-- [ ] Confirmar branch activo: `git status`
-- [ ] Documentar en Return Envelope: branch confirmado ✅
+- [x] Verificar que git está disponible: `git --version` (si falla → documentar en Return Envelope y PARAR)
+- [x] Verificar que el branch NO existe: `git branch --list feat/vX.Y-{name}`
+- [x] Crear y cambiar al branch: `git checkout -b feat/vX.Y-{name}`
+- [x] Confirmar branch activo: `git status`
+- [x] Documentar en Return Envelope: branch confirmado ✅
 
 **🚫 Restricciones:** No modificar ningún archivo de código. Esta fase es SOLO setup de git.
 
 ---
 
-### FASE 1 — [Nombre de la Fase 1] (Worker)
-> Objetivo: [Objetivo de esta fase]
+### FASE 1 — Implementación del Protocolo SDD Micro-Planner (Worker)
+> Objetivo: Crear el protocolo on-demand y distribuirlo a los templates del CLI
 
-- [ ] [Tarea específica 1]
-- [ ] [Tarea específica 2]
+- [x] Crear `.agents/protocols/sdd-micro-planner.md` definiendo las instrucciones para que el Orquestador genere un `implementation_plan.md` detallado.
+- [x] Copiar el protocolo creado a `funky-cli/src/templates/protocols/sdd-micro-planner.md` para que `funky init` pueda distribuirlo a los proyectos.
+- [x] Actualizar `.agents/rules/sdd-orchestrator.md` con un nuevo **Gate bloqueante**: "Si una fase tiene la etiqueta `[⚠️ RIESGO ALTO]`, TENÉS PROHIBIDO generar el handoff. Debés frenar y preguntarle al humano si quiere ejecutar el protocolo `sdd-micro-planner.md` o delegar directo."
 
-**🚫 Restricciones:** [Ej: No modificar código fuente, solo tests.]
+**🚫 Restricciones:** Modificar únicamente las reglas del orquestador y los archivos de protocolos. No modificar otras partes del CLI aún.
 
 ---
 
