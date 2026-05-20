@@ -17,7 +17,7 @@
 > 2. Guardar el archivo al disco antes de continuar al siguiente ítem.
 > Un `tasks.md` desactualizado = próxima sesión ciega. Sin excusas.
 >
-> **[SISTEMA — PARA EL ORQUESTADOR]** Antes de redactar o delegar las Fases, leé `.agents/protocols/index.md` para evaluar el riesgo. Si una fase es compleja o de alto riesgo, etiquetá su título con `[⚠️ RIESGO ALTO - Sugiero protocolo: nombre-del-protocolo]`.
+> **[SISTEMA — PARA EL ORQUESTADOR]** Si detectás que una fase tiene lógica de negocio compleja o decisiones de diseño críticas, limitate a etiquetar su título con `[⚠️ RIESGO ALTO]`. El humano decidirá el protocolo a seguir.
 
 ### FASE 0 — Branch Setup [T1]
 > **Tier:** T1 — Git ops puras, cero ambigüedad. Delegable a Worker.

@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v2.2.0
+- **Versión:** v2.3.0
 - **Rama activa:** `main` (Git-Ops listo)
-- **Última sesión:** 2026-05-19
-- **Estado:** 🟢 v2.2.0 en producción. Estable. Comando funky init interactivo y sensible al entorno.
+- **Última sesión:** 2026-05-20
+- **Estado:** 🟢 v2.3.0 en producción. Protocolo sdd-micro-planner y Gate Human-in-the-loop implementados.
 
 ---
 
@@ -23,6 +23,7 @@
 | `funky-cli/src/templates/sdd/` | Templates "base" estáticos del CLI (los que se empaquetan y distribuyen a terceros). **¡NO USAR PARA LAS FEATURES DE ESTE REPOSITORIO!** |
 | `funky-cli/src/utils/canvas.js` | Motor del Project Canvas (`generateCanvasMarkdown`) |
 | `docs/repo-map.md` | Mapa estructural oficial del repositorio (Fuente de la verdad) |
+| `docs/antigravity-cli/` | Documentación técnica y taxonómica de capacidades del CLI (`pensamiento-inicial`, `taxonomia-ecosistema`) |
 | `docs/engram/` | Memoria persistente Two-Stage (`index`, `discoveries`, `bugfixes`) |
 | `docs/funky-ai/conceptos/` | Fundamentos del framework (Manifiesto, reglas base) |
 | `docs/funky-ai/historico/` | Cápsula del tiempo (Releases, Journey, Retrospectivas) |
@@ -30,21 +31,16 @@
 
 ---
 
-## ✅ Tareas Completadas (v1.16 y v1.17)
-
-- [x] **009 Base Templates & Customization Guide:** Refactorizado el comando `init` para inyectar templates agnósticos y un `TEMPLATE_GUIDE.md`. Creado backup inmutable en `.agents/templates`. Fase de Scaffolding Dinámico para `funky phase ff` diferida.
-- [x] **014 Reestructuración de Documentación:** Consolidación de 7 carpetas dispersas en 5 pilares semánticos (`conceptos`, `guias`, `operaciones`, `historico`, `drafts`) y actualización de `repo-map.md`.
-- [x] **017 Enforcement de Handoff Contract (Agent DRY):** Return Statement bloqueante con gates G1/G2/G3 en `sdd-orchestrator.md`. Prerequisito `view_file tasks.md` agregado al comando `/sdd-ff`. Engram actualizado con `[handoff-as-return-statement]`.
-- [x] **016 Semántica de RFCs vs Proposals (Backlog):** Separación estricta de responsabilidades (Brain Dump vs Artifact). Guardrails en Orchestrator y Template dinámico en el CLI.
+## ✅ Tareas Completadas
 - [x] **009.b Scaffolding Dinámico:** Implementado el comando `funky feature <name>` para inicializar scaffolding completo de fases SDD en lugar de crearlo a mano o mediante el Orquestador.
 - [x] **Doc-Update v1.18.1:** Auditoría documental completa. Fix `funky init --template` (inyecta `canvas-planning-guide.md`). Creado `escenarios-de-uso.md`. Parche mayor `funky-init-flow.md` (v1.7.0 → actual). Parche `guia-flujo-completo.md`. `OPTIONAL_DOC_UPDATE` agregado a `tasks.md` con índice de 7 docs vivos. Engram actualizado con `[doc-update-index-manual-drift]`.
-
 - [x] **002 Planificación Cost Estimator:** Fase de Orchestrator completada para RFC 002. Artefactos SDD (explore, proposal, spec, tasks) generados en `docs/openspec/changes/002-cost-estimator/`. Listo para ejecución.
 - [x] **002 Calculadora de Presupuestos:** Comando `funky estimate` implementado (Fases Worker y Doc-Ops completadas). Integración con @inquirer/prompts y Value-Based Pricing. Lanzado en v1.19.0.
 - [x] **018 Arquitectura de Agentes v2.0.0 — Rediseño Monumental del Sistema de Configuración:** Redistribución inteligente de archivos de configuración aprovechando nativamente los Workflows de Antigravity (Capa 1: Global, Capa 2: Workspace Rules, Capa 3: Workflows On-Demand). Elimina el Context Dilution y resuelve el límite de tokens. Breaking Change de UX. Lanzado en v2.0.0.
 - [x] **Fix v2.0.1 — Asimetría Operativa (Context Fix):** Orquestador de vuelta a Capa 2 (`.agents/rules/sdd-orchestrator.md`). Rescate Feature 012 (Auto-Tiering + Escalation Matrix). Sincronización CLI template. Nuevo doc `agent-config-architecture.md`. Stale-ref corregida en `comando-vs-archivos.md`.
 - [x] **015 Protocolos On-Demand v2.1.0:** `.agents/protocols/` local + `devil-advocate.md`. Etiquetado proactivo `[⚠️ RIESGO ALTO]` en templates SDD. CLI `funky init` con selector interactivo `p.multiselect` de protocolos. Templates distribuibles en `funky-cli/src/templates/protocols/`.
 - [x] **016 Environment-Aware Scaffolding v2.2.0:** Integración de selector interactivo de entorno (`IDE` vs `CLI`) en `funky init`. Ruteo dinámico de plantillas de reglas desde subcarpetas `ide/` y `cli/`. Guardrail robusto de no-interactividad (headless mode) determinista para CI/CD y automatización sin bloqueos.
+- [x] **015 Protocolos On-Demand:** ✅ Completado en v2.1.0 y v2.3.0 (Micro-Planner + Human-in-the-loop).
 
 ---
 
@@ -54,12 +50,7 @@
 
 - [ ] **Prevención de Agentic Drift (Overwrite Trap & Batching):** Leer a fondo el documento `docs/openspec/changes/rfcs/02-agentic-drift-overwrite-trap.md`. Durante la construcción de la v3.0, diseñar mecanismos de "Action Forcing" e "Interactive Gates" duros en el CLI para evitar que el Orquestador agrupe fases (Batching) o sobrescriba templates inyectados usando `write_to_file` con Overwrite en vez de parsear quirúrgicamente con `replace_file_content`.
 
-- [ ] **Feature 3.0 (Funky AI Engine Automático):** Analizar a fondo el archivo `docs/antigravity-cli/pensamiento-inicial.md`. Extraer lecciones sobre el aislamiento de contexto (Contexto Cero), delegación asíncrona IPC y gatekeepers de Antigravity CLI. Usar este documento fundacional para diseñar la gran feature v3.0 (despacho asíncrono e interactivo de subagentes), aprovechando el scaffolding IDE/CLI de la feature actual.
-- [ ] Discutir con agente la posibilidad de implementar una fase intermedia tipo sdd, por ejemplo, en la v2.0.0 el orquestador genero todos los artefactos correctamente pero en las tasks habia una tarea que era critica revisar, por lo que a mi parecer esa simpple task podría requerir todo un pensamiento complejo para una mejor ejecucion, como si fuera algo que requiriera algo tipo sdd, ya que delegarla directo a un worker podría generar alucinaciones o algo que no es aceptable, por lo que necesito de tu ayuda para que me ayudes a ver como plantear estas situaciones.
-- [x] **Fix inmediato** Añadir el template de SDD spec.md al comando del cli que corresponda, ya que el template no existe y por lo tanto no se inyecta en .agents/templates.
-- [x] **012 Protocolo de Auto-Tiering del Orquestador (REGRESIÓN V2.0.0):** ✅ Rescatado en v2.0.1. Escalation Matrix (T1/T2/T3) y Paso 0 re-inyectados en `sdd-orchestrator.md` y CLI template.
-- [x] **012.b Implementación de Tier 4 (Deep SDD) en CLI:** Comando `funky gentle <feature>` implementado. 14 templates con `<system_prompt>` de roles aislados. Tests: 11 suites, 39 tests en verde. Pendiente: Git-Ops (Fase 6).
-- [x] **015 Protocolos On-Demand:** ✅ Completado en v2.1.0. Ver release notes.
+- [ ] **Feature 3.0 (Funky AI Engine Automático):** Analizar a fondo los archivos `docs/antigravity-cli/pensamiento-inicial.md` y `taxonomia-ecosistema.md`. Extraer lecciones sobre el aislamiento de contexto (Contexto Cero), delegación asíncrona IPC y las asimetrías operativas frente a Antigravity 2.0 Desktop. Usar este marco taxonómico para diseñar el motor v3.0 (despacho asíncrono e interactivo de subagentes), aprovechando al máximo el rol del Verdadero CLI con acceso de edición de archivos y Gatekeeper de comandos.
 - [ ] **006 Arquitectura SDD — Test Planning (Backlog)**: Diseñar e integrar una fase formal de "Test Planning" (ej. `test-plan.md` o mejora de `spec.md`). Debe ser agnóstica al framework y adaptarse a proyectos con o sin TDD estricto, mitigando puntos ciegos lógicos.
 - [ ] **011 Comando de Bootstrap de Prompts (Backlog):** Añadir un comando al CLI que genere los documentos del directorio `docs/prompts` o archivos de config como workers/orquestadores de la v2.0.0. Es un comando de uso poco frecuente (ej. al configurar una nueva laptop), pero vital para asegurar que el entorno de IA (prompts globales y de backup) esté disponible inmediatamente en cualquier equipo de trabajo.
 - [ ] **013 Comando de Generación Dinámica de Árbol (Backlog):** Crear una tool o comando (ej. `funky tree`) que recorra el repositorio y genere un mapa detallado archivo-por-archivo, infiriendo el propósito a través de comentarios o cabeceras. Previene el *Doc Rot* al eliminar la necesidad de mapas estáticos. → [Ver RFC](./docs/openspec/rfcs/013-dynamic-repo-tree.md)
@@ -113,3 +104,4 @@ Ninguno.
 | v2.0.0 | Arquitectura de 3 Capas (Global, Workspace Rules, Workflows On-Demand). Migración de flujos SDD a Antigravity Workflows para prevenir el Context Dilution. |
 | v2.0.1 | Fix Asimetría Operativa: Orquestador a Capa 2, rescate Auto-Tiering (Feature 012), nuevo `agent-config-architecture.md`. |
 | v2.1.0 | Protocolos On-Demand: `.agents/protocols/`, `devil-advocate.md`, etiquetado `[⚠️ RIESGO ALTO]` en templates SDD, selector interactivo en `funky init`. |
+| v2.3.0 | Protocolo sdd-micro-planner On-Demand y Gate Human-in-the-loop en Orquestador. Ahorro de tokens en templates SDD. |
