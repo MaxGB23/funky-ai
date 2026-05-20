@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v2.1.0
-- **Rama activa:** `feature/v2.1.0-015-on-demand-protocols` (pendiente merge)
+- **Versión:** v2.2.0
+- **Rama activa:** `main` (Git-Ops listo)
 - **Última sesión:** 2026-05-19
-- **Estado:** 🟡 v2.1.0 en proceso de Git-Ops. Doc-Ops completado.
+- **Estado:** 🟢 v2.2.0 en producción. Estable. Comando funky init interactivo y sensible al entorno.
 
 ---
 
@@ -18,8 +18,9 @@
 | Archivo / Directorio | Rol |
 |---------|-----|
 | `.agents/protocols/index.md` | Índice de protocolos on-demand |
+| `.agents/templates/sdd/` | Templates "golden" (personalizados de este workspace de funky-ai). **¡USAR ESTOS SIEMPRE COMO REFERENCIA PARA ESTE REPO!** |
 | `funky-cli/src/commands/` | Lógica core del CLI (`init`, `phase`) |
-| `funky-cli/src/templates/sdd/` | Templates inyectables del ciclo SDD (ej. `explore, worker-handoff.md`) |
+| `funky-cli/src/templates/sdd/` | Templates "base" estáticos del CLI (los que se empaquetan y distribuyen a terceros). **¡NO USAR PARA LAS FEATURES DE ESTE REPOSITORIO!** |
 | `funky-cli/src/utils/canvas.js` | Motor del Project Canvas (`generateCanvasMarkdown`) |
 | `docs/repo-map.md` | Mapa estructural oficial del repositorio (Fuente de la verdad) |
 | `docs/engram/` | Memoria persistente Two-Stage (`index`, `discoveries`, `bugfixes`) |
@@ -43,6 +44,7 @@
 - [x] **018 Arquitectura de Agentes v2.0.0 — Rediseño Monumental del Sistema de Configuración:** Redistribución inteligente de archivos de configuración aprovechando nativamente los Workflows de Antigravity (Capa 1: Global, Capa 2: Workspace Rules, Capa 3: Workflows On-Demand). Elimina el Context Dilution y resuelve el límite de tokens. Breaking Change de UX. Lanzado en v2.0.0.
 - [x] **Fix v2.0.1 — Asimetría Operativa (Context Fix):** Orquestador de vuelta a Capa 2 (`.agents/rules/sdd-orchestrator.md`). Rescate Feature 012 (Auto-Tiering + Escalation Matrix). Sincronización CLI template. Nuevo doc `agent-config-architecture.md`. Stale-ref corregida en `comando-vs-archivos.md`.
 - [x] **015 Protocolos On-Demand v2.1.0:** `.agents/protocols/` local + `devil-advocate.md`. Etiquetado proactivo `[⚠️ RIESGO ALTO]` en templates SDD. CLI `funky init` con selector interactivo `p.multiselect` de protocolos. Templates distribuibles en `funky-cli/src/templates/protocols/`.
+- [x] **016 Environment-Aware Scaffolding v2.2.0:** Integración de selector interactivo de entorno (`IDE` vs `CLI`) en `funky init`. Ruteo dinámico de plantillas de reglas desde subcarpetas `ide/` y `cli/`. Guardrail robusto de no-interactividad (headless mode) determinista para CI/CD y automatización sin bloqueos.
 
 ---
 
@@ -50,6 +52,9 @@
 
 **Roadmap sugerido:** 018 (v2.0.0) → 015 → resto
 
+- [ ] **Prevención de Agentic Drift (Overwrite Trap & Batching):** Leer a fondo el documento `docs/openspec/changes/rfcs/02-agentic-drift-overwrite-trap.md`. Durante la construcción de la v3.0, diseñar mecanismos de "Action Forcing" e "Interactive Gates" duros en el CLI para evitar que el Orquestador agrupe fases (Batching) o sobrescriba templates inyectados usando `write_to_file` con Overwrite en vez de parsear quirúrgicamente con `replace_file_content`.
+
+- [ ] **Feature 3.0 (Funky AI Engine Automático):** Analizar a fondo el archivo `docs/antigravity-cli/pensamiento-inicial.md`. Extraer lecciones sobre el aislamiento de contexto (Contexto Cero), delegación asíncrona IPC y gatekeepers de Antigravity CLI. Usar este documento fundacional para diseñar la gran feature v3.0 (despacho asíncrono e interactivo de subagentes), aprovechando el scaffolding IDE/CLI de la feature actual.
 - [ ] Discutir con agente la posibilidad de implementar una fase intermedia tipo sdd, por ejemplo, en la v2.0.0 el orquestador genero todos los artefactos correctamente pero en las tasks habia una tarea que era critica revisar, por lo que a mi parecer esa simpple task podría requerir todo un pensamiento complejo para una mejor ejecucion, como si fuera algo que requiriera algo tipo sdd, ya que delegarla directo a un worker podría generar alucinaciones o algo que no es aceptable, por lo que necesito de tu ayuda para que me ayudes a ver como plantear estas situaciones.
 - [x] **Fix inmediato** Añadir el template de SDD spec.md al comando del cli que corresponda, ya que el template no existe y por lo tanto no se inyecta en .agents/templates.
 - [x] **012 Protocolo de Auto-Tiering del Orquestador (REGRESIÓN V2.0.0):** ✅ Rescatado en v2.0.1. Escalation Matrix (T1/T2/T3) y Paso 0 re-inyectados en `sdd-orchestrator.md` y CLI template.

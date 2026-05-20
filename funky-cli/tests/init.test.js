@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import path from 'path';
 
 // Mock fs antes de importar el módulo bajo test
 vi.mock('fs');
@@ -107,5 +108,59 @@ describe('runInit()', () => {
 
     expect(() => runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir }))
       .toThrow('Permission denied');
+  });
+
+  it('asume environment: "ide" por defecto y copia las rutas de ide', () => {
+    fs.existsSync.mockReturnValue(false);
+    fs.mkdirSync.mockImplementation(() => {});
+    fs.copyFileSync.mockImplementation(() => {});
+
+    runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
+
+    expect(fs.copyFileSync).toHaveBeenCalledWith(
+      expect.stringContaining(path.join('ide', 'agents-rules-engram-protocol.md')),
+      expect.stringContaining(path.join('.agents', 'rules', 'engram-protocol.md'))
+    );
+
+    expect(fs.copyFileSync).toHaveBeenCalledWith(
+      expect.stringContaining(path.join('ide', 'agents-rules-sdd-orchestrator.md')),
+      expect.stringContaining(path.join('.agents', 'rules', 'sdd-orchestrator.md'))
+    );
+  });
+
+  it('copia las rutas de cli si se provee environment: "cli"', () => {
+    fs.existsSync.mockReturnValue(false);
+    fs.mkdirSync.mockImplementation(() => {});
+    fs.copyFileSync.mockImplementation(() => {});
+
+    runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir, environment: 'cli' });
+
+    expect(fs.copyFileSync).toHaveBeenCalledWith(
+      expect.stringContaining(path.join('cli', 'agents-rules-engram-protocol.md')),
+      expect.stringContaining(path.join('.agents', 'rules', 'engram-protocol.md'))
+    );
+
+    expect(fs.copyFileSync).toHaveBeenCalledWith(
+      expect.stringContaining(path.join('cli', 'agents-rules-sdd-orchestrator.md')),
+      expect.stringContaining(path.join('.agents', 'rules', 'sdd-orchestrator.md'))
+    );
+  });
+
+  it('copia las rutas de ide si se provee environment: "ide" explícitamente', () => {
+    fs.existsSync.mockReturnValue(false);
+    fs.mkdirSync.mockImplementation(() => {});
+    fs.copyFileSync.mockImplementation(() => {});
+
+    runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir, environment: 'ide' });
+
+    expect(fs.copyFileSync).toHaveBeenCalledWith(
+      expect.stringContaining(path.join('ide', 'agents-rules-engram-protocol.md')),
+      expect.stringContaining(path.join('.agents', 'rules', 'engram-protocol.md'))
+    );
+
+    expect(fs.copyFileSync).toHaveBeenCalledWith(
+      expect.stringContaining(path.join('ide', 'agents-rules-sdd-orchestrator.md')),
+      expect.stringContaining(path.join('.agents', 'rules', 'sdd-orchestrator.md'))
+    );
   });
 });

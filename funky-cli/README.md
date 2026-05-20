@@ -22,7 +22,7 @@ pnpm link --global
 
 | Comando | Descripción | Ejemplo |
 |---------|-------------|---------|
-| `funky init` | Inicia el ecosistema Funky AI en el directorio actual. Genera el `PROJECT-CANVAS.md` interactivo, copia reglas de agente, `ORCHESTRATOR-STATE.md`, y una guía de planeación. | `funky init` -> "🚀 Funky Ecosystem inicializado!" |
+| `funky init` | Inicia el ecosistema Funky AI en el directorio actual. Incluye un selector interactivo de entorno (`IDE` vs `CLI`), genera el `PROJECT-CANVAS.md` interactivo, copia reglas de agente adaptadas al entorno seleccionado, `ORCHESTRATOR-STATE.md`, y una guía de planeación. | `funky init` -> "🚀 Funky Ecosystem inicializado!" |
 | `funky estimate` | Calcula el costo estimado y riesgo cruzando el Canvas técnico con factores de negocio. Genera un análisis de Pricing. | `funky estimate` -> "💰 Piso Base Calculado..." |
 | `funky feature <nombre>` | Inicializa el scaffolding completo para una nueva feature SDD en `docs/openspec/changes/<nombre>`, copiando todos los templates necesarios. | `funky feature auth` -> "🚀 Scaffolding de feature creado..." |
 | `funky gentle <nombre>` | Inicializa el scaffolding de **Tier 4 Deep SDD** en `docs/openspec/gentle/<nombre>`. Genera los 7 templates de roles aislados (Explorer → Verifier) para tareas hipercríticas. | `funky gentle db-migration` -> "🚀 Scaffolding de Tier 4 Deep SDD creado..." |
@@ -47,7 +47,10 @@ Al ejecutar `funky init`, se generará la siguiente estructura en el directorio 
 ```text
 .
 ├── .agents/
-│   └── rules/             (Reglas canónicas SDD, secops, etc.)
+│   └── rules/             (Reglas de agente adaptadas al entorno seleccionado IDE o CLI)
+│       ├── engram-protocol.md       (Protocolo de Engram asíncrono/síncrono según entorno)
+│       ├── secops.md                 (Auditoría de dependencias y NPM segura)
+│       └── sdd-orchestrator.md      (Reglas de orquestación adaptadas al workflow seleccionado)
 ├── docs/
 │   ├── engram/            (Memoria persistente: discoveries.md, bugfixes.md)
 │   ├── openspec/          (Carpeta para tus cambios y fases SDD)

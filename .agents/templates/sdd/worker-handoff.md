@@ -89,7 +89,9 @@ Actualizá `docs/openspec/changes/{feature-name}/sdd-report.md` con:
 ## Fase [N] — [Nombre de la Fase]
 - **Status:** ✅ Completada / ❌ Bloqueada
 - **Archivos creados/modificados:**
-  - `ruta/al/archivo.ext` (descripción del cambio)
+  - `ruta/al/archivo.ext` (breve rol del archivo)
+- **Detalle de Ejecución:**
+  - [Lista de lo implementado: cambios de lógica, algoritmos, convenciones o reglas agregadas]
 - **Bugs encontrados:** Ninguno / (schema engram si aplica)
 - **🔴 Cambio de Scope Detectado:** No / Sí — [Si Sí: describir qué encontraste que invalida o modifica fases siguientes]
 - **Próxima acción:** Qué debe hacer el Orquestador a continuación

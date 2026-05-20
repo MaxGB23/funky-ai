@@ -1,7 +1,7 @@
 # 📘 Flujo Interno: `funky init`
 
-> **Versión documentada:** v1.17.0+  
-> **Última actualización:** 2026-05-11  
+> **Versión documentada:** v2.2.0+  
+> **Última actualización:** 2026-05-19  
 > **Estado:** ✅ Estable
 
 ---
@@ -14,8 +14,8 @@ Tiene **dos modos de ejecución** que se activan automáticamente según el esta
 
 | Modo | Condición | Comportamiento |
 |---|---|---|
-| **Interactivo** | No existe `PROJECT-CANVAS.md` | Lanza prompts con `@clack/prompts`, genera canvas con los valores elegidos |
-| **Headless** | Existe `PROJECT-CANVAS.md` | Omite prompts, preserva el canvas tal cual, solo copia archivos faltantes |
+| **Interactivo**| No existe `PROJECT-CANVAS.md` | Lanza prompts con `@clack/prompts`, pregunta por el entorno (IDE / CLI) y genera canvas con los valores elegidos |
+| **Headless** | Existe `PROJECT-CANVAS.md` | Omite prompts, asume entorno `'ide'` por defecto para retrocompatibilidad, preserva el canvas tal cual y solo copia archivos faltantes |
 
 Además existe el flag `--template` (`-t`) para generar un canvas vacío sin ejecutar el scaffolding completo.
 
@@ -38,17 +38,18 @@ funky init [--template?]
 │
 └─ ¿existen PROJECT-CANVAS.md E INFRA-CANVAS.md en cwd?
     │
-    ├─ AMBOS → Modo Headless
+    ├─ AMBOS (o SOLO PROJECT-CANVAS en Migración) → Modo Headless / Migración
     │           canvasConfig = { skipProjectCanvas: true, skipInfraCanvas: true }
-    │           └─ runInit()
-    │               ├─ Copia 12 archivos estáticos (skip si ya existen)
+    │           └─ runInit({ environment: 'ide' })  ← Forzado por retrocompatibilidad
+    │               ├─ Copia 12 archivos (las reglas se leen de bootstrap/ide/)
     │               └─ ⚡ Salteando: PROJECT-CANVAS.md, INFRA-CANVAS.md
     │
-    ├─ SOLO PROJECT-CANVAS → Modo Migración Legacy
-    │           Genera INFRA-CANVAS.md con header ⚠️ MIGRACIÓN PENDIENTE
-    │           └─ runInit() (mismo que Headless)
-    │
     └─ NINGUNO → Modo Interactivo
+                └─ @clack/prompts: Selección de Entorno
+                    ├─ select: "Seleccioná el entorno de ejecución para el Agente"
+                    │   ├─ "IDE (ej. Cursor, VSCode, Cline - Retorno síncrono al disco)" → environment = 'ide'
+                    │   └─ "CLI / Subagente (Ejecución asíncrona / background / IPC)"   → environment = 'cli'
+                │
                 └─ @clack/prompts group 1 (Core):
                     ├─ select: Framework Base
                     ├─ select: Patrón Arquitectónico
@@ -63,8 +64,8 @@ funky init [--template?]
                 │
                 canvasConfig = { projectData: {...}, infraData: {...} }
                 │
-                └─ runInit()
-                    ├─ Copia 12 archivos estáticos
+                └─ runInit({ environment })
+                    ├─ Copia 12 archivos (reglas resueltas dinámicamente desde bootstrap/ide/ o bootstrap/cli/)
                     ├─ generateProjectCanvasMarkdown(projectData) → PROJECT-CANVAS.md
                     └─ generateInfraCanvasMarkdown(infraData)     → INFRA-CANVAS.md
 ```
@@ -77,27 +78,27 @@ funky init [--template?]
 
 | Archivo | Rol |
 |---|---|
-| `src/commands/init.js` | Orquestador del comando: detecta modo, lanza prompts, llama a `runInit()` |
+| `src/commands/init.js` | Orquestador del comando: detecta modo, lanza prompts interactivos (incluyendo selector de entorno), llama a `runInit()` |
 | `src/utils/canvas.js` | Función `generateCanvasMarkdown(config)`: interpola el canvas como string Markdown |
 
 ### 3.2 Templates estáticos (copiados tal cual)
 
-Ubicación: `src/templates/bootstrap/`
+Ubicación base: `src/templates/bootstrap/`
 
-| Archivo fuente | Destino en el proyecto |
-|---|---|
-| `ORCHESTRATOR-STATE.md` | `ORCHESTRATOR-STATE.md` |
-| `agents-rules-engram-protocol.md` | `.agents/rules/engram-protocol.md` |
-| `agents-rules-secops.md` | `.agents/rules/secops.md` |
-| `agents-rules-sdd-orchestrator.md` | `.agents/rules/sdd-orchestrator.md` |
-| `engram-discoveries.md` | `docs/engram/discoveries.md` |
-| `engram-bugfixes.md` | `docs/engram/bugfixes.md` |
-| `plantilla-worker-handoff.md` | `docs/funky-ai/workers/plantilla-worker-handoff.md` |
-| `canvas-planning-guide.md` | `docs/funky-ai/cli/canvas-planning-guide.md` |
-| `../sdd/architecture-assessment.md` | `docs/architecture-assessment.md` |
-| `../sdd/rfc-template.md` | `docs/openspec/rfcs/000-TEMPLATE.md` |
-| `TEMPLATE_GUIDE.md` | `TEMPLATE_GUIDE.md` |
-| `../README.md` | `README.md` |
+| Archivo fuente | Destino en el proyecto | Comportamiento dinámico de ruteo |
+|---|---|---|
+| `ORCHESTRATOR-STATE.md` | `ORCHESTRATOR-STATE.md` | Estático general |
+| `[environment]/agents-rules-engram-protocol.md` | `.agents/rules/engram-protocol.md` | Ruteado según entorno (`ide/` o `cli/`) |
+| `agents-rules-secops.md` | `.agents/rules/secops.md` | Estático general |
+| `[environment]/agents-rules-sdd-orchestrator.md` | `.agents/rules/sdd-orchestrator.md` | Ruteado según entorno (`ide/` o `cli/`) |
+| `engram-discoveries.md` | `docs/engram/discoveries.md` | Estático general |
+| `engram-bugfixes.md` | `docs/engram/bugfixes.md` | Estático general |
+| `plantilla-worker-handoff.md` | `docs/funky-ai/workers/plantilla-worker-handoff.md` | Estático general |
+| `canvas-planning-guide.md` | `docs/funky-ai/cli/canvas-planning-guide.md` | Estático general |
+| `../sdd/architecture-assessment.md` | `docs/architecture-assessment.md` | Estático general |
+| `../sdd/rfc-template.md` | `docs/openspec/rfcs/000-TEMPLATE.md` | Estático general |
+| `TEMPLATE_GUIDE.md` | `TEMPLATE_GUIDE.md` | Estático general |
+| `../README.md` | `README.md` | Estático general |
 
 > ⚠️ Todos son **estáticos**. Se copian con `fs.copyFileSync`, sin interpolación de variables. El canvas NO alimenta ninguno de estos archivos.
 
