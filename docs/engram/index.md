@@ -46,6 +46,7 @@
 | [system-prompt-vs-chat-history] | Rules largas (Orquestador) = Capa 2 (System Prompt). Slash Commands = Capa 3 efímera. Evita Context Fading. |
 | [context-economy] | T1 puro (git ops) = Worker siempre. Orquestador no ejecuta mecánico aunque pueda. Worker puede recibir tasks.md directo sin handoff. |
 | [orchestrator-role-boundary] | Orquestador nunca cambia de rol sin consentimiento del Humano. Tarea trivial → PREGUNTAR, no hacer. Ver RFC 017. |
+| [model-assessment-gemini-3.5-flash] | Evaluación de Gemini 3.5 Flash: velocidad sobresaliente y optimización de tokens, ideal para Worker pero propenso a saltar micro-reglas de Orquestación denso. |
 
 ## Bugfixes
 | Tag | Resumen |
