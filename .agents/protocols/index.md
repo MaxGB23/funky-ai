@@ -6,3 +6,4 @@ Este directorio contiene roles y protocolos especializados de Funky AI. El Orque
 |-----------|-------------|
 | `devil-advocate.md` | Auditor estricto para validar consistencia lógica, casos borde y arquitectura antes de ejecutar. |
 | `flash-orchestrator.md` | Orquestador inhibido y defensivo para motores optimizados para velocidad (Flash) ante falta de cuota Pro. |
+| `sdd-micro-planner.md` | Genera planes de implementación detallados para fases de alto riesgo antes de delegarlas a un Worker. |
