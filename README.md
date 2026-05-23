@@ -1,4 +1,4 @@
-# 👻 Funky AI v2.1.0: Índice y Mapa de Navegación
+# 👻 Funky AI v2.3.0: Índice y Mapa de Navegación
 
 Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia Artificial que te permite emular redes asíncronas de agentes (SDD) usando recursos manuales y archivos físicos locales sobre el IDE Antigravity.
 

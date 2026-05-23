@@ -55,5 +55,5 @@ Se genera el `worker-handoff.md` definitivo que enlaza directamente al `implemen
 Para que este sistema sea robusto en el ecosistema Funky AI, la hoja de ruta es:
 
 1. **Aislamiento Total de Contexto:** Esta arquitectura garantiza que el Orquestador Principal no degrade su capacidad de razonamiento con el paso de las fases, ya que delega el "heavy reading" de código a agentes efímeros.
-2. **Especialización de Modelos:** Permite usar modelos caros y pensantes (ej. Opus/Sonnet 3.7) exclusivamente en el `/funky-suborchestrator` para el diseño, mientras se usan modelos veloces y económicos (ej. Flash) para el `/funky-worker`.
+2. **Especialización de Modelos:** Permite usar modelos caros y pensantes (ej. Opus/Sonnet 4.7) exclusivamente en el `/funky-suborchestrator` para el diseño, mientras se usan modelos veloces y económicos (ej. Flash) para el `/funky-worker`.
 3. **El Comando `/funky-suborchestrator` (Feature Futura):** Se deberá implementar este comando en el CLI y su workflow asociado en `.agents/workflows/` para formalizar la invocación de este "Arquitecto Táctico". El protocolo `sdd-micro-planner.md` es la semilla de este rol.

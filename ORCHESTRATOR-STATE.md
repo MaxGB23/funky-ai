@@ -46,10 +46,10 @@
 
 ## ⏳ Tareas Pendientes
 
-**Roadmap sugerido:** 018 (v2.0.0) → 015 → resto
+**Roadmap sugerido:** PENDIENTE
 
-- [ ] **Prevención de Agentic Drift (Overwrite Trap & Batching):** Leer a fondo el documento `docs/openspec/changes/rfcs/02-agentic-drift-overwrite-trap.md`. Durante la construcción de la v3.0, diseñar mecanismos de "Action Forcing" e "Interactive Gates" duros en el CLI para evitar que el Orquestador agrupe fases (Batching) o sobrescriba templates inyectados usando `write_to_file` con Overwrite en vez de parsear quirúrgicamente con `replace_file_content`.
-- [  ] IDEA POST V3.0 - Nuestro engram actualmente usa md ya que al inicio de funky-ai solo existia antigravity IDE, ahora con la salida del cli, podríamos intentar replicar un engram original basado en sqlite.
+- [x] **Prevención de Agentic Drift (Overwrite Trap & Batching):** Leer a fondo el documento `docs/openspec/changes/rfcs/02-agentic-drift-overwrite-trap.md`. Durante la construcción de la v3.0, diseñar mecanismos de "Action Forcing" e "Interactive Gates" duros en el CLI para evitar que el Orquestador agrupe fases (Batching) o sobrescriba templates inyectados usando `write_to_file` con Overwrite en vez de parsear quirúrgicamente con `replace_file_content`.
+- [  ] IDEA POST V3.0 - Nuestro engram actualmente usa md ya que al inicio de funky-ai solo existia antigravity IDE, ahora con la salida del cli, podríamos intentar replicar un engram original basado en sqlite o usar el mcp oficial.
 - [ ] **Feature 3.0 (Funky AI Engine Automático):** Analizar a fondo los archivos `docs/antigravity-cli/pensamiento-inicial.md` y `taxonomia-ecosistema.md`. Extraer lecciones sobre el aislamiento de contexto (Contexto Cero), delegación asíncrona IPC y las asimetrías operativas frente a Antigravity 2.0 Desktop. Usar este marco taxonómico para diseñar el motor v3.0 (despacho asíncrono e interactivo de subagentes), aprovechando al máximo el rol del Verdadero CLI con acceso de edición de archivos y Gatekeeper de comandos.
 - [ ] **006 Arquitectura SDD — Test Planning (Backlog)**: Diseñar e integrar una fase formal de "Test Planning" (ej. `test-plan.md` o mejora de `spec.md`). Debe ser agnóstica al framework y adaptarse a proyectos con o sin TDD estricto, mitigando puntos ciegos lógicos.
 - [ ] **011 Comando de Bootstrap de Prompts (Backlog):** Añadir un comando al CLI que genere los documentos del directorio `docs/prompts` o archivos de config como workers/orquestadores de la v2.0.0. Es un comando de uso poco frecuente (ej. al configurar una nueva laptop), pero vital para asegurar que el entorno de IA (prompts globales y de backup) esté disponible inmediatamente en cualquier equipo de trabajo.
