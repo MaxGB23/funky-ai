@@ -2,7 +2,7 @@
 
 Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia Artificial que te permite emular redes asíncronas de agentes (SDD) usando recursos manuales y archivos físicos locales sobre el IDE Antigravity.
 
-> **🚀 Estado del Arte (v2.4.0 — Protocolos On-Demand):** Introducción de Protocolos On-Demand. Se habilita al Orquestador a sugerir roles especializados (ej. "Abogado del Diablo") solo para tareas de alto riesgo, protegiendo el prompt global del *Context Dilution*. CLI `funky init` actualizado con selector interactivo de protocolos opt-in.
+> **🚀 Estado del Arte (v2.4.0 — Ecosistema Híbrido & Cherry-Pick):** Consolidación del Flujo Híbrido Maestro (CLI para diseño pesado, IDE para ejecución liviana). Refactorización y Cherry-Pick arquitectónico de los templates SDD locales extrayendo *Action Forcing* y guardrails de Gentle AI para prevenir el *Batching* y mantener el *Context Economy*.
 
 > **🛡️ CI Status:** ![CI](https://github.com/MaxGB23/funky-ai/actions/workflows/ci.yml/badge.svg)
 
@@ -69,7 +69,8 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 
 | Archivo | Propósito |
 |---|---|
-| [`v2.1.0-release.md`](./docs/funky-ai/releases/v2.1.0-release.md) | ⭐ **Actual** — Protocolos On-Demand: Protocolos selectivos, selector interactivo en CLI y `devil-advocate.md` |
+| [`v2.4.0-release.md`](./docs/funky-ai/releases/v2.4.0-release.md) | ⭐ **Actual** — Ecosistema Híbrido, Cherry-Pick Arquitectónico de Templates SDD y nuevos guardrails anti-alucinación |
+| [`v2.1.0-release.md`](./docs/funky-ai/releases/v2.1.0-release.md) | Protocolos On-Demand: Protocolos selectivos, selector interactivo en CLI y `devil-advocate.md` |
 | [`v2.0.1-release.md`](./docs/funky-ai/releases/v2.0.1-release.md) | Fix Asimetria Operativa: Orquestador → Capa 2, rescate Auto-Tiering (Feature 012), nueva guia `agent-config-architecture.md` |
 | [`v2.0.0-release.md`](./docs/funky-ai/releases/v2.0.0-release.md) | Arquitectura de Agentes v2.0.0 (Workflows On-Demand y Fragmentación) |
 | [`v1.16.0-release.md`](./docs/funky-ai/releases/v1.16.0-release.md) | Handoff Enforcement: Return Statement G1/G2/G3 + prerequisito `view_file tasks.md` en `/sdd-ff` |

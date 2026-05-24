@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v2.4.0
-- **Rama activa:** `main` (Git-Ops listo)
+- **Versión:** v2.4.0 (próxima: v2.4.1)
+- **Rama activa:** `main`
 - **Última sesión:** 2026-05-24
-- **Estado:** 🟢 v2.4.0 en producción. Cherry-pick arquitectónico de templates SDD y consolidación del Flujo Híbrido Maestro.
+- **Estado:** 🟡 Arquitectura Sub-Orquestador implementada. Pendiente de commit y Release Notes para v2.4.1.
 
 ---
 
@@ -62,6 +62,7 @@ quick, creo que el funky feature no inyecta el report.
 - [ ] **Auditoría Stale-Template-Refs (Quick):** `grep_search` en `docs/` y `.agents/` buscando textos como "copiar templates", "revisar templates", "crear manualmente los archivos" que ya son responsabilidad de `funky feature`. Actualizar o eliminar las referencias obsoletas. → Contexto: mejora detectada durante sesión 012.b.
 Revisar todos los templates para verificar que no haya referencias obsoletas o deprecadas post v2.0.0. El analisis lo hará el humano y el orquestador tiene que unicamente darle sugerencias, es una tarea de pares, idea tras idea, tal vez no requiera sdd ni workers.
 - [x] **021 Revisión de Templates SDD:** Completada (Release v2.4.0). Cherry-pick de Gentle AI e implementación de nuevos templates lean.
+- [x] **Sub-Orquestador (Arquitecto Táctico):** Flujo de Micro-Planner delegado a agente efímero. `planning-handoff.md` template creado (golden + CLI). `sdd-micro-planner.md` refactorizado como esquema de salida. Workflow `/funky-suborchestrator` creado en `.agents/workflows/`. Regla G4 del Orquestador actualizada para generar handoff y delegar al Sub-Orquestador en lugar de intentar diseñar el plan él mismo.
 - [ ] **RFC 016: `funky engram add`** → [RFC Creado](./docs/openspec/rfcs/016-funky-engram-add.md)
   - Implementar un comando nativo en el CLI para inyectar descubrimientos al Engram atómicamente (`funky engram add --tag "[xxx]" --desc "..."`). Esto evita que los Agentes tengan que cargar todo el archivo `discoveries.md` en memoria para hacer un append, reduciendo el Context Pollution y protegiendo contra errores de codificación.
 - [ ] **RFC 017: Modo Worker Inline Condicional (Escalation Matrix T0)**
@@ -109,3 +110,5 @@ Revisar todos los templates para verificar que no haya referencias obsoletas o d
 | v2.0.1 | Fix Asimetría Operativa: Orquestador a Capa 2, rescate Auto-Tiering (Feature 012), nuevo `agent-config-architecture.md`. |
 | v2.1.0 | Protocolos On-Demand: `.agents/protocols/`, `devil-advocate.md`, etiquetado `[⚠️ RIESGO ALTO]` en templates SDD, selector interactivo en `funky init`. |
 | v2.3.0 | Protocolo sdd-micro-planner On-Demand y Gate Human-in-the-loop en Orquestador. Ahorro de tokens en templates SDD. |
+| v2.4.0 | Ecosistema Híbrido, Cherry-Pick Arquitectónico de Templates SDD (Feature 021) y nuevos templates de Design/Apply/Verify. |
+| v2.4.1 | Arquitectura Sub-Orquestador (Arquitecto Táctico): `planning-handoff.md`, `/funky-suborchestrator` workflow, `sdd-micro-planner.md` refactorizado como esquema de salida, Gate G4 actualizado. |

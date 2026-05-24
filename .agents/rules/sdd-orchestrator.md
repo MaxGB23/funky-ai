@@ -64,7 +64,7 @@ No podés emitir el prompt de delegación sin este Pre-Gate:
 | G1 | `worker-handoff.md` existe en `openspec/changes/{name}/` | Generarlo AHORA |
 | G2 | Campo `Tier [⚠️ COMPLETAR]` reemplazado por T1/T2/T3 | Completarlo AHORA |
 | G3 | §1.C del handoff tiene la ruta exacta del `sdd-tasks.md` | Completarlo AHORA |
-| G4 | ¿La fase actual tiene la etiqueta `[⚠️ RIESGO ALTO]`? | **PROHIBIDO generar handoff.** Debés frenar y preguntarle al humano si quiere ejecutar el protocolo `sdd-micro-planner.md` o delegar directo. |
+| G4 | ¿La fase actual tiene la etiqueta `[⚠️ RIESGO ALTO]`? | **PROHIBIDO generar handoff.** Frená y preguntale al humano: *"Esta fase es de alto riesgo. ¿Querés que genere un `planning-handoff.md` para el `/funky-suborchestrator`, o preferís delegar directo al Worker bajo tu responsabilidad?"* |
 
 > 🔴 Si G1, G2, G3 o G4 fallan → Corregí primero. Luego emitir:
 > "El plan está listo. Cerrá este chat, abrí uno nuevo y decime:
