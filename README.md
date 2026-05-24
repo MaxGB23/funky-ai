@@ -1,8 +1,8 @@
-# 👻 Funky AI v2.3.0: Índice y Mapa de Navegación
+# 👻 Funky AI v2.4.0: Índice y Mapa de Navegación
 
 Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia Artificial que te permite emular redes asíncronas de agentes (SDD) usando recursos manuales y archivos físicos locales sobre el IDE Antigravity.
 
-> **🚀 Estado del Arte (v2.3.0 — Protocolos On-Demand):** Introducción de Protocolos On-Demand. Se habilita al Orquestador a sugerir roles especializados (ej. "Abogado del Diablo") solo para tareas de alto riesgo, protegiendo el prompt global del *Context Dilution*. CLI `funky init` actualizado con selector interactivo de protocolos opt-in.
+> **🚀 Estado del Arte (v2.4.0 — Protocolos On-Demand):** Introducción de Protocolos On-Demand. Se habilita al Orquestador a sugerir roles especializados (ej. "Abogado del Diablo") solo para tareas de alto riesgo, protegiendo el prompt global del *Context Dilution*. CLI `funky init` actualizado con selector interactivo de protocolos opt-in.
 
 > **🛡️ CI Status:** ![CI](https://github.com/MaxGB23/funky-ai/actions/workflows/ci.yml/badge.svg)
 
