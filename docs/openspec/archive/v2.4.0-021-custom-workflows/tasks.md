@@ -4,26 +4,9 @@
 **Rama:** `feature/nombre-del-branch`
 **Ref:** `sdd-proposal.md`
 
-> **ORCHESTRATOR GATE**: Si sos el Orquestador — STOP. Do NOT execute these instructions inline. Delegá al worker o sub-agente.
-
 > **[SISTEMA - PARA EL ORQUESTADOR]** Antes de delegar la primera fase, verificá el Planning Checklist en `.agents/rules/sdd-orchestrator.md`. Generá un `worker-handoff.md` basado en `funky-cli/src/templates/sdd/worker-handoff.md`. **NO delegues mediante prompts en el chat.**
 
 > **[SISTEMA - PREREQUISITO]** ¿Existe `sdd-spec.md` en esta misma carpeta (`docs/openspec/changes/{feature}/`)? Si **NO** existe → **PARAR. Generarlo primero.** El `tasks.md` sin `spec.md` es construir sin plano arquitectónico.
-
----
-
-## 📊 Review Workload Forecast
-
-> **[SISTEMA — CONTRATO DE ESTIMACIÓN]**
-Decision needed before apply: Yes|No
-Chained PRs recommended: Yes|No
-Chain strategy: stacked-to-main|feature-branch-chain|size-exception|pending
-400-line budget risk: Low|Medium|High
-
-**Suggested Work Units:**
-| Unit | Goal | Likely PR | Notes |
-|------|------|-----------|-------|
-| 1 | [Meta de unidad 1] | PR 1 | [Scope autónomo, inicio/fin claro] |
 
 ---
 
@@ -33,15 +16,8 @@ Chain strategy: stacked-to-main|feature-branch-chain|size-exception|pending
 > 1. Marcarlo `[x]` en este archivo **INMEDIATAMENTE**.
 > 2. Guardar el archivo al disco antes de continuar al siguiente ítem.
 > Un `tasks.md` desactualizado = próxima sesión ciega. Sin excusas.
-
-> **GUARDRAIL DE TAREAS (Budget: ≤ 530 palabras):**
-> Cada tarea DEBE cumplir estos criterios:
-> | Criteria | ✅ Bien | ❌ Mal |
-> |----------|---------|--------|
-> | Specific | "Create internal/auth/middleware.go con validación JWT" | "Add auth" |
-> | Actionable | "Add ValidateToken() a AuthService" | "Handle tokens" |
-> | Verifiable | "Test: POST /login retorna 401 sin token" | "Make sure it works" |
-> | Small | Un archivo o una unidad lógica | "Implement the feature" |
+>
+> **[SISTEMA — PARA EL ORQUESTADOR]** Si detectás que una fase tiene lógica de negocio compleja o decisiones de diseño críticas, limitate a etiquetar su título con `[⚠️ RIESGO ALTO]`. El humano decidirá el protocolo a seguir.
 
 ### FASE 0 — Branch Setup [T1]
 > **Tier:** T1 — Git ops puras, cero ambigüedad. Delegable a Worker.
@@ -59,8 +35,8 @@ Chain strategy: stacked-to-main|feature-branch-chain|size-exception|pending
 ### FASE 1 — [Nombre de la Fase 1] (Worker)
 > Objetivo: [Objetivo de esta fase]
 
-- [ ] 1.1 [Tarea específica y accionable]
-- [ ] 1.2 [Tarea testeable]
+- [ ] [Tarea específica 1]
+- [ ] [Tarea específica 2]
 
 **🚫 Restricciones:** [Ej: No modificar código fuente, solo tests.]
 
@@ -135,36 +111,29 @@ Chain strategy: stacked-to-main|feature-branch-chain|size-exception|pending
 
 > ⚠️ Esta fase es de ejecución puramente humana y local. Al finalizar el push, notificar al Orquestador en un chat nuevo para iniciar la planificación del siguiente ciclo.
 
+
 </MANDATORY_RELEASE_PROTOCOL>
 
 ---
 
 ## 📋 Return Envelope (Para el Worker)
 
-Al finalizar cada fase, actualizar `sdd-report.md` (o el return envelope del handoff) con:
+Al finalizar cada fase, actualizar `sdd-report.md` con:
 
-> **MANDATORY:** Tu ÚLTIMA respuesta DEBE incluir un bloque con todos los ítems de `MANDATORY_RELEASE_PROTOCOL` marcados como `[x]` o `[OMITIDO: razón]`. Sin este bloque, la Fase NO se considera completa. Además de los resultados de testing estructurados.
+> **MANDATORY:** Tu ÚLTIMA respuesta DEBE incluir un bloque con todos los ítems de `MANDATORY_RELEASE_PROTOCOL` marcados como `[x]` o `[OMITIDO: razón]`. Sin este bloque, la Fase NO se considera completa.
 
 ```markdown
-## Return Summary
-
-| Phase | Status | Issues |
-|-------|--------|--------|
-| [N]   | ✅ Done | None   |
-
-**Workload Forecast Update:**
-- Chain Strategy: [Si cambió]
-- 400-line risk: [Actual]
-
-**Archivos creados/modificados:** (lista)
-**Bugs encontrados:** (si aplica, usar schema engram)
-**Próxima acción:** (qué debe hacer el Orquestador)
+## Fase [N] — [Nombre]
+- **Status:** ✅ Completada / ❌ Bloqueada
+- **Archivos creados/modificados:** (lista)
+- **Bugs encontrados:** (si aplica, usar schema engram. OBLIGATORIO: incluir intentos fallidos y anti-patrones descartados, no solo bugs finales)
+- **Próxima acción:** (qué debe hacer el Orquestador)
 ```
 
 ---
 
 > **[SISTEMA — ORQUESTADOR — LEER ANTES DE COMUNICAR AL HUMANO]**
 > Antes de escribir cualquier instrucción al humano, verificar **en este orden**:
-> 1. ¿`worker-handoff.md` generado en `docs/openspec/changes/{feature}/`? Si **NO** → generarlo AHORA. No se delegada ninguna fase sin handoff.
+> 1. ¿`worker-handoff.md` generado en `docs/openspec/changes/{feature}/`? Si **NO** → generarlo AHORA. No se delega ninguna fase sin handoff.
 > 2. ¿Revisaste el Planning Checklist (items 0–4) en `.agents/rules/sdd-orchestrator.md`? Si **NO** → leerlo antes de continuar.
 > 3. Solo después de confirmar los dos puntos anteriores, instruir al humano: *"Cerrá este chat, abrí uno nuevo y decíme: `@docs/openspec/changes/{feature}/worker-handoff.md Ejecutá la Fase N`"*

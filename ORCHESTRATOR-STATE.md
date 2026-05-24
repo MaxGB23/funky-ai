@@ -6,14 +6,15 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v2.3.0
+- **Versión:** v2.4.0
 - **Rama activa:** `main` (Git-Ops listo)
-- **Última sesión:** 2026-05-20
-- **Estado:** 🟢 v2.3.0 en producción. Protocolo sdd-micro-planner y Gate Human-in-the-loop implementados.
+- **Última sesión:** 2026-05-24
+- **Estado:** 🟢 v2.4.0 en producción. Cherry-pick arquitectónico de templates SDD y consolidación del Flujo Híbrido Maestro.
 
 ---
 
 ## 📂 Archivos Clave
+
 
 | Archivo / Directorio | Rol |
 |---------|-----|
@@ -48,32 +49,32 @@
 
 **Roadmap sugerido:** PENDIENTE
 
+quick, creo que el funky feature no inyecta el report.
 - [x] **Prevención de Agentic Drift (Overwrite Trap & Batching):** Leer a fondo el documento `docs/openspec/changes/rfcs/02-agentic-drift-overwrite-trap.md`. Durante la construcción de la v3.0, diseñar mecanismos de "Action Forcing" e "Interactive Gates" duros en el CLI para evitar que el Orquestador agrupe fases (Batching) o sobrescriba templates inyectados usando `write_to_file` con Overwrite en vez de parsear quirúrgicamente con `replace_file_content`.
-- [  ] IDEA POST V3.0 - Nuestro engram actualmente usa md ya que al inicio de funky-ai solo existia antigravity IDE, ahora con la salida del cli, podríamos intentar replicar un engram original basado en sqlite o usar el mcp oficial.
-- [ ] **Feature 3.0 (Funky AI Engine Automático):** Analizar a fondo los archivos `docs/antigravity-cli/pensamiento-inicial.md` y `taxonomia-ecosistema.md`. Extraer lecciones sobre el aislamiento de contexto (Contexto Cero), delegación asíncrona IPC y las asimetrías operativas frente a Antigravity 2.0 Desktop. Usar este marco taxonómico para diseñar el motor v3.0 (despacho asíncrono e interactivo de subagentes), aprovechando al máximo el rol del Verdadero CLI con acceso de edición de archivos y Gatekeeper de comandos.
+- [x] 🛑 **Feature 3.0 (Funky AI Engine Automático):** [CANCELADO/DEPRECADO] Decisión estratégica (ver retrospectiva 2026-05-23). Se prioriza el uso de `antigravity-ide` con la metodología Funky AI para optimizar uso de tokens en el free tier, mientras que el `antigravity-cli` se usará en tándem con Gentle AI como pilar de automatización. No se avanzará con la sobreingeniería del motor automático complejo de V3.0.
 - [ ] **006 Arquitectura SDD — Test Planning (Backlog)**: Diseñar e integrar una fase formal de "Test Planning" (ej. `test-plan.md` o mejora de `spec.md`). Debe ser agnóstica al framework y adaptarse a proyectos con o sin TDD estricto, mitigando puntos ciegos lógicos.
 - [ ] **011 Comando de Bootstrap de Prompts (Backlog):** Añadir un comando al CLI que genere los documentos del directorio `docs/prompts` o archivos de config como workers/orquestadores de la v2.0.0. Es un comando de uso poco frecuente (ej. al configurar una nueva laptop), pero vital para asegurar que el entorno de IA (prompts globales y de backup) esté disponible inmediatamente en cualquier equipo de trabajo.
 - [ ] **013 Comando de Generación Dinámica de Árbol (Backlog):** Crear una tool o comando (ej. `funky tree`) que recorra el repositorio y genere un mapa detallado archivo-por-archivo, infiriendo el propósito a través de comentarios o cabeceras. Previene el *Doc Rot* al eliminar la necesidad de mapas estáticos. → [Ver RFC](./docs/openspec/rfcs/013-dynamic-repo-tree.md)
 - [ ] **003 Protocolo de Seguridad — Revisión de Repos Externos:** Crear un documento de protocolo (distinto de `secops.md`, que ya cubre npm) para auditar repos de GitHub, extensiones de VSCode y código de terceros. Incluye: detección de caracteres Unicode invisibles (Trojan Source), vectores de ejecución implícita en Python (import time / setup.py), y checklist para revisar repos ya clonados. → Contexto completo en [`docs/funky-ai/drafts/midudev.md` — Pendiente 1](./docs/funky-ai/drafts/midudev.md)
 - [ ] **004 Protocolo de Optimización por Tipo de Proyecto:** Definir estándares mínimos de optimización según el tipo de proyecto (frontend, backend, CLI, API), con límites explícitos de cuándo parar y un framework de tradeoff entre rendimiento, UX, DX y funcionalidad. → Contexto completo en [`docs/funky-ai/drafts/midudev.md` — Pendiente 2](./docs/funky-ai/drafts/midudev.md)
 - [ ] **005 Auditoría Legacy (Backlog):** Analizar el workspace del proyecto Next.js anterior. El objetivo es barrer el desastre de reglas/skills viejas, rescatar las decisiones arquitectónicas que eran joyas, y re-documentarlas usando el formato estructurado y liviano de Funky AI.
-- [ ] Añadir el template de architect-assessment-guide al comando funky assess.
+- [ ] (QUICK FIX) Añadir el template de architect-assessment-guide al comando funky assess.
 - [ ] **Auditoría Stale-Template-Refs (Quick):** `grep_search` en `docs/` y `.agents/` buscando textos como "copiar templates", "revisar templates", "crear manualmente los archivos" que ya son responsabilidad de `funky feature`. Actualizar o eliminar las referencias obsoletas. → Contexto: mejora detectada durante sesión 012.b.
 Revisar todos los templates para verificar que no haya referencias obsoletas o deprecadas post v2.0.0. El analisis lo hará el humano y el orquestador tiene que unicamente darle sugerencias, es una tarea de pares, idea tras idea, tal vez no requiera sdd ni workers.
-- [ ] **Revisión de Templates SDD:** Revisar todos los templates SDD para reforzarlos en caso de que tuvieran puntos flojos (instrucciones ambiguas, falta de guardrails, etc).
+- [x] **021 Revisión de Templates SDD:** Completada (Release v2.4.0). Cherry-pick de Gentle AI e implementación de nuevos templates lean.
 - [ ] **RFC 016: `funky engram add`** → [RFC Creado](./docs/openspec/rfcs/016-funky-engram-add.md)
   - Implementar un comando nativo en el CLI para inyectar descubrimientos al Engram atómicamente (`funky engram add --tag "[xxx]" --desc "..."`). Esto evita que los Agentes tengan que cargar todo el archivo `discoveries.md` en memoria para hacer un append, reduciendo el Context Pollution y protegiendo contra errores de codificación.
 - [ ] **RFC 017: Modo Worker Inline Condicional (Escalation Matrix T0)**
   - Agregar un cuarto nivel implícito a la Escalation Matrix del Orquestador: cuando detecta que una tarea es trivial (máx. 1 archivo, sin lógica de negocio, reversible sin riesgo), en lugar de delegar a un Worker o ejecutar sin avisar, debe **preguntar al humano**: *"¿Querés que lo ejecute yo directamente o preferís abrir un Worker?"*. Preserva el rol del humano como decisor y evita overhead innecesario para tareas realmente atómicas. **Guardrail clave:** el criterio de "trivial" debe ser objetivo y acotado en la regla para evitar que el Orquestador se auto-justifique para saltarse el SDD. → Ver `[context-economy]` y `[orchestrator-role-boundary]` en Engram.
 - [ ] **Feature 020: Phase Workflows Especializados por Fase SDD**
   - Crear Global Workflows transversales a todos los Tiers como `/funky-explore`, `/funky-spec`, `/funky-tasks`. Cada workflow carga en contexto únicamente las instrucciones del rol correspondiente a esa fase SDD, reduciendo ruido y mejorando la precisión del agente. **Decisión arquitectónica (sesión 019):** son un acelerador universal, NO un diferenciador de Tier. T3 se diferencia por templates enriquecidos (NFRs + Devil's Advocate), no por workflows exclusivos. → Referencia: Feature 019 explore.md §2 Opción D, Engram.
-  - **[v3.0 — Diferido]:** Analizar compatibilidad multi-entorno (IDE Antigravity, Desktop, CLI) antes de implementar. Cada entorno tiene mecanismos distintos para cargar contexto de workflows.
+
 
 ---
 
 
 ## 🐛 Bugs Activos
-Ninguno.
+- **[CLI Bug]** Comando `funky feature` no inyecta el `report.md` en el scaffolding del nuevo cambio.
 
 ---
 
