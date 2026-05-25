@@ -39,7 +39,8 @@ Antes de generar artefactos o responder soluciones, tu primera respuesta (pensam
 ## ⚠️ Planning Checklist (EJECUTAR ANTES de delegar)
 | # | Verificación | Acción si falta |
 |---|-------------|-----------------|
-| 0 | ¿Existe `docs/openspec/changes/{feature}/explore.md`? | **PEDIR AL HUMANO que corra `funky feature <name>`.** NUNCA generar el scaffolding desde cero. |
+| PRE-0 | ¿El usuario emitió instrucciones que comienzan con `sdd` o `/sdd-init`? | Ejecutarlas PRIMERO. No continuar con la checklist hasta completar este paso. |
+| 0 | ¿Existe `docs/openspec/changes/{feature}/explore.md`? | **PEDIR AL HUMANO que corra `funky feature <name>`.** NUNCA generar el scaffolding manualmente. |
 | 1 | ¿Ejecuté el Memory Polling Stage 1? | `view_file docs/engram/index.md` ahora |
 | 2 | ¿El `tasks.md` tiene `MANDATORY_RELEASE_PROTOCOL` completo? | Verificar secciones Doc-Ops y Git-Ops |
 | 3 | ¿El Tier del Worker está declarado (T1/T2/T3)? | Completar campo en el `worker-handoff.md` |
@@ -54,8 +55,8 @@ Antes de generar artefactos o responder soluciones, tu primera respuesta (pensam
 | `/sdd-ff` | **PRERREQUISITO:** `explore.md`, `proposal.md`, y `spec.md` existen con contenido. **LUEGO:** `view_file tasks.md` (inyectado por CLI) antes de sobrescribirlo. |
 
 ## ⚠️ Protocolo Obligatorio — Generación de Worker Handoffs
-1. `view_file .agents/templates/sdd/worker-handoff.md`
-2. Usar template como base. Completar `Tier [⚠️ COMPLETAR: T1 / T2 / T3]`.
+1. El archivo `worker-handoff.md` ya fue inyectado en `docs/openspec/changes/{name}/` por la herramienta de inicialización.
+2. Usar `replace_file_content` para completar el campo `Tier [⚠️ COMPLETAR: T1 / T2 / T3]` directamente en ese archivo. NUNCA lo sobrescribas desde cero.
 
 ## 🔴 Return Statement — Delegación (MANDATORY — BLOCKING)
 No podés emitir el prompt de delegación sin este Pre-Gate:
@@ -64,8 +65,9 @@ No podés emitir el prompt de delegación sin este Pre-Gate:
 | G1 | `worker-handoff.md` existe en `openspec/changes/{name}/` | Generarlo AHORA |
 | G2 | Campo `Tier [⚠️ COMPLETAR]` reemplazado por T1/T2/T3 | Completarlo AHORA |
 | G3 | §1.C del handoff tiene la ruta exacta del `sdd-tasks.md` | Completarlo AHORA |
+| G4 | ¿La fase actual tiene la etiqueta `[⚠️ RIESGO ALTO]`? | **PROHIBIDO generar handoff.** Frená y preguntale al humano: *"Esta fase es de alto riesgo. ¿Querés que genere un `planning-handoff.md` para el `/funky-suborchestrator`, o preferís delegar directo al Worker bajo tu responsabilidad?"* |
 
-> 🔴 Si G1, G2 o G3 fallan → Corregí primero. Luego emitir:
+> 🔴 Si G1, G2, G3 o G4 fallan → Corregí primero. Luego emitir:
 > "El plan está listo. Cerrá este chat, abrí uno nuevo y decime:
 > `/funky-worker @docs/openspec/changes/{name}/worker-handoff.md Ejecutá la Fase N`."
 

@@ -30,7 +30,7 @@ No tomás decisiones de negocio, no escribís código en el proyecto. Tu único 
 ### Paso 3: Redactar el Micro-Plan
 1. Una vez que tengas claridad total, generá el plan de implementación.
 2. Debes guardarlo como `docs/openspec/changes/<nombre_feature>/implementation_plan_task[N].md` (donde `N` es el número de la fase).
-3. **MANDATORY:** La estructura interna de este archivo DEBE seguir exactamente el esquema dictado en `.agents/protocols/sdd-micro-planner.md`. (Si no lo conocés, hazle un `view_file` primero).
+3. **MANDATORY:** La estructura interna de este archivo DEBE seguir exactamente el esquema dictado al final del propio `planning-handoff.md`.
 
 ### Paso 4: Cierre de Sesión
 Cuando el archivo esté guardado, tu trabajo ha terminado.

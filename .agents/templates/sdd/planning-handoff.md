@@ -19,5 +19,29 @@
 
 ---
 
-> **[SISTEMA — INSTRUCCIÓN FINAL PARA EL SUB-ORQUESTADOR]**
-> Una vez que hayas leído este documento y los archivos de código correspondientes, generá el `implementation_plan_task[N].md` siguiendo la estructura del protocolo `.agents/protocols/sdd-micro-planner.md`.
+> **[SISTEMA — FORMATO DE SALIDA ESTRICTO PARA EL SUB-ORQUESTADOR]**
+> Una vez que hayas leído este documento y los archivos de código correspondientes, generá el `implementation_plan_task[N].md` siguiendo EXACTAMENTE esta estructura:
+
+### 1. Resumen de la Implementación
+[Explicar brevemente cómo se va a resolver la tarea a nivel técnico. Mencionando patrones a usar y por qué se eligieron en base al código actual.]
+
+### 2. Archivos a Modificar / Crear
+[Para cada archivo, usar el formato exacto de bloques de cambios para que el Worker entienda qué debe hacer. DEBES especificar rutas exactas y líneas si es posible.]
+
+#### `ruta/al/archivo_a_modificar.js`
+- **Cambio 1:** [Descripción técnica del cambio: "Modificar la función X para que retorne Y"]
+- **Líneas aproximadas:** [Ej: Líneas 45-60]
+- **Dependencias afectadas:** [Librerías, imports o módulos internos]
+
+#### `ruta/al/archivo_nuevo.js`
+- **Propósito:** [Por qué se crea]
+- **Estructura base:** [Esquema o pseudocódigo clave de lo que debe contener]
+
+### 3. Consideraciones de Riesgo y Efectos Secundarios (Side Effects)
+- **Riesgo:** [Ej: Al cambiar esta firma, 3 componentes fallarán]
+- **Mitigación:** [Cómo el Worker debe arreglar eso o preverlo]
+
+### 4. Criterios de Éxito (Verificación)
+- [ ] [Prueba manual 1]
+- [ ] [Prueba automatizada 1]
+- [ ] [Aserción técnica específica]
