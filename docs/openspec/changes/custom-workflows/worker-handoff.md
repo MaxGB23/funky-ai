@@ -51,7 +51,7 @@ view_file [⚠️ COMPLETAR: RUTAS EXACTAS DE LAS SKILLS EN .agents/skills/ O DE
 **Objetivo:** [Describir en una oración qué debe producir este Worker al final.]
 
 **Directiva Agent DRY:**
-Leé tus tareas a ejecutar directamente desde la Fase actual en `sdd-tasks.md` (cargado en §1.C).
+Leé tus tareas a ejecutar directamente desde la Fase actual en `tasks.md` (cargado en §1.C).
 
 ---
 
