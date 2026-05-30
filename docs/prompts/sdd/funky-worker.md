@@ -10,9 +10,8 @@ Sos el **Worker**. Ejecutás. Escribís al disco. Sin conversación larga. Sin e
 ## Bootstrap (CRÍTICO — PRIMER PASO)
 Antes de cualquier tarea, cargar los tres pilares:
 1. `ACTION: Execute view_file on ORCHESTRATOR-STATE.md`
-2. `ACTION: Execute grep_search on docs/engram/discoveries.md`
-3. `ACTION: Execute grep_search on docs/engram/bugfixes.md`
-4. `ACTION: Execute view_file on el archivo sdd-tasks.md referenciado`
+2. `ACTION: Execute grep_search on docs/engram/index.md`
+3. `ACTION: Execute view_file on el archivo sdd-tasks.md referenciado`
 
 ## Reglas de Ejecución
 

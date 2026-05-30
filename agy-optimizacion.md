@@ -1,0 +1,48 @@
+### OP1: Fragmentar sdd-orchestrator.md en micro-reglas                                                                                                                                           
+                                                                                                                                                                                                    
+  Veredicto: Viable, pero con un riesgo (Mejor usar inyección condicional).                                                                                                                         
+                                                                                                                                                                                                    
+  • ¿Puedo cargar con  view_file ? Sí, totalmente.                                                                                                                                                  
+  • ¿Se queda en el contexto? Acá está la trampa. Si uso  view_file , el contenido entra como un mensaje de historial (tool response). Si la charla se hace larguísima, el motor eventualmente va a 
+  compactar o descartar ese mensaje por antigüedad. En cambio, lo que Mission Control inyecta en  <user_rules>  (el system prompt) está protegido y NUNCA se "olvida".                              
+  • ¿Mission Control soporta inyección selectiva? ¡Sí! Si te fijás, tu regla actual dice "The following are conditional rules...". Vos podés configurar Mission Control (en tus settings globales)  
+  para que inyecte  regla_a.md  SOLO si estoy tocando archivos de Frontend, y  regla_b.md  SOLO si estoy haciendo SDD.                                                                              
+  • Conclusión: No me hagas leer reglas core con  view_file  porque la memoria de corto plazo es volátil. Fragmentá el archivo, pero usá las reglas condicionales del host para inyectarlas         
+  dinámicamente en el system prompt.                                                                                                                                                                
+                                                                                                                                                                                                    
+  ### OP2: Skill embed vs reference por umbral de tamaño                                                                                                                                            
+                                                                                                                                                                                                    
+  Veredicto: Mejor así (Híbrido).                                                                                                                                                                   
+                                                                                                                                                                                                    
+  • ¿Límite de  define_subagent ? El parámetro  system_prompt  soporta decenas de miles de caracteres (básicamente la ventana de contexto del LLM), pero meter un archivo monstruoso ahí encarece   
+  CADA request de ese sub-agente.                                                                                                                                                                   
+  • ¿El sub-agente tiene  view_file ? SÍ. Por defecto, "all subagents have read tools to research the codebase".                                                                                    
+  • Conclusión: Si la skill es de menos de ~400 líneas, inyectala entera en el  system_prompt  para ahorrarle al sub-agente el roundtrip (tool call) de tener que leerla. Si es una documentación   
+  masiva, pasale solo el resumen y el path absoluto en su prompt, y dejá que él use  view_file  para consultar partes específicas.                                                                  
+                                                                                                                                                                                                    
+  ### OP3: Branch workspace para sdd-apply                                                                                                                                                          
+                                                                                                                                                                                                    
+  Veredicto: Viable y RECOMENDADO.                                                                                                                                                                  
+                                                                                                                                                                                                    
+  • ¿Funciona  enable_write_tools  con  branch ? Perfectamente. El sub-agente recibe sus tools de escritura (editar, crear archivos) pero ruteadas a esa copia aislada del filesystem.              
+  • ¿Qué pasa si falla? Si yo (el orquestador) uso mi herramienta  manage_subagents  con la acción  kill  para matar a ese sub-agente fallido, su workspace aislado se elimina automáticamente ("its
+  branched workspaces will be deleted"), dejando limpio el disco, pero los logs/artifacts sobreviven para que yo los lea. Es un mecanismo de rollback hermoso.                                      
+                                                                                                                                                                                                    
+  ### OP4: Model depth guide en system_prompt                                                                                                                                                       
+                                                                                                                                                                                                    
+  Veredicto: Viable.                                                                                                                                                                                
+                                                                                                                                                                                                    
+  • ¿Hay diferencia de consumo? Absolutamente. Cuando un prompt exige "analizá los tradeoffs antes de responder" o "pensá paso a paso", me obliga a generar tokens de Chain of Thought (CoT)        
+  explícitos en mi respuesta antes de darte el código. Esos son tokens de salida (output tokens), que son los más caros y los que más tiempo consumen.                                              
+  • Conclusión: Aunque no puedas cambiarme físicamente a un modelo Opus, exigir razonamiento estructurado simula esa profundidad a costa de mayor latencia y consumo de output tokens. Si la tarea  
+  es mecánica, sacá esa regla para que yo responda rápido y barato.                                                                                                                                 
+                                                                                                                                                                                                    
+  ### OP5: Cache de artifact IDs                                                                                                                                                                    
+                                                                                                                                                                                                    
+  Veredicto: Viable y MUY EFICIENTE.                                                                                                                                                                
+                                                                                                                                                                                                    
+  • ¿Evito  mem_search  con el ID? Sí. Si en mi prompt inicial (o en una regla) me das el ID crudo, llamo directamente a  mem_get_observation(id) .                                                 
+  • ¿Ahorra tokens? Sí, un montón.  mem_search  requiere que yo arme el JSON de la tool, se envíe al modelo (gastando tokens de input del historial), espere la respuesta de Engram, y parsee los   
+  resultados. Son tokens y segundos valiosos. Saltarlo con un ID cacheado es la definición de optimización.                                                                                         
+                                                                                                                                                                                                    
+  Si implementás el OP3 (branch para apply) y el OP5 (IDs cacheados), vas a tener un orquestador rapidísimo y blindado contra errores destructivos.

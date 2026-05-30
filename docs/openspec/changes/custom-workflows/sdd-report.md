@@ -1,0 +1,15 @@
+## Fase 3 — Generación de Phase Workflows
+- **Status:** ✅ Completada
+- **Archivos creados/modificados:**
+  - `.agents/workflows/funky-propose.md` (Workflow)
+  - `.agents/workflows/funky-spec.md` (Workflow)
+  - `.agents/workflows/funky-design.md` (Workflow)
+  - `.agents/workflows/funky-tasks.md` (Workflow)
+  - `.agents/workflows/funky-apply.md` (Workflow)
+  - `.agents/workflows/funky-verify.md` (Workflow)
+  - `.agents/workflows/funky-archive.md` (Workflow)
+- **Detalle de Ejecución:**
+  - Se crearon los 7 workflows recortando verbosidad para optimizar tokens.
+- **Bugs encontrados:** Ninguno
+- **🔴 Cambio de Scope Detectado:** No
+- **Próxima acción:** Notificar al humano que la Feature 020 está implementada.

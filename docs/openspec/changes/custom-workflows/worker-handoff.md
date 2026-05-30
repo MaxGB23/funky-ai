@@ -1,11 +1,11 @@
-# 🤖 Funky AI — Worker Handoff: Fase [N] ([Nombre de la Fase])
+# 🤖 Funky AI — Worker Handoff: Fase 3 (Generación de Phase Workflows)
 
-> **Instrucción para el LLM:** Sos un Worker **Tier [⚠️ COMPLETAR: T1 / T2 / T3]** de ejecución de Funky AI.
+> **Instrucción para el LLM:** Sos un Worker de ejecución de Funky AI.
 > Tu única misión es leer este documento, ejecutar las tareas exactas detalladas abajo escribiendo al disco mediante tus tools, y luego actualizar el `sdd-report.md` final.
 > **NO redactes código ni explicaciones largas en el chat. Acción directa al disco.**
 
 > **[HUMANO]** Para ejecutar este worker, abrí un chat nuevo y pegá:
-> `/funky-worker @docs/openspec/changes/{feature-name}/worker-handoff.md Ejecutá la Fase [N]`
+> `/funky-worker @docs/openspec/changes/custom-workflows/worker-handoff.md Ejecutá la Fase 3`
 
 ---
 
@@ -35,23 +35,25 @@ grep_search "[TAG-EXACTO-DEL-INDICE]" docs/engram/bugfixes.md (IsRegex: false)
 
 ### C) Especificación de Tarea
 ```
-view_file docs/openspec/changes/{feature-name}/sdd-tasks.md
-view_file [archivo principal que vas a modificar]
+view_file docs/openspec/changes/custom-workflows/sdd-tasks.md
+view_file docs/openspec/changes/custom-workflows/workflow-design.md
 ```
 
 ### D) Skills Requeridas (Explicit Routing)
 ```
-view_file [⚠️ COMPLETAR: RUTAS EXACTAS DE LAS SKILLS EN .agents/skills/ O DEJAR VACÍO SI NO APLICA]
+view_file .agents/workflows/funky-explore.md
+list_dir docs/openspec/changes/custom-workflows/material
 ```
+> *(Nota: Deberás leer el contenido de los `sdd-prompt-*.md` dentro de `material/` a medida que generes cada workflow).*
 
 ---
 
 ## 2. La Misión (Surgical Task)
 
-**Objetivo:** [Describir en una oración qué debe producir este Worker al final.]
+**Objetivo:** Crear los 7 archivos `.agents/workflows/funky-{fase}.md` faltantes, usando el diseño de `workflow-design.md` (y el ejemplo de `funky-explore.md`), e inyectando la lógica base desde los archivos `material/sdd-prompt-*.md`. Aplicar optimización de tokens acortando ejemplos largos y removiendo redundancias.
 
 **Directiva Agent DRY:**
-Leé tus tareas a ejecutar directamente desde la Fase actual en `tasks.md` (cargado en §1.C).
+Leé tus tareas a ejecutar directamente desde la Fase actual en `sdd-tasks.md` (cargado en §1.C).
 
 ---
 
@@ -60,41 +62,35 @@ Leé tus tareas a ejecutar directamente desde la Fase actual en `tasks.md` (carg
 | Regla | Descripción |
 |-------|-------------|
 | 🔴 Cero Exploración | No uses `list_dir` ni `view_file` sobre archivos no indicados en §1 |
-| 🔴 Foco Láser | Tu scope está delimitado en §2. Si algo fuera de scope está roto, documentalo en el report, no lo arregles |
+| 🔴 Foco Láser | Tu scope está delimitado en §2. |
 | 🔴 Acción Directa | Cada archivo se escribe con tools de escritura directa. |
-| 🟡 Bugs Encontrados | Si encontrás un bug no relacionado con tu tarea → registralo en `sdd-report.md` bajo `## Bugs Encontrados` con schema engram (`What / Why / Where / Learned`) |
 | 🟢 Idempotencia | Verificá si el destino ya existe antes de sobreescribir. Documentá si salteás algo |
-
-### 🔍 Jerarquía de Conocimiento (Doc-Ops)
-1. **Prioridad 1 (Skills Estrictas):** Acatá religiosamente las skills inyectadas en la sección §1.D. Son leyes absolutas para tu ejecución.
-2. **Prioridad 2 (MCP context7):** Si la API es nueva/compleja, dudás de su sintaxis, y el Orquestador no te pasó ninguna skill en §1.D, estás **OBLIGADO** a usar el servidor MCP `context7` (`resolve-library-id` + `query-docs`) antes de escribir código.
-3. **Extracción:** Si descubrís un patrón nuevo usando `context7`, documentalo en tu Return Envelope para que el Orquestador lo convierta en una Skill.
 
 ---
 
 ## 4. Criterios de Éxito
 
-- [ ] Todos los archivos listados en §2 fueron creados/modificados en disco.
-- [ ] El `sdd-report.md` fue actualizado con la sección de esta Fase.
-- [ ] Ningún archivo fuera de scope fue modificado.
-- [ ] Si se encontraron bugs no relacionados, están documentados con schema engram.
+- [ ] Los 7 workflows (`propose`, `spec`, `design`, `tasks`, `apply`, `verify`, `archive`) fueron creados en `.agents/workflows/`.
+- [ ] Tienen el frontmatter de slash command (trigger y description).
+- [ ] Siguen el estándar de cierre sin preguntas (Return Envelope final).
+- [ ] Las instrucciones core se mantuvieron, pero los ejemplos se acortaron para ahorrar tokens.
+- [ ] El `sdd-report.md` fue actualizado.
 
 ---
 
 ## 5. Return Envelope (Al terminar)
 
-Actualizá `docs/openspec/changes/{feature-name}/sdd-report.md` con:
+Actualizá `docs/openspec/changes/custom-workflows/sdd-report.md` con:
 
 ```markdown
-## Fase [N] — [Nombre de la Fase]
+## Fase 3 — Generación de Phase Workflows
 - **Status:** ✅ Completada / ❌ Bloqueada
 - **Archivos creados/modificados:**
-  - `ruta/al/archivo.ext` (breve rol del archivo)
+  - `.agents/workflows/funky-propose.md` (Workflow)
+  - ... (los 7 archivos)
 - **Detalle de Ejecución:**
-  - [Lista de lo implementado: cambios de lógica, algoritmos, convenciones o reglas agregadas]
-- **Bugs encontrados:** Ninguno / (schema engram si aplica)
-- **🔴 Cambio de Scope Detectado:** No / Sí — [Si Sí: describir qué encontraste que invalida o modifica fases siguientes]
-- **Próxima acción:** Qué debe hacer el Orquestador a continuación
+  - Se crearon los 7 workflows recortando verbosidad para optimizar tokens.
+- **Bugs encontrados:** Ninguno
+- **🔴 Cambio de Scope Detectado:** No
+- **Próxima acción:** Notificar al humano que la Feature 020 está implementada.
 ```
-
-> **[SISTEMA]** Si `🔴 Cambio de Scope Detectado` es **Sí**, el Orquestador DEBE revisar y actualizar `sdd-tasks.md` y los handoffs de fases siguientes ANTES de continuar la delegación.

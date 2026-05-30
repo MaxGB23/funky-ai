@@ -73,9 +73,35 @@ Cada agente arranca fresco y lee lo que el anterior dejó escrito. Cero dependen
 | Slash command de ejecución | Solo `/funky-worker` para todo | `/funky-explore`, `/funky-apply`, etc. |
 | Rol del Orquestador | Redacta instrucciones de cada fase | Solo coordina y genera handoffs delgados |
 
+### ✅ D1 — Autosuficiencia de Fases (Adiós redundancia en handoffs)
+
+Los 8 workflows SDD (`/funky-explore`, etc.) son slash commands propios, que contienen internamente TODA la lógica de bootstrap (leer engram, tasks) y cómo entregar el Return Envelope. El `worker-handoff.md` no se elimina, pero se mantiene intacto solo para ser usado por el `funky-worker` genérico en T1 y T2.
+
 ---
 
-> **Nota:** Los debates activos sobre el pipeline (Tiers aplicables, Overhead humano, y Autosuficiencia vs funky-worker) han sido movidos a `workflow-debates.md` para su seguimiento.
+### ✅ D4 — Diferencia con el flujo actual
+
+| Aspecto | Hoy | Con Feature 020 |
+|---------|-----|--------------------|
+| Instrucciones de fase | Escritas a mano en `worker-handoff.md` | Viven en el workflow `/funky-{fase}` |
+| `worker-handoff.md` | Grande, con instrucciones completas | Mínimo: feature name + tier + apuntador |
+| Slash command de ejecución | Solo `/funky-worker` para todo | `/funky-explore`, `/funky-apply`, etc. |
+| Rol del Orquestador | Redacta instrucciones de cada fase | Solo coordina y genera handoffs delgados |
+
+---
+
+### ✅ D6 — Tiers Aplicables y Overhead de Chats
+
+1. **Tier 1 y Tier 2:** Operación 100% **inline** por el Orquestador. Delega a `funky-worker` estándar usando el `worker-handoff.md` de siempre.
+2. **Tier 3:** Operación **inline híbrida (Micro-planning)**. Mantiene la velocidad de T1/T2, usa templates avanzados (NFRs, Devil's Advocate) y omite lo que no sirve. Puede abortar y pedir workflows aislados si siente *Context Dilution*.
+3. **Tier 4:** Operación **100% Workflows (Feature 020)**. El Orquestador NO genera handoff, manda al humano a abrir chats aislados para las 8 fases SDD. (Supremacía arquitectónica por Context Window limpio y máximo límite de tokens). Se planea deprecar `/funky gentle`.
+
+PENDIENTE PREGUNTAR CÓMO EL HUMANO INICIA EL CHAT DEL SUBAGENTE, YA QUE DESPUES DE TIPEAR /funky-<fase> debe pasarle unos minimos datos de contexto como name de la feature, etc.
+---
+
+### ✅ D7 — Deprecación de Tiers en Workers
+
+Los Tiers son exclusivos de Orquestación. Un Worker de ejecución es agnóstico al Tier, solo sigue el `tasks.md` como máquina láser. Se eliminó la obligación de llenar el campo Tier en los handoffs.
 
 ---
 

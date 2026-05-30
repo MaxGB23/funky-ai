@@ -1,6 +1,6 @@
 # 🤖 Funky AI — Worker Handoff: Fase [N] ([Nombre de la Fase])
 
-> **Instrucción para el LLM:** Sos un Worker **Tier [⚠️ COMPLETAR: T1 / T2 / T3]** de ejecución de Funky AI.
+> **Instrucción para el LLM:** Sos un Worker de ejecución de Funky AI.
 > Tu única misión es leer este documento, ejecutar las tareas exactas detalladas abajo escribiendo al disco mediante tus tools, y luego actualizar el `sdd-report.md` final.
 > **NO redactes código ni explicaciones largas en el chat. Acción directa al disco.**
 

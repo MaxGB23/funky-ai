@@ -19,7 +19,7 @@ Antes de generar artefactos o responder soluciones, tu primera respuesta (pensam
 | **T1 (Flash)** | 1 archivo, fix trivial, sin impacto arquitectónico | Sin `/sdd-explore` ni `/sdd-propose`. Directo al `tasks.md`. |
 | **T2 (Standard)** | Feature normal, 2-5 archivos, sin cambios de core | Flujo completo: `/sdd-explore` → `/sdd-propose` → `spec` → `tasks.md` + Handoff. |
 | **T3 (Deep)** | Cambios en core, NFRs pesados, refactors masivos | Igual que T2 pero con análisis de riesgos y aislamiento reforzado. |
-| **T4 (Gentle)** | Rediseños titánicos del core, máximo riesgo | Frenado de emergencia. `funky gentle`: 7 roles aislados en pipeline secuencial. |
+| **T4 (Gentle)** | Rediseños titánicos del core, máximo riesgo | Frenado de emergencia. Usar Phase Workflows (`/funky-explore`, etc.). **NO generar handoff**, el humano invoca cada fase aislada en chats nuevos. |
 
 ## Bootstrap (CRÍTICO — PRIMER PASO)
 1. `view_file ORCHESTRATOR-STATE.md` en la raíz del proyecto.
@@ -62,12 +62,13 @@ Antes de generar artefactos o responder soluciones, tu primera respuesta (pensam
 No podés emitir el prompt de delegación sin este Pre-Gate:
 | # | Verificación | Si falla |
 |---|-------------|----------|
-| G1 | `worker-handoff.md` existe en `openspec/changes/{name}/` | Generarlo AHORA |
-| G2 | Campo `Tier [⚠️ COMPLETAR]` reemplazado por T1/T2/T3 | Completarlo AHORA |
-| G3 | §1.C del handoff tiene la ruta exacta del `sdd-tasks.md` | Completarlo AHORA |
+| G1 | `worker-handoff.md` existe en `openspec/changes/{name}/` | Generarlo AHORA (Omitir si es T4) |
+| G2 | Campo `Tier [⚠️ COMPLETAR]` reemplazado por T1/T2/T3 | Completarlo AHORA (Omitir si es T4) |
+| G3 | §1.C del handoff tiene la ruta exacta del `sdd-tasks.md` | Completarlo AHORA (Omitir si es T4) |
 | G4 | ¿La fase actual tiene la etiqueta `[⚠️ RIESGO ALTO]`? | **PROHIBIDO generar handoff.** Frená y preguntale al humano: *"Esta fase es de alto riesgo. ¿Querés que genere un `planning-handoff.md` para el `/funky-suborchestrator`, o preferís delegar directo al Worker bajo tu responsabilidad?"* |
+| G5 | ¿Es una tarea **Tier 4**? | **NO usar `worker-handoff.md`.** Saltear G1-G3 e instruir directo al humano: *"Cerrá este chat, abrí uno nuevo y ejecutá `/funky-{fase} [NombreFeature]`."* |
 
-> 🔴 Si G1, G2, G3 o G4 fallan → Corregí primero. Luego emitir:
+> 🔴 Si G1, G2, G3 o G4 fallan (en T1/T2/T3) → Corregí primero. Luego emitir:
 > "El plan está listo. Cerrá este chat, abrí uno nuevo y decime:
 > `/funky-worker @docs/openspec/changes/{name}/worker-handoff.md Ejecutá la Fase N`."
 

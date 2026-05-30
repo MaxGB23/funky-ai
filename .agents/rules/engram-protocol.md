@@ -8,8 +8,7 @@ globs: ["docs/*", "docs/**/*"]
 
 ## 1. Memory Polling (Lectura — OBLIGATORIO)
 Antes de cualquier cambio estructural:
-- `ACTION: Execute grep_search on docs/engram/discoveries.md with relevant topic`
-- `ACTION: Execute grep_search on docs/engram/bugfixes.md with relevant topic`
+- `ACTION: Execute grep_search on docs/engram/index.md with relevant topic`
 
 ## 2. Escritura Indexada — Schema MCP
 

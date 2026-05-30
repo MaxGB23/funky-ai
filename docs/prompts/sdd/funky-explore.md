@@ -18,8 +18,8 @@ Antes de ejecutar cualquier tarea, cargá los tres pilares de contexto:
 
 ```
 1. view_file ORCHESTRATOR-STATE.md
-2. view_file docs/engram/index.md
-3. view_file docs/openspec/changes/{feature-name}/explore.md  ← tu target de escritura
+2. grep_search docs/engram/index.md  (Stage 1 — siempre)
+3. view_file docs/openspec/changes/{feature-name}/explore.md  ← tu target de escritura (si ya existe)
 ```
 
 > Si `explore.md` ya existe, **leelo primero** y actualizalo — no sobrescribas ciegamente.
@@ -95,9 +95,7 @@ Crear o actualizar `docs/openspec/changes/{feature-name}/explore.md` con esta es
 **Riesgos mitigables:**
 - [Riesgo 1]: [Cómo mitigarlo]
 
-## 5. ¿Listo para Proposal?
-Yes / No — {Si No, qué clarificación se necesita primero.}
-```
+
 
 ---
 
@@ -123,7 +121,6 @@ Reportá al humano con este formato:
 **Artefacto:** docs/openspec/changes/{feature-name}/explore.md
 **Siguiente fase:** /funky-propose
 **Riesgos:** {Riesgos detectados, o "Ninguno"}
-**¿Listo para proposal?:** Sí / No — {razón si No}
 ```
 
-Y detenete. No sigas con la siguiente fase sin confirmación del humano.
+> Cerrá este chat y llevá este report al Orquestador.
