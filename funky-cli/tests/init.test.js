@@ -16,8 +16,6 @@ describe('runInit()', () => {
     { src: 'agents-rules-engram-protocol.md', dest: '.agents/rules/engram-protocol.md' },
     { src: 'agents-rules-secops.md', dest: '.agents/rules/secops.md' },
     { src: 'agents-rules-sdd-orchestrator.md', dest: '.agents/rules/sdd-orchestrator.md' },
-    { src: 'engram-discoveries.md', dest: 'docs/engram/discoveries.md' },
-    { src: 'engram-bugfixes.md', dest: 'docs/engram/bugfixes.md' },
     { src: 'plantilla-worker-handoff.md', dest: 'docs/funky-ai/workers/plantilla-worker-handoff.md' },
     { src: 'canvas-planning-guide.md', dest: 'docs/funky-ai/cli/canvas-planning-guide.md' },
     { src: '../sdd/architecture-assessment.md', dest: 'docs/architecture-assessment.md' },
@@ -42,7 +40,7 @@ describe('runInit()', () => {
 
     expect(result.created).toBe(filesToCopy.length);
     expect(result.skipped).toBe(0);
-    expect(fs.mkdirSync).toHaveBeenCalledTimes(filesToCopy.length);
+    expect(fs.mkdirSync).toHaveBeenCalledTimes(filesToCopy.length + 5); // +5 engram dirs
     expect(fs.copyFileSync).toHaveBeenCalledTimes(filesToCopy.length);
   });
 
@@ -110,7 +108,7 @@ describe('runInit()', () => {
       .toThrow('Permission denied');
   });
 
-  it('asume environment: "ide" por defecto y copia las rutas de ide', () => {
+  it('copia archivos desde templatesDir a targetBase con las rutas correctas', () => {
     fs.existsSync.mockReturnValue(false);
     fs.mkdirSync.mockImplementation(() => {});
     fs.copyFileSync.mockImplementation(() => {});
@@ -118,17 +116,17 @@ describe('runInit()', () => {
     runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
 
     expect(fs.copyFileSync).toHaveBeenCalledWith(
-      expect.stringContaining(path.join('ide', 'agents-rules-engram-protocol.md')),
-      expect.stringContaining(path.join('.agents', 'rules', 'engram-protocol.md'))
+      path.join(fakeTemplatesDir, 'ORCHESTRATOR-STATE.md'),
+      path.join(fakeTargetDir, 'ORCHESTRATOR-STATE.md')
     );
 
     expect(fs.copyFileSync).toHaveBeenCalledWith(
-      expect.stringContaining(path.join('ide', 'agents-rules-sdd-orchestrator.md')),
-      expect.stringContaining(path.join('.agents', 'rules', 'sdd-orchestrator.md'))
+      path.join(fakeTemplatesDir, 'agents-rules-engram-protocol.md'),
+      path.join(fakeTargetDir, '.agents', 'rules', 'engram-protocol.md')
     );
   });
 
-  it('copia las rutas de cli si se provee environment: "cli"', () => {
+  it('copia archivos correctamente aunque se pase environment: "cli" (ignorado)', () => {
     fs.existsSync.mockReturnValue(false);
     fs.mkdirSync.mockImplementation(() => {});
     fs.copyFileSync.mockImplementation(() => {});
@@ -136,17 +134,12 @@ describe('runInit()', () => {
     runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir, environment: 'cli' });
 
     expect(fs.copyFileSync).toHaveBeenCalledWith(
-      expect.stringContaining(path.join('cli', 'agents-rules-engram-protocol.md')),
-      expect.stringContaining(path.join('.agents', 'rules', 'engram-protocol.md'))
-    );
-
-    expect(fs.copyFileSync).toHaveBeenCalledWith(
-      expect.stringContaining(path.join('cli', 'agents-rules-sdd-orchestrator.md')),
-      expect.stringContaining(path.join('.agents', 'rules', 'sdd-orchestrator.md'))
+      path.join(fakeTemplatesDir, 'ORCHESTRATOR-STATE.md'),
+      path.join(fakeTargetDir, 'ORCHESTRATOR-STATE.md')
     );
   });
 
-  it('copia las rutas de ide si se provee environment: "ide" explícitamente', () => {
+  it('copia archivos correctamente aunque se pase environment: "ide" (ignorado)', () => {
     fs.existsSync.mockReturnValue(false);
     fs.mkdirSync.mockImplementation(() => {});
     fs.copyFileSync.mockImplementation(() => {});
@@ -154,13 +147,8 @@ describe('runInit()', () => {
     runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir, environment: 'ide' });
 
     expect(fs.copyFileSync).toHaveBeenCalledWith(
-      expect.stringContaining(path.join('ide', 'agents-rules-engram-protocol.md')),
-      expect.stringContaining(path.join('.agents', 'rules', 'engram-protocol.md'))
-    );
-
-    expect(fs.copyFileSync).toHaveBeenCalledWith(
-      expect.stringContaining(path.join('ide', 'agents-rules-sdd-orchestrator.md')),
-      expect.stringContaining(path.join('.agents', 'rules', 'sdd-orchestrator.md'))
+      path.join(fakeTemplatesDir, 'ORCHESTRATOR-STATE.md'),
+      path.join(fakeTargetDir, 'ORCHESTRATOR-STATE.md')
     );
   });
 });
