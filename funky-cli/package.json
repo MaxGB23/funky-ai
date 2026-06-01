@@ -9,7 +9,7 @@
   },
   "scripts": {
     "sync": "node scripts/sync-templates.js",
-    "test": "npm run sync && vitest run"
+    "test": "vitest run"
   },
   "keywords": [],
   "author": "",
