@@ -14,10 +14,11 @@ Memoria estructurada tipo MCP en archivos canónicos. Reglas de acceso estrictas
 | Archivo | Equivalente | Propósito |
 |---|---|---|
 | `docs/ORCHESTRATOR-STATE.md` | `mem_search()` | Estado actual, tareas pendientes, archivos clave. |
-| `docs/engram/` (`discoveries`, `bugfixes`) | `mem_get_obs()` | Historial de bugs y decisiones arquitectónicas. |
+| `docs/engram/index.md` | `mem_search()` | Índice tabla de todos los engramas (Stage 1 del Two-Stage Polling). |
+| `docs/engram/{category}/{tag}.md` | `mem_get_obs()` | Engrama individual: cada entry es un archivo único en su directorio semántico (`architecture/`, `pattern/`, `discovery/`, `decision/`, `bugfix/`). |
 
-- **Escritura (Doctrina MCP):** Todo registro en `docs/engram/` requiere campos: `What`, `Why`, `Where`, `Learned`.
-- **Lectura (Safe-Contexting):** Prohibido leer archivos masivos. Usar `grep_search` masivo + `view_file` quirúrgico.
+- **Escritura (Doctrina MCP):** Todo registro usa `funky engram add --tag "[tag]" --category <categoría> --desc "..."`. Requiere campos: `What`, `Why`, `Where`, `Learned`.
+- **Lectura (Safe-Contexting):** Stage 1 = `view_file docs/engram/index.md`. Stage 2 = `grep_search "[tag]" docs/engram/` (búsqueda recursiva sobre subdirectorios). Prohibido leer archivos masivos.
 
 ### 2. Sub-Agentes Descartables (Manipulación de Chats)
 Evitar degradación de contexto mediante aislamiento:

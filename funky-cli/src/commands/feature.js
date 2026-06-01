@@ -36,8 +36,11 @@ export function runFeature({ featureName, cliTemplatesDir, cwd }) {
 
   fs.mkdirSync(featurePath, { recursive: true });
 
-  // 4. Copiar archivos (explore.md, proposal.md, spec.md, tasks.md)
-  const filesToCopy = ['explore.md', 'proposal.md', 'spec.md', 'tasks.md', 'worker-handoff.md'];
+  // 4. Copiar archivos del ciclo SDD a la carpeta de la feature
+  const filesToCopy = [
+    'explore.md', 'proposal.md', 'design.md', 'spec.md', 'tasks.md', 
+    'worker-handoff.md', 'planning-handoff.md', 'report.md', 'apply.md', 'verify.md'
+  ];
   
   for (const file of filesToCopy) {
     const srcFile = path.join(templatesToUse, file);

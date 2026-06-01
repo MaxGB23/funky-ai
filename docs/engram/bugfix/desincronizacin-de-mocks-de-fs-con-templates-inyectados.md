@@ -1,0 +1,5 @@
+### [bugfix][test-mock-drift] Desincronización de mocks de FS con templates inyectados
+**What:** La adición de nuevos archivos a un template SDD (`TEMPLATE_GUIDE.md`, etc) causó la falla de los tests de inicialización (`init.test.js`) en la ejecución del CI/local.
+**Why:** Los tests tenían hardcodeada la lista de archivos que el template contenía (`filesToCopy`), por lo que cualquier adición al directorio físico del template generaba un mismatch al validar las llamadas al mock de FileSystem (Vitest).
+**Where:** Mocks de Vitest (`funky-cli/tests/init.test.js`) que validan `fs.readdirSync`.
+**Learned:** Siempre que se agreguen o eliminen archivos en directorios estáticos que el CLI manipula (`.agents/templates`, `src/templates`), se deben actualizar en paralelo los arrays estáticos dentro de los mocks de FS de los tests. No hacerlo produce un "Test Mock Drift".

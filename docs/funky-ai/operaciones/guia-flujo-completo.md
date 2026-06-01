@@ -86,8 +86,12 @@ funky init
 ✅ Creado: .agents/rules/engram-protocol.md
 ✅ Creado: .agents/rules/secops.md
 ✅ Creado: .agents/rules/sdd-orchestrator.md
-✅ Creado: docs/engram/discoveries.md
-✅ Creado: docs/engram/bugfixes.md
+✅ Creado: docs/engram/index.md
+✅ Creado: docs/engram/architecture/
+✅ Creado: docs/engram/pattern/
+✅ Creado: docs/engram/discovery/
+✅ Creado: docs/engram/decision/
+✅ Creado: docs/engram/bugfix/
 ✅ Creado: docs/funky-ai/cli/canvas-planning-guide.md
 ✅ Creado: docs/funky-ai/workers/plantilla-worker-handoff.md
 ✅ Creado: docs/architecture-assessment.md
@@ -97,7 +101,7 @@ funky init
 ✅ Creado: PROJECT-CANVAS.md (Dinámico)
 ✅ Creado: INFRA-CANVAS.md (Dinámico)
 
-✅ Funky AI inicializado. 14 archivos creados, 0 ya existían.
+✅ Funky AI inicializado. 18 archivos/directorios creados, 0 ya existían.
 ```
 
 ### Paso 2.3 — Verificar la estructura creada
@@ -117,8 +121,12 @@ mi-nuevo-proyecto/
 └── docs/
     ├── architecture-assessment.md
     ├── engram/
-    │   ├── discoveries.md         ← Registro de descubrimientos
-    │   └── bugfixes.md            ← Registro de bugs
+    │   ├── index.md               ← Índice tabla de todos los engramas
+    │   ├── architecture/          ← Decisiones de arquitectura
+    │   ├── pattern/               ← Patrones establecidos
+    │   ├── discovery/             ← Hallazgos y evaluaciones
+    │   ├── decision/              ← Decisiones con impacto en el proyecto
+    │   └── bugfix/                ← Bugs corregidos
     ├── funky-ai/
     │   ├── cli/
     │   │   └── canvas-planning-guide.md
@@ -205,7 +213,7 @@ El Worker debe crear o actualizar `sdd-report.md` al terminar. No debe responder
 
 ### Paso 4.4 — Volvé al chat del Orquestador
 
-Revisá el `sdd-report.md`. Si hay bugs documentados → registralos en `docs/engram/bugfixes.md`. Si hay descubrimientos → en `docs/engram/discoveries.md`.
+Revisá el `sdd-report.md`. Si hay hallazgos o bugs documentados → registralos en el Engram usando `funky engram add --tag "[tag]" --category <categoría> --desc "..."` (categorías: `architecture`, `pattern`, `discovery`, `decision`, `bugfix`).
 
 Repetí los pasos 3.4 → 4.4 para cada Fase del `sdd-tasks.md`.
 

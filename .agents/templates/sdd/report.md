@@ -26,10 +26,10 @@
 ### Fase 1 — [Nombre]
 - **Status:** [✅ Completada / ❌ Bloqueada]
 - **Archivos creados/modificados:**
-  - `archivo.js`
+  - `archivo.js`: Breve descripción del cambio
 - **Bugs encontrados:** [Ninguno]
 - **Próxima acción:** [Instrucción para el orquestador]
 
 ---
 
-> **[SISTEMA - PARA EL ORQUESTADOR]** Al finalizar, extraé conocimiento al `docs/engram/discoveries.md` y `docs/engram/bugfixes.md`, e instruí al usuario a ELIMINAR FÍSICAMENTE toda la carpeta de este feature.
+> **[SISTEMA - PARA EL ORQUESTADOR]** Al finalizar, extraé el conocimiento ganado al engram usando `funky engram add --tag "[tag]" --category <categoría> --desc "..."` (categorías: `architecture`, `pattern`, `discovery`, `decision`, `bugfix`). Luego instruí al usuario a ELIMINAR FÍSICAMENTE toda la carpeta de este feature.
