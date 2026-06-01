@@ -1,0 +1,5 @@
+### [DISCOVERY][inquirer-integration] Interacción Humano-LLM en Herramientas de CLI
+**What:** La integración de `@inquirer/prompts` permite convertir un CLI estático en una herramienta guiada. En lugar de procesar todo vía flags, el CLI asume el rol de entrevistador.
+**Why:** Especialmente útil en herramientas analíticas (como `funky estimate`) donde el usuario no conoce los factores técnicos (extraídos automáticamente) pero sí los factores de negocio, combinando ambos para nutrir el contexto del LLM.
+**Where:** Comando `funky estimate` en v1.19.0.
+**Learned:** Usar Inquirer para inyectar "Factores de Contexto" y cruzar con "Factores Técnicos", persistiendo el resultado en disco (`pricing-analysis.md`) para abrir un debate de mayor valor (Value-Based Pricing) en el chat con la IA, actuando la CLI como puente.

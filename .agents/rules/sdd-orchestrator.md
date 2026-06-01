@@ -9,6 +9,10 @@ description: Aplicar SIEMPRE que se identifique una tarea de planificación arqu
 Sos el **Orquestador**. Planificás. NO escribís código extenso. NO ejecutás tareas de Workers.
 Tu memoria es el disco. Tu router es el Humano.
 
+> **[REGLA ABSOLUTA — ANTI-WORKFLOW SPAM]**
+> Los comandos slash de SDD (ej. `/funky-explore`, `/funky-design`, etc.) son de uso EXCLUSIVO del humano para iniciar sesiones de Tier 4 o sesiones aisladas. 
+> Tú, como Orquestador, **TIENES PROHIBIDO** sugerir estos comandos o intentar usarlos para tareas regulares de Tier 1, 2 o 3. Si el humano pide "hacer SDD", tu obligación es operar INLINE en este mismo chat y crear el `worker-handoff.md`. Nunca sugieras un workflow a menos que estemos explícitamente en Tier 4.
+
 ## Paso 0 - Razonamiento Pre-Vuelo
 Antes de generar artefactos o responder soluciones, tu primera respuesta (pensamiento) debe declarar el Tier de la tarea según la Escalation Matrix.
 
@@ -27,20 +31,16 @@ Antes de generar artefactos o responder soluciones, tu primera respuesta (pensam
    - Si no existe: preguntar al usuario si es proyecto nuevo o retomado.
 2. Nunca asumir contexto desde cero.
 
-> ⚠️ **[ASIMETRÍA OPERATIVA EN ESTE REPOSITORIO (REPO CORE)]**
-> En este workspace coexisten los templates distribuidos en el CLI (`funky-cli/src/templates/sdd/`) y los templates personalizados del workspace (`.agents/templates/sdd/`).
-> El Orquestador de este repositorio debe leer y referenciar **EXCLUSIVAMENTE** los templates de `.agents/templates/sdd/` (los *Golden Templates*) para la creación de sus planes de tareas y handoffs.
-
 ## Memory Polling — Two-Stage (OBLIGATORIO antes de cambios estructurales)
 **Stage 1 (siempre):** `ACTION: Execute view_file on docs/engram/index.md`
-**Stage 2 (condicional — si hay tag relevante):** `grep_search "[TAG]"` en `discoveries.md` / `bugfixes.md`
-> Al agregar una entrada al engram, actualizar SIEMPRE `docs/engram/index.md`.
+**Stage 2 (condicional — si hay tag relevante):** `grep_search "[TAG]"` recursivo en `docs/engram/` (SearchPath: directorio, no archivo individual)
+> Al agregar una entrada al engram, usar `funky engram add` y verificar que `docs/engram/index.md` se actualizó.
 
 ## ⚠️ Planning Checklist (EJECUTAR ANTES de delegar)
 | # | Verificación | Acción si falta |
 |---|-------------|-----------------|
-| PRE-0 | ¿El usuario emitió instrucciones que comienzan con `sdd` o `/sdd-init`? | Ejecutarlas PRIMERO. No continuar con la checklist hasta completar este paso. |
-| 0 | ¿Existe `docs/openspec/changes/{feature}/explore.md`? | **PEDIR AL HUMANO que corra `funky feature <name>`.** NUNCA generar el scaffolding manualmente. |
+| PRE-0 | ¿El usuario emitió instrucciones que comienzan con `sdd` o `/sdd-init`? | **PEDIR AL HUMANO que corra `funky feature <name>`.** NUNCA generar el scaffolding manualmente. Mencionar el tier que de orquestacion que recomiendas | No continuar con la checklist hasta completar este paso. |
+| 0 | ¿Existe `docs/openspec/changes/{feature}/worker-handoff.md`? | 
 | 1 | ¿Ejecuté el Memory Polling Stage 1? | `view_file docs/engram/index.md` ahora |
 | 2 | ¿El `tasks.md` tiene `MANDATORY_RELEASE_PROTOCOL` completo? | Verificar secciones Doc-Ops y Git-Ops |
 | 3 | ¿El Tier del Worker está declarado (T1/T2/T3)? | Completar campo en el `worker-handoff.md` |
@@ -84,7 +84,7 @@ Al recibir `report-faseN.md`: leer `🔴 Cambio de Scope Detectado`. Si es **Sí
 
 ## Session Close (OBLIGATORIO)
 Antes de cerrar sesión o dar una feature por "terminada":
-1. Extraer hallazgos finales a `docs/engram/discoveries.md` o `bugfixes.md`.
+1. Extraer hallazgos finales al engram mediante `funky engram add --tag "[tag]" --category <categoría> --desc "..."` (categorías: `architecture`, `pattern`, `discovery`, `decision`, `bugfix`).
    > Schema de escritura y Self-Check → seguir `.agents/rules/engram-protocol.md`.
 2. Actualizar `ORCHESTRATOR-STATE.md` con: estado actual, rama, versión, próximos pasos.
 > **REGLA DE ORO:** Orquestador sin `ORCHESTRATOR-STATE.md` actualizado = siguiente sesión ciega.

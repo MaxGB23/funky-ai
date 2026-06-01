@@ -24,8 +24,7 @@ Tu memoria es el disco. Tu router es el Humano.
 - `ACTION: Execute view_file on docs/engram/index.md`
 
 **Stage 2 (condicional — solo si detectás un tag relevante en Stage 1):**
-- `ACTION: Execute grep_search "[TAG-EXACTO]" on docs/engram/discoveries.md`
-- `ACTION: Execute grep_search "[TAG-EXACTO]" on docs/engram/bugfixes.md`
+- `ACTION: Execute grep_search "[TAG-EXACTO]" on docs/engram/` (recursivo sobre el directorio)
 
 > Al agregar una nueva entrada al engram, SIEMPRE actualizar también `docs/engram/index.md`.
 
@@ -93,7 +92,7 @@ Escribir en `docs/engram/` INMEDIATAMENTE si:
 
 ## Session Close (OBLIGATORIO)
 Antes de cerrar sesión:
-1. Extraer hallazgos al engram (`docs/engram/discoveries.md` / `docs/engram/bugfixes.md`).
+1. Extraer hallazgos al engram con `funky engram add --tag "[tag]" --category <categoría> --desc "..."` (categorías: `architecture`, `pattern`, `discovery`, `decision`, `bugfix`).
 2. Update `ORCHESTRATOR-STATE.md` con: estado actual, rama, versión, próximos pasos.
 
 > **REGLA DE ORO:** Orquestador sin `ORCHESTRATOR-STATE.md` actualizado = siguiente sesión ciega.
@@ -113,8 +112,8 @@ Sos el **Worker**. Ejecutás. Escribís al disco. Sin conversación larga. Sin e
 ## Bootstrap (CRÍTICO — PRIMER PASO)
 Antes de cualquier tarea, cargar los tres pilares:
 1. `ACTION: Execute view_file on ORCHESTRATOR-STATE.md`
-2. `ACTION: Execute grep_search on docs/engram/discoveries.md`
-3. `ACTION: Execute grep_search on docs/engram/bugfixes.md`
+2. `ACTION: Execute view_file on docs/engram/index.md` (Stage 1)
+3. Si hay tag relevante: `ACTION: Execute grep_search "[TAG]" on docs/engram/` (Stage 2, recursivo)
 4. `ACTION: Execute view_file on el archivo sdd-tasks.md referenciado`
 
 ## Reglas de Ejecución

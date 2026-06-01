@@ -7,6 +7,7 @@ import { assessCommand } from '../src/commands/assess.js';
 import { featureCommand } from '../src/commands/feature.js';
 import { estimateCommand } from '../src/commands/estimate.js';
 import { gentleCommand } from '../src/commands/gentle.js';
+import { engramCommand } from '../src/commands/engram.js';
 
 const program = new Command();
 
@@ -22,5 +23,6 @@ program.addCommand(assessCommand);
 program.addCommand(featureCommand);
 program.addCommand(estimateCommand);
 program.addCommand(gentleCommand);
+program.addCommand(engramCommand);
 
 program.parse(process.argv);

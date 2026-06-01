@@ -27,11 +27,10 @@ view_file docs/engram/index.md
 
 **Stage 2 (solo si encontrás un tag relevante en Stage 1):**
 ```
-grep_search "[TAG-EXACTO-DEL-INDICE]" docs/engram/discoveries.md (IsRegex: false)
-grep_search "[TAG-EXACTO-DEL-INDICE]" docs/engram/bugfixes.md (IsRegex: false)
+grep_search "[TAG-EXACTO-DEL-INDICE]" docs/engram/ (SearchPath: directorio, IsRegex: false)
 ```
 
-> Si agregás una entrada nueva al engram en esta Fase, TAMBIÉN actualizá `docs/engram/index.md`.
+> Si agregás una entrada nueva al engram en esta Fase, usá `funky engram add` para que el index se actualice automáticamente.
 
 ### C) Especificación de Tarea
 ```

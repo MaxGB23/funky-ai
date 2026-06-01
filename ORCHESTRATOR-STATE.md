@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v2.4.0 (próxima: v2.4.1)
-- **Rama activa:** `main`
-- **Última sesión:** 2026-05-24
-- **Estado:** 🟡 Arquitectura Sub-Orquestador implementada. Pendiente de commit y Release Notes para v2.4.1.
+- **Versión:** v2.5.0 (próxima: v2.5.1)
+- **Rama activa:** `feature/engram-sharding`
+- **Última sesión:** 2026-05-31
+- **Estado:** 🟢 Engram Sharding y Comando `funky engram add` implementados y probados. Listo para merge y tag v2.5.0.
 
 ---
 
@@ -42,6 +42,8 @@
 - [x] **015 Protocolos On-Demand v2.1.0:** `.agents/protocols/` local + `devil-advocate.md`. Etiquetado proactivo `[⚠️ RIESGO ALTO]` en templates SDD. CLI `funky init` con selector interactivo `p.multiselect` de protocolos. Templates distribuibles en `funky-cli/src/templates/protocols/`.
 - [x] **016 Environment-Aware Scaffolding v2.2.0:** Integración de selector interactivo de entorno (`IDE` vs `CLI`) en `funky init`. Ruteo dinámico de plantillas de reglas desde subcarpetas `ide/` y `cli/`. Guardrail robusto de no-interactividad (headless mode) determinista para CI/CD y automatización sin bloqueos.
 - [x] **015 Protocolos On-Demand:** ✅ Completado en v2.1.0 y v2.3.0 (Micro-Planner + Human-in-the-loop).
+- [x] **Sub-Orquestador (Arquitecto Táctico) v2.4.1:** Flujo de Micro-Planner delegado a agente efímero. `planning-handoff.md` template creado. Workflow `/funky-suborchestrator` creado. Regla G4 actualizada.
+- [x] **RFC 016 y RFC 017: Engram Sharding y `funky engram add` v2.5.0:** Implementado comando nativo para inyectar engramas atómicamente. Se eliminan los archivos monolíticos `discoveries.md`/`bugfixes.md` en favor de un index dinámico y fragmentos por categoría (`architecture/`, `pattern/`, `discovery/`, `decision/`, `bugfix/`) para proteger el Context Window.
 
 ---
 
@@ -66,9 +68,6 @@ quick, creo que el funky feature no inyecta el report.
 - `[x]` **069 Auditoría Stale-Template-Refs (Quick):** `grep_search` en `docs/` y `.agents/` buscando textos como "copiar templates", "revisar templates", "crear manualmente los archivos" que ya son responsabilidad de `funky feature`. Actualizar o eliminar las referencias obsoletas. → Contexto: mejora detectada durante sesión 012.b.
 Revisar todos los templates para verificar que no haya referencias obsoletas o deprecadas post v2.0.0. El analisis lo hará el humano y el orquestador tiene que unicamente darle sugerencias, es una tarea de pares, idea tras idea, tal vez no requiera sdd ni workers.
 - [x] **021 Revisión de Templates SDD:** Completada (Release v2.4.0). Cherry-pick de Gentle AI e implementación de nuevos templates lean.
-- [x] **Sub-Orquestador (Arquitecto Táctico):** Flujo de Micro-Planner delegado a agente efímero. `planning-handoff.md` template creado (golden + CLI). `sdd-micro-planner.md` refactorizado como esquema de salida. Workflow `/funky-suborchestrator` creado en `.agents/workflows/`. Regla G4 del Orquestador actualizada para generar handoff y delegar al Sub-Orquestador en lugar de intentar diseñar el plan él mismo.
-- [ ] **RFC 016: `funky engram add`** → [RFC Creado](./docs/openspec/rfcs/016-funky-engram-add.md)
-  - Implementar un comando nativo en el CLI para inyectar descubrimientos al Engram atómicamente (`funky engram add --tag "[xxx]" --desc "..."`). Esto evita que los Agentes tengan que cargar todo el archivo `discoveries.md` en memoria para hacer un append, reduciendo el Context Pollution y protegiendo contra errores de codificación.
 - [ ] **RFC 017: Modo Worker Inline Condicional (Escalation Matrix T0)**
   - Agregar un cuarto nivel implícito a la Escalation Matrix del Orquestador: cuando detecta que una tarea es trivial (máx. 1 archivo, sin lógica de negocio, reversible sin riesgo), en lugar de delegar a un Worker o ejecutar sin avisar, debe **preguntar al humano**: *"¿Querés que lo ejecute yo directamente o preferís abrir un Worker?"*. Preserva el rol del humano como decisor y evita overhead innecesario para tareas realmente atómicas. **Guardrail clave:** el criterio de "trivial" debe ser objetivo y acotado en la regla para evitar que el Orquestador se auto-justifique para saltarse el SDD. → Ver `[context-economy]` y `[orchestrator-role-boundary]` en Engram.
 - [ ] **Feature 020: Phase Workflows Especializados por Fase SDD**
@@ -80,7 +79,7 @@ Revisar todos los templates para verificar que no haya referencias obsoletas o d
 
 
 ## 🐛 Bugs Activos
-- **[CLI Bug]** Comando `funky feature` no inyecta el `report.md` en el scaffolding del nuevo cambio.
+- [x] **[CLI Bug]** Comando `funky feature` no inyecta el `report.md` en el scaffolding del nuevo cambio. (Corregido: ahora inyecta report.md, design.md, apply.md, verify.md y planning-handoff.md)
 
 ---
 
@@ -117,3 +116,4 @@ Revisar todos los templates para verificar que no haya referencias obsoletas o d
 | v2.3.0 | Protocolo sdd-micro-planner On-Demand y Gate Human-in-the-loop en Orquestador. Ahorro de tokens en templates SDD. |
 | v2.4.0 | Ecosistema Híbrido, Cherry-Pick Arquitectónico de Templates SDD (Feature 021) y nuevos templates de Design/Apply/Verify. |
 | v2.4.1 | Arquitectura Sub-Orquestador (Arquitecto Táctico): `planning-handoff.md`, `/funky-suborchestrator` workflow, `sdd-micro-planner.md` refactorizado como esquema de salida, Gate G4 actualizado. |
+| v2.5.0 | Engram Sharding y comando `funky engram add`. Reemplazo de historial monolítico por indexación semántica distribuida. |

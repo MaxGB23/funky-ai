@@ -1,7 +1,7 @@
 # 📘 Flujo Interno: `funky init`
 
-> **Versión documentada:** v2.2.0+  
-> **Última actualización:** 2026-05-19  
+> **Versión documentada:** v2.5.0+  
+> **Última actualización:** 2026-05-31  
 > **Estado:** ✅ Estable
 
 ---
@@ -91,8 +91,7 @@ Ubicación base: `src/templates/bootstrap/`
 | `[environment]/agents-rules-engram-protocol.md` | `.agents/rules/engram-protocol.md` | Ruteado según entorno (`ide/` o `cli/`) |
 | `agents-rules-secops.md` | `.agents/rules/secops.md` | Estático general |
 | `[environment]/agents-rules-sdd-orchestrator.md` | `.agents/rules/sdd-orchestrator.md` | Ruteado según entorno (`ide/` o `cli/`) |
-| `engram-discoveries.md` | `docs/engram/discoveries.md` | Estático general |
-| `engram-bugfixes.md` | `docs/engram/bugfixes.md` | Estático general |
+| *(Scaffold de directorios)* | `docs/engram/architecture/`, `pattern/`, `discovery/`, `decision/`, `bugfix/` | Creados con `fs.mkdirSync` — no son archivos copiados sino directorios vacíos |
 | `plantilla-worker-handoff.md` | `docs/funky-ai/workers/plantilla-worker-handoff.md` | Estático general |
 | `canvas-planning-guide.md` | `docs/funky-ai/cli/canvas-planning-guide.md` | Estático general |
 | `../sdd/architecture-assessment.md` | `docs/architecture-assessment.md` | Estático general |
@@ -178,8 +177,12 @@ proyecto/
 ├── docs/
 │   ├── architecture-assessment.md
 │   ├── engram/
-│   │   ├── discoveries.md
-│   │   └── bugfixes.md
+│   │   ├── index.md
+│   │   ├── architecture/
+│   │   ├── pattern/
+│   │   ├── discovery/
+│   │   ├── decision/
+│   │   └── bugfix/
 │   ├── funky-ai/
 │   │   ├── cli/
 │   │   │   └── canvas-planning-guide.md

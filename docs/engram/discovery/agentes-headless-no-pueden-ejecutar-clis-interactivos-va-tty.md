@@ -1,0 +1,5 @@
+### [DISCOVERY][tty-headless-e2e-limitation] Agentes Headless no pueden ejecutar CLIs Interactivos vía TTY
+**What:** Un agente de AI ejecutando comandos en una terminal headless (sin TTY real) no puede enviar keystrokes a CLIs interactivos basados en prompts (`@clack/prompts`, `inquirer`, etc.). El proceso arranca y se renderiza, pero queda colgado esperando input que nunca llega.
+**Why:** Los agentes usan shells no-interactivos. Las librerías de prompts detectan la ausencia de TTY y pueden comportarse diferente o directamente bloquear el proceso.
+**Where:** Fase 4 de v1.7. Afecta cualquier feature que agregue prompts interactivos al CLI.
+**Learned:** La cobertura E2E de flujos interactivos se delega a Integration Tests que ejecutan `runInit()` directamente (función pura) en disco real, bypasseando la capa de UI del CLI. El test E2E manual lo hace el humano. Documentar este límite explícitamente en los criterios de éxito del `worker-handoff.md` para flujos interactivos.

@@ -1,0 +1,5 @@
+### [DISCOVERY][ghost-directory-accumulation] Acumulación de Directorios Fantasma por Refactors Incompletos
+**What:** Durante la auditoría 010 se detectó que proyectos migrantes o refactorizados (ej. de `gentle-ai` a `funky-ai`) dejan atrás "carpetas fantasma" (`gentle-ai/`, `github-logs/`) que nadie borra por miedo a romper algo, y duplicidades funcionales (ej. `test/` vs `tests/`).
+**Why:** Los Orquestadores priorizan la creación de nueva estructura y evitan la eliminación destructiva a menos que se les ordene explícitamente. Esto causa bloat de contexto y ambigüedad.
+**Where:** Directorios raíz y subdirectorios de documentación.
+**Learned:** Todo refactor mayor o migración debe incluir obligatoriamente una sub-tarea explícita de "Hard Cleanup" (eliminación de los artefactos viejos) en su respectivo `tasks.md`. No confiar en limpiezas orgánicas.

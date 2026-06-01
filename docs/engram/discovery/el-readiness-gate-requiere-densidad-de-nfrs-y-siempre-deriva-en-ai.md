@@ -1,0 +1,5 @@
+### [DISCOVERY][assess-gate-context-expansion] El Readiness Gate requiere densidad de NFRs y siempre deriva en AI
+**What:** El template `architecture-assessment.md` debe expandirse con campos duros de NFRs (Compliance, Data Residency, Presupuesto Hosting, Team Seniority). Además, `funky assess` DEBE generar el prompt de review AI incluso cuando la validación del CLI pasa con éxito.
+**Why:** El CLI es solo la primera barrera superficial; la verdadera validación es el debate final con la IA. La IA no puede evaluar tradeoffs críticos (ej. Vercel vs VPS para datos gubernamentales) si no se le alimenta un contexto denso (Garbage In, Garbage Out).
+**Where:** Template `architecture-assessment.md` y comando `funky assess`.
+**Learned:** Las plantillas de assessment no deben temer ser exhaustivas; obligar al humano a aportar esa densidad de datos garantiza un debate arquitectónico de alto nivel. Esto además actuará como base para el futuro Project Cost Estimator (002).

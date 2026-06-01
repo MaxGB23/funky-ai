@@ -1,0 +1,5 @@
+### [bugfix][worker-report-false-positive] Worker Git-Ops marca ítems Doc-Ops como completados sin ejecutarlos
+**What:** El Worker que ejecutó la Fase 3 (Git-Ops) marcó `[x] README: Actualizado` en el `sdd-report.md` a pesar de que su única responsabilidad era ejecutar comandos git — nunca edita archivos de texto.
+**Why:** El template del Return Envelope en el `sdd-report.md` lista todos los ítems del MANDATORY_RELEASE_PROTOCOL, incluyendo los de Doc-Ops. El Worker los marcó como completados sin verificar quién los ejecutó realmente.
+**Where:** `sdd-report.md` — sección MANDATORY_RELEASE_PROTOCOL Checkpoint. Detectado al auditar el `sdd-tasks.md` completado en la release v1.16.0.
+**Learned:** (1) El checklist del Return Envelope del Worker Git-Ops debe listar SOLO los ítems de Git-Ops, no todo el MANDATORY_RELEASE_PROTOCOL. (2) El Orquestador debe auditar el `sdd-tasks.md` marcando ítems como completados al recibir cada report — ese ejercicio expone gaps que el report puede ocultar. (3) Alternativa estructural: dividir el sdd-report.md en dos secciones separadas: "Doc-Ops (Orquestador)" y "Git-Ops (Worker)".

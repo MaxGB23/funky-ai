@@ -25,8 +25,8 @@
 
 ### Fase 1 — [Nombre]
 - **Status:** [✅ Completada / ❌ Bloqueada]
-- **Archivos creados/modificados:**
-  - `archivo.js`
+- **Archivos creados/modificados:** 
+  - `archivo.js`: Breve descripción del cambio
 - **Bugs encontrados:** [Ninguno]
 - **Próxima acción:** [Instrucción para el orquestador]
 

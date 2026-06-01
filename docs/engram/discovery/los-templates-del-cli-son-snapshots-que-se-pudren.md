@@ -1,0 +1,5 @@
+### [DISCOVERY][cli-template-sync-drift] Los templates del CLI son snapshots que se pudren
+**What:** `funky-cli/src/templates/bootstrap/` es una copia estática. Cada vez que el ecosistema padre evoluciona (nuevas reglas, archivos actualizados) sin sincronización automática, el CLI distribuye versiones obsoletas del sistema Funky AI.
+**Why:** No existía ningún mecanismo que forzara la sincronización. Era un proceso manual que dependía de que el desarrollador se acordara.
+**Where:** `funky-cli/src/templates/bootstrap/` y cualquier carpeta de templates estáticos de una CLI.
+**Learned:** Cualquier archivo que una CLI distribuya necesita un script de sincronización automatizado atado al ciclo de tests (`pretest`). Si la sincronización es manual, va a fallar. La solución es el script `sync-templates.js` creado en v1.7.0.

@@ -1,0 +1,5 @@
+### [DISCOVERY][pnpm-strict-usage] Mezclar gestores de paquetes (npm vs pnpm)
+**What:** El uso accidental de comandos de `npm` (ej. `npm run test`, `npm link`) en un repositorio inicializado y gestionado con `pnpm` (evidenciado por la existencia de `pnpm-lock.yaml`) es destructivo para la integridad del ecosistema local.
+**Why:** Genera un `package-lock.json` paralelo, corrompe el algoritmo de hoisting en `node_modules` y causa inconsistencias con dependencias fantasma, desestabilizando builds futuros y la reproducibilidad.
+**Where:** Instrucciones de los Agentes/Orquestadores en artefactos como `tasks.md` y operaciones de terminal ejecutadas por Workers.
+**Learned:** Siempre auditar pasivamente el directorio raíz en busca de archivos lock (ej. `pnpm-lock.yaml`, `yarn.lock`, `package-lock.json`) ANTES de sugerir o ejecutar comandos de empaquetado/linkeo. Mantener estricta fidelidad al gestor oficial detectado en el proyecto.

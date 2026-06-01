@@ -1,0 +1,5 @@
+### [DISCOVERY][agent-dry-handoffs] El síndrome del Teléfono Descompuesto en Orquestación Manual
+**What:** En lugar de reescribir checklists (ej. el `MANDATORY_RELEASE_PROTOCOL` de `tasks.md`) dentro de un `worker-handoff.md`, el Orquestador debe generar un Handoff que funcione como puntero.
+**Why:** Cuando un Orquestador LLM debe transcribir acciones detalladas de un archivo maestro a un handoff, corre el riesgo de omitir pasos por saturación de ventana de contexto o fallos de memoria (Lost in the Middle). Esto se evidenció al omitir el paso del README en v1.8.0.
+**Where:** `worker-handoff.md` pattern y `tasks.md`.
+**Learned:** Patrón "Agent DRY" (Don't Repeat Yourself). El Handoff no debe duplicar instrucciones; debe decir: "Leé la Fase X en `tasks.md` y ejecutá exactamente lo que dice ahí". La fuente de la verdad debe ser única para evitar el teléfono descompuesto.

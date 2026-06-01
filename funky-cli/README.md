@@ -29,6 +29,7 @@ pnpm link --global
 | `funky phase <nombre>` | Inyecta el template correspondiente a la fase SDD indicada en el directorio activo. | `funky phase explore` -> "📄 Template 'explore' inyectado!" |
 | `funky release <version>` | Genera las notas de release estandarizadas automáticamente basándose en templates. | `funky release v1.12.0` -> "🚀 Release Notes v1.12.0 creados" |
 | `funky assess` | Architecture Readiness Gate. Evalúa `docs/architecture-assessment.md` contra el motor de reglas y genera challenges para el LLM. | `funky assess` -> "✅ Arquitectura validada..." |
+| `funky engram add` | Inyecta un nuevo engrama al sistema de conocimiento persistente. Soporta modo interactivo (sin flags) y modo headless con flags para automatización de Agentes. | `funky engram add --tag "[mi-tag]" --category discovery --desc "..."` |
 
 ## Fases SDD Disponibles
 
@@ -52,7 +53,13 @@ Al ejecutar `funky init`, se generará la siguiente estructura en el directorio 
 │       ├── secops.md                 (Auditoría de dependencias y NPM segura)
 │       └── sdd-orchestrator.md      (Reglas de orquestación adaptadas al workflow seleccionado)
 ├── docs/
-│   ├── engram/            (Memoria persistente: discoveries.md, bugfixes.md)
+│   ├── engram/            (Memoria persistente sharded por categoría)
+│   │   ├── index.md             (Resumen tabla de todos los engramas)
+│   │   ├── architecture/        (Decisiones de arquitectura)
+│   │   ├── pattern/             (Patrones establecidos)
+│   │   ├── discovery/           (Hallazgos y evaluaciones)
+│   │   ├── decision/            (Decisiones con impacto en el proyecto)
+│   │   └── bugfix/              (Bugs corregidos)
 │   ├── openspec/          (Carpeta para tus cambios y fases SDD)
 │   └── funky-ai/cli/      (Contiene la guía canvas-planning-guide.md)
 ├── ORCHESTRATOR-STATE.md  (Estado global del proyecto)

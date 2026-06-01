@@ -25,8 +25,6 @@ export function runInit({ templatesDir, targetBase, canvasConfig, selectedProtoc
     { src: 'agents-rules-engram-protocol.md', dest: path.join('.agents', 'rules', 'engram-protocol.md') },
     { src: 'agents-rules-secops.md', dest: path.join('.agents', 'rules', 'secops.md') },
     { src: 'agents-rules-sdd-orchestrator.md', dest: path.join('.agents', 'rules', 'sdd-orchestrator.md') },
-    { src: 'engram-discoveries.md', dest: path.join('docs', 'engram', 'discoveries.md') },
-    { src: 'engram-bugfixes.md', dest: path.join('docs', 'engram', 'bugfixes.md') },
     { src: 'plantilla-worker-handoff.md', dest: path.join('docs', 'funky-ai', 'workers', 'plantilla-worker-handoff.md') },
     { src: 'canvas-planning-guide.md', dest: path.join('docs', 'funky-ai', 'cli', 'canvas-planning-guide.md') },
     { src: path.join('..', 'sdd', 'architecture-assessment.md'), dest: path.join('docs', 'architecture-assessment.md') },
@@ -56,6 +54,16 @@ export function runInit({ templatesDir, targetBase, canvasConfig, selectedProtoc
       } catch (error) {
         throw new Error(`Permisos denegados o error en el sistema de archivos al escribir en ${destPath}: ${error.message}`);
       }
+    }
+  }
+
+  // Create sharded engram directories
+  const engramDirs = ['architecture', 'pattern', 'discovery', 'decision', 'bugfix'];
+  for (const dir of engramDirs) {
+    const dirPath = path.join(targetBase, 'docs', 'engram', dir);
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+      console.log(`✅ Creado directorio: docs/engram/${dir}`);
     }
   }
 

@@ -1,0 +1,5 @@
+### [DISCOVERY][cli-testing-pure-functions] Testear CLI Commands: Extraer Funciones Puras vs. Mockear el Framework
+**What:** Al intentar testear comandos de `commander` (CLI Node.js), la estrategia de mockear el módulo `commander` directamente falla. El Worker necesitó 2-3 intentos antes de encontrar el patrón correcto.
+**Why:** `commander` y `process.exit()` están acoplados internamente. Mockear el módulo completo rompe la inicialización y genera errores de "cannot read property of undefined" o "process.exit is not a function" en el contexto del test runner.
+**Where:** `funky-cli/src/commands/init.js` y `phase.js` — v1.6.
+**Learned:** El patrón correcto para testear comandos CLI es **Extracción de Función Pura**: mover toda la lógica de negocio a una función (`runInit(opts)`, `runPhase(opts)`) que recibe sus dependencias como parámetros. El handler de `commander` solo actúa de "entry point" que llama a esa función. Los tests unitarios prueban la función pura directamente, mockeando solo `fs`, `path`, y `console`. Nunca `commander` ni `process`.

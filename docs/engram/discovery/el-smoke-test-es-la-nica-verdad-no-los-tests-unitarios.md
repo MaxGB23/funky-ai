@@ -1,0 +1,5 @@
+### [DISCOVERY][smoke-test-is-dod] El Smoke Test es la única verdad, no los tests unitarios
+**What:** Tests unitarios y de integración en verde NO equivalen a software funcionando. Durante el Smoke Test de v1.7.0 descubrimos 3 bugs críticos (Canvas Overwrite, Template Sync Drift, Incomplete Scaffolding) en un CLI con 14/14 tests pasando.
+**Why:** Los tests automatizados solo validan lo que el autor del test imaginó. No validan casos de negocio destructivos que el programador no anticipó, ni el comportamiento real en un entorno virgen externo.
+**Where:** Definition of Done de cualquier feature con efectos en el sistema de archivos o UX del CLI.
+**Learned:** La DoD para features de CLI DEBE incluir: ✅ Tests automatizados + ✅ Smoke Test en directorio virgen fuera del workspace + ✅ Revisión humana de UX. Sin las tres capas, la release no existe.

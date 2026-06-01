@@ -11,6 +11,7 @@
 | [Escenario 1](#escenario-1) | No tenés claro qué construir ni con qué stack | Chat vacío → debate → `funky init --template` |
 | [Escenario 2](#escenario-2) | Sabés qué construir, empezás desde cero | `funky init` (modo interactivo) |
 | [Escenario 3](#escenario-3) | Repo existente, querés incorporar Funky AI | `funky init --template` (modo migración) |
+| [Escenario 4](#escenario-4) | Querés registrar un hallazgo o decisión técnica | `funky engram add` (modo interactivo) |
 
 ---
 
@@ -202,3 +203,29 @@ El CLI detecta ambos Canvas y activa el modo Headless: copia toda la estructura 
 | Saltear `funky init --template` y llenar los Canvas directamente en el editor | Sin la `canvas-planning-guide.md` como referencia, se omiten campos o se usan valores inválidos |
 | Ejecutar `funky init` dos veces sin leer el output | El modo Headless es idempotente, pero si los Canvas están vacíos, el segundo init no los completa |
 | Usar `funky assess` sin haber completado los Canvas | El motor de reglas no puede validar lo que no está definido |
+
+---
+
+## Escenario 4
+
+### "Encontré un bug o tomé una decisión de arquitectura que debe ser recordada"
+
+**Condición de entrada:** El ecosistema ya está inicializado y ocurrió algo digno de ser guardado en la memoria persistente (Engram) para que los agentes lo recuerden en futuras fases.
+
+#### Flujo recomendado
+
+**Paso 4.1 — Ejecutar el comando de engrama**
+
+```bash
+funky engram add
+```
+
+El CLI arrancará un wizard interactivo con `@inquirer/prompts` que te guiará para ingresar:
+- La categoría (`architecture`, `pattern`, `discovery`, `decision`, `bugfix`)
+- El tag único (ej. `[auth-middleware-fix]`)
+- Un resumen de una línea para el índice
+- Los bloques detallados (`What`, `Why`, `Where`, `Learned`) usando tu editor de sistema.
+
+> 💡 **Tip para agentes:** Si un Worker necesita documentar esto de forma automatizada, puede saltearse el menú interactivo pasando los flags correspondientes (`--tag`, `--category`, `--desc`, etc.).
+
+**✅ Criterio de salida:** El engrama está fragmentado en disco en su directorio correspondiente y el `index.md` ha sido actualizado atómicamente. Los agentes ya pueden acceder a él mediante `grep_search`.
