@@ -7,10 +7,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 describe('Templates Validation', () => {
-  it('tasks.md should contain FASE 0 — Branch Setup [T1]', () => {
+  it('tasks.md should contain FASE 0 — Branch Setup', () => {
     const tasksPath = path.join(__dirname, '../src/templates/sdd/tasks.md');
     const content = fs.readFileSync(tasksPath, 'utf8');
-    expect(content).toContain('FASE 0 — Branch Setup [T1]');
+    expect(content).toContain('FASE 0 — Branch Setup');
   });
 
   it('gentle templates should exist', () => {
