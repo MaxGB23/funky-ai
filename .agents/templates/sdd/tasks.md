@@ -2,33 +2,14 @@
 
 **Estado:** 🟡 PENDIENTE
 **Rama:** `feature/nombre-del-branch`
-**Ref:** `sdd-proposal.md`
+**Ref:** `sdd-proposal.md`, `sdd-spec.md`
 
-> **ORCHESTRATOR GATE**: Si sos el Orquestador — STOP. Do NOT execute these instructions inline. Delegá al worker o sub-agente.
-
-> **[SISTEMA - PARA EL ORQUESTADOR]** Antes de delegar la primera fase, verificá el Planning Checklist en `.agents/rules/sdd-orchestrator.md`. El `worker-handoff.md` ya está generado en esta carpeta. Solo debes asignarle el Tier correspondiente. **NO delegues mediante prompts en el chat.**
-
-> **[SISTEMA - PREREQUISITO]** ¿Existe `sdd-spec.md` en esta misma carpeta (`docs/openspec/changes/{feature}/`)? Si **NO** existe → **PARAR. Generarlo primero.** El `tasks.md` sin `spec.md` es construir sin plano arquitectónico.
-
----
-
-## 📊 Review Workload Forecast
-
-> **[SISTEMA — CONTRATO DE ESTIMACIÓN]**
-Decision needed before apply: Yes|No
-Chained PRs recommended: Yes|No
-Chain strategy: stacked-to-main|feature-branch-chain|size-exception|pending
-400-line budget risk: Low|Medium|High
-
-**Suggested Work Units:**
-| Unit | Goal | Likely PR | Notes |
-|------|------|-----------|-------|
-| 1 | [Meta de unidad 1] | PR 1 | [Scope autónomo, inicio/fin claro] |
+> **ORCHESTRATOR GATE**: Si eres el putisimo Orquestador — STOP. Do NOT execute these instructions inline. Delega al worker o sub-agente.
+> **[SISTEMA - PARA EL ORQUESTADOR]** Antes de delegar la primera fase, verifica el Planning Checklist en `.agents/rules/sdd-orchestrator.md`. El `worker-handoff.md` ya está generado en esta carpeta.
 
 ---
 
 ## ✅ Checklist de Ejecución
-
 > **[SISTEMA — ORQUESTADOR — ENFORCEMENT]** Al completar cada ítem:
 > 1. Marcarlo `[x]` en este archivo **INMEDIATAMENTE**.
 > 2. Guardar el archivo al disco antes de continuar al siguiente ítem.
@@ -43,22 +24,18 @@ Chain strategy: stacked-to-main|feature-branch-chain|size-exception|pending
 > | Verifiable | "Test: POST /login retorna 401 sin token" | "Make sure it works" |
 > | Small | Un archivo o una unidad lógica | "Implement the feature" |
 
-### FASE 0 — Branch Setup [T1]
-> **Tier:** T1 — Git ops puras, cero ambigüedad. Delegable a Worker.
-
+### FASE 0 — Branch Setup
 - [ ] Verificar que git está disponible: `git --version` (si falla → documentar en Return Envelope y PARAR)
 - [ ] Verificar que el branch NO existe: `git branch --list feat/vX.Y-{name}`
 - [ ] Crear y cambiar al branch: `git checkout -b feat/vX.Y-{name}`
 - [ ] Confirmar branch activo: `git status`
 - [ ] Documentar en Return Envelope: branch confirmado ✅
-
 **🚫 Restricciones:** No modificar ningún archivo de código. Esta fase es SOLO setup de git.
 
 ---
 
-### FASE 1 — [Nombre de la Fase 1] (Worker)
+### FASE 1 — [Nombre de la Fase 1]
 > Objetivo: [Objetivo de esta fase]
-
 - [ ] 1.1 [Tarea específica y accionable]
 - [ ] 1.2 [Tarea testeable]
 

@@ -20,8 +20,7 @@
 > **[SISTEMA — PARA EL ORQUESTADOR]** Si detectás que una fase tiene lógica de negocio compleja o decisiones de diseño críticas, limitate a etiquetar su título con `[⚠️ RIESGO ALTO]`. El humano decidirá el protocolo a seguir.
 
 
-### FASE 0 — Branch Setup [T1]
-> **Tier:** T1 — Git ops puras, cero ambigüedad. Delegable a Worker.
+### FASE 0 — Branch Setup
 
 - [ ] Verificar que git está disponible: `git --version` (si falla → documentar en Return Envelope y PARAR)
 - [ ] Verificar que el branch NO existe: `git branch --list feat/vX.Y-{name}`

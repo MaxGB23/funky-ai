@@ -1,7 +1,7 @@
 # Reporte de Ejecución: [Nombre de la Funcionalidad o Cambio]
 
 ## Resumen Ejecutivo
-[Resumen de alto nivel del estado general del feature. Actualizado por el Orquestador o al finalizar el feature completo.]
+[Resumen de alto nivel del estado general de la feature. Actualizado por el Worker o al finalizar la feature.]
 
 ---
 
@@ -25,6 +25,7 @@
 
 ### Fase 1 — [Nombre]
 - **Status:** [✅ Completada / ❌ Bloqueada]
+- **🔴 Cambio de Scope Detectado:** [No / Sí - Razón]
 - **Archivos creados/modificados:**
   - `archivo.js`: Breve descripción del cambio
 - **Bugs encontrados:** [Ninguno]
@@ -32,4 +33,4 @@
 
 ---
 
-> **[SISTEMA - PARA EL ORQUESTADOR]** Al finalizar, extraé el conocimiento ganado al engram usando `funky engram add --tag "[tag]" --category <categoría> --desc "..."` (categorías: `architecture`, `pattern`, `discovery`, `decision`, `bugfix`). Luego instruí al usuario a ELIMINAR FÍSICAMENTE toda la carpeta de este feature.
+> **[SISTEMA - PARA EL ORQUESTADOR]** Al finalizar, extraé el conocimiento ganado al engram usando `funky engram add --tag "[tag]" --category <categoría> --desc "..."` (categorías: `architecture`, `pattern`, `discovery`, `decision`, `bugfix`).
