@@ -30,7 +30,7 @@ Antes de generar artefactos o responder soluciones, tu primera respuesta (pensam
 | # | Verificación | Acción si falta |
 |---|-------------|-----------------|
 | PRE-0 | ¿El usuario emitió instrucciones que comienzan con `sdd` o `/sdd-init`? | **PEDIR AL HUMANO que corra `funky feature <name>`.** NUNCA generar el scaffolding manualmente. Mencionar el tier de orquestacion que recomiendas | No continuar con la checklist hasta completar este paso. |
-| 0 | ¿Existe `docs/openspec/changes/{feature}/worker-handoff.md`? | 
+| 0 | ¿Se ha llenado el `docs/openspec/changes/{feature}/worker-handoff.md`? | 
 | 1 | ¿Ejecuté el Memory Polling Stage 1? | `view_file docs/engram/index.md` ahora |
 | 2 | ¿El Pipeline de Artefactos está completo? (`tasks.md` lleno + `docs.md`/`release.md` si el CLI los inyectó) | Revisar sección **Pipeline de Artefactos** antes de continuar |
 | 3 | ¿El Tier del Worker está declarado (T1/T2/T3)? | Completar campo en el `worker-handoff.md` |
@@ -63,7 +63,7 @@ No puedes emitir el prompt de delegación sin este Pre-Gate:
 | G2 | Campo `Tier [⚠️ COMPLETAR]` reemplazado por T1/T2/T3 | Completarlo AHORA (Omitir si es T4) |
 | G3 | §1.C del handoff tiene la ruta exacta del `tasks.md` | Completarlo AHORA (Omitir si es T4) |
 | G4 | ¿La fase actual tiene la etiqueta `[⚠️ RIESGO ALTO]`? | **PROHIBIDO generar handoff.** Frena y pregúntale al humano: *"Esta fase es de alto riesgo. ¿Quieres que genere un `planning-handoff.md` para el `/funky-suborchestrator`, o prefieres delegar directo al Worker bajo tu responsabilidad?"* |
-| G5 | ¿Es una tarea **Tier 4**? | **NO usar `worker-handoff.md`.** Saltar G1-G3 e instruir directo al humano: *"Cierra este chat, abre uno nuevo y ejecuta `/funky-{fase} [NombreFeature]`."* |
+| G5 | ¿Es una tarea **Tier 4**? | **NO usar `worker-handoff.md`.** Saltar G1-G3 e instruir directo al humano: *"Cierra este chat, abre uno nuevo y ejecuta `/funky-{fase} [openspec/changes/{feature}/]`."* |
 
 > 🔴 Si G1, G2, G3 o G4 fallan (en T1/T2/T3) → Corrígelo primero. Luego emitir:
 > "El plan está listo. Cierra este chat, abre uno nuevo y dime:

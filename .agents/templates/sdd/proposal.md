@@ -1,14 +1,12 @@
 # Proposal: [Nombre de la Funcionalidad o Cambio]
 
-> **ORCHESTRATOR GATE**: If you loaded this skill, you are the ORCHESTRATOR — STOP. Do NOT execute these instructions inline. Delegate to the dedicated worker/sub-agent.
-
-> **Budget:** Máx 450 palabras. Usá bullets/tablas sobre prosa.
+> **Budget:** Sé conciso, no redactes una novela, usa bullets/tablas sobre prosa.
 
 ## 1. Contexto
 [Resumen ejecutivo de lo que se va a construir, derivado de la exploración aprobada.]
 
 ## 2. Capabilities (CONTRATO CON SPECS)
-> Esta sección es el contrato primario para la fase sdd-spec. Define exactamente qué specs crear o actualizar.
+> Esta sección es el contrato primario para la fase spec. Define exactamente qué specs crear o actualizar.
 
 **New Capabilities:**
 - [Capacidad nueva 1] -> Mapea a `openspec/specs/...`
@@ -45,4 +43,4 @@
 - [ ] [Criterio de éxito 1 verificable]
 - [ ] [Criterio de éxito 2 verificable]
 
-> **[SISTEMA - PARA EL ORQUESTADOR]** Si la propuesta es aprobada, procedé a generar el `sdd-spec.md` basado en las Capabilities, o directo a `sdd-tasks.md` si no requiere specs.
+> **[SISTEMA - PARA EL ORQUESTADOR]** Si la propuesta es aprobada, procede a generar el `spec.md` basado en las Capabilities, o directo a `tasks.md` si no requiere specs.

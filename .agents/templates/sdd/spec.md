@@ -1,8 +1,6 @@
 # Spec: [Nombre de la Funcionalidad o Cambio]
 
-> **ORCHESTRATOR GATE**: If you loaded this skill, you are the ORCHESTRATOR — STOP. Do NOT execute these instructions inline. Delegate to the dedicated worker/sub-agent.
-
-> **Budget:** máx 650 palabras · tablas > prosa · escenarios 3-5 líneas máx.
+> **Budget:** sé conciso · tablas > prosa · escenarios 3-5 líneas máx.
 > **RFC 2119:** MUST/SHALL = obligatorio · SHOULD = recomendado · MAY = opcional
 > ⚠️ **REGLAS CRÍTICAS:**
 > - DO NOT include implementation details (HOW) in specs. Only WHAT.
@@ -43,4 +41,4 @@ El sistema MUST/SHALL/SHOULD [comportamiento específico].
 
 ---
 
-> **[SISTEMA - PARA EL ORQUESTADOR]** Si la spec es aprobada y no hay cambios de scope, procedé a generar el `tasks.md`.
+> **[SISTEMA - PARA EL ORQUESTADOR]** Si la spec es aprobada y no hay cambios de scope, procede a generar el `tasks.md`.

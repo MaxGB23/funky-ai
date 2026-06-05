@@ -1,10 +1,8 @@
 # Explore: [Nombre de la Funcionalidad o Cambio]
 **TIER DE ORQUESTACIÓN ELEGIDO: "N"**
 
-> **ORCHESTRATOR GATE**: If you loaded this skill, you are the ORCHESTRATOR — STOP. Do NOT execute these instructions inline. Delegate to the dedicated worker/sub-agent.
-
 > **GUARDRAILS (Context Economy):**
-> - **Budget**: Máx 450 palabras. Keep analysis CONCISE - the orchestrator needs a summary, not a novel.
+> - **Budget**: Keep analysis CONCISE - the orchestrator needs a summary, not a novel.
 > - ALWAYS read real code, never guess about the codebase.
 > - If you can't find enough information, say so clearly.
 > - The ONLY file you MAY create/edit is this exploration document. DO NOT modify any existing code or files.
@@ -37,4 +35,4 @@
 - [Riesgo 1]: [Cómo mitigarlo]
 - [Riesgo 2]: [Cómo mitigarlo]
 
-> **[SISTEMA - PARA EL ORQUESTADOR]** Una vez finalizada la exploración, utilizá este documento como base para generar el `sdd-proposal.md` o delegarlo a la fase de proposal.
+> **[SISTEMA - PARA EL ORQUESTADOR]** Una vez finalizada la exploración, espera aprobación del humano, y luego utilizá este documento como base para generar el `proposal.md`
