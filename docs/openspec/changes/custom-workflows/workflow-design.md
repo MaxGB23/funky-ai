@@ -96,6 +96,8 @@ Los 8 workflows SDD (`/funky-explore`, etc.) son slash commands propios, que con
 2. **Tier 3:** Operación **inline híbrida (Micro-planning)**. Mantiene la velocidad de T1/T2, usa templates avanzados (NFRs, Devil's Advocate) y omite lo que no sirve. Puede abortar y pedir workflows aislados si siente *Context Dilution*.
 3. **Tier 4:** Operación **100% Workflows (Feature 020)**. El Orquestador NO genera handoff, manda al humano a abrir chats aislados para las 8 fases SDD. (Supremacía arquitectónica por Context Window limpio y máximo límite de tokens). Se planea deprecar `/funky gentle`.
 
+Por debatir: El tier 3 puede ser reemplazado por usar custom workflows pero no tantos como en tier 4, pensando en crear un tier 3.5 o meterle algo como funky-tier, o algo pasadisimo de riata para diferenciarlo.
+
 PENDIENTE PREGUNTAR CÓMO EL HUMANO INICIA EL CHAT DEL SUBAGENTE, YA QUE DESPUES DE TIPEAR /funky-<fase> debe pasarle unos minimos datos de contexto como name de la feature, etc.
 
 

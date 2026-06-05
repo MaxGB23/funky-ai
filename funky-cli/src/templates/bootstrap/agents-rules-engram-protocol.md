@@ -1,5 +1,5 @@
 ---
-trigger: on-demand
+trigger: 
 description: "Manual de referencia para guardar en el Engram. Debe ser consultado explícitamente vía view_file por agentes antes de registrar decisiones."
 ---
 
@@ -8,12 +8,10 @@ description: "Manual de referencia para guardar en el Engram. Debe ser consultad
 ## 1. Memory Polling (Lectura — OBLIGATORIO)
 Antes de cualquier cambio estructural:
 - `ACTION: Execute view_file on docs/engram/index.md` (Stage 1 — siempre)
-- Si encontrás un tag relevante → `ACTION: Execute grep_search "[TAG]" on docs/engram/` (Stage 2 — recursivo sobre el directorio)
+- Si encuentras un tag relevante → `ACTION: Execute grep_search "[TAG]" on docs/engram/` (Stage 2 — recursivo sobre el directorio)
 
 ## 2. Escritura Indexada — Schema MCP
-
 **Destino (estructura sharded):** `docs/engram/bugfix/<tag>.md` | `docs/engram/discovery/<tag>.md` | `docs/engram/decision/<tag>.md` | `docs/engram/architecture/<tag>.md` | `docs/engram/pattern/<tag>.md`
-
 **Comando preferido:** `funky engram add --tag "[tag]" --category <categoría> --desc "..."` (actualiza el index automáticamente)
 
 ```markdown
@@ -27,7 +25,6 @@ Antes de cualquier cambio estructural:
 Tipos válidos: `BUG`, `DECISION`, `DISCOVERY`, `ARCH`
 
 ## 3. Taxonomía de Categorías
-
 | Evento | Categoría | Destino |
 |--------|-----------|--------|
 | Decisión de arquitectura / convención | `decision` | `docs/engram/decision/<tag>.md` |

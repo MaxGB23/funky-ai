@@ -123,19 +123,11 @@ Al finalizar cada fase, actualizar `sdd-report.md` (o el return envelope del han
 > **MANDATORY:** Tu ÚLTIMA respuesta DEBE incluir un bloque con todos los ítems de `MANDATORY_RELEASE_PROTOCOL` marcados como `[x]` o `[OMITIDO: razón]`. Sin este bloque, la Fase NO se considera completa. Además de los resultados de testing estructurados.
 
 ```markdown
-## Return Summary
-
-| Phase | Status | Issues |
-|-------|--------|--------|
-| [N]   | ✅ Done | None   |
-
-**Workload Forecast Update:**
-- Chain Strategy: [Si cambió]
-- 400-line risk: [Actual]
-
-**Archivos creados/modificados:** (lista)
-**Bugs encontrados:** (si aplica, usar schema engram)
-**Próxima acción:** (qué debe hacer el Orquestador)
+## Fase [N] — [Nombre]
+- **Status:** ✅ Completada / ❌ Bloqueada
+- **Archivos creados/modificados:** (lista)
+- **Bugs encontrados:** (si aplica, usar schema engram. OBLIGATORIO: incluir intentos fallidos y anti-patrones descartados, no solo bugs finales)
+- **Próxima acción:** (qué debe hacer el Orquestador)
 ```
 
 ---

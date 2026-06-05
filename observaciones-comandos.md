@@ -8,3 +8,10 @@ La inyeccion de docs\funky-ai\workers\plantilla-worker-handoff.md debería estar
 FUNKY FEATURE
 Inyecta todos los templates como design, pero esto se solucionará con la feature que añade tiers a funky feature
 El planning handoff viene incluido, no sé qué hacer con este file, si debería tener un comando especial o algo.
+
+
+| Archivo | Golden | Base |
+Engram | ACTUALIZADO | ACTUALIZADO
+sdd-orchestrator | ACTUALIZADO | ACTUALIZADO
+secops | ACTUALIZADO | ACTUALIZADO
+tasks

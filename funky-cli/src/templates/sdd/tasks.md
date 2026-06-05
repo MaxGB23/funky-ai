@@ -2,50 +2,72 @@
 
 **Estado:** 🟡 PENDIENTE
 **Rama:** `feature/nombre-del-branch`
-**Ref:** `sdd-proposal.md`
+**Ref:** `sdd-proposal.md`, `sdd-spec.md`
 
-> **[SISTEMA - PARA EL ORQUESTADOR]** Antes de delegar la primera fase, verificá el Planning Checklist en `.agents/rules/sdd-orchestrator.md`. El `worker-handoff.md` ya está generado en esta carpeta. Solo debes asignarle el Tier correspondiente. **NO delegues mediante prompts en el chat.**
-
-> **[SISTEMA - PREREQUISITO]** ¿Existe `sdd-spec.md` en esta misma carpeta (`docs/openspec/changes/{feature}/`)? Si **NO** existe → **PARAR. Generarlo primero.** El `tasks.md` sin `spec.md` es construir sin plano arquitectónico.
+> **ORCHESTRATOR GATE**: Si eres el putisimo Orquestador — STOP. Do NOT execute these instructions inline. Delega al worker o sub-agente.
+> **[SISTEMA - PARA EL ORQUESTADOR]** Antes de delegar la primera fase, verifica el Planning Checklist en `.agents/rules/sdd-orchestrator.md`. El `worker-handoff.md` ya está generado en esta carpeta.
 
 ---
 
 ## ✅ Checklist de Ejecución
-
 > **[SISTEMA — ORQUESTADOR — ENFORCEMENT]** Al completar cada ítem:
 > 1. Marcarlo `[x]` en este archivo **INMEDIATAMENTE**.
 > 2. Guardar el archivo al disco antes de continuar al siguiente ítem.
 > Un `tasks.md` desactualizado = próxima sesión ciega. Sin excusas.
->
-> **[SISTEMA — PARA EL ORQUESTADOR]** Si detectás que una fase tiene lógica de negocio compleja o decisiones de diseño críticas, limitate a etiquetar su título con `[⚠️ RIESGO ALTO]`. El humano decidirá el protocolo a seguir.
 
+> **[SISTEMA — PARA EL ORQUESTADOR]** Si detectás que una fase tiene lógica de negocio compleja o decisiones de diseño críticas, limitate a etiquetar su título con `[⚠️ RIESGO ALTO]`. El humano decidirá si ejecutar el protocol "micro-planning".
+
+> **GUARDRAIL DE TAREAS (Budget: ≤ 530 palabras):**
+> Cada tarea DEBE cumplir estos criterios:
+> | Criteria | ✅ Bien | ❌ Mal |
+> |----------|---------|--------|
+> | Specific | "Create internal/auth/middleware.go con validación JWT" | "Add auth" |
+> | Actionable | "Add ValidateToken() a AuthService" | "Handle tokens" |
+> | Verifiable | "Test: POST /login retorna 401 sin token" | "Make sure it works" |
+> | Small | Un archivo o una unidad lógica | "Implement the feature" |
 
 ### FASE 0 — Branch Setup
-
 - [ ] Verificar que git está disponible: `git --version` (si falla → documentar en Return Envelope y PARAR)
 - [ ] Verificar que el branch NO existe: `git branch --list feat/vX.Y-{name}`
 - [ ] Crear y cambiar al branch: `git checkout -b feat/vX.Y-{name}`
 - [ ] Confirmar branch activo: `git status`
 - [ ] Documentar en Return Envelope: branch confirmado ✅
-
 **🚫 Restricciones:** No modificar ningún archivo de código. Esta fase es SOLO setup de git.
 
 ---
 
-### FASE 1 — [Nombre de la Fase 1] (Worker)
+### FASE 1 — [Nombre de la Fase 1]
 > Objetivo: [Objetivo de esta fase]
-
 - [ ] [Tarea específica 1]
 - [ ] [Tarea específica 2]
-
 **🚫 Restricciones:** [Ej: No modificar código fuente, solo tests.]
+
+---
+
+<OPTIONAL_DOC_UPDATE>
+
+> **[SISTEMA — ORQUESTADOR — DECISIÓN REQUERIDA]**
+> Analiza los cambios de esta feature contra el índice de abajo. Si algún doc cubre exactamente lo que cambió → Añade esta fase con tareas concretas. Si ninguno aplica → **elimina este bloque completo del archivo para que no gaste tokens de más.**
+> **Regla de contexto:** NO abras ningún doc del índice todavía. La columna "Aplica si..." es suficiente para decidir. Solo abrís el archivo en el momento exacto de editarlo.
+
+## 📚 Índice de Docs Vivos
+| # | Doc | Cubre | Aplica si... |
+|---|-----|-------|--------------|
+| 1 | `ruta/archivo` | Descripción | Cuándo aplica modificar | 
+
+### FASE N+1 — Doc-Update [ORQUESTADOR — Inline]
+> Completar SOLO si al menos un doc del índice aplica. Para cada doc afectado, identificar la sección exacta y qué debe cambiar.
+- [ ] **Doc [#N]** — `{ruta}`: Actualizar sección `{sección exacta}` → `{qué dice ahora vs. qué debe decir}`
+**🚫 Restricción:** Abrir cada archivo SOLO en el momento de editarlo (Safe-Contexting). No cargar todo el índice a la vez.
+
+</OPTIONAL_DOC_UPDATE>
 
 ---
 
 <MANDATORY_RELEASE_PROTOCOL>
 
 ### FASE X — Doc-Ops [ORQUESTADOR — Inline, modelo actual]
-> **Objetivo:** Producir todos los artefactos de la release y ejecutar los archivados. El Orquestador lo hace inline mientras el contexto está fresco — no se delega a un Worker.
+> **Objetivo:** Producir todos los artefactos de la release y ejecutar los archivados. El Orquestador lo hace inline mientras el contexto está fresco — no se delega a un Worker. Si alguna task no aplica para la feature, eliminar el checklist correspondiente.
 > **Modelo:** El que está activo en la sesión actual (contexto ya cargado = cero transcripción).
 
 **🚨 CHECKLIST DOC-OPS (OBLIGATORIO - NO OMITIR):**
@@ -86,7 +108,7 @@
 
 ## 📋 Return Envelope (Para el Worker)
 
-Al finalizar cada fase, actualizar `sdd-report.md` con:
+Al finalizar cada fase, actualizar `report.md` con:
 
 > **MANDATORY:** Tu ÚLTIMA respuesta DEBE incluir un bloque con todos los ítems de `MANDATORY_RELEASE_PROTOCOL` marcados como `[x]` o `[OMITIDO: razón]`. Sin este bloque, la Fase NO se considera completa.
 
