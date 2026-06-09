@@ -8,13 +8,13 @@
 ---
 
 ## 🧠 El Problema / La Idea
-*(Explicá en tus palabras qué te pasa por la cabeza. ¿Por qué estamos armando esto?)*
+*(Explica en tus palabras qué te pasa por la cabeza. ¿Por qué estamos armando esto?)*
 - ...
 
-## 🗑️ Brain Dump (Tirá todo acá)
-*(Pegá links, conversaciones de ChatGPT, fragmentos de código, notas de voz transcritas, lo que se te cante. No hace falta que esté prolijo).*
+## 🗑️ Brain Dump (Tira todo acá)
+*(Pega links, conversaciones de ChatGPT, fragmentos de código, notas de voz transcritas, lo que se te cante. No hace falta que esté prolijo).*
 - ...
 
 ## 🎯 Qué NO es esto (Opcional)
-*(Si ya sabés qué cosas NO querés que haga la IA, anotalas acá para atajarle las manos).*
+*(Si ya sabes qué cosas NO quieres que haga la IA, anotalas acá para atajarle las manos).*
 - ...

@@ -16,7 +16,6 @@ describe('runInit()', () => {
     { src: 'agents-rules-engram-protocol.md', dest: '.agents/rules/engram-protocol.md' },
     { src: 'agents-rules-secops.md', dest: '.agents/rules/secops.md' },
     { src: 'agents-rules-sdd-orchestrator.md', dest: '.agents/rules/sdd-orchestrator.md' },
-    { src: 'plantilla-worker-handoff.md', dest: 'docs/funky-ai/workers/plantilla-worker-handoff.md' },
     { src: 'canvas-planning-guide.md', dest: 'docs/funky-ai/cli/canvas-planning-guide.md' },
     { src: '../sdd/architecture-assessment.md', dest: 'docs/architecture-assessment.md' },
     { src: '../sdd/rfc-template.md', dest: 'docs/openspec/rfcs/000-TEMPLATE.md' },

@@ -15,3 +15,7 @@ Engram | ACTUALIZADO | ACTUALIZADO
 sdd-orchestrator | ACTUALIZADO | ACTUALIZADO
 secops | ACTUALIZADO | ACTUALIZADO
 tasks
+
+EXPLORE en custom workflow podría usarse desde tier 2, incluso en tier 1.
+
+ver si el index del engram se puede reemplazar por buscar palabras clave unicamente. Ver si es mas eficiente y posible

@@ -25,7 +25,6 @@ export function runInit({ templatesDir, targetBase, canvasConfig, selectedProtoc
     { src: 'agents-rules-engram-protocol.md', dest: path.join('.agents', 'rules', 'engram-protocol.md') },
     { src: 'agents-rules-secops.md', dest: path.join('.agents', 'rules', 'secops.md') },
     { src: 'agents-rules-sdd-orchestrator.md', dest: path.join('.agents', 'rules', 'sdd-orchestrator.md') },
-    { src: 'plantilla-worker-handoff.md', dest: path.join('docs', 'funky-ai', 'workers', 'plantilla-worker-handoff.md') },
     { src: 'canvas-planning-guide.md', dest: path.join('docs', 'funky-ai', 'cli', 'canvas-planning-guide.md') },
     { src: path.join('..', 'sdd', 'architecture-assessment.md'), dest: path.join('docs', 'architecture-assessment.md') },
     { src: path.join('..', 'sdd', 'rfc-template.md'), dest: path.join('docs', 'openspec', 'rfcs', '000-TEMPLATE.md') },

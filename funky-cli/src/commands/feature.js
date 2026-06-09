@@ -39,7 +39,7 @@ export function runFeature({ featureName, cliTemplatesDir, cwd }) {
   // 4. Copiar archivos del ciclo SDD a la carpeta de la feature
   const filesToCopy = [
     'explore.md', 'proposal.md', 'design.md', 'spec.md', 'tasks.md', 
-    'worker-handoff.md', 'planning-handoff.md', 'report.md', 'apply.md', 'verify.md'
+    'planning-handoff.md', 'report.md', 'apply.md', 'verify.md'
   ];
   
   for (const file of filesToCopy) {
