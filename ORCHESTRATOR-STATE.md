@@ -6,10 +6,10 @@
 
 ## 🏷️ Estado Actual
 
-- **Versión:** v2.5.0 (próxima: v2.5.1)
-- **Rama activa:** `feature/engram-sharding`
-- **Última sesión:** 2026-05-31
-- **Estado:** 🟢 Engram Sharding y Comando `funky engram add` implementados y probados. Listo para merge y tag v2.5.0.
+- **Versión:** v2.5.1
+- **Rama activa:** `feature/023-deprecate-worker-handoff`
+- **Última sesión:** 2026-06-09
+- **Estado:** 🟢 Feature 023 completada. Doc-Ops finalizado. Listo para GitOps Humano (merge + tag v2.5.1).
 
 ---
 
@@ -39,6 +39,7 @@
 - [x] **002 Calculadora de Presupuestos:** Comando `funky estimate` implementado (Fases Worker y Doc-Ops completadas). Integración con @inquirer/prompts y Value-Based Pricing. Lanzado en v1.19.0.
 - [x] **Sub-Orquestador (Arquitecto Táctico) v2.4.1:** Flujo de Micro-Planner delegado a agente efímero. `planning-handoff.md` template creado. Workflow `/funky-suborchestrator` creado. Regla G4 actualizada.
 - [x] **RFC 016 y RFC 017: Engram Sharding y `funky engram add` v2.5.0:** Implementado comando nativo para inyectar engramas atómicamente. Se eliminan los archivos monolíticos `discoveries.md`/`bugfixes.md` en favor de un index dinámico y fragmentos por categoría (`architecture/`, `pattern/`, `discovery/`, `decision/`, `bugfix/`) para proteger el Context Window.
+- [x] **023 Deprecate Worker Handoff:** Migración completa a Message Passing directo. Reglas purgadas en Orquestador. Templates residuales eliminados. Tests de CLI refactorizados.
 
 ---
 
@@ -100,3 +101,4 @@
 | v2.4.0 | Ecosistema Híbrido, Cherry-Pick Arquitectónico de Templates SDD (Feature 021) y nuevos templates de Design/Apply/Verify. |
 | v2.4.1 | Arquitectura Sub-Orquestador (Arquitecto Táctico): `planning-handoff.md`, `/funky-suborchestrator` workflow, `sdd-micro-planner.md` refactorizado como esquema de salida, Gate G4 actualizado. |
 | v2.5.0 | Engram Sharding y comando `funky engram add`. Reemplazo de historial monolítico por indexación semántica distribuida. |
+| v2.5.1 | Message Passing Directo: Deprecación completa de `worker-handoff.md`. CLI limpiado. `funky-worker.md` y `report.md` refactorizados. |

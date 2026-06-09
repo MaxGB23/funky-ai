@@ -30,10 +30,8 @@ Antes de generar artefactos o responder soluciones, tu primera respuesta (pensam
 | # | Verificación | Acción si falta |
 |---|-------------|-----------------|
 | PRE-0 | ¿El usuario emitió instrucciones que comienzan con `sdd` o `/sdd-init`? | **PEDIR AL HUMANO que corra `funky feature <name>`.** NUNCA generar el scaffolding manualmente. Mencionar el tier de orquestacion que recomiendas | No continuar con la checklist hasta completar este paso. |
-| 0 | ¿Se ha llenado el `docs/openspec/changes/{feature}/worker-handoff.md`? | 
 | 1 | ¿Ejecuté el Memory Polling Stage 1? | `view_file docs/engram/index.md` ahora |
 | 2 | ¿El Pipeline de Artefactos está completo? (`tasks.md` lleno + `docs.md`/`release.md` si el CLI los inyectó) | Revisar sección **Pipeline de Artefactos** antes de continuar |
-| 3 | ¿El Tier del Worker está declarado (T1/T2/T3)? | Completar campo en el `worker-handoff.md` |
 > 🔴 **Si cualquier ítem es NO → no delegues. Complétalo (o pídelo al humano) primero.**
 
 ## Comandos y Acciones
@@ -51,23 +49,17 @@ El CLI inyecta los archivos según el tier. El Orquestador **solo llena lo que y
 | **2** | `docs.md` | **Si existe** → llenar. Si no existe → saltar al Paso 3. | **PROHIBIDO crear este archivo.** Solo el CLI lo genera. |
 | **3** | `release.md` | **Si existe** → llenar. Si no existe → pipeline terminado. | **PROHIBIDO crear este archivo.** Solo el CLI lo genera. |
 
-## ⚠️ Protocolo Obligatorio — Generación de Worker Handoffs (Prohibido en Tier 4)
-1. El archivo `worker-handoff.md` ya fue inyectado en `docs/openspec/changes/{name}/` por la herramienta de inicialización.
-2. Usar `replace_file_content` para completar las secciones directamente en ese archivo. NUNCA lo sobrescribas desde cero.
-
-## 🔴 Return Statement — Delegación (MANDATORY — BLOCKING)
+## 🔴 Return Statement — Delegación por Message Passing (MANDATORY — BLOCKING)
 No puedes emitir el prompt de delegación sin este Pre-Gate:
 | # | Verificación | Si falla |
 |---|-------------|----------|
-| G1 | `worker-handoff.md` existe en `openspec/changes/{name}/` | Generarlo AHORA (Omitir si es T4) |
-| G2 | Campo `Tier [⚠️ COMPLETAR]` reemplazado por T1/T2/T3 | Completarlo AHORA (Omitir si es T4) |
-| G3 | §1.C del handoff tiene la ruta exacta del `tasks.md` | Completarlo AHORA (Omitir si es T4) |
-| G4 | ¿La fase actual tiene la etiqueta `[⚠️ RIESGO ALTO]`? | **PROHIBIDO generar handoff.** Frena y pregúntale al humano: *"Esta fase es de alto riesgo. ¿Quieres que genere un `planning-handoff.md` para el `/funky-suborchestrator`, o prefieres delegar directo al Worker bajo tu responsabilidad?"* |
-| G5 | ¿Es una tarea **Tier 4**? | **NO usar `worker-handoff.md`.** Saltar G1-G3 e instruir directo al humano: *"Cierra este chat, abre uno nuevo y ejecuta `/funky-{fase} [openspec/changes/{feature}/]`."* |
+| G1 | ¿El scope en `tasks.md` está perfectamente delimitado para el Worker? | Refinar `tasks.md` AHORA |
+| G2 | ¿La fase actual tiene la etiqueta `[⚠️ RIESGO ALTO]`? | **PROHIBIDO delegar directo.** Frena y pregúntale al humano si quiere delegar al `/funky-suborchestrator` |
+| G3 | ¿Es una tarea **Tier 4**? | Instruir directo al humano: *"Cierra este chat, abre uno nuevo y ejecuta `/funky-{fase} [openspec/changes/{feature}/]`."* |
 
-> 🔴 Si G1, G2, G3 o G4 fallan (en T1/T2/T3) → Corrígelo primero. Luego emitir:
-> "El plan está listo. Cierra este chat, abre uno nuevo y dime:
-> `/funky-worker @docs/openspec/changes/{name}/worker-handoff.md Ejecuta la Fase N`."
+> 🔴 Si G1 o G2 fallan → Corrígelo primero. Luego emitir instrucción directa al humano (Message Passing):
+> "El plan está listo. Cierra este chat, abre uno nuevo y ejecuta:
+> `/funky-worker Ejecuta la Fase N. Tu scope es [ruta-a-tasks.md]`"
 
 ## ⚡ Phase Batching
 Tienes PROHIBIDO delegar múltiples fases de golpe. La ÚNICA excepción permitida es agrupar la Fase 0 (Branch Setup) junto con la Fase 1. A partir de ahí, la ejecución es estrictamente secuencial (una por una). 

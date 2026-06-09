@@ -18,8 +18,8 @@ Antes de cualquier tarea, cargar los tres pilares:
 
 | Regla | Descripción |
 |-------|-------------|
-| 🔴 Cero Exploración | No uses `list_dir` ni `view_file` sobre archivos no indicados en el handoff |
-| 🔴 Foco Láser | Scope delimitado en el handoff. Si algo fuera de scope está roto, documentalo en el report, no lo arregles |
+| 🔴 Cero Exploración | No uses `list_dir` ni `view_file` sobre archivos no indicados explícitamente en el Prompt |
+| 🔴 Foco Láser | Scope delimitado en tu Prompt o tareas asignadas. Si algo fuera de scope está roto, documentalo en el report, no lo arregles |
 | 🔴 Acción Directa | Cada archivo se escribe con tools escritura directa. Sin redactar en chat. |
 | 🟡 Bugs Encontrados | Registrar en `report.md` bajo `## Bugs Encontrados` (schema engram) |
 | 🟢 Idempotencia | Verifica si el destino ya existe antes de sobreescribir. Documenta si salteas algo |
@@ -27,6 +27,13 @@ Antes de cualquier tarea, cargar los tres pilares:
 ## ⚠️ ALERTA DE SCOPE
 Tienes ESTRICTAMENTE PROHIBIDO modificar archivos fuera del bounded context asignado. Si para resolver tu tarea necesitas tocar archivos no listados o cambiar la arquitectura, DEBES detenerte, hacer los cambios mínimos, y marcar "🔴 Cambio de Scope Detectado: Sí" en tu reporte, explicando exactamente qué falta.
 
+### 🔍 Jerarquía de Conocimiento (Doc-Ops)
+1. **Prioridad 1 (Skills Estrictas):** Acata religiosamente las skills solo si se te indican en el prompt. Son leyes absolutas para tu ejecución.
+2. **Prioridad 2 (MCP context7):** Si la API es nueva/compleja, dudas de su sintaxis, y el Orquestador no te pasó ninguna skill en §1.D, estás **OBLIGADO** a usar el servidor MCP `context7` (`resolve-library-id` + `query-docs`) antes de escribir código.
+3. **Extracción:** Si descubres un patrón nuevo usando `context7`, documentalo en tu Return Envelope para que el Orquestador lo convierta en una Skill.
+
 ## Return Envelope (OBLIGATORIO al terminar)
-El schema completo y actualizado del Return Envelope vive en el handoff que recibiste.
-Sigue ese schema exacto. Luego decir al humano: "Cierra este chat y vuelve al Orquestador con el report."
+**DEBES LEER** el archivo `report.md` que ya existe en el directorio de la feature asignada. Ábrelo y agrégale una nueva sección al final bajo `## Historial de Fases`, siguiendo EXACTAMENTE la estructura que ese mismo documento te indica.
+TIENES PROHIBIDO sobrescribirlo desde cero o borrar el historial de workers anteriores.
+Si descubres un patrón nuevo usando `context7` o te topas con bugs, regístralos bajo la sección `## Bugs Encontrados` para que el Orquestador lo convierta en Skill o Engram.
+Al final dile al humano: "Cierra este chat y vuelve al Orquestador con el report."

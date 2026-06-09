@@ -1,7 +1,7 @@
 # Reporte de Ejecución: [Nombre de la Funcionalidad o Cambio]
 
 ## Resumen Ejecutivo
-[Resumen de alto nivel del estado general de la feature. Actualizado por el Worker o al finalizar la feature.]
+[Resumen de alto nivel del estado general del feature. Actualizado por el Worker o al finalizar el feature completo.]
 
 ---
 
@@ -22,7 +22,6 @@
 ---
 
 ## Historial de Fases
-> **[SISTEMA - PARA EL WORKER]** Añade tus reportes al final de esta sección copiando la estructura base de la "Fase 1". TIENES PROHIBIDO borrar los reportes de workers anteriores o sobrescribir el archivo completo.
 
 ### Fase 1 — [Nombre]
 - **Status:** [✅ Completada / ❌ Bloqueada]
@@ -34,4 +33,4 @@
 
 ---
 
-> **[SISTEMA - PARA EL ORQUESTADOR]** Al finalizar, extrae el conocimiento ganado al engram usando `funky engram add --tag "[tag]" --category <categoría> --desc "..."` (categorías: `architecture`, `pattern`, `discovery`, `decision`, `bugfix`).
+> **[SISTEMA - PARA EL ORQUESTADOR]** Al finalizar, extraé el conocimiento ganado al engram usando `funky engram add --tag "[tag]" --category <categoría> --desc "..."` (categorías: `architecture`, `pattern`, `discovery`, `decision`, `bugfix`).

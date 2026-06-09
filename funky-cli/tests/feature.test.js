@@ -37,7 +37,7 @@ describe('runFeature()', () => {
     expect(result.success).toBe(true);
     expect(result.path).toBe(expectedFeaturePath);
     expect(fs.mkdirSync).toHaveBeenCalledWith(expectedFeaturePath, { recursive: true });
-    expect(fs.copyFileSync).toHaveBeenCalledTimes(10); // 10 files to copy
+    expect(fs.copyFileSync).toHaveBeenCalledTimes(9); // 9 files to copy
     expect(console.warn).not.toHaveBeenCalled();
   });
 
@@ -59,7 +59,7 @@ describe('runFeature()', () => {
 
     expect(result.success).toBe(true);
     expect(console.warn).toHaveBeenCalledWith(expect.stringContaining('Usando fallback de CLI'));
-    expect(fs.copyFileSync).toHaveBeenCalledTimes(10);
+    expect(fs.copyFileSync).toHaveBeenCalledTimes(9);
     
     // Verificamos que al menos una llamada haya sido desde el fallback
     const expectedFirstSrcCall = path.join(fakeCliTemplatesDir, 'explore.md');

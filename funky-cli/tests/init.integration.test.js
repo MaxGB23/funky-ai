@@ -36,11 +36,9 @@ describe('runInit() Integration', () => {
     expect(result.created).toBeGreaterThan(0);
   });
 
-  it('debería copiar la plantilla canónica worker-handoff al nuevo workspace', () => {
+  it('NO debería copiar la plantilla canónica worker-handoff al nuevo workspace', () => {
     const workerHandoffPath = path.join(tmpDir, 'docs', 'funky-ai', 'workers', 'plantilla-worker-handoff.md');
-    expect(fs.existsSync(workerHandoffPath)).toBe(true);
-    const content = fs.readFileSync(workerHandoffPath, 'utf8');
-    expect(content).toContain('Worker Handoff');
+    expect(fs.existsSync(workerHandoffPath)).toBe(false);
   });
 
   it('NO debería sobreescribir PROJECT-CANVAS.md si tiene skipProjectCanvas', () => {

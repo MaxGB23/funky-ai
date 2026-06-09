@@ -4,6 +4,7 @@ Directorio unificado de conocimientos, decisiones y patrones.
 
 ## Architecture
 
+- [[worker-handoff-deprecation] Deprecación de worker-handoff.md a favor de Message Passing directo. Los templates estáticos fueron eliminados para liberar I/O de disco. El return envelope schema ahora vive en el template del report.md.](./architecture/worker-handoff-deprecation.md)
 
 ## Pattern
 
@@ -111,3 +112,4 @@ Directorio unificado de conocimientos, decisiones y patrones.
 - [[bugfix][feature-scaffolding-bug] Omisión de inyección de templates SDD nuevos en `funky feature`
 ](./bugfix/omisin-de-inyeccin-de-templates-sdd-nuevos-en-funky-feature.md)
 
+- [[brittle-tests-filecount] Pruebas de CLI frágiles: el test de feature.js usaba toHaveBeenCalledTimes(10) para verificar copias de templates. Al remover un archivo del scaffold (worker-handoff), la prueba falló. Se ajustó a 9, pero el patrón sugiere evitar conteos hardcodeados de archivos esperados.](./bugfix/brittle-tests-filecount.md)

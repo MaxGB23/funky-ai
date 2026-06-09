@@ -1,8 +1,8 @@
-# 👻 Funky AI v2.4.0: Índice y Mapa de Navegación
+# 👻 Funky AI v2.5.1: Índice y Mapa de Navegación
 
 Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia Artificial que te permite emular redes asíncronas de agentes (SDD) usando recursos manuales y archivos físicos locales sobre el IDE Antigravity.
 
-> **🚀 Estado del Arte (v2.4.0 — Ecosistema Híbrido & Cherry-Pick):** Consolidación del Flujo Híbrido Maestro (CLI para diseño pesado, IDE para ejecución liviana). Refactorización y Cherry-Pick arquitectónico de los templates SDD locales extrayendo *Action Forcing* y guardrails de Gentle AI para prevenir el *Batching* y mantener el *Context Economy*.
+> **🚀 Estado del Arte (v2.5.1 — Message Passing Directo):** Deprecación completa del `worker-handoff.md`. El Orquestador ahora inyecta scope y tareas directamente en el prompt del Worker (Message Passing). El CLI ya no genera archivos handoff en ningun scaffolding. El `report.md` asume el rol de contrato de salida del worker por diseño.
 
 > **🛡️ CI Status:** ![CI](https://github.com/MaxGB23/funky-ai/actions/workflows/ci.yml/badge.svg)
 
@@ -56,9 +56,9 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 | `funky init` | Inyecta reglas, memoria (ecosystem) y genera/consume un `PROJECT-CANVAS.md` (modo interactivo y headless). |
 | `funky assess` | Evalúa el `architecture-assessment.md` con 3 reglas determinísticas. Genera un Challenge Pack si detecta riesgos. |
 | `funky estimate` | Calcula costo estimado cruzando el Canvas técnico con factores de negocio. Genera `pricing-analysis.md`. |
-| `funky feature <name>` | Inicializa el scaffolding SDD estándar (Tier 1–3) en `docs/openspec/changes/<name>/`. |
+| `funky feature <name>` | Inicializa el scaffolding SDD estándar (Tier 1–3) en `docs/openspec/changes/<name>/`. Ya **no genera** `worker-handoff.md`. |
 | `funky gentle <name>` | Inicializa el scaffolding **Tier 4 (Gentle SDD)** en `docs/openspec/gentle/<name>/`. 7 roles aislados para tareas hipercríticas. |
-| `funky phase <fase>` | Inyecta templates SDD individuales (explore, proposal, tasks, handoff, report). |
+| `funky phase <fase>` | Inyecta templates SDD individuales (explore, proposal, tasks, report). |
 | `funky release <version>` | Genera release notes estandarizados automáticamente. |
 | `pnpm test` *(en `funky-cli/`)* | Ejecuta la suite Vitest (TDD). Corre automáticamente en CI vía GitHub Actions. |
 
@@ -69,7 +69,9 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 
 | Archivo | Propósito |
 |---|---|
-| [`v2.4.0-release.md`](./docs/funky-ai/releases/v2.4.0-release.md) | ⭐ **Actual** — Ecosistema Híbrido, Cherry-Pick Arquitectónico de Templates SDD y nuevos guardrails anti-alucinación |
+| [`v2.5.1-release.md`](./docs/funky-ai/releases/v2.5.1-release.md) | ⭐ **Actual** — Message Passing Directo: Deprecación completa de `worker-handoff.md`, refactor del CLI y del `funky-worker` workflow |
+| [`v2.5.0-release.md`](./docs/funky-ai/releases/v2.5.0-release.md) | Engram Sharding y comando `funky engram add`. Indexación semántica distribuida |
+| [`v2.4.0-release.md`](./docs/funky-ai/releases/v2.4.0-release.md) | Ecosistema Híbrido, Cherry-Pick Arquitectónico de Templates SDD y nuevos guardrails anti-alucinación |
 | [`v2.1.0-release.md`](./docs/funky-ai/releases/v2.1.0-release.md) | Protocolos On-Demand: Protocolos selectivos, selector interactivo en CLI y `devil-advocate.md` |
 | [`v2.0.1-release.md`](./docs/funky-ai/releases/v2.0.1-release.md) | Fix Asimetria Operativa: Orquestador → Capa 2, rescate Auto-Tiering (Feature 012), nueva guia `agent-config-architecture.md` |
 | [`v2.0.0-release.md`](./docs/funky-ai/releases/v2.0.0-release.md) | Arquitectura de Agentes v2.0.0 (Workflows On-Demand y Fragmentación) |
