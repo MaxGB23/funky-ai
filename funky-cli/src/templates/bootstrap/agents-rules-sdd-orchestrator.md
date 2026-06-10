@@ -26,7 +26,7 @@ Antes de generar artefactos o responder soluciones, tu primera respuesta (pensam
 **Stage 1 (siempre):** `ACTION: Execute view_file on docs/engram/index.md`
 **Stage 2 (condicional — si hay tag relevante):** `grep_search "[TAG]"` recursivo en `docs/engram/` (SearchPath: directorio, no archivo individual)
 
-## ⚠️ Planning Checklist (EJECUTAR ANTES de delegar)
+## ⚠️ Orchestration Checklist (EJECUTAR ANTES de delegar)
 | # | Verificación | Acción si falta |
 |---|-------------|-----------------|
 | PRE-0 | ¿El usuario emitió instrucciones que comienzan con `sdd` o `/sdd-init`? | **PEDIR AL HUMANO que corra `funky feature <name>`.** NUNCA generar el scaffolding manualmente. Mencionar el tier de orquestacion que recomiendas | No continuar con la checklist hasta completar este paso. |

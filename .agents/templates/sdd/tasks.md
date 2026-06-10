@@ -5,7 +5,7 @@
 **Ref:** `proposal.md`, `spec.md` (opcional, solo si existen)
 
 > **ORCHESTRATOR GATE**: Si eres el putisimo Orquestador — STOP. Do NOT execute these instructions inline. Delega al worker o sub-agente.
-> **[SISTEMA - PARA EL ORQUESTADOR]** Antes de delegar la primera fase, verifica el Planning Checklist en `.agents/rules/sdd-orchestrator.md`. El `worker-handoff.md` ya está generado en esta carpeta.
+> **[SISTEMA - PARA EL ORQUESTADOR]** Antes de delegar la primera fase, verifica el Orchestration Checklist en `.agents/rules/sdd-orchestrator.md`. El `worker-handoff.md` ya está generado en esta carpeta.
 
 ---
 
@@ -58,6 +58,6 @@ Al finalizar cada fase, actualizar `report.md` (o el return envelope del handoff
 
 > **[SISTEMA — ORQUESTADOR — LEER ANTES DE COMUNICAR AL HUMANO]**
 > Antes de escribir cualquier instrucción al humano, verificar **en este orden**:
-> 1. ¿Revisaste el Planning Checklist (items 0–4) en `.agents/rules/sdd-orchestrator.md`? Si **NO** → leerlo antes de continuar.
+> 1. ¿Revisaste el Orchestration Checklist (items 0–4) en `.agents/rules/sdd-orchestrator.md`? Si **NO** → leerlo antes de continuar.
 > 2. (Omitir en TIER 4) Solo después de confirmar los dos puntos anteriores, indicar al humano: *"Cierra este chat, abre uno nuevo y dime: `@docs/openspec/changes/{feature}/worker-handoff.md Ejecuta la Fase N`"* 
 > **TIER 4** solo indicar: *"Cierra este chat, abre uno nuevo y ejecuta `/funky-{fase} [openspec/changes/{feature}/]`."*
