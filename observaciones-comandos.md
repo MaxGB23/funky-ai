@@ -19,3 +19,7 @@ tasks
 EXPLORE en custom workflow podría usarse desde tier 2, incluso en tier 1.
 
 ver si el index del engram se puede reemplazar por buscar palabras clave unicamente. Ver si es mas eficiente y posible
+
+
+El tier 3/4 en la feature propuesta es que regresen un resumen al orquestador, pero en tiers como 1 o 2, tal vez si deba leer el artefacto entero, en los casos como en tier 2 donde el orquestador inline redacta proposal y spec.
+

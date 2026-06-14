@@ -3,8 +3,9 @@
 > **🛑 WARNING PARA LA IA (ORQUESTADOR):** 
 > Este documento es un **RFC (Request for Comments) / Brain Dump**. Son notas crudas del humano. 
 > **NO ES UN PROPOSAL FORMAL**. Bajo ninguna circunstancia debes tomar esto como una especificación técnica final o empezar a generar código basado directamente en esto. 
-> Tu trabajo en la fase de Orquestación es **leer esto, extraer la intención, validar viabilidad, y generar un `proposal.md` formal** en el directorio del change.
+> Tu trabajo en la fase de Orquestación es **leer esto, extraer la intención y validar viabilidad. Este documento alimenta la fase de explore (nunca delegar sin aprobación).
 
+Este documento alimenta la fase de explore. El agente explore debe leer esto, investigar el codebase, validar viabilidad, y producir explore.md. El proposal se construye DESPUÉS sobre esa base.
 ---
 
 ## 🧠 El Problema / La Idea

@@ -20,5 +20,5 @@
 
 **🚫 Restricción:** Abrir cada archivo SOLO en el momento de editarlo, nunca cuando se planea la tarea (Safe-Contexting)
 - [ ] **Doc [#N]** — `{ruta}`: Actualizar documento para reflejar: `{concepto nuevo o comportamiento modificado}`
-
+- [ ] Opcional: Sólo si la feature actual en cuestión crea un documento nuevo vital para el proyecto, debe añadirse al indice de docs vivos en el template .agents/templates/sdd/docs.md 
 </OPTIONAL_DOC_UPDATE>

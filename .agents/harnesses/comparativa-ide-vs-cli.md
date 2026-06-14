@@ -63,6 +63,50 @@
 
 ---
 
+## 3.5. Contexto: Implícito (IDE) vs Explícito (CLI)
+
+> **Verificado en prueba real (2026-06-10)** — el IDE tiene 3 canales de inyección automática por turno:
+
+**Canal 1 — `ADDITIONAL_METADATA` (siempre):**
+```
+Active Document: ruta/al/archivo.md (LANGUAGE_MARKDOWN)
+Cursor is on line: 14
+Other open documents:
+- ruta/archivo1.md (LANGUAGE_MARKDOWN)
+```
+
+**Canal 2 — Diffs automáticos de archivos modificados (cuando el usuario edita):**
+```
+The following changes were made by the USER to: prueba-de-contexto-ide.md
++ Quiero meter una feature donde el cli genere un calendar con to-dos qué hacer.
+```
+
+**Canal 3 — View file actions (cuando el usuario abre/visualiza un archivo):**
+```
+The USER performed the following action:
+Show the contents of file agy-datos-concretos.md from lines 3 to 27
+[...contenido completo de esas líneas...]
+```
+
+| Aspecto | CLI | IDE |
+|---|---|---|
+| Paths de tabs abiertas | ❌ No aplica | 🔴 Automático, cada turno |
+| Contenido de archivos editados | ❌ No aplica | 🔴 Diff completo automático al editar |
+| Contenido de archivos visualizados | ❌ No aplica | 🔴 Líneas completas al abrir un archivo |
+| Contenido vía `@mention` | ✅ El agente controla cuándo pedir más | 🔴 El usuario lo activa, sin filtro del agente |
+| Cambios del agente re-inyectados | ❌ No aplica | ⚠️ El IDE los manda de vuelta como diff |
+| Control del desarrollador | ✅ Total — el agente pide lo que necesita | ❌ Nulo sobre los canales 2 y 3 |
+| Riesgo de contaminación real | **Nulo** | **Alto** — cualquier archivo que toques o abras entra al contexto |
+
+> **Conclusión final (post-prueba):** El análisis intermedio que decía "solo paths, riesgo medio" estaba **incompleto**.
+> Los canales 2 y 3 son silenciosos y automáticos: el usuario ni sabe que está alimentando el contexto del agente.
+> Abrir un archivo irrelevante, editar una nota, revisar un TODO — todo llega al agente sin pedirlo.
+>
+> **El veredicto se mantiene y se refuerza:** el orquestador no puede vivir en el IDE. Contexto limpio = CLI.
+
+---
+
+
 ## 5. Tabla de Veredicto General
 
 | Dimensión | Ganador | Por qué |
@@ -76,12 +120,12 @@
 
 ---
 
-## 6. Recomendación de Uso Híbrido
+## 6. Recomendación de Uso Híbrido *(actualizada)*
 
 ```
 Orquestador (CLI) ──────► diseño, exploración, planificación SDD
-                                        │
-                                        ▼
+   contexto limpio,              │
+   quirúrgico                    ▼
                           Workers (IDE) ──► ejecución táctica
                                              + review visual de diffs
                                              + Accept/Reject changes
@@ -92,4 +136,15 @@ Orquestador (CLI) ──────► diseño, exploración, planificación SD
 - **IDE como manos**: Fases de `/funky-apply` y `/funky-worker` donde la UI de diffs agrega valor real
 - **La REGLA ABSOLUTA en `user_rules`** es el seguro que mantiene al IDE en su carril
 
-> **TL;DR:** El CLI es libre y caro en tokens útiles. El IDE es barato en tokens pero caro en fricción arquitectónica. Úsalos según su naturaleza, no sus limitaciones.
+> ⚠️ **Decisión de arquitectura (en evaluación):** Deprecar el orquestador en el IDE y migrarlo 100% al CLI.
+> Razón: el contexto implícito del IDE (tabs abiertas, cursor, archivos irrelevantes) contamina el razonamiento
+> del orquestador, que es el agente más crítico del sistema. El CLI garantiza contexto quirúrgico y control total.
+
+> **TL;DR:** Los ~3,500 tokens del CLI son fijos, predecibles y 100% útiles. El IDE parece más barato en overhead exclusivo, pero su costo real es **variable e impredecible**: cada tab abierta, cada línea que tocas, cada archivo irrelevante se suma silenciosamente al contexto. Con 10 tabs abiertas el IDE puede superar al CLI fácilmente — y encima con tokens de contaminación. Las tools de infraestructura del CLI (subagentes, transcripts) no son bonus: son ventajas arquitectónicas reales que el IDE simplemente no tiene.
+
+> **TL;DR JUSTIFICACIÓN:**Deprecar la orquestación en el IDE **no significa abandonar el IDE**. Hasta que el CLI no madure (específicamente en delegación síncrona, modelos por subagente y mejor UX para diffs), el IDE es insustituible como brazo ejecutor por las siguientes razones:
+1. **Accept / Reject Changes:** La UI visual para revisar diffs antes de aplicar código es oro puro. El CLI edita archivos a ciegas, el IDE te deja ser un filtro de calidad humano.
+2. **Notificaciones y Sonidos:** Ya tenemos el entorno configurado para que el IDE avise visual y sonoramente cuando un worker termina. En el CLI, dependes de estar viendo la terminal.
+3. **Flujos Tácticos Cortos:** Para tirar código directo, formatear un archivo, o correr un script rápido, la inmediatez del IDE es mejor.
+
+**El trato es:** (CLI) piensa la arquitectura, diseña el plano y guarda la memoria. (IDE) pega los ladrillos y te avisa cuando acabó para que revises cómo quedó la pared.

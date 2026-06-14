@@ -98,8 +98,6 @@ Los 8 workflows SDD (`/funky-explore`, etc.) son slash commands propios, que con
 
 Por debatir: El tier 3 puede ser reemplazado por usar custom workflows pero no tantos como en tier 4, pensando en crear un tier 3.5 o meterle algo como funky-tier, o algo pasadisimo de riata para diferenciarlo.
 
-PENDIENTE PREGUNTAR CÓMO EL HUMANO INICIA EL CHAT DEL SUBAGENTE, YA QUE DESPUES DE TIPEAR /funky-<fase> debe pasarle unos minimos datos de contexto como name de la feature, etc.
-
 
 **OBSERVACIÓN (validada empíricamente — 2026-05-31):** El uso de custom workflows por fase (`/funky-propose`, `/funky-spec`, `/funky-design`, `/funky-tasks`, `/funky-apply`) en una feature de complejidad media produce artefactos de mayor calidad que el T3 inline actual, con menor overhead que el T4. Esto confirma un tier intermedio faltante: **T3 Workflow** — 5 fases aisladas con workflows dedicados, sin Workers externos ni Sub-Orquestador. La definición actual de T3 en `funky-ai.md` ("1 phase = 1 chat") ya apunta a este patrón pero nunca tuvo la implementación de workflows que lo materialice. **Decisión pendiente para Feature 020:** unificar T3 apuntando explícitamente a estos workflows, escalera final: T0 (chat) → T1 (worker directo) → T2 (orquestador inline) → T3 (5 workflows por fase) → T4 (8 roles, funky gentle).
 
