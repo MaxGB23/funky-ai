@@ -1,0 +1,25 @@
+{
+  "modelId": "Gemini 3.1 Pro (Low)",
+  "timestamp": "2026-06-14T04:01:43.229Z",
+  "latencyMs": 333,
+  "metrics": {
+    "inputTokens": 390,
+    "outputTokens": 34,
+    "totalTokens": 424
+  },
+  "taskOutput": {
+    "pnpmVersion": "11.5.0",
+    "directories": [
+      ".agents",
+      ".antigravitycli",
+      ".atl",
+      ".git",
+      ".github",
+      "comparativas-tokens",
+      "docs",
+      "funky-cli",
+      "scratch",
+      "scripts"
+    ]
+  }
+}
