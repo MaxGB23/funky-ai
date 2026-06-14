@@ -1,0 +1,25 @@
+{
+  "modelId": "GPT-OSS 120B (Medium)",
+  "timestamp": "2026-06-14T04:09:23.555Z",
+  "latencyMs": 301,
+  "metrics": {
+    "inputTokens": 390,
+    "outputTokens": 34,
+    "totalTokens": 424
+  },
+  "taskOutput": {
+    "pnpmVersion": "11.5.0",
+    "directories": [
+      ".agents",
+      ".antigravitycli",
+      ".atl",
+      ".git",
+      ".github",
+      "comparativas-tokens",
+      "docs",
+      "funky-cli",
+      "scratch",
+      "scripts"
+    ]
+  }
+}

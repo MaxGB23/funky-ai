@@ -1,0 +1,25 @@
+{
+  "modelId": "Gemini 3.5 Flash (Medium)",
+  "timestamp": "2026-06-14T03:57:14.407Z",
+  "latencyMs": 335,
+  "metrics": {
+    "inputTokens": 390,
+    "outputTokens": 34,
+    "totalTokens": 424
+  },
+  "taskOutput": {
+    "pnpmVersion": "11.5.0",
+    "directories": [
+      ".agents",
+      ".antigravitycli",
+      ".atl",
+      ".git",
+      ".github",
+      "comparativas-tokens",
+      "docs",
+      "funky-cli",
+      "scratch",
+      "scripts"
+    ]
+  }
+}
