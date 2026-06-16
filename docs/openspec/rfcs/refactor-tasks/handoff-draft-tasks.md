@@ -20,10 +20,9 @@ Estamos rediseñando el sistema de templates del SDD de Funky AI. El monolítico
 - **Sección 5:** Custom Workflows solo se preguntan en T3/T4. En T1/T2 el proceso SDD estándar es obligatorio.
 - **Sección 6:** Escalera de Tiers definitiva:
   - **T1:** Fast Track directo. El Orquestador puede hacer tasks inline o delegar al workflow.
-  - **T2 (Sandwich):** Orquestador hace `proposal` y `spec` inline. Delega `explore` y `tasks` a workflows para proteger su contexto.
-  - **T3:** Cada fase SDD en un chat aislado con custom workflows. NFRs bajan en cascada.
+  - **T2 (Sandwich):** Orquestador hace `proposal` y `spec` inline. Delega `explore` y `tasks` a workflows para proteger su contexto. Workers ejecutan las tareas.
+  - **T3:** Cada fase SDD en un chat aislado con custom workflows. NFRs bajan en cascada de ser requeridos unicamente. El workflow funky-apply reemplaza al worker.
   - **T4:** 8 roles, 100% workflows aislados, rediseño masivo.
-
 ---
 
 ## Ideas en la Sección 7 (Pendientes de aprobación formal)
@@ -61,8 +60,4 @@ El humano tiene más puntos arquitectónicos que no ha redactado aún para no sa
 
 ## Archivos clave a leer antes de continuar
 
-1. `docs/openspec/rfcs/draft-tasks.md` — El RFC principal con todo lo debatido.
-2. `docs/openspec/rfcs/blueprint-migracion-delegacion.md` — Patrones de delegación del Orquestador (Explore Ligero, Eager/Lazy Loading de Skills).
-3. `docs/openspec/propuestas-nuevo-sdd/mejora-nfrs-prompts.md` — Análisis de gentle-ai sobre NFRs que inspiró la Sección 7.1.
-4. `docs/openspec/changes/funky-feature-v1.1/proposal.md` — Proposal original de la feature que origina todo esto.
-5. `docs/openspec/changes/custom-workflows/workflow-design.md` — Diseño de Custom Workflows y la observación empírica que definió el nuevo T3.
+1. `docs/openspec/rfcs/refactor-tasks/draft-tasks.md` — El RFC principal con todo lo debatido.

@@ -44,18 +44,6 @@
 
 ---
 
-## 📋 Return Envelope (Para el Worker)
-Al finalizar cada fase, actualizar `report.md` (o el return envelope del handoff) con:
-```markdown
-## Fase [N] — [Nombre]
-- **Status:** ✅ Completada / ❌ Bloqueada
-- **Archivos creados/modificados:** (lista)
-- **Bugs encontrados:** (si aplica, usar schema engram. OBLIGATORIO: incluir intentos fallidos y anti-patrones descartados, no solo bugs finales)
-- **Próxima acción:** (qué debe hacer el Orquestador)
-```
-
----
-
 > **[SISTEMA — ORQUESTADOR — LEER ANTES DE COMUNICAR AL HUMANO]**
 > Antes de escribir cualquier instrucción al humano, verificar **en este orden**:
 > 1. ¿Revisaste el Orchestration Checklist (items 0–4) en `.agents/rules/sdd-orchestrator.md`? Si **NO** → leerlo antes de continuar.
