@@ -94,72 +94,48 @@ Inspirado en *gentle-ai*, se propone añadir una validación en el CLI (`funky f
 
 ### 7.3 Idea de separacion de tiers
 
-El primer punto es una propuesta para mejorar el punto 6 actual.
+### 7.3.1. Mejora a la Escalera de Tiers (Sección 6)
 
-El segundo punto es una separacion para las rules del orquestador, estas deben ser un poco mas breves y concisas.
+Para evitar decisiones ambiguas y proteger la regla absoluta de "NO escribes código" del Orquestador, la Escalera de Tiers se refina de la siguiente manera:
 
-El tercer punto es cómo vamos a combinar la logica con el punto 2, que corresponde al semver sdd
+- **Tier 0 (Micro-Fix):** Fix trivial de 1 línea (typos, imports). **Excepción por Override Humano:** El Orquestador detecta que es trivial, FRENA y pregunta al humano si quiere que lo edite *inline*. Si el humano aprueba, el Orquestador edita el código directo. Sin workflows, sin workers, sin `tasks.md`.
+- **Tier 1 (Fast Track):** Tarea chica (1-2 archivos). 
+  - **Exploración:** Usa el "Explore Ligero" (sabueso desechable de 7.4) para no ensuciar la memoria del Orquestador leyendo código.
+  - **Planeación:** El Orquestador redacta el `tasks.md` *inline*. (Regla: Si el tasks es demasiado complejo para redactarse inline, la feature debe escalarse a Tier 2).
+  - **Ejecución:** Delegada al Worker básico.
+- **Tier 2 (Standard Feature):** Feature normal (2-5 archivos).
+  - **Exploración:** Delegada al workflow `/funky-explore`.
+  - **Planeación:** Orquestador redacta `proposal.md` y `spec.md` *inline*.
+  - **Tasks:** Delegada al workflow `/funky-tasks` (este workflow funge como detector de riesgo mediante su Return Envelope).
+  - **Ejecución:** Delegada al Worker básico.
+- **Tier 3 (Deep):** Cambios complejos o de alto riesgo. CADA fase se aísla en su propio workflow. La ejecución la toma `/funky-apply` (que lee el `spec.md y design.md` directo, eliminando la necesidad de microplanning en el Orquestador).
+- **Tier 4 (Rediseño):** 8 Roles aislados, máximo límite de tokens. Frenado de emergencia.
 
-El orquestador antes era el que llenaba las tasks, ahora se delega a un workflow de tasks, el cual llena tasks, (docs y release) cuando corresponde. 
-Un dato extra es que tasks y explore ahora se delegan a workflows en todos los tiers(exceptuando tier 1, este es a decision del orquestador, si este lo ve necesario).
-Esta decision es debido a que un orquestador no debe ensuciarse de contexto leyendo archivos basura, por eso delega exploracion y tasks en cualquier tier.
+### 7.3.2
+Leer ./rules-orchestrator-backup.md
 
+### 7.3.3. Cruce de la Lógica SemVer con SDD (Sección 2)
 
+El CLI (`funky feature`) se encargará puramente de la inyección mecánica de plantillas. La **validación e inteligencia** recae completamente en el Orquestador antes de iniciar el comando.
 
-Puedes tomar este material para analizar los puntos que ya tienen inconsistencias con el resto del documento.
-Son rules que existen en el orquestador actualmente.
-## Escalation Matrix (Matriz de Decisión Estricta)
-| Tier | Criterio | Acción de Flujo |
-|------|----------|-----------------|
-| **T1 (Flash)** | 1 archivo, fix trivial, sin impacto arquitectónico | Sin explore ni propose. Directo al `tasks.md`. (Condicional: si hay riesgo, mencionar a humano delegar a `/funky-explore`). |
-| **T2 (Standard)** | Feature normal, 2-5 archivos, sin cambios de core | Flujo delegado: humano corre `/funky-explore` → Orquestador hace `/sdd-propose` → `spec` → `tasks.md`. |
-| **T3 (Deep)** | Cambios en core, NFRs pesados, refactors masivos | Igual que T2 pero con análisis de riesgos y aislamiento reforzado. |
-| **T4 (Gentle)** | Rediseños titánicos del core, máximo riesgo | Frenado de emergencia. Se usan TODOS los Phase Workflows (`/funky-explore`, `/funky-design`, etc.). El humano ejecuta cada fase en chats nuevos. |
+**Regla de la "Trinidad del Setup":**
+Cuando el humano pide una feature, el Orquestador analiza y dicta explícitamente los 3 parámetros de los Inquirers:
+1. **Tier sugerido** (T0-T4)
+2. **Impacto en Docs Core** (Sí/No)
+3. **Tipo de Release SemVer** (Major/Minor/Patch/None)
 
-## ⚠️ Orchestration Checklist (EJECUTAR ANTES de delegar)
-| # | Verificación | Acción si falta |
-|---|-------------|-----------------|
-| PRE-0 | ¿El usuario emitió instrucciones que comienzan con `sdd` o `/sdd-init`? | **PEDIR AL HUMANO que corra `funky feature <name>`.** NUNCA generar el scaffolding manualmente. Mencionar el tier de orquestacion que recomiendas | No continuar con la checklist hasta completar este paso. |
-| 1 | ¿Ejecuté el Memory Polling Stage 1? | `view_file docs/engram/index.md` ahora |
-| 2 | ¿El Pipeline de Artefactos está completo? (`tasks.md` lleno + `docs.md`/`release.md` si el CLI los inyectó) | Revisar sección **Pipeline de Artefactos** antes de continuar |
-> 🔴 **Si cualquier ítem es NO → no delegues. Complétalo (o pídelo al humano) primero.**
+**Ley de Gravedad Inversa (SemVer empuja el Tier):**
+El tipo de release (SemVer) define un **piso mínimo** para el Tier. Un cambio puede escalar de Tier si es muy complejo, pero NUNCA puede bajar del piso que le marca el SemVer:
+- **MAJOR (Breaking Changes):** Piso mínimo **Tier 3**. `release.md` y `docs.md` OBLIGATORIOS.
+- **MINOR (Nuevas Features):** Piso mínimo **Tier 2**. `release.md` OBLIGATORIO. (`docs.md` condicional a impacto).
+- **PATCH (Bugfixes/Updates):** Piso mínimo **Tier 1** (o T0 si es micro). El código cambia, requiere subir versión (ej. 1.0.1 -> 1.0.2). Se omite el `release.md`, `docs.md` es condicional, PERO obliga al Orquestador a inyectar una tarea explícita de "Actualizar versión en package.json y actualizar versión en README raíz" en el `tasks.md`.
+- **NONE (Internal Chores):** Piso mínimo **Tier 0**. Tareas internas. No se sube versión, se omite release.
 
-## Comandos y Acciones
-| Comando | Acción |
-|---------|--------|
-| `/sdd-explore` | **DEPRECADO:** La fase Explore ahora se delega al workflow. **Acción:** Pide al humano que cierre el chat e inicie `/funky-explore` pasándole el path del feature y un "Objetivo Especial". |
-| `/sdd-propose` | **PRERREQUISITO:** Archivos existen. **Acción:** Completar/Editar `proposal.md` + `spec.md` usando `replace_file_content`. **PROHIBIDO** sobrescribir desde cero. |
-| `/sdd-ff` | **PRERREQUISITO:** Fases anteriores completas. **LUEGO:** `view_file tasks.md` (inyectado por CLI) y completarlo con `replace_file_content`. **PROHIBIDO** sobrescribir. | Ver **Pipeline de Artefactos** abajo.
+**Aclaraciones Técnicas de Coherencia:**
+- **Patch Escalado:** Si un Patch es muy complejo, el humano o el Orquestador pueden escalarlo a Tier 2 voluntariamente para usar los workflows de protección, aunque su piso fuera T1.
+- **Branch Management (Fase 0):** Para cualquier operación de Tier 1 a Tier 4, la creación de rama (branch) y PR es **OBLIGATORIA**, incluso si el SemVer es NONE. No somos vaqueros. La única excepción donde no se hace branch es el Tier 0 (Micro-fix inline directo).
 
-## 🚦 Pipeline de Artefactos — Fase Tasks (/sdd-ff)
-El CLI inyecta los archivos según el tier. El Orquestador **solo llena lo que ya existe**. Si un archivo no existe → skip.
-| Paso | Archivo | Condición | 🚫 Guardrail |
-|---|---|---|---|
-| **1** | `tasks.md` | **SIEMPRE existe.** Llenar con todas las fases de código. | No pases al Paso 2 si hay tareas ambiguas o incompletas. |
-| **2** | `docs.md` | **Si existe** → llenar. Si no existe → saltar al Paso 3. | **PROHIBIDO crear este archivo.** Solo el CLI lo genera. |
-| **3** | `release.md` | **Si existe** → llenar. Si no existe → pipeline terminado. | **PROHIBIDO crear este archivo.** Solo el CLI lo genera. |
-
-## 🔴 Return Statement — Delegación por Message Passing (MANDATORY — BLOCKING)
-No puedes emitir el prompt de delegación sin este Pre-Gate:
-| # | Verificación | Si falla |
-|---|-------------|----------|
-| G1 | ¿El scope en `tasks.md` está perfectamente delimitado para el Worker? | Refinar `tasks.md` AHORA |
-| G2 | ¿La fase actual tiene la etiqueta `[⚠️ RIESGO ALTO]`? | **PROHIBIDO delegar directo.** Frena y pregúntale al humano si quiere delegar al `/funky-suborchestrator` |
-| G3 | ¿Es una tarea **Tier 4**? | Instruir directo al humano: *"Cierra este chat, abre uno nuevo y ejecuta `/funky-{fase} [openspec/changes/{feature}/]`."* |
-
-> 🔴 Si G1 o G2 fallan → Corrígelo primero. Luego emitir instrucción directa al humano (Message Passing):
-> "El plan está listo. Cierra este chat, abre uno nuevo y ejecuta:
-> `/funky-worker Ejecuta la Fase N. Tu scope es [ruta-a-tasks.md]`"
-
-Observacion humano: El G2 no sé si aun tiene sentido ya que tasks se ha migrado a custom workflow en cualquier tier para que el orquestador no tenga que leer basura a la hora de crear tasks. Pero tambien hay la posibilidad de que las tasks no detallen correctamente la intencion, esto es solucionado en tier 3/4 ya que el funky-apply tiene que leer artefactos anteriores, pero en tier 2 no lo tengo muy seguro, ya que se delega mediante worker el cual es mas basico que un funky-apply.
-
-
-7.3.1
-
-7.3.2
-
-7.3.3
-
+Con esta regla, el Orquestador protege el SDD. Si el humano pide un breaking change de DB y dice "es Tier 1", el Orquestador frena: *"Karnal, romper contratos es MAJOR, a huevo nos vamos a Tier 3 aislando fases"*.
 ### 7.4. El "Explore Ligero" — Sabueso Desechable (Protección de Contexto del Orquestador)
 Para investigaciones rápidas fuera del flujo SDD (ej. "¿dónde se define X?", "¿qué archivo maneja el stack trace de Y?"), donde lanzar `/funky-explore` completo es excesivo y que el Orquestador lea código directamente ensuciaría su memoria.
 
@@ -186,4 +162,8 @@ El Microplanning era una capa de "digestión" que el Orquestador hacía para que
 El workflow de tasks **no recibe el Tier como parámetro**. En su lugar, detecta el riesgo de forma autónoma al analizar el trabajo a realizar. Si identifica una tarea de alto impacto (ej. modificar auth, una query raíz, un contrato de API), lo reporta en su **Return Envelope**:
 > `⚠️ Riesgo detectado en Tarea N: [descripción]. Se recomienda revisar antes de continuar.`
 
-El Orquestador, que sí conoce el Tier y el contexto de negocio, es quien decide si escala o continúa. Separación de responsabilidades limpia: el workflow detecta, el Orquestador decide.
+El Orquestador, que sí conoce el Tier y el contexto de negocio, actúa como Puerta de Escalamiento Dinámico al leer este Return Envelope:
+- **Riesgo manejable (T2):** El Orquestador añade una instrucción o guardrail extra directo en el prompt del Worker básico para darle contexto sobre el cuidado que debe tener.
+- **Riesgo crítico (T3):** El Orquestador frena la ejecución y le pide al humano escalar la fase a Tier 3, reemplazando al worker básico por el workflow `/funky-apply` que tiene todo el contexto arquitectónico.
+
+Separación de responsabilidades limpia: el workflow detecta, el Orquestador evalúa y mitiga.
