@@ -49,28 +49,41 @@ El riesgo de tener params como `has_design` específicos por workflow es que el 
 
 El Orquestador resuelve el contrato completo **una sola vez** antes de cualquier delegación, basándose en el Tier que ya conoce. Cada workflow recibe los 4 params y usa lo que necesita, ignora el resto. Cero acoplamiento Orquestador→workflow.
 
-### Pendiente decidir
+### P1. Pendiente decidir
 
-- ¿Los parámetros van como frontmatter en el prompt de lanzamiento, o como variables interpoladas en el template del workflow?
-- ¿El Orquestador los declara en voz alta al humano (para aprobación) antes de lanzar, o los pasa de forma autónoma?
-- Referencia cruzada: actualizar §5 y §7.5 del draft-tasks para apuntar al RFC 026 como la especificación formal de este contrato.
+- P1.1. ¿Los parámetros van como frontmatter en el prompt de lanzamiento, o como variables interpoladas en el template del workflow?
+### 1. Manejo de Params (Resolución a Pregunta 1)
+Los parámetros no deben vivir mutados ni interpolados dentro del archivo template en disco. Por principio de **Separation of Concerns**, el Orquestador pasará los parámetros estrictamente como **frontmatter en el prompt** de lanzamiento. Esto mantiene el entorno limpio, libre de lógica stateful innecesaria, e inyecta las dependencias directamente en la memoria durante el tiempo de ejecución.
+
+- P1.2. ¿El Orquestador los declara en voz alta al humano (para aprobación) antes de lanzar, o los pasa de forma autónoma?
+### 2. Ciclo de Vida y Transición Arquitectónica (Resolución a Pregunta 2)
+El flujo operará bajo el concepto de *Progressive Enhancement* y "Fall Gracefully", lo que permite testear los contratos del Orquestador de forma segura antes de soltar la automatización total.
+
+**Fase 1: El Puente Manual (Actual)**
+1. **Decisión y Sincronización:** El Orquestador identifica el sdd-init y evalúa y recomienda un Tier. El humano, que tiene la última palabra, ejecuta el CLI por su cuenta y le notifica de vuelta al Orquestador el Tier final en el que quedaron plantados.
+2. **Generación del Payload:** Con el Tier definido, el Orquestador genera el payload completo (Slash command del workflow + Params en frontmatter) en un formato listo estrictamente para *Copy-Paste* adaptado al tier seleccionado.
+3. **Auditoría:** El humano actúa como API proxy. Audita el bloque generado y, si todo está bien estructurado, lo copia y pega en un nuevo chat/workflow. Esto sirve como testeo funcional del comportamiento del Orquestador sin correr riesgos con loops autónomos.
+
+**Fase 2: Automatización con Subagentes (Futuro)**
+1. Cuando la Fase 1 compruebe estadísticamente que el Orquestador emite los *Copy-Paste* sin alucines y de manera perfecta, se elimina la fricción manual.
+2. El Orquestador pasará a invocar subagentes nativos de manera directa.
+3. **El contrato no cambia:** El mismito payload que antes el humano copiaba a mano, ahora el Orquestador lo empujará de forma programática al subagente.
+
+- P1.3.Referencia cruzada: actualizar §5 y §7.5 del draft-tasks para apuntar al RFC 026 como la especificación formal de este contrato.
 
 ---
 
 ## E2. El Template Siempre Manda — Incluso en Tier 4
 
 ### La observación
-
-En la discusión anterior se asumió que T4 usaría `artifact_state: new` porque "el workflow tiene vía libre". Pero eso es incorrecto: el template de `tasks.md` contiene cosas innegociables (ej. Phase 0: Branch Setup) que el prompt interno del workflow **no tiene**.
+En la discusión anterior se asumió que T4 usaría `artifact_state: new` porque "el workflow tiene vía libre". Pero eso es incorrecto en funky-tasks unicamente: el template de `tasks.md` contiene cosas innegociables (ej. Phase 0: Branch Setup) que el prompt interno del workflow **no tiene**.
 
 Si T4 recibe `artifact_state: new`, el workflow redactaría tasks desde cero y omitiría esas partes estructurales críticas. El resultado sería un `tasks.md` sin Branch Setup, sin guardrails de Fase 0 — aunque el agente sea "especialista".
 
 ### La conclusión
-
 `artifact_state: exists` debe ser **siempre el caso** únicamente para el workflow de funky-tasks — el CLI inyecta el template de tasks en todos los Tiers, incluido T4. Lo que cambia entre Tiers no es si hay template, sino **qué tan libre es el workflow para rellenar las fases**. 
 
 ### Implicación arquitectónica
-
 Ciertas instrucciones que hoy viven en el prompt interno del workflow (`/funky-tasks`, `/funky-apply`, etc.) deberían **migrarse al template de `tasks.md`**. El template pasa a ser la fuente de verdad estructural, y el prompt del workflow se adelgaza — solo lleva la inteligencia de contenido, no las reglas de estructura.
 
 Mencionar en el prompt del funky-tasks que debe hacer un replace content para evitar que sobreescriba desde cero
