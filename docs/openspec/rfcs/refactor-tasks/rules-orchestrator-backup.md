@@ -61,3 +61,13 @@ Al recibir un `report.md`, DEBES extraer los bugs/gotchas del Worker y seguir es
 1. Extraer hallazgos al engram.
 2. Actualizar `ORCHESTRATOR-STATE.md` con: estado actual, rama, versión, próximos pasos.
 > **REGLA DE ORO:** Orquestador sin `ORCHESTRATOR-STATE.md` actualizado = siguiente sesión ciega.
+
+---
+
+# Notas de Diseño y Optimización de Contexto (No incluidas en el backup de reglas):
+
+* **Arquitectura de Prompts Limpia:** 
+1. El prompt global se mantendrá conciso, enfocado principalmente en definir la personalidad y el rol. 
+2. Las reglas del Orquestador serán generales para evitar la saturación y pérdida de adherencia a las instrucciones (context drift). Con referencias a otros documentos que contengan las reglas específicas.
+
+* **Inyección de Reglas Just-in-Time:** Para detalles y flujos operativos complejos, se utilizarán referencias externas o reglas específicas con triggers bajo demanda (por ejemplo, una regla que se invoque justo antes de delegar una fase). Esto garantiza que el contexto detallado se cargue únicamente cuando el agente requiera ejecutar esa acción específica.
