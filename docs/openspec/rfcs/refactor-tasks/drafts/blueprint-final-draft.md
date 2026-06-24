@@ -126,7 +126,7 @@ En Tier 2, el orquestador actualmente redacta propose y spec de forma inline, lo
 En Tier 3+, el orquestador en modo auto **no debe delegar `/funky-apply` sin parar**. La descripción del workflow en el catálogo podría incluir una señal explícita de "requiere aprobación antes de ejecutar", aprovechando que el CLI inyecta el catálogo de workflows con su slash command y descripción en cada iteración.
 
 
-# ANEXOS
+# ANEXOS 
 ## A1. El "Explore Ligero" (Protección de Contexto)
 Para investigaciones rápidas (ej. revisar el stack trace de un error, buscar dónde se define una variable) donde el workflow robusto de `/funky-explore` es excesivo.
 **El Problema:** El Orquestador no debe ensuciar su memoria a corto plazo leyendo decenas de archivos de código fuente.
@@ -140,3 +140,8 @@ Para investigaciones rápidas (ej. revisar el stack trace de un error, buscar d�
 La regla en `sdd-orchestrator.md` se redacta con una directiva de **pedir aprobación** antes de lanzar el sabueso. Esto NO es el comportamiento final; es un test de comportamiento intencionado. Si el Orquestador pregunta "¿Puedo investigar esto con un subagente?", confirma que sus rules están en contexto y que detectó el patrón de forma autónoma.
 **`v2` (Producción — Autónomo):**
 Una vez validado el comportamiento, la rule se actualiza para que el Orquestador decida y ejecute el Explore Ligero **de forma autónoma**, sin avisar. Solo reporta el resultado al humano como parte de su respuesta. La aprobación desaparece.
+
+### A2. Arquitectura de Dos Tiempos: IDE Presente, CLI Futuro
+**Decisión Final:** Las aparentes contradicciones son en realidad dos puntos en el tiempo. Hay que hacer una separación cronológica clara en la arquitectura:
+1. **Fase Actual (IDE):** Proceso más manual (copy-paste) porque el IDE aún no tiene subagentes nativos plenos. El IDE seguirá siendo el rey para ejecución pura (Apply/Worker) donde brilla.
+2. **Fase Futura (CLI):** La orquestación pesada y delegación se moverá al CLI, donde vivirán los subagentes nativos operando en modo auto.
