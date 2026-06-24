@@ -37,6 +37,13 @@ El agente toma la redacción exacta proveída por el draft y la inyecta mediante
 
 ---
 
+## Cómo leer docs ya escritos por otros agentes sin contaminar tu propio contexto
+
+> ⚠️ **REGLA DE BÚSQUEDA (ANTI-DRIFT):** Si como agente necesitas verificar si un punto que estás por redactar choca con algo que **ya se consolidó en sesiones pasadas**, TIENES ESTRICTAMENTE PROHIBIDO usar `view_file` para leerte todos los `spec-*.md` enteros. Eso contamina tu memoria y arruina el contexto.
+>
+> **La única manera válida para auditar la historia sin ensuciarte es usar la herramienta `grep_search`.**
+> Debes buscar palabras clave muy específicas (ej. `artifact_state`, `has_design`, `target: new`) apuntando **exclusivamente** a los archivos finales aprobados (`spec-*.md`). Así extraes solo el bloque de texto exacto donde muerde la bala, confirmas si hay colisión, y mantienes tu memoria limpiecita para enfocarte en la arquitectura.
+
 ## 📋 Checklist Granular (por Sección del Index)
 Cada ítem corresponde a una sección exacta del índice de drafts. Se marca cuando el punto fue discutido, resuelto y consolidado en su `spec-*.md` final.
 Sirve para confirmar que ningún punto se quedó en el olvido.

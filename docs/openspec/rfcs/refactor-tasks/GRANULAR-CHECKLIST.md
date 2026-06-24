@@ -8,15 +8,15 @@
 - [x] **§A2 — Arquitectura de Dos Tiempos: IDE Presente, CLI Futuro** — Separación cronológica de roles.
 
 ### 📄 `delegaciones.md` *(CLOSED — revisar si hay info no absorbida)*
-- [ ] **§Inicial — Modo interactivo y Tier 2** — Ritmo de inyección de artefactos para frenar alucinaciones en cascada.
-- [ ] **§Separación CLI vs IDE** — CLI "piensa y coordina", IDE ejecuta con control del humano sobre diffs.
-- [ ] **§Kill Switch** — Prompt de advertencia para detener al agente IDE si se le exige orquestación.
+- [x] **§Inicial — Modo interactivo y Tier 2** — Ritmo de inyección de artefactos para frenar alucinaciones en cascada.
+- [x] **§Separación CLI vs IDE** — CLI "piensa y coordina", IDE ejecuta con control del humano sobre diffs.
+- [x] **§Kill Switch** — Prompt de advertencia para detener al agente IDE si se le exige orquestación.
 
 ### 📄 `draft-extras.md`
-- [ ] **§E1 — Contrato de Parámetros** — Unificación de `artifact_state`, `has_design`, `feature_name`, `tag` derivados del Tier.
-- [ ] **§1 — Manejo de Params** — Inyección obligatoria como frontmatter del prompt; plantillas físicas limpias.
-- [ ] **§2 — Ciclo de Vida y Transición Arquitectónica** — Fase 1 (Puente Manual Copy-Paste) → Fase 2 (Automatización total).
-- [ ] **§E2 — El Template Siempre Manda** — `tasks.md` mantiene Fase 0 (Branch Setup) intocable sin importar el Tier.
+- [x] **§E1 — Contrato de Parámetros** — Unificación de `artifact_state`, `has_design`, `feature_name`, `tag` derivados del Tier.
+- [x] **§1 — Manejo de Params** — Inyección obligatoria como frontmatter del prompt; plantillas físicas limpias.
+- [x] **§2 — Ciclo de Vida y Transición Arquitectónica** — Fase 1 (Puente Manual Copy-Paste) → Fase 2 (Automatización total).
+- [x] **§E2 — El Template Siempre Manda** — `tasks.md` mantiene Fase 0 (Branch Setup) intocable sin importar el Tier.
 
 ### 📄 `draft-tasks.md`
 - [ ] **§1 — Resumen y Motivación** — Fragmentación del monolito `tasks` en `tasks.md`, `docs.md` y `release.md`.
