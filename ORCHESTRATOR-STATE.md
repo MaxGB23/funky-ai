@@ -7,9 +7,9 @@
 ## 🏷️ Estado Actual
 
 - **Versión:** v2.5.1
-- **Rama activa:** `feature/023-deprecate-worker-handoff`
-- **Última sesión:** 2026-06-09
-- **Estado:** 🟢 Feature 023 completada. Doc-Ops finalizado. Listo para GitOps Humano (merge + tag v2.5.1).
+- **Rama activa:** `feature/refactor-tasks-sdd`
+- **Última sesión:** 2026-06-21
+- **Estado:** 🟡 En progreso. Fase de Diseño/RFC para Desacoplamiento Dinámico de Templates SDD. Se decidió abortar la creación del "God Object" (`final.md`) y pivotar hacia un patrón modular de documentación atómica indexada por `index.md`.
 
 ---
 

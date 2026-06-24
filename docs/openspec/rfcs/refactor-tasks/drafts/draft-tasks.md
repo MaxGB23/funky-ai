@@ -73,7 +73,7 @@ Para entender cuándo inyectar qué templates y cómo el Orquestador protege su 
 
 ### 7.1. Ciclo de Vida e Inyección Dinámica de NFRs (Trazabilidad Vertical)
 Para evitar el "Prompt Overfitting" (burocracia inútil en features simples) pero mantener un rigor arquitectónico brutal en features críticas (Tier 3/4), se propone un ciclo de vida evolutivo para los NFRs inspirado en prácticas de SRE:
-
+ 
 1. **Discovery (`explore`):** Es la primera línea de defensa. El agente actúa como *scout*. Al leer el código, si detecta riesgos reales (ej. "el endpoint ya es muy lento" o "este approach pega en la seguridad"), los levanta como *NFR Candidates* no estructurados. Si no hay riesgos evidentes, no inventa nada.
 2. **Formalización (`proposal`):** Si el `explore` (o el Orquestador/humano) levantó *NFR Candidates*, el proposal los formaliza como Tradeoffs, definiendo su intención y alcance de manera esbelta.
 3. **Bloqueo de Umbrales (`spec`):** Aquí es donde se ponen los fierros. Los NFRs formalizados se bloquean con métricas duras y medibles (ej. P95 < 200ms, 99.9% uptime).
