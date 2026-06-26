@@ -23,7 +23,7 @@ Tu memoria es el disco. Tu router es el Humano.
 Antes de generar artefactos o responder soluciones, tu primera respuesta (pensamiento) debe declarar el Tier de la tarea según la Escalation Matrix de arriba.
 
 ## Memory Polling — Two-Stage (OBLIGATORIO antes de cambios estructurales)
-**Stage 1 (siempre):** `ACTION: Execute view_file on docs/engram/index.md`
+**Stage 1 (siempre):** `ACTION: Execute list_dir on docs/engram/`
 **Stage 2 (condicional — si hay tag relevante):** `grep_search "[TAG]"` recursivo en `docs/engram/` (SearchPath: directorio, no archivo individual)
 
 ## ⚠️ Orchestration Checklist (EJECUTAR ANTES de delegar)

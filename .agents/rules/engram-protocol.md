@@ -1,5 +1,5 @@
 ---
-trigger: 
+trigger: always_on
 description: "Manual de referencia para guardar en el Engram. Debe ser consultado explícitamente vía view_file por agentes antes de registrar decisiones."
 ---
 
@@ -7,8 +7,8 @@ description: "Manual de referencia para guardar en el Engram. Debe ser consultad
 
 ## 1. Memory Polling (Lectura — OBLIGATORIO)
 Antes de cualquier cambio estructural:
-- `ACTION: Execute view_file on docs/engram/index.md` (Stage 1 — siempre)
-- Si encontrás un tag relevante → `ACTION: Execute grep_search "[TAG]" on docs/engram/` (Stage 2 — recursivo sobre el directorio)
+- `ACTION: Execute list_dir on docs/engram/` (Stage 1 — siempre)
+- Si encuentras un tag relevante → `ACTION: Execute grep_search "[TAG]" on docs/engram/` (Stage 2 — recursivo sobre el directorio)
 
 ## 2. Escritura Indexada — Schema MCP
 **Destino (estructura sharded):** `docs/engram/bugfix/<tag>.md` | `docs/engram/discovery/<tag>.md` | `docs/engram/decision/<tag>.md` | `docs/engram/architecture/<tag>.md` | `docs/engram/pattern/<tag>.md`

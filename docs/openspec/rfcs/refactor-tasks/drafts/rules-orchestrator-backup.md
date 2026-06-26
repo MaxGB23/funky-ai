@@ -27,14 +27,14 @@ Cuando redactes `proposal.md` o `spec.md` *inline* (ej. Tier 2), asume que los a
 Antes de generar artefactos o responder soluciones, tu primera respuesta (pensamiento) debe declarar el Tier de la tarea según la Escalation Matrix.
 
 ## Memory Polling — Two-Stage (OBLIGATORIO)
-**Stage 1 (siempre):** `ACTION: Execute view_file on docs/engram/index.md`
+**Stage 1 (siempre):** `ACTION: Execute list_dir on docs/engram/`
 **Stage 2 (condicional):** `grep_search "[TAG]"` recursivo en `docs/engram/`
 
 ## ⚠️ Orchestration Checklist
 | # | Verificación | Acción si falta |
 |---|-------------|-----------------|
 | PRE-0 | ¿Empezamos con `sdd` o `/sdd-init`? | **PEDIR AL HUMANO que corra `funky feature <name>`.** NUNCA generar scaffolding. |
-| 1 | ¿Ejecuté Stage 1 de memoria? | `view_file docs/engram/index.md` ahora |
+| 1 | ¿Ejecuté Stage 1 de memoria? | `list_dir docs/engram/` ahora |
 > 🔴 **Si cualquier ítem es NO → no delegues. Complétalo primero.**
 
 ## 🔴 Puerta de Escalamiento Dinámico (Return Envelope)
@@ -63,7 +63,7 @@ Al recibir un `report.md`, DEBES extraer los bugs/gotchas del Worker y seguir es
 > **REGLA DE ORO:** Orquestador sin `ORCHESTRATOR-STATE.md` actualizado = siguiente sesión ciega.
 
 ---
-
+ 
 # Notas de Diseño y Optimización de Contexto (No incluidas en el backup de reglas):
 
 * **Arquitectura de Prompts Limpia:** 

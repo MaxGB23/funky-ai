@@ -7,7 +7,7 @@ description: "Manual de referencia para guardar en el Engram. Debe ser consultad
 
 ## 1. Memory Polling (Lectura — OBLIGATORIO)
 Antes de cualquier cambio estructural:
-- `ACTION: Execute view_file on docs/engram/index.md` (Stage 1 — siempre)
+- `ACTION: Execute list_dir on docs/engram/` (Stage 1 — siempre)
 - Si encuentras un tag relevante → `ACTION: Execute grep_search "[TAG]" on docs/engram/` (Stage 2 — recursivo sobre el directorio)
 
 ## 2. Escritura Indexada — Schema MCP

@@ -1,12 +1,16 @@
-# Reporte de Ejecución: [Nombre de la Funcionalidad o Cambio]
+# Reporte de Ejecución: 025-engram-index-free-navigation
 
 ## Resumen Ejecutivo
-[Resumen de alto nivel del estado general de la feature. Actualizado por el Worker o al finalizar la feature.]
+Se implementó el listado dinámico del engrama (`list_dir docs/engram/`) para reemplazar la carga forzada de `index.md`. Esto mejora el rendimiento a O(1) y elimina el context waste. Las fases 0 y 1 fueron completadas con éxito.
 
 ---
 
 ## Archivos Modificados Globales
-[Lista acumulativa de archivos que fueron tocados a lo largo de las distintas fases.]
+- `docs/openspec/changes/025-engram-index-free-navigation/tasks.md`
+- `.agents/rules/sdd-orchestrator.md`
+- `.agents/rules/engram-protocol.md`
+- `funky-cli/src/templates/bootstrap/agents-rules-sdd-orchestrator.md`
+- `funky-cli/src/templates/bootstrap/agents-rules-engram-protocol.md`
 
 ---
 
@@ -24,13 +28,23 @@
 ## Historial de Fases
 > **[SISTEMA - PARA EL WORKER]** Añade tus reportes al final de esta sección copiando la estructura base de la "Fase 1". TIENES PROHIBIDO borrar los reportes de workers anteriores o sobrescribir el archivo completo.
 
-### Fase 1 — [Nombre]
-- **Status:** [✅ Completada / ❌ Bloqueada]
-- **🔴 Cambio de Scope Detectado:** [No / Sí - Razón]
+### Fase 0 — Branch Setup
+- **Status:** ✅ Completada
+- **🔴 Cambio de Scope Detectado:** No
+- **Archivos creados/modificados:** Ninguno
+- **Bugs encontrados:** Ninguno
+- **Próxima acción:** Continuar con Fase 1
+
+### Fase 1 — Rules & Templates Modification
+- **Status:** ✅ Completada
+- **🔴 Cambio de Scope Detectado:** No
 - **Archivos creados/modificados:**
-  - `archivo.js`: Breve descripción del cambio
-- **Bugs encontrados:** [Ninguno]
-- **Próxima acción:** [Instrucción para el orquestador]
+  - `.agents/rules/sdd-orchestrator.md`: Se cambió `view_file docs/engram/index.md` a `list_dir docs/engram/` en Memory Polling Stage 1.
+  - `.agents/rules/engram-protocol.md`: Actualizada la recuperación de contexto al nuevo discovery.
+  - `funky-cli/src/templates/bootstrap/agents-rules-sdd-orchestrator.md`: Actualizado para sincronizar con la regla principal.
+  - `funky-cli/src/templates/bootstrap/agents-rules-engram-protocol.md`: Actualizado para sincronizar con la regla principal.
+- **Bugs encontrados:** Ninguno
+- **Próxima acción:** /funky-verify
 
 ---
 

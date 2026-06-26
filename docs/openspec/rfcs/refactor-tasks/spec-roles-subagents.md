@@ -125,3 +125,32 @@ En Tier 3+, el Orquestador en modo auto **no debe delegar `/funky-apply` sin par
 * **Ventaja vs `self`:** No hereda la personalidad, guías de web ni el catálogo de skills y workflows del Orquestador. Nace 100% enfocado.
 * **Desventaja vs `self`:** No conoce los slash commands, el Orquestador debe traducir el comando a su ruta física antes de invocarlo.
 * **Validación Requerida:** A diferencia del `self` con workflows, aquí **SÍ será obligatorio** exigirle un `WORKFLOW_LOADED: [nombre]` para confirmar que leyó la ruta física del workflow antes de ejecutar.
+
+---
+
+### Explore Ligero — El Sabueso Desechable (§7.4)
+
+Para investigaciones rápidas fuera del flujo SDD (ej. "¿dónde se define X?", "¿qué archivo maneja el stack trace de Y?"), donde lanzar `/funky-explore` completo es excesivo y que el Orquestador lea código directamente ensuciaría su memoria.
+
+Escenario de uso:
+En SDD Tier 3+ tenemos un workflow funky-explore potente, pero para los tiers bajos de SDD (Tier 1 y 2) sería matar una mosca a cañonazos. Además, ni siquiera hace falta estar en SDD: el humano podría estar en una conversación normal (Tier 0) y decir algo como: "karnal, la feature X ha ocasionado estos problemas en producción".
+El Orquestador detecta que necesita revisar algunos archivos para encontrar la causa, pero también sabe que ponerse a explorar código él mismo sería ensuciar su contexto a lo imbécil. Su jale es mantenerse fresco para seguir orquestando, así que mejor delega un Sabueso Desechable (Explore Ligero) que investigue rápido, le regrese únicamente los hallazgos relevantes y luego desaparezca con todo el contexto que acumuló.
+Con esto resolvemos investigaciones rápidas tanto en conversaciones normales (Tier 0, fuera de SDD) como en SDD Tier 1 y 2, sin tener que lanzar un funky-explore completo.
+
+**Patrón de Invocación:**
+El Orquestador delega a un Sabueso (`TypeName: "research"`) con un prompt hiper-estricto. El agente hace el trabajo sucio y muere. El Orquestador recibe **únicamente un resumen de 2 líneas**, con su contexto intacto.
+
+```
+Prompt del Sabueso (estructura mínima):
+  - Tarea concreta y acotada
+  - Permisos: solo lectura
+  - Output obligatorio: resumen de máx. 10 líneas + path relevante
+  - Sin ruido, sin contexto extra
+```
+
+**Ciclo de Vida de la Rule (v1 → v2):**
+
+- **`v1` (Validación — Canary Behavior Test):** La rule en `sdd-orchestrator.md` incluye la directiva de **pedir aprobación** antes de lanzar el Sabueso. Esto NO es el comportamiento final. Es un test intencionado: si el Orquestador pregunta *"¿Puedo investigar esto con un subagente?"*, confirma que sus rules están activas y que detectó el patrón de forma autónoma.
+- **`v2` (Producción — Autónomo):** Una vez validado el comportamiento, la rule se actualiza para que el Orquestador lance el Sabueso **sin avisar**, reportando el resultado directo al humano como parte de su respuesta normal.
+
+> **Nota:** Este ciclo v1→v2 es el mismo patrón que aplica a toda delegación del Orquestador (ver Transición de Entorno en `spec-cli-ide-boundaries.md`). El Sabueso fue el primer caso de uso donde se formalizó.
