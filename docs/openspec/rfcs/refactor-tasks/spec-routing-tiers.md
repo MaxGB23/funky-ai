@@ -22,9 +22,9 @@
   - **Exploración:** Usa el "Explore Ligero" (Sabueso desechable) para no ensuciar la memoria del Orquestador leyendo código.
   - **Planeación:** El Orquestador redacta el `tasks.md` *inline*. (Regla: Si el tasks es demasiado complejo para redactarse inline, la feature debe escalarse a Tier 2).
   - **Ejecución:** Delegada al Worker básico.
-- **Tier 2 (Standard Feature):** Feature normal (2-5 archivos).
-  - **Exploración:** Delegada al workflow `/funky-explore`.
-  - **Planeación:** Orquestador redacta `proposal.md` y `spec.md` *inline*.
+- **Tier 2 (Standard Feature):** Feature normal (3-5 archivos).
+  - **Exploración:** Delegada al sabueso "Explore Ligero".
+  - **Planeación:** Orquestador delega `proposal.md` y `spec.md` ligeros.
   - **Tasks:** Delegada al workflow `/funky-tasks` (este workflow funge como detector de riesgo mediante su Return Envelope).
   - **Ejecución:** Delegada al Worker básico.
 - **Tier 3 (Deep):** Cambios complejos o de alto riesgo. CADA fase se aísla en su propio workflow. La ejecución la toma `/funky-apply` (que lee el `spec.md` y `design.md` directo, eliminando la necesidad de microplanning en el Orquestador).

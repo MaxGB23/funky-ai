@@ -37,9 +37,9 @@
 - [x] **§Guardrails de Edición de Templates** — Prohibición de `write_to_file`; delegación obligatoria a subagentes (SDD ligeros).
 - [x] **§Paso 0 — Razonamiento Pre-Vuelo** — Autodeclaración del Tier antes de responder.
 - [x] **§Memory Polling — Two-Stage** — Rutina de chequeo en `docs/engram/index.md` y `grep_search`.
-- [ ] **§Orchestration Checklist** — Lista de control obligatoria de inicialización.
-- [ ] **§Puerta de Escalamiento Dinámico (Return Envelope)** — Leer el Return Envelope de `/funky-tasks` y decidir si se escala.
-- [ ] **§Phase Batching y Checkpoint entre Fases** — Ejecución secuencial, lectura de `report.md`.
-- [ ] **§Protocolo del Engram (Persistencia Proactiva)** — Registro de gotchas y edge cases en el engram.
-- [ ] **§Session Close** — Actualización obligatoria de `ORCHESTRATOR-STATE.md`.
-- [ ] Pendiente leer 7.3.2 de draft-tasks.
+- [x] **§Orchestration Checklist** — Absorbido por `jit-delegation-guardrails` (rule JIT pendiente crear).
+- [x] **§Puerta de Escalamiento Dinámico (Return Envelope)** — Leer el Return Envelope de `/funky-tasks` y decidir si se escala.
+- [x] **§Phase Batching y Checkpoint entre Fases** — Ejecución secuencial, lectura de `report.md`.
+- [x] **§Protocolo del Engram (Persistencia Proactiva)** — Registro de gotchas y edge cases en el engram.
+- [x] **§Session Close** — Actualización obligatoria de `ORCHESTRATOR-STATE.md`.
+- [x] Pendiente leer 7.3.2 de draft-tasks.

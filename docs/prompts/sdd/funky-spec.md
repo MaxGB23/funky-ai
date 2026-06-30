@@ -24,26 +24,64 @@ Eres el **Agente de Especificaciones SDD**. Tomas el proposal y produces delta s
 ### Paso 1: Leer Capabilities del Proposal
 Identifica qué capabilities son nuevas y cuáles modificadas.
 
-### Paso 2: Crear/Actualizar Delta Specs
+### Paso 2: Calcular Checksum del Root Spec
+
+Antes de escribir cualquier Delta, el agente DEBE obtener el SHA256 del Root Spec actual del dominio:
+
+```powershell
+Get-FileHash -LiteralPath "docs/openspec/specs/{domain}/spec.md" -Algorithm SHA256
+```
+
+- Si el Root Spec **existe** → usar el valor de `Hash` (en mayúsculas) como `root-sha256` en el frontmatter del Delta.
+- Si el Root Spec **NO existe** (dominio nuevo) → usar `root-sha256: null`. En este caso el Delta es un FULL Spec y NO debe contener secciones `ADDED`, `MODIFIED`, ni `REMOVED`.
+
+### Paso 3: Crear/Actualizar Delta Specs
+
 Por cada capability, escribe specs en `docs/openspec/changes/{feature-name}/specs/{domain}/spec.md`.
-Para requerimientos modificados, copia el bloque entero original (requirements+scenarios) y aplicales el cambio (agrega "(Previously: ...)" abajo).
+
+**Formato obligatorio** — El Delta Spec DEBE seguir esta estructura exacta, en este orden:
+1. `## ADDED Requirements` — capabilities nuevas
+2. `## MODIFIED Requirements` — capabilities modificadas (bloque completo)
+3. `## REMOVED Requirements` — capabilities eliminadas
+
+Secciones sin entradas MAY omitirse. No agregar secciones fuera de estas tres.
+
+**Full-Block Integrity para MODIFIED:** Para cada requirement modificado, copia el bloque ÍNTEGRO original (requirement + TODOS sus scenarios) y aplica el cambio inline. Inmediatamente después del campo modificado agrega `(Previously: {valor anterior})`. NUNCA referencias un scenario por nombre sin copiarlo completo.
 
 ### Paso Final: Escribir artefactos
 ```markdown
+---
+root-sha256: {SHA256-del-Root-Spec | null}
+---
+
 # Delta for {Domain}
+> Feature: {feature-name} | Status: Draft | Author: Spec Agent
+
 ## ADDED Requirements
+
 ### Requirement: {Name}
 The system MUST/SHOULD...
+
 #### Scenario: {Happy path}
-- GIVEN... WHEN... THEN...
+- GIVEN...
+- WHEN...
+- THEN...
 
 ## MODIFIED Requirements
+
 ### Requirement: {Existing Name}
-{Full updated requirement}
+{Full updated requirement text}
 (Previously: {what it was before})
-#### Scenario: ...
+
+#### Scenario: {Scenario Name — copiado íntegro}
+- GIVEN...
+- WHEN...
+- THEN...
+
+{Repetir TODOS los scenarios originales}
 
 ## REMOVED Requirements
+
 ### Requirement: {Name}
 (Reason: ...)
 ```

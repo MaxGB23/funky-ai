@@ -116,7 +116,7 @@ No hay templates que inyectar. El "auto" aquí significa que las **delegaciones 
 
 El patrón de delegación del Orquestador evoluciona en dos versiones. Esta distinción aplica a **toda** delegación, no solo al Sabueso:
 
-**v1 — IDE / Puente Manual (Actual):**
+**v1 — IDE / Modo Handoff (Actual):**
 El Orquestador elabora el prompt del subagente → lo entrega al humano como bloque de copy-paste → el humano abre un nuevo chat, pega el prompt, obtiene el Return Envelope → lo pega de vuelta al Orquestador.
 El humano actúa como "cable" entre agentes. Es el precio a pagar por las herramientas visuales del IDE (diffs, accept/reject).
 
