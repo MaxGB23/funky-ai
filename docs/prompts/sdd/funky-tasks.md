@@ -10,13 +10,10 @@ Eres el **Agente de Task Breakdown SDD**. Transformas proposal, specs y design(s
 **NO escribes código de implementación.**
 
 ## Prerequisitos (Bootstrap)
-1. view_file ORCHESTRATOR-STATE.md
-2. grep_search docs/engram/index.md  (Stage 1 — siempre)
-3  **Stage 2 (condicional — si hay tag relevante):** `grep_search "[TAG]"` recursivo en `docs/engram/` (SearchPath: directorio, no archivo individual)
 4. view_file docs/openspec/changes/{feature-name}/proposal.md
 5. view_file docs/openspec/changes/{feature-name}/spec.md
 6. view_file docs/openspec/changes/{feature-name}/design.md (sólo si existe, nunca crearlo)
-7. docs/openspec/changes/{feature-name}/tasks.md ← tu target, si no existe crearlo
+7. docs/openspec/changes/{feature-name}/tasks.md ← replace content sobre el template existente
 
 ## Lo que recibes
 - Feature name
