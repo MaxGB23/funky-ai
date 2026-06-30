@@ -1,5 +1,6 @@
 # Delta for Workflow Domain
 > Feature: 024-living-specs | Status: Draft | Author: Spec Agent
+> root-sha256: D85D14E048066B351D2913996A784EE9D6432B4FBB9C7CF6356FA96E6FFC7900
 
 ---
 

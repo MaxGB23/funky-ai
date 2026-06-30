@@ -6,6 +6,8 @@ Directorio unificado de conocimientos, decisiones y patrones.
 
 - [[worker-handoff-deprecation] Deprecación de worker-handoff.md a favor de Message Passing directo. Los templates estáticos fueron eliminados para liberar I/O de disco. El return envelope schema ahora vive en el template del report.md.](./architecture/worker-handoff-deprecation.md)
 
+- [[living-specs] Transición a Living Specs completada. Los deltas (ADDED/MODIFIED/REMOVED) se mergean vía workflow con validación de checksum (root-sha256). Dominios nuevos usan root-sha256: null para FULL spec.](./architecture/living-specs.md)
+
 ## Pattern
 
 

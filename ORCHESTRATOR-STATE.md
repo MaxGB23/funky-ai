@@ -102,3 +102,4 @@
 | v2.4.1 | Arquitectura Sub-Orquestador (Arquitecto Táctico): `planning-handoff.md`, `/funky-suborchestrator` workflow, `sdd-micro-planner.md` refactorizado como esquema de salida, Gate G4 actualizado. |
 | v2.5.0 | Engram Sharding y comando `funky engram add`. Reemplazo de historial monolítico por indexación semántica distribuida. |
 | v2.5.1 | Message Passing Directo: Deprecación completa de `worker-handoff.md`. CLI limpiado. `funky-worker.md` y `report.md` refactorizados. |
+| 2026-06-30 | Feature 024-living-specs completada: Transición a Living Specs en `openspec/specs/`. Flujo de deltas validado con checksums y merge por LLM. |

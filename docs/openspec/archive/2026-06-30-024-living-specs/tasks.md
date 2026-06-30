@@ -1,6 +1,6 @@
 # Tasks: 024 — Transición a Living Specs
 
-**Estado:** 🟡 EN PROGRESO (Fases 0, 1, 2 y 3 completadas — pendiente Fase 4)
+**Estado:** 🟢 COMPLETADO
 **Rama:** `feature/024-living-specs`
 **Ref:** `proposal.md`, `specs/openspec/spec.md`, `specs/workflow/spec.md`
 
@@ -90,10 +90,10 @@ El motivo es que aun hay una feature que contiene un release.md (condicional dep
 
 > Objetivo: Validar el flujo completo con los artefactos de `024-living-specs`.
 
-- [ ] 4.1 Usar el Delta `specs/openspec/spec.md` de `024-living-specs` y ejecutar `/funky-archive` sobre el Root Spec del dominio `openspec` (crear Root Spec vacío si no existe, con `root-sha256: null`)
-- [ ] 4.2 Verificar que el Root Spec resultante contiene los 4 requirements del Delta sin omisiones ni parafraseos
-- [ ] 4.3 Usar un Delta con SHA256 desactualizado (modificar el hash manualmente) y verificar que el workflow aborta con error claro antes de escribir
-- [ ] 4.4 Verificar que `openspec/changes/024-living-specs/` es movido correctamente a `openspec/archive/` con el nombre apropiado
+- [x] 4.1 Usar el Delta `specs/openspec/spec.md` de `024-living-specs` y ejecutar `/funky-archive` sobre el Root Spec del dominio `openspec` (crear Root Spec vacío si no existe, con `root-sha256: null`)
+- [x] 4.2 Verificar que el Root Spec resultante contiene los 4 requirements del Delta sin omisiones ni parafraseos
+- [x] 4.3 Usar un Delta con SHA256 desactualizado (modificar el hash manualmente) y verificar que el workflow aborta con error claro antes de escribir
+- [x] 4.4 Verificar que `openspec/changes/024-living-specs/` es movido correctamente a `openspec/archive/` con el nombre apropiado
 
 ---
 
