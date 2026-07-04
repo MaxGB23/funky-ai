@@ -1,8 +1,7 @@
 <MANDATORY_RELEASE_PROTOCOL>
 
 ### FASE X — Doc-Ops [ORQUESTADOR — Inline]
-> **Objetivo:** Producir todos los artefactos de la release y ejecutar los archivados. El Orquestador lo hace inline mientras el contexto está fresco — no se delega a un Worker.
-> **Modelo:** El que está activo en la sesión actual (contexto ya cargado = cero transcripción).
+> **Objetivo:** Producir todos los artefactos de la release y ejecutar los archivados. El > **Modelo:** El que está activo en la sesión actual (contexto ya cargado = cero transcripción).
 
 > **Instrucción de Filtrado:** Evalúa los elementos [CONDICIONAL]. Si la condición NO se cumple para esta feature, NO incluyas la tarea en la lista final generada (elimínala por completo para no generar ruido visual).
 
@@ -12,7 +11,7 @@
 - [ ] **README (Root) [CONDICIONAL]:** Si la release cambió la versión, comandos o arquitectura conceptual → Actualizar `README.md` raíz manteniéndolo como Architecture Hub.
 - [ ] **CLI Docs (CLI README) [CONDICIONAL]:** Si la release incluyó nuevos comandos o flags → Actualizar tabla en `funky-cli/README.md`.
 - [ ] **Package.json:** Bumpar `"version"` en `funky-cli/package.json` a la nueva versión.
-- [ ] **Archivado:** Mover `docs/openspec/changes/{feature}/` → `docs/openspec/archive/{version}-{feature}/`. Ejecutar AHORA (antes del Humano Gitops).
+- [ ] **Archivado:**(DEPRECADO) Mover `docs/openspec/changes/{feature}/` → `docs/openspec/archive/{version}-{feature}/`. Ejecutar AHORA (antes del Humano Gitops).
 - [ ] **RFCs:** Decidir qué RFCs fueron implementados en esta release → Moverlos a `docs/openspec/archive/`. Ejecutar AHORA. (`proposals/` está deprecado — no usar).
 - [ ] **Sincronización:** Actualizar `ORCHESTRATOR-STATE.md` (versión, rama, estado estable).
 - [ ] **Smoke Test [DEPRECADO POR AHORA - IGNORAR]:** Si la feature altera el flujo E2E del proyecto → Agregar escenario de QA a `docs/operaciones/master-smoke-test.md`.
@@ -34,8 +33,8 @@
 - [ ] **Push:** `git push origin main --tags`
 - [ ] **Limpieza:** `git branch -d {branch-declarado}`
 
-> ⚠️ Esta fase es de ejecución puramente humana y local. Al finalizar el push, notificar al Orquestador en un chat nuevo para iniciar la planificación del siguiente ciclo.
+> ⚠️ Esta fase es de ejecución puramente humana y local. 
 
-> **MANDATORY:** Tu ÚLTIMA respuesta DEBE incluir un bloque con todos los ítems de `MANDATORY_RELEASE_PROTOCOL` marcados como `[x]` o `[OMITIDO: razón]`. Sin este bloque, la Fase NO se considera completa. Además de los resultados de testing estructurados.
+> **MANDATORY:** Tu ÚLTIMA respuesta DEBE incluir un bloque con todos los ítems de `MANDATORY_RELEASE_PROTOCOL` marcados como `[x]` o `[OMITIDO: razón]`. Sin este bloque, la Fase NO se considera completa. Además de los resultados de testing estructurados. Una vez terminado, la siguiente fase es funky-archive.
 
 </MANDATORY_RELEASE_PROTOCOL>

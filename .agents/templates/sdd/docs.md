@@ -1,8 +1,7 @@
 <OPTIONAL_DOC_UPDATE>
 
-> **[SISTEMA — ORQUESTADOR — DECISIÓN REQUERIDA]**
-> Analiza las tareas de la feature contra el índice de abajo. Si algún doc cubre exactamente lo que cambiará → expande esta fase con tareas concretas. Si ninguno aplica → **Avisa al humano que elimine el este file.**
-> **Regla de contexto:** NO abras ningún doc del índice todavía. La columna "Aplica si..." es suficiente para decidir. Solo se abre el archivo cuando entremos en fase pre-release y sea indicado por el humano.
+> **[SISTEMA - PARA FUNKY-TASKS]** Analiza las tareas de la feature contra el índice de abajo. Si algún doc cubre exactamente lo que cambiará → expande esta fase con tareas concretas. Si ninguno aplica → **Avisa al humano que elimine este file.**
+> **Regla de contexto:** NO abras ningún doc del índice todavía. La columna "Aplica si..." es suficiente para decidir. 
 
 ### 📚 Índice de Docs Vivos
 | # | Doc | Cubre | Aplica si... |
@@ -18,7 +17,10 @@
 ### FASE N+1 — Doc-Update [ORQUESTADOR — Inline]
 > Completar SOLO si al menos un doc del índice aplica. Para cada doc afectado, identificar el concepto o comportamiento modificado que justifica el cambio.
 
-**🚫 Restricción:** Abrir cada archivo SOLO en el momento de editarlo, nunca cuando se planea la tarea (Safe-Contexting)
+**🚫 Restricción de Contexto (Safe-Contexting y Tácticas de Cirujano):** 
+1. **Durante la Planeación:** NUNCA abrir los archivos documentales al redactar este checklist. Limítate a señalar la ruta y el concepto.
+2. **Durante la Ejecución (Orquestador):** ESTÁ PROHIBIDO hacer un `view_file` completo del documento para editarlo. Debes usar `grep_search` para buscar subtítulos (ej. `grep_search "^## "`) o palabras clave, y aplicar reemplazos quirúrgicos o adiciones. ¡Protege tu ventana de contexto!
+
 - [ ] **Doc [#N]** — `{ruta}`: Actualizar documento para reflejar: `{concepto nuevo o comportamiento modificado}`
-- [ ] Opcional: Sólo si la feature actual en cuestión crea un documento nuevo vital para el proyecto, debe añadirse al indice de docs vivos en el template .agents/templates/sdd/docs.md 
+- [ ] **Opcional:** Sólo si la feature actual en cuestión crea un documento "nuevo" (no contemplado en el indice) vital para el proyecto, debe añadirse al indice de docs vivos en el template .agents/templates/sdd/docs.md 
 </OPTIONAL_DOC_UPDATE>

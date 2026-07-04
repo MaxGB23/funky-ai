@@ -59,39 +59,25 @@ Actualmente hay solapamiento: ambos tienen reglas de formato (ej. Task Writing R
 
 ## Pendiente 3: Colisión de Archivado (`release.md` vs `/funky-archive`)
 **El Problema:**
-Existe un solapamiento de responsabilidades de archivado. El workflow `/funky-archive` (Paso 3) mueve la carpeta `changes/{feature}/` hacia `archive/{new-name}/`. Sin embargo, el template `release.md` (Fase X - Doc-Ops) también tiene una tarea dura de "Archivado" que instruye mover exactamente la misma carpeta. 
-Si una feature de Tier 3/4 tiene specs (usa funky-archive) y además es un Release Minor/Major (usa release.md), ambas lógicas colisionarán: el release intentará mover una carpeta que el workflow ya movió (o viceversa).
+Existe un solapamiento de responsabilidades de archivado. El workflow `/funky-archive` (Paso 3) mueve la carpeta `changes/{feature}/` hacia `archive/{new-name}/`. Sin embargo, el template `release.md` (Fase X - Doc-Ops) también tiene una tarea dura de "Archivado" que instruye mover exactamente la misma carpeta.
 
-**Posibles Soluciones (Para Debate):**
-1. **Condicional de Estado en `release.md`:** Modificar la regla de archivado en `release.md` para que diga: *"Si la carpeta `changes/{feature}` aún existe (porque no se usó `/funky-archive`), muévela. Si ya no existe, márcalo como OMITIDO."* (Ideal si `/funky-archive` solo se usa en Tiers altos).
-2. **Centralización en `/funky-archive`:** Extraer por completo la tarea de archivado del `release.md` y hacer que `/funky-archive` sea un paso obligatorio al final de **todos** los Tiers, unificando el proceso de cierre.
-3. **El Orquestador manda:** Ya que `release.md` lo ejecuta el Orquestador *inline*, enseñarle mediante un system prompt a detectar si la fase anterior fue `/funky-archive` para saltarse el checklist de archivado.
+**La Solución Aprobada (Centralización Definitiva en `/funky-archive`):**
+Dado que se determinó que Tier 2 sí redacta specs (ver Pendiente 6), se hace OBLIGATORIO el uso de `/funky-archive` tanto en Tier 2 como en Tier 3 para fusionar los specs. Por lo tanto, el archivado físico de la carpeta se centraliza al 100% en `/funky-archive`.
 
-*Recomendación:* La opción 1 es la más resiliente y requiere menos refactor arquitectónico inmediato.
+- **Se debe amputar la tarea de Archivado del `release.md`**. Este template se dedicará única y exclusivamente a tareas de GitOps (crear tag de GitHub, Release Notes, Bump Version).
+- **`/funky-archive` se convierte en la única fuente de verdad** para cerrar el ciclo de la carpeta de cambios. Principio de Responsabilidad Única (SRP) puro.
 
 ## Pendiente 4: Arquitectura del Flujo de Cierre (Tier 2 Specs, Archive y Release)
 **El Problema Raíz:**
-Se ha detectado un hueco arquitectónico grave. En Tier 2, se redacta un `spec.md` con un template desactualizado que no tiene relacion al flujo openspec actual(delta,root,full spec,etc). También como el Tier 2 no usa custom workflows, nunca se ejecuta `/funky-verify` ni `/funky-archive`. Como resultado, los specs del Tier 2 nunca se fusionan (merge) con el Root Spec del OpenSpec, dejándolos "huérfanos". 
+Como el Tier 2 no usa custom workflows, nunca se ejecuta `/funky-verify` ni `/funky-archive`. Como resultado, los specs del Tier 2 nunca se fusionan (merge) con el Root Spec del OpenSpec, dejándolos "huérfanos". 
 
-Adicionalmente, el flujo de templates al final de una feature (`tasks.md` -> `docs.md` -> `release.md`) requiere un orden determinista para no pisarse los pies, especialmente con el archivado físico de la carpeta (ver Pendiente 3).
+Adicionalmente, el flujo de templates al final de una feature requiere un orden determinista para no pisarse los pies, especialmente con el archivado físico de la carpeta (resuelto en Pendiente 3).
 
-**Puntos a Debatir para el Flujo Definitivo:**
-1. **¿El Tier 2 realmente necesita Specs? (Recomendado: NO):** En Tier 1 no hay specs. En Tier 3 viven los OpenSpecs (Living Specs) pesados. Si le quitamos al Tier 2 la obligación de crear un `spec.md`, se elimina de tajo el problema de los specs huérfanos. Tier 2 podría operar solo con un `proposal.md` (o un markdown de diseño interno) que sirve de contexto para el worker y muere ahí mismo al archivarse la feature, sin tocar los Root Specs globales.
-2. **Rol del `/funky-archive`:** Si Tier 2 ya no crea Specs, `/funky-archive` se queda como una herramienta exclusiva y estricta para el Tier 3 (y conserva su candado obligatorio de exigir `verify-report.md`). 
-3. **Limpieza del `release.md`:** Depurar basura visual del template (ej. el checkbox de Smoke Test marcado como "DEPRECADO") y oficializar que su tarea de archivado es 100% condicional al estado de la carpeta, por si el `/funky-archive` ya la movió en Tier 3.
-4. **El Orden de Ejecución Exacto:** 
-   - `tasks.md` (Siempre se ejecuta) -> al terminar llama a:
-   - `docs.md` (Condicional) -> al terminar llama a:
-   - `/funky-archive` (Condicional, exclusivo de Tier 3 con Specs vivos) -> al terminar llama a:
-   - `release.md` (Condicional, para GitOps y Release Notes finales).
-
-*Estatus:* Abierto a debate antes de tocar el código de los workflows o templates.
-
-Observación: Tasks es llenado por funky-tasks y ejecutado por funky-apply(tier 3) o funky-worker (tier 1 y 2). 
-Docs y release son inyectados condicionalmente por medio del comando funky feature ejecutado por el humano, el orquestador solo da una recomendacion de como responder a los inquirers y el humano decide.
-Si estos son inyectados, el funky-tasks tambien llena los templates de docs y release.
-Pero quién ejecuta estos? Actualmente el orquestador lo hace, ya que tiene el contexto de todo el flujo SDD, por lo que sabe cómo redactar docs como las release notes, etc.
-Tambien el orquestador llena los docs, pero estos pueden ser muy pesados si se hace un view file. 
+**El Orden de Ejecución Exacto (Aprobado):** 
+1. **`tasks.md`** (Siempre se ejecuta)
+2. **`docs.md`** (Condicional)
+3. **`/funky-archive`** (OBLIGATORIO para Tier 2 y Tier 3, consolida specs y mueve carpeta) 
+4. **`release.md`** (Condicional, exclusivo para GitOps y Release Notes finales, sin mover carpetas).
 
 ### Fragmentación del Monolito de Tareas
 Para mantener un "Change Folder" esbelto y cumplir con SRP (Responsabilidad Única), el histórico monolito `tasks` se divide en tres plantillas especializadas:
@@ -107,29 +93,86 @@ Para mantener un "Change Folder" esbelto y cumplir con SRP (Responsabilidad Úni
 | **MINOR** (Nuevas Features) | Tier 2 | ✅ OBLIGATORIO | Condicional |
 | **MAJOR** (Breaking Changes) | Tier 3 | ✅ OBLIGATORIO | ✅ OBLIGATORIO |
 
-## Pendiente 5: Ejecución de `docs.md` y `release.md` (Context Bloat vs Delegación)
-**El Problema:**
-Actualmente, el Orquestador ejecuta `docs.md` y `release.md` *inline*. Y es cierto que **el Orquestador siempre tiene el contexto** de lo que pasó (porque recibe los Return Envelopes de todas las fases, sin importar el Tier). 
-El problema real es el **Context Bloat (Saturación de Memoria):**
-Si obligamos al Orquestador a hacer `view_file` de templates de documentación pesados, y lo forzamos a redactar biblias de Release Notes o Specs de Arquitectura en su propio chat, su ventana de contexto se contamina con texto estático, degradando su inteligencia para futuras operaciones y encareciendo los tokens innecesariamente.
+## Pendiente 5: Ejecución de `docs.md` y `release.md` (El Orquestador Manda vs El Rol de `/funky-tasks`)
+**La Decisión Arquitectónica (Inline):**
+Se rechaza rotundamente la idea de delegar esto a un nuevo agente tipo `/funky-docops`. Hacerlo sería fatal, ya que el **Orquestador es el único ente que tiene todo el contexto fresco** de la sesión SDD (él planeó, razonó y dirigió a los workers). 
+Por lo tanto, la ejecución de `docs.md` y `release.md` se queda **INLINE** bajo la responsabilidad del Orquestador.
 
-**Posibles Soluciones (Para Debate):**
-1. **Delegación Documental (Workflow Dedicado):** Dado que redactar documentación es intensivo en texto, se propone crear un workflow especializado (ej. `/funky-docops` o `/funky-release`). El Orquestador simplemente le pasa el resumen (o los Return Envelopes) a este agente, y este agente hace el trabajo pesado de leer los templates, rellenar los `docs.md` y el `release.md`, aislando así la carga cognitiva.
-2. **Híbrido por Tier:** 
-   - **Tier 1 y 2:** Como el cambio es pequeño y el contexto está relativamente limpio, el Orquestador lo hace *inline* para ahorrar pasos.
-   - **Tier 3 (Deep):** Se delega a un agente especializado, porque la cantidad de cambios (y por tanto, la longitud de las Release Notes y Docs) justificaría limpiar la carga del Orquestador.
+**Mitigación de Context Bloat (El Poder de `/funky-tasks`):**
+Tras analizar los templates (`release.md` de ~40 líneas y `docs.md` de ~25 líneas), se confirma que **NO existe sobrecarga** al unificarlos en `/funky-tasks`. Al contrario, es el diseño más óptimo:
+- `/funky-tasks` ya procesó todos los artefactos SDD, así que sabe perfectamente de qué va la feature.
+- En lugar de crear flujos custom por doquier, `/funky-tasks` actúa como un "compilador de planeación". Lee las tablas estáticas (como el índice de docs vivos) y evalúa los condicionales de la release, escupiendo checklists **ya digeridos**.
+- Gracias a esto, el Orquestador nunca tiene que leer los templates crudos ni deducir qué aplica. Simplemente ejecuta las tareas pre-masticadas que `/funky-tasks` le dejó, se apoya del uso de grep y mantiene su ventana de memoria impecable y operando con pura eficiencia.
 
 ## Pendiente 6: Mergeo de Specs en Tier 2 (¿Dónde vive la lógica?)
 **Contexto:**
-Si Tier 2 mantiene su `spec.md` (Delta), alguien tiene que mergearlo al Root Spec del OpenSpec al cerrar la feature. El `funky-archive` hace esto perfectamente, pero tiene un candado que exige `verify-report.md` con status PASS. Tier 2 no tiene fase Verify.
+Dado que Tier 2 mantiene su `spec.md` (Delta), alguien tiene que mergearlo al Root Spec del OpenSpec al cerrar la feature. El `/funky-archive` hace esto perfectamente, pero tiene un candado que exige `verify-report.md` con status PASS. Tier 2 no tiene fase Verify.
 
-**Opciones evaluadas:**
+**La Solución Aprobada (Verify Condicional en `/funky-archive`):**
+Se confirma la modificación del Paso 0 del workflow `/funky-archive` para que diga: *"Si existe `verify-report.md`, debe estar en PASS. Si no existe, proceder sin él (asumiendo que es Tier 2 sin fase de Verify)."*
 
-1. **❌ Meter el mergeo en `tasks.md`:** Descartado. El Worker básico no tiene las instrucciones de precisión para fusionar Specs (Anti-Lazy, ADDED/MODIFIED/REMOVED). El riesgo de que corrompa el Root Spec es inaceptable.
+- **¿Por qué?** Esto mantiene el SRP intacto, reutiliza toda la lógica de fusión blindada del archive, y evita el Context Bloat masivo en el Orquestador (evitando que el Orquestador lo haga inline en `release.md`).
+- El `/funky-archive` se oficializa como el único "Conserje de Specs" y archivador universal para Tier 2 y Tier 3 (conectando directamente con el Pendiente 3).
 
-2. **❌ Meter el mergeo en `release.md`:** Descartado. El Orquestador tendría que hacer `view_file` del Root Spec gigante y escupir el documento fusionado en su propio chat, causando Context Bloat masivo (Pendiente 5).
+## Pendiente 7: Responsabilidad del Testing (¿Quién corre y arregla los tests por Tier?)
+**El Problema:**
+Actualmente, la tarea de correr tests (ej. `pnpm run test`) vive en `release.md` como una tarea condicional. El problema arquitectónico de esto es que `release.md` NO se ejecuta en features pequeñas (Tier 1/PATCH). Esto significa que Tier 1 podría integrar código roto a main sin pasar por ninguna validación automatizada.
 
-3. **✅ Hacer el candado de Verify Condicional en `/funky-archive` (Recomendado):** Modificar únicamente el Paso 0 del workflow para que diga: *"Si existe `verify-report.md`, debe estar en PASS. Si no existe, proceder sin él (asumiendo que es Tier 2 sin fase de Verify)."* Esto mantiene el SRP de cada artefacto intacto, reutiliza toda la lógica de fusión blindada del archive, y no contamina ni el Worker ni el Orquestador. El `/funky-archive` sigue siendo el único "Conserje de Specs" para Tier 2 y Tier 3.
+**El Debate de la Arquitectura de Testing (Aprobado):**
+Se define una reubicación estricta de las responsabilidades de testing, con el objetivo de evitar el **"Green-Washing"** (que un Worker mutile un test ciegamente solo para que pase) y proteger el contexto del Orquestador.
+
+1. **La Propuesta para Tiers 1 y 2 (Fast/Standard):**
+   - **Reubicación de la Tarea:** Se extrae el "Testing" de `release.md` y se inyecta como una subtarea obligatoria en la "Fase de Cierre" de `tasks.md`.
+   - **Responsable (Ejecución):** El mismo `funky-worker` que escribió el código es quien corre los tests.
+   - **Política Anti Green-Washing (NO-FIX Ciego):** Si los tests fallan, el Worker tiene **PROHIBIDO** modificar los tests o adivinar el fix de negocio. Su única labor es parar, capturar el log de error, documentarlo en su `report.md` (Return Envelope), sugerir un explore ligero y regresar el control al Orquestador.
+   - **El Ciclo de Diagnóstico (Mini-Explore):** Para evitar que el Orquestador se atasque leyendo basurero de logs crudos y stack traces, el Orquestador **no debe analizar el fallo directamente**. En su lugar, delega el log a un "Mini Explore".
+     - *El Filtro de Contexto (Protección Anti-Alucinaciones):* Como el Mini-Explore no conoce las reglas de negocio globales, el Orquestador funge como puente. En el prompt de delegación, el Orquestador inyecta el contexto vital de la feature y le prohíbe inventar fixes. El Mini-Explore se limita a emitir un diagnóstico técnico crudo ("tronó porque X devuelve undefined").
+     - Con este resumen técnico, el Orquestador (que sí tiene la visión completa del SDD) deduce la causa arquitectónica y genera un prompt ultra-específico para un nuevo Worker que aplicará el fix real.
+
+2. **El Flujo para Tier 3 (Deep):**
+   - **Responsable (Segregation of Duties):** En Tier 3, la feature es gigante y el testing lo corre el agente auditor `/funky-verify`.
+   - **Regla de Corrección:** `/funky-verify` sigue la misma política estricta de **No-Fix** (es un auditor puro). Si encuentra fallos, escupe un `FAIL` al Orquestador, y el Orquestador inicia el ciclo de diagnóstico para mandar un nuevo `/funky-apply`.
+
+**Reglas de Oro del Cierre:**
+- *(Nota de Seguridad GitOps):* El orden de ejecución post-testing debe ser estrictamente `tasks` -> `docs` -> `archive` -> `release`. Ejecutar `archive` después de `release.md` ensuciaría la rama principal, ya que `release.md` se encarga del push y borrado de rama.
+
+## Post-verify: cómo manejar issues
+Cuando `funky-verify` encuentra problemas, la decisión de delegar un nuevo apply depende de la gravedad.
+
+### Tabla de decisión
+
+| Tipo | Qué significa | Acción | ¿Bloquea archive? |
+|------|--------------|--------|-------------------|
+| 🔴 **CRITICAL** | Spec no cubierto, build roto, data loss, funcionalidad rota | → Nuevo `funky-apply` con las issues como tareas explícitas → `funky-verify` de nuevo | ✅ Sí. No archive hasta que pase. |
+| 🟡 **WARNING funcional** | Algo anda mal pero no rompe specs (ej: validación incompleta, edge case no manejado) | → Nuevo `funky-apply` con las issues → `funky-verify` de nuevo | ✅ Sí. No archive hasta que pase. |
+| 🟡 **WARNING cosmético** | Problema visual o de calidad que no afecta comportamiento (ej: `data-label` faltante, CSS roto en un breakpoint) | → Fix inline si es < 5 líneas y 1 archivo → `funky-apply` si toca múltiples archivos | ❌ No. Se corrige rápido y se archive. |
+| 🔵 **SUGGESTION** | Mejora opcional, deuda técnica, refactor futuro | → No se delega. Se anota en el archive report como "mejora futura". | ❌ No. No bloquea nada. |
+
+### Flujo post-verify
+
+```
+        ┌──────────┐
+        │  verify   │
+        └────┬─────┘
+             │
+      ┌──────┴──────────┐
+      ▼                 ▼
+  CRITICAL/         PASS /
+  WARNING          WARNING cosmético
+      │                 │
+      ▼                 ▼
+  sdd-apply         fix inline
+  (issues como         o
+   tareas)         anotar y seguir
+      │                 │
+      ▼                 ▼
+  sdd-verify         ARCHIVE
+      │
+     PASS
+      │
+      ▼
+   ARCHIVE
+```
 
 ---
 ```

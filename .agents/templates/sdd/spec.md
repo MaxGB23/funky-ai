@@ -1,5 +1,5 @@
 ---
-root-sha256: {Ejecutar Get-FileHash sobre el Root Spec del dominio. Si no existe Root Spec (dominio nuevo) → null}
+root-sha256: {Ejecutar Get-FileHash -LiteralPath "docs/openspec/specs/{dominio}/spec.md" -Algorithm SHA256. Si no existe Root Spec (dominio nuevo) → null}
 ---
 # Spec: [Nombre de la Funcionalidad o Cambio]
 
@@ -7,9 +7,14 @@ root-sha256: {Ejecutar Get-FileHash sobre el Root Spec del dominio. Si no existe
 > **RFC 2119:** MUST/SHALL = obligatorio · SHOULD = recomendado · MAY = opcional
 > ⚠️ **REGLAS CRÍTICAS:**
 > - DO NOT include implementation details (HOW) in specs. Only WHAT.
-> - Sección MODIFIED: copiar bloque COMPLETO del spec base, luego editar. Parcial = pérdida de datos.
+> - FULL Spec (dominio nuevo) → escribir todas las secciones como ADDED.
+> - DELTA Spec (dominio existente) → solo incluir secciones con cambios.
+>   Si ninguna sección aplica (refactor puro), escribir "**Spec-level changes:** None. Pure refactor — no behavior affected."
+> - MODIFIED: copiar bloque COMPLETO del spec base, luego editar. Parcial = pérdida de datos.
+> - REMOVED: identificar por nombre exacto del requirement.
 
 ## ADDED Requirements
+<!-- Incluir SOLO si hay comportamiento nuevo. Omitir si no aplica. -->
 
 ### Requirement: [Nombre]
 
@@ -26,6 +31,7 @@ El sistema MUST/SHALL/SHOULD [comportamiento específico].
 - THEN [resultado]
 
 ## MODIFIED Requirements
+<!-- Incluir SOLO si cambia comportamiento existente. Omitir si no aplica. -->
 
 ### Requirement: [Nombre Existente]
 
@@ -38,10 +44,7 @@ El sistema MUST/SHALL/SHOULD [comportamiento específico].
 - THEN ...
 
 ## REMOVED Requirements
+<!-- Incluir SOLO si se depreca funcionalidad. Omitir si no aplica. -->
 
 ### Requirement: [Nombre]
 (Reason: [por qué se depreca])
-
----
-
-> **[SISTEMA - PARA EL ORQUESTADOR]** Si la spec es aprobada y no hay cambios de scope, procede a generar el `tasks.md`.
