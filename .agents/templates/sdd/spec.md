@@ -1,3 +1,6 @@
+---
+root-sha256: {Ejecutar Get-FileHash sobre el Root Spec del dominio. Si no existe Root Spec (dominio nuevo) → null}
+---
 # Spec: [Nombre de la Funcionalidad o Cambio]
 
 > **Budget:** sé conciso · tablas > prosa · escenarios 3-5 líneas máx.

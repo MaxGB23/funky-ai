@@ -131,19 +131,5 @@ Si Tier 2 mantiene su `spec.md` (Delta), alguien tiene que mergearlo al Root Spe
 
 3. **✅ Hacer el candado de Verify Condicional en `/funky-archive` (Recomendado):** Modificar únicamente el Paso 0 del workflow para que diga: *"Si existe `verify-report.md`, debe estar en PASS. Si no existe, proceder sin él (asumiendo que es Tier 2 sin fase de Verify)."* Esto mantiene el SRP de cada artefacto intacto, reutiliza toda la lógica de fusión blindada del archive, y no contamina ni el Worker ni el Orquestador. El `/funky-archive` sigue siendo el único "Conserje de Specs" para Tier 2 y Tier 3.
 
-## Pendiente 7: Actualizar Template `spec.md` con Frontmatter de `root-sha256`
-**Contexto:**
-El "spec ligero" de Tier 2 es un **subagente con prompt acotado** que recibe el template `spec.md` y lo reemplaza con el contenido de la feature. El problema es que el template actual no tiene el frontmatter `root-sha256`, por lo que cualquier subagente ligero que lo use como base no sabrá que debe calcularlo antes de escribir.
-
-El workflow `/funky-spec` (Tier 3) sí lo contempla en su prompt porque es un agente completo. Pero el subagente ligero de Tier 2 no tiene esa instrucción.
-
-**Decisión Tomada:**
-Modificar el template físico `spec.md` para que siempre incluya el frontmatter como placeholder instructivo. Al ser el "contrato universal" que lee cualquier subagente (ligero o completo), la instrucción llega a ambos sin necesidad de duplicarla en cada prompt.
-
-**Cambio a realizar en `.agents/templates/sdd/spec.md`:**
-Agregar al inicio del archivo:
-```markdown
----
-root-sha256: {Ejecutar Get-FileHash sobre el Root Spec del dominio. Si no existe Root Spec (dominio nuevo) → null}
 ---
 ```
