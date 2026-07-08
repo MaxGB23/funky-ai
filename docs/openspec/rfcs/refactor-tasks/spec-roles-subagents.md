@@ -28,10 +28,12 @@ El ejecutor principal de tareas. Hereda al 100% las `<user_rules>` y el prompt d
 #### 1.3.1 Chalán Regular (Clon de Tareas Directas)
 * **Rol:** Ejecutar tareas de desarrollo y escritura de código con el workflow `/funky-worker` (Operaciones Tier 1/2).
 * **Invocación:** Usado para delegar implementaciones directas al disco.
+* **Ejecución en Batches:** Al operar con mínimo 2 batches, el Worker ejecuta la fase principal y frena. Si nota que su contexto se satura a medio camino, avisa. El Orquestador **siempre** delega los batches subsecuentes y el cierre/mergeo a un Worker *nuevo*. Nada de reciclarlos.
 
 #### 1.3.2 Chalán Vergas (Clon de Workflows Independientes)
-* **Rol:** Ejecutar las fases pesadas y custom workflows del SDD de forma independiente (ej. `/funky-apply`, `/funky-verify`). Operaciones complejas de arquitectura (Tier 3/4).
+* **Rol:** Ejecutar las fases pesadas y custom workflows del SDD de forma independiente (ej. `/funky-apply`, `/funky-verify`). Operaciones complejas de arquitectura (Tier 3, siendo este el nivel máximo).
 * **Invocación:** Usado para delegar Workflows completos mediante slash commands y parámetros.
+* **Ejecución en Batches:** A diferencia del Worker regular, aquí el batch de cierre/mergeo no vive en `tasks.md` (se pasa a `release.md`). Por ello, `/funky-apply` puede ejecutar sus tasks operativas de un solo jalón. Si la complejidad exige dividir el Apply en múltiples batches lógicos, cada batch corresponde a un subagente *diferente* de forma estrictamente secuencial. Jamás paralelos.
 
 ### 1.4 El Mierdillo (`custom` - Creado al vuelo)
 * **Rol:** Tareas mecánicas, súper aisladas y especializadas (ej. ejecutar linters, formateo, auditoría de dependencias, aplicar un skill específico).

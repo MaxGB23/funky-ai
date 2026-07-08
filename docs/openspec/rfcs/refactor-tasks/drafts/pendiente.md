@@ -4,7 +4,7 @@ El Orquestador debe administrar la ejecución (Workers/Apply) equilibrando el Co
 **Regla Anti-Solapamiento:** NUNCA se ejecutan subagentes en paralelo. Se delega uno, se espera su Return Envelope, y se lanza el siguiente.
 
 **Estrategia de Task Budgeting (Batching):**
-- **Tiers 1 y 2 (Fast/Standard):** Delegación **Full-Batch**. El Orquestador manda ejecutar *todas* las fases en un solo worker. Si el worker (al tener inteligencia táctica) detecta que el scope es demasiado grande para su ventana de contexto, tiene permitido frenar a la mitad, emitir su `report.md` (Return Envelope) parcial, y el Orquestador levantará un segundo worker para terminar.
+- **Tiers 1 y 2 (Fast/Standard):** Delegación en **mínimo 2 Batches**. El Orquestador siempre divide la ejecución: **Batch A** toda la lógica de código (Fase 0 → Fase N), **Batch B** es exclusivo para cierre y merge (Fase de Cierre/Merge). Esto garantiza que el estado final del repo sea revisable antes de integrar a `main`. Si el worker detecta que el scope del Batch A es demasiado grande para su ventana de contexto, tiene permitido frenar, emitir su `report.md` parcial, y el Orquestador levantará un worker intermedio antes del Batch B.
 
 **Resoluciones de los Pendientes:**
 
@@ -24,21 +24,35 @@ Se mantendrá el uso de un archivo físico `report.md` en lugar de emitir texto 
 **Checkpoints (Modo Interactivo):**
 En Modo Interactivo, **ES OBLIGATORIO** que el Orquestador haga una pausa después de recibir cada Return Envelope de ejecución. Debe pedir aprobación explícita al humano (para revisar diffs) antes de autorizar y lanzar el siguiente apply.
 
-### 7.1. [DRAFT] Inspiración de Gentle AI (Para Debate)
-**Heurísticas Duras de División:**
-- **Regla Empírica:** Si la estimación de la tarea (PR Budget) proyecta tocar **más de 5 archivos o superar las 300-400 líneas**, es **obligatorio** dividir la delegación en batches (fases secuenciales). No hay lugar a dudas, se parte para proteger el contexto.
+### 7.1. Quién parte los batches (Enfoque Híbrido)
+Se requieren dos barreras de contención:
+- **Orquestador Proactivo (Primera línea):** Si `funky-tasks` proyecta un riesgo alto o más de 5 archivos en el PR Budget, el Orquestador debe subdividir activamente el Batch A (A.1, A.2, etc.) antes de delegar.
 
-**Sanity Check por Batch:**
-- Un Worker **NO** puede emitir su Return Envelope y cerrar el batch con código roto. Antes de finalizar su iteración, debe correr una validación rápida (ej. compilar, asegurar que no haya errores sintácticos) para evitar heredar basura al siguiente Worker.
+- **Worker Reactivo (Red de seguridad):** Si el Orquestador calculó mal y el worker en caliente detecta que su contexto se satura (ej. context drift inminente), debe levantar la mano, hacer un commit parcial (`report.md`) y frenar.
+Observacion: El funky-tasks debe retornar la cantidad de files que se tocarán y el riesgo de que el tamaño del pr exceda los 400-500 lineas.
+Los risks deben enfocarse unicamente en tasks.md, no en docs.md y release.md.
 
-**Merge Protocol del Estado (Anti-Sobreescritura):**
-- Cuando se usan Workers secuenciales, está **prohibido** que el Worker en turno sobreescriba ciegamente el plan (ej. `tasks.md`). Se debe aplicar un patrón de "Merge": el Worker lee las tareas completadas por los batches anteriores y solo añade el progreso de su batch. Esto evita que se pierda el historial de ejecución.
+### 2. Escalar de Tier 2 a Tier 3 a medio vuelo
+Si el budget risk de `funky-tasks` resulta muy alto y se decide subir a Tier 3, **los artefactos generados previamente (explore, design) se someten a revisión**. 
+El orquestador debe mandar a los custom workflows(tier 3), pero antes debe eliminar los artefactos anteriores para que los custom workflows trabajen sin ruido.
+
+### 3. Tier 1 mutando a Tier 2
+Para Tier 1, **el Orquestador siempre redacta las tasks**. Si hay necesidad de delegar a `funky-tasks`, es porque el Tier 1 estaba mal asignado. 
+Si el Orquestador, al intentar hacer las tasks de T1, nota que la complejidad amerita más peso, frena, reclasifica a Tier 2 y **arranca el flujo SDD completo (desde explore)**. Nada de saltarse fases, o terminamos con código espagueti.
+
+### 4. Diferenciación de Ejecución por Tiers (Workers vs funky-apply)
+- **Tiers 1 y 2 (Workers):** Ya tienen sus 2 batches mínimo resueltos. En Tier 1, ni falta hace el `funky-tasks`. En Tier 2 sí, pero lo normal es que no exceda. El worker ejecuta y es la última validación (frena si es necesario), y el Orquestador delega el resto a un *nuevo* worker.
+- **Tier 3 (funky-apply):** El Orquestador **no** delega a un worker normal, sino a un workflow `funky-apply`. El batch de cierre/mergeo no se genera en `tasks.md`, se pasa a un `release.md`. Por esto, el `funky-apply` puede ejecutar todas las tasks sin parar (si es un solo batch).
+- **Manejo de Batches Múltiples:** Si el Orquestador divide en batches, **cada batch corresponde a un subagente diferente de forma secuencial**. Nada de subagentes paralelos. El flujo es: Orquestador delega el primer worker/apply con su batch -> espera a que termine -> delega el segundo.
+- **Aprobación entre Batches:** El funcionamiento entre batches (esperar aprobación o seguir derecho) dependerá enteramente del modo configurado (`interactivo`, `auto`, o `handoff`).
+
+**Sanity Check por Batch:** *(→ Ver Pendiente 7 — fuente canónica y actualizada)*
+- La política de validación por batch (compilación, tests, no-fix ciego) está completamente definida en **Pendiente 7** (Responsabilidad del Testing). Lo documentado ahí es la referencia vigente y supercede lo que originalmente se esbozó aquí.
 
 **Verify de Ciclo Completo (Anti-Falsos Positivos):**
-- La validación contra los specs completos (`sdd-verify`) **solo se ejecuta una vez**, al final de todos los batches. Validar a medias produce fallos falsos porque no está la foto completa.
+- La validación contra los specs completos (`funky-verify`) **solo se ejecuta una vez**, al final de todos los batches. Validar a medias produce fallos falsos porque no está la foto completa.
 
-
-## Pendiente 2: Estrategia DRY (Prompt vs Template)
+## Pendiente 2: Estrategia DRY (Prompt vs Template) (Aprobado)
 *Borrador de estrategia para evitar duplicidad de responsabilidades entre `funky-tasks.md` (Workflow) y `tasks.md` (Template físico), respetando la regla "El Template Siempre Manda".*
 
 **El Problema:**
@@ -57,7 +71,7 @@ Actualmente hay solapamiento: ambos tienen reglas de formato (ej. Task Writing R
 
 *Próximo paso:* Limpiar el markdown hardcodeado del prompt y asegurar que el template tenga la Fase Condicional de Merge.
 
-## Pendiente 3: Colisión de Archivado (`release.md` vs `/funky-archive`)
+## Pendiente 3: Colisión de Archivado (`release.md` vs `/funky-archive`) (APROBADO)
 **El Problema:**
 Existe un solapamiento de responsabilidades de archivado. El workflow `/funky-archive` (Paso 3) mueve la carpeta `changes/{feature}/` hacia `archive/{new-name}/`. Sin embargo, el template `release.md` (Fase X - Doc-Ops) también tiene una tarea dura de "Archivado" que instruye mover exactamente la misma carpeta.
 
@@ -67,7 +81,7 @@ Dado que se determinó que Tier 2 sí redacta specs (ver Pendiente 6), se hace O
 - **Se debe amputar la tarea de Archivado del `release.md`**. Este template se dedicará única y exclusivamente a tareas de GitOps (crear tag de GitHub, Release Notes, Bump Version).
 - **`/funky-archive` se convierte en la única fuente de verdad** para cerrar el ciclo de la carpeta de cambios. Principio de Responsabilidad Única (SRP) puro.
 
-## Pendiente 4: Arquitectura del Flujo de Cierre (Tier 2 Specs, Archive y Release)
+## Pendiente 4: Arquitectura del Flujo de Cierre (Tier 2 Specs, Archive y Release) (APROBADO)
 **El Problema Raíz:**
 Como el Tier 2 no usa custom workflows, nunca se ejecuta `/funky-verify` ni `/funky-archive`. Como resultado, los specs del Tier 2 nunca se fusionan (merge) con el Root Spec del OpenSpec, dejándolos "huérfanos". 
 
@@ -93,7 +107,7 @@ Para mantener un "Change Folder" esbelto y cumplir con SRP (Responsabilidad Úni
 | **MINOR** (Nuevas Features) | Tier 2 | ✅ OBLIGATORIO | Condicional |
 | **MAJOR** (Breaking Changes) | Tier 3 | ✅ OBLIGATORIO | ✅ OBLIGATORIO |
 
-## Pendiente 5: Ejecución de `docs.md` y `release.md` (El Orquestador Manda vs El Rol de `/funky-tasks`)
+## Pendiente 5: Ejecución de `docs.md` y `release.md` (El Orquestador Manda vs El Rol de `/funky-tasks`) (APROBADO)
 **La Decisión Arquitectónica (Inline):**
 Se rechaza rotundamente la idea de delegar esto a un nuevo agente tipo `/funky-docops`. Hacerlo sería fatal, ya que el **Orquestador es el único ente que tiene todo el contexto fresco** de la sesión SDD (él planeó, razonó y dirigió a los workers). 
 Por lo tanto, la ejecución de `docs.md` y `release.md` se queda **INLINE** bajo la responsabilidad del Orquestador.
@@ -104,7 +118,7 @@ Tras analizar los templates (`release.md` de ~40 líneas y `docs.md` de ~25 lín
 - En lugar de crear flujos custom por doquier, `/funky-tasks` actúa como un "compilador de planeación". Lee las tablas estáticas (como el índice de docs vivos) y evalúa los condicionales de la release, escupiendo checklists **ya digeridos**.
 - Gracias a esto, el Orquestador nunca tiene que leer los templates crudos ni deducir qué aplica. Simplemente ejecuta las tareas pre-masticadas que `/funky-tasks` le dejó, se apoya del uso de grep y mantiene su ventana de memoria impecable y operando con pura eficiencia.
 
-## Pendiente 6: Mergeo de Specs en Tier 2 (¿Dónde vive la lógica?)
+## Pendiente 6: Mergeo de Specs en Tier 2 (¿Dónde vive la lógica?) (APROBADO)
 **Contexto:**
 Dado que Tier 2 mantiene su `spec.md` (Delta), alguien tiene que mergearlo al Root Spec del OpenSpec al cerrar la feature. El `/funky-archive` hace esto perfectamente, pero tiene un candado que exige `verify-report.md` con status PASS. Tier 2 no tiene fase Verify.
 
@@ -114,7 +128,7 @@ Se confirma la modificación del Paso 0 del workflow `/funky-archive` para que d
 - **¿Por qué?** Esto mantiene el SRP intacto, reutiliza toda la lógica de fusión blindada del archive, y evita el Context Bloat masivo en el Orquestador (evitando que el Orquestador lo haga inline en `release.md`).
 - El `/funky-archive` se oficializa como el único "Conserje de Specs" y archivador universal para Tier 2 y Tier 3 (conectando directamente con el Pendiente 3).
 
-## Pendiente 7: Responsabilidad del Testing (¿Quién corre y arregla los tests por Tier?)
+## Pendiente 7: Responsabilidad del Testing (¿Quién corre y arregla los tests por Tier?) (APROBADO)
 **El Problema:**
 Actualmente, la tarea de correr tests (ej. `pnpm run test`) vive en `release.md` como una tarea condicional. El problema arquitectónico de esto es que `release.md` NO se ejecuta en features pequeñas (Tier 1/PATCH). Esto significa que Tier 1 podría integrar código roto a main sin pasar por ninguna validación automatizada.
 

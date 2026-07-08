@@ -28,7 +28,7 @@ tag: string | null
 
 ## 2. El Template Siempre Manda (E2 - Caso Especial `tasks.md`)
 
-Aunque en Tier 3/4 no se inyectan plantillas para el diseño, hay una excepción: el `tasks.md`.
+Aunque en Tier 3 no se inyectan plantillas para el diseño, hay una excepción: el `tasks.md`.
 Un template físico (ej. el `tasks.md` inyectado por el CLI con su `Phase 0: Branch Setup`) es solo la "hoja membretada". Que la hoja tenga estructura no significa que el trabajo esté avanzado.
 
 ### 2.1 Preservación de la Estructura sin Hackear Parámetros
@@ -37,6 +37,11 @@ En versiones previas se sugería hackear parámetros para evitar que un workflow
 **Ley Absoluta:**
 Para proteger plantillas críticas (como `tasks.md`), el CLI inyecta el template a huevo. La preservación es **responsabilidad exclusiva del prompt interno del workflow** (ej. `/funky-tasks`), el cual debe incluir la directiva innegociable: *"Respeta la estructura base que encuentres, solo rellena, NUNCA sobreescribas desde cero"*.
 Esto garantiza que el workflow rellene las tareas sin necesidad de parámetros de estado, y sin borrar la estructura base.
+
+### 2.2 Fase de Merge Condicional en `tasks.md`
+Por diseño de la plantilla, es obligatorio cerrar el ciclo de la rama creada en la Fase 0. El template de `tasks.md` debe incluir siempre una fase final estática de "Cierre y Merge", cuyo comportamiento muta según los condicionales del CLI:
+- Si **SE INYECTA** el `release.md` (por ser un Release Mayor/Minor): Esta fase final de `tasks.md` simplemente instruye la transición para ejecutar el `release.md`.
+- Si **NO SE INYECTA** el `release.md` (Patch/None): Esta fase asume el control del cierre, indicando explícitamente hacer el merge de la rama hacia `main` y realizar la limpieza.
 
 ---
 

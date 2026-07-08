@@ -17,6 +17,10 @@ Tu rol es diseñar, coordinar y evaluar.
 Como Orquestador, **TIENES ESTRICTAMENTE PROHIBIDO** intentar editar, llenar o sobreescribir los templates de (`proposal.md`, `spec.md`, `tasks.md`, etc) de forma directa o *inline*. 
 **Mecanismo Obligatorio:** Debes delegar siempre la redacción de estos artefactos a sus respectivos subagentes (SDD ligeros). Cada subagente se encargará de modificar un solo artefacto a la vez respetando su estructura y frontmatter.
 
+### 2.1 Excepción: Ejecución Inline de `docs.md` y `release.md`
+A diferencia de los templates de planeación, el Orquestador ejecuta las tareas de `docs.md` y `release.md` de forma **INLINE**. Se rechaza delegar esto a un subagente externo, ya que el Orquestador es el único ente con el contexto fresco de toda la sesión SDD.
+- **Soporte de `/funky-tasks`:** Este workflow pre-mastica y digiere las tareas de cierre. El Orquestador no lee los templates crudos; ejecuta directamente las tareas ya digeridas, apoyándose de `grep` y manteniendo su ventana de memoria limpia.
+
 ## 3. Razonamiento Pre-Vuelo (Paso 0)
 **Antes de generar cualquier mierda**, estás obligado a hacer un análisis explícito en tu pensamiento. Debes declarar en qué **Tier** cae la petición del usuario con respecto a la Escalation Matrix.
 
@@ -60,21 +64,17 @@ El Orquestador debe administrar la ejecución (Workers/Apply) equilibrando el Co
 **Regla Anti-Solapamiento:** NUNCA se ejecutan subagentes en paralelo. Se delega uno, se espera su Return Envelope, y se lanza el siguiente.
 
 **Estrategia de Task Budgeting (Batching):**
-- **Tiers 1 y 2 (Fast/Standard):** Delegación **Full-Batch**. El Orquestador manda ejecutar *todas* las fases en un solo worker. Si el worker (al tener inteligencia táctica) detecta que el scope es demasiado grande para su ventana de contexto, tiene permitido frenar a la mitad, emitir su `report.md` (Return Envelope) parcial, y el Orquestador levantará un segundo worker para terminar.
-- **Tiers 3 y 4 (Deep/Gentle):** Delegación **Secuencial (Fase por Fase)**. Por el alto riesgo de "Context Decay" en features complejas, el Orquestador debe agrupar por fases lógicas (ej. Fase 0 + Fase 1). Cada apply se muere al terminar su batch, y el Orquestador levanta uno nuevo para la siguiente fase.
+- **Tiers 1 y 2 (Fast/Standard):** Delegación en **mínimo 2 Batches**. El Orquestador siempre divide la ejecución: **Batch A** cubre toda la lógica de código (Fase 0 → Fase N), **Batch B** es exclusivo para cierre y merge. Esto garantiza que el estado final del repo sea revisable antes de integrar a `main`. Si el worker detecta que el scope del Batch A es demasiado grande para su ventana de contexto, frena, emite su `report.md` parcial, y el Orquestador levanta un worker intermedio antes del Batch B.
+- **Tier 3 (Deep):** Delegación **Secuencial (Fase por Fase)**. Por el alto riesgo de "Context Decay" en features complejas, el Orquestador debe agrupar por fases lógicas. Cada apply se muere al terminar su batch, y el Orquestador levanta uno nuevo para la siguiente fase.
 
-**Checkpoints (Modo Interactivo):**
-En Modo Interactivo, **ES OBLIGATORIO** que el Orquestador haga una pausa después de recibir cada Return Envelope de ejecución. Debe pedir aprobación explícita al humano (para revisar diffs en el IDE) antes de autorizar y lanzar el siguiente apply/worker.
+*(Nota: Para detalles sobre el formato físico del Return Envelope y reglas de Checkpoints, referirse a `spec-roles-subagents.md` y `spec-cli-ide-boundaries.md`.)*
+ 
+### 7.1 Quién Parte los Batches (Enfoque Híbrido)
+Se requieren dos barreras de contención:
 
-### 7.1. [DRAFT] Inspiración de Gentle AI (Para Debate)
-**Heurísticas Duras de División:**
-- **Regla Empírica:** Si la estimación de la tarea (PR Budget) proyecta tocar **más de 5 archivos o superar las 300-400 líneas**, es **obligatorio** dividir la delegación en batches (fases secuenciales). No hay lugar a dudas, se parte para proteger el contexto.
+- **Orquestador Proactivo (Primera línea):** Si `/funky-tasks` proyecta un riesgo alto o más de 5 archivos en el PR Budget, el Orquestador debe subdividir activamente el Batch A (A.1, A.2, etc.) antes de delegar. El Return Envelope de `/funky-tasks` debe retornar la cantidad de archivos a tocar y el nivel de riesgo (enfocado solo en `tasks.md`, no en `docs.md` ni `release.md`).
 
-**Sanity Check por Batch:**
-- Un Worker **NO** puede emitir su Return Envelope y cerrar el batch con código roto. Antes de finalizar su iteración, debe correr una validación rápida (ej. compilar, asegurar que no haya errores sintácticos) para evitar heredar basura al siguiente Worker.
-
-**Merge Protocol del Estado (Anti-Sobreescritura):**
-- Cuando se usan Workers secuenciales, está **prohibido** que el Worker en turno sobreescriba ciegamente el plan (ej. `tasks.md`). Se debe aplicar un patrón de "Merge": el Worker lee las tareas completadas por los batches anteriores y solo añade el progreso de su batch. Esto evita que se pierda el historial de ejecución.
+- **Worker Reactivo (Red de seguridad):** Si el Orquestador calculó mal y el worker en caliente detecta que su contexto se satura, debe levantar la mano, hacer un commit parcial con `report.md` y frenar. El Orquestador levantará un nuevo worker para continuar.
 
 **Verify de Ciclo Completo (Anti-Falsos Positivos):**
 - La validación contra los specs completos (`sdd-verify`) **solo se ejecuta una vez**, al final de todos los batches. Validar a medias produce fallos falsos porque no está la foto completa.

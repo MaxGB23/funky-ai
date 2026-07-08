@@ -35,6 +35,16 @@
 Para cualquier operación de Tier 1 a Tier 4, la creación de rama (branch) y PR es **OBLIGATORIA**, incluso si el SemVer es NONE.
 **La única excepción:** Tier 0 (Micro-fix inline directo).
 
+### 1.4 Mutaciones a Medio Vuelo (Escenarios de Escalado)
+
+Durante el ciclo SDD, el nivel de complejidad o el PR budget pueden exceder lo proyectado, obligando al Orquestador a mutar de Tier. 
+
+- **Tier 1 mutando a Tier 2:**
+  Para Tier 1, el Orquestador siempre redacta las tasks *inline*. Si hay necesidad de delegar a `/funky-tasks`, es porque estaba mal asignado. Si el Orquestador, al intentar hacer las tasks de T1, nota que la complejidad amerita más peso, **frena, reclasifica a Tier 2 y arranca el flujo SDD completo (desde explore)**. Nada de saltarse fases, o terminamos con código espagueti.
+
+- **Escalar de Tier 2 a Tier 3:**
+  Si el budget risk de `/funky-tasks` resulta muy alto y se decide subir a Tier 3, los artefactos generados previamente (explore, design) se someten a revisión. El Orquestador debe mandar a los custom workflows (Tier 3), pero antes **debe eliminar los artefactos anteriores** para que los custom workflows trabajen sin ruido.
+
 ---
 
 ## 2. Reglas de Release: SemVer x SDD (§2 y §7.3.3)
@@ -63,6 +73,11 @@ El CLI (`funky feature`) se encarga puramente de la inyección mecánica de plan
 2. **Impacto en Docs Core** (Sí/No)
 3. **Tipo de Release SemVer** (Major/Minor/Patch/None)
 
+### 2.4 Fusión de Specs en Tier 2 (Verify Condicional)
+Dado que Tier 2 genera su propio `spec.md` (Delta), el uso de `/funky-archive` es **OBLIGATORIO** para fusionarlo al Root Spec del OpenSpec al cerrar la feature.
+`/funky-archive` opera con un candado condicional: *"Si existe `verify-report.md`, debe estar en PASS. Si no existe, proceder sin él (asumiendo que es Tier 2 sin fase de Verify)."*
+Esto permite a Tier 2 fusionar en corto sin requerir reportes de verificación formales, mientras se mantiene el SRP.
+
 ---
 
 ## 3. Trazabilidad Vertical de NFRs (§7.1)
@@ -79,16 +94,26 @@ Para evitar el "Prompt Overfitting" (burocracia inútil en features simples) per
 
 ---
 
-## 4. Arquitectura del `/funky-tasks` y Deprecaciones (§7.5)
+## 4. Arquitectura del `/funky-tasks`, Flujo de Cierre y Deprecaciones (§7.5)
 
-### 4.1 Un Solo Workflow Agnóstico al Tier
+### 4.1 Arquitectura del Flujo de Cierre
+
+Para evitar colisiones y mantener un orden determinista, el flujo de templates y archivado al final de una feature debe seguir exactamente esta secuencia:
+1. **`tasks.md`** (Siempre se ejecuta)
+2. **`docs.md`** (Condicional)
+3. **`/funky-archive`** (OBLIGATORIO para Tier 2 y Tier 3, consolida specs y mueve carpeta)
+4. **`release.md`** (Condicional, exclusivo para GitOps y Release Notes finales, sin mover carpetas).
+
+*(Nota: Este orden garantiza que `/funky-archive` sea la única fuente de verdad para mover la carpeta, y que no se ensucie la rama principal después de un `release.md`, ya que este último hace el push y borrado de rama).*
+
+### 4.2 Un Solo Workflow Agnóstico al Tier
 
 No se crearán múltiples versiones del workflow de tasks por Tier. El `/funky-tasks` tendrá comportamiento **adaptativo**: lee lo que exista en el Change Folder y ajusta la profundidad de las tasks en consecuencia.
 - Si encuentra `spec.md` y `design.md` → los consume y produce tasks enriquecidas con contexto de diseño.
 - Si solo tiene el contexto mínimo del Orquestador (T1) → trabaja con eso y produce tasks directas.
 - **Beneficio:** Un solo workflow para todos los Tiers. Sin duplicidad, sin mantenimiento paralelo.
 
-### 4.2 Deprecación del Microplanning
+### 4.3 Deprecación del Microplanning
 
 El Microplanning era una capa de "digestión" que el Orquestador hacía para que el Worker estándar pudiera ejecutar sin perderse. Con la migración a `/funky-apply`, este agente ya **lee directamente** el `spec.md` y el `design.md`, por lo que tiene más contexto que cualquier Worker con microplanning. La capa intermedia ya no agrega valor.
 
@@ -104,3 +129,15 @@ El Orquestador, que sí conoce el Tier y el contexto de negocio, actúa como Pue
 - **Riesgo crítico (T3):** El Orquestador frena la ejecución y le pide al humano escalar la fase a Tier 3, reemplazando al Worker básico por `/funky-apply`.
 
 Separación limpia: el workflow detecta, el Orquestador evalúa y mitiga.
+
+### 4.4 Estrategia DRY (Prompt vs Template)
+
+Para evitar duplicidad de responsabilidades entre el workflow `/funky-tasks` y el template físico `tasks.md` inyectado por el CLI, se aplica una estricta separación de roles:
+
+1. **El Motor Lógico (Prompt `/funky-tasks`):**
+   - Aporta inteligencia de negocio: identificar dependencias, heurísticas de partición y cálculo de PR Budget.
+   - **Prohibido:** Contener bloques de markdown hardcodeados que compitan con el formato del CLI. Debe limitarse a rellenar tareas a partir de la Fase 1.
+
+2. **El Contrato y Estado Vivo (Template `tasks.md`):**
+   - Aporta la estructura estática (Fase 0 de Branch, Fase Final de Cierre/Merge) y Guardrails de redacción (`> [SISTEMA]`).
+   - El workflow **tiene innegociablemente** que respetar esta "hoja membretada", forzando el cumplimiento sin sobrecargar de formato al agente planificador.
