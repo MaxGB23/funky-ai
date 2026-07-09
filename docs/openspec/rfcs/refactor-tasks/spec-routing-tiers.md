@@ -27,6 +27,7 @@
   - **Planeación:** Orquestador delega `proposal.md` y `spec.md` ligeros.
   - **Tasks:** Delegada al workflow `/funky-tasks` (este workflow funge como detector de riesgo mediante su Return Envelope).
   - **Ejecución:** Delegada al Worker básico.
+  - **Verificación:** Verify ligero obligatorio (build + tests + issues, sin template).
 - **Tier 3 (Deep):** Cambios complejos o de alto riesgo. CADA fase se aísla en su propio workflow. La ejecución la toma `/funky-apply` (que lee el `spec.md` y `design.md` directo, eliminando la necesidad de microplanning en el Orquestador).
 - **Tier 4 (Rediseño):** 8 Roles aislados, máximo límite de tokens. Frenado de emergencia.
 
@@ -43,7 +44,13 @@ Durante el ciclo SDD, el nivel de complejidad o el PR budget pueden exceder lo p
   Para Tier 1, el Orquestador siempre redacta las tasks *inline*. Si hay necesidad de delegar a `/funky-tasks`, es porque estaba mal asignado. Si el Orquestador, al intentar hacer las tasks de T1, nota que la complejidad amerita más peso, **frena, reclasifica a Tier 2 y arranca el flujo SDD completo (desde explore)**. Nada de saltarse fases, o terminamos con código espagueti.
 
 - **Escalar de Tier 2 a Tier 3:**
-  Si el budget risk de `/funky-tasks` resulta muy alto y se decide subir a Tier 3, los artefactos generados previamente (explore, design) se someten a revisión. El Orquestador debe mandar a los custom workflows (Tier 3), pero antes **debe eliminar los artefactos anteriores** para que los custom workflows trabajen sin ruido.
+  ~~Si el budget risk de `/funky-tasks` resulta muy alto y se decide subir a Tier 3...~~
+  **DEPRECADO.** El riesgo detectado por `funky-tasks` influye en el batching
+  (batches más chicos, verify parcial), no en el Tier. El Tier se define en el
+  preflight (orquestador + humano) y se respeta. Escalar es caro (descarta
+  artefactos ligeros) y crea una falsa red de seguridad.
+  La única excepción: riesgo CRITICAL (seguridad, data loss) → el orquestador
+  **frena y alerta al humano**, no escala automáticamente.
 
 ---
 
@@ -73,10 +80,12 @@ El CLI (`funky feature`) se encarga puramente de la inyección mecánica de plan
 2. **Impacto en Docs Core** (Sí/No)
 3. **Tipo de Release SemVer** (Major/Minor/Patch/None)
 
-### 2.4 Fusión de Specs en Tier 2 (Verify Condicional)
+### 2.4 Fusión de Specs en Tier 2 (Verify Obligatorio)
 Dado que Tier 2 genera su propio `spec.md` (Delta), el uso de `/funky-archive` es **OBLIGATORIO** para fusionarlo al Root Spec del OpenSpec al cerrar la feature.
-`/funky-archive` opera con un candado condicional: *"Si existe `verify-report.md`, debe estar en PASS. Si no existe, proceder sin él (asumiendo que es Tier 2 sin fase de Verify)."*
-Esto permite a Tier 2 fusionar en corto sin requerir reportes de verificación formales, mientras se mantiene el SRP.
+`/funky-archive` requiere `verify-report.md` en estado PASS. A diferencia de la
+versión anterior donde Tier 2 podía omitir verify, ahora el verify ligero es
+**obligatorio** después de apply. Esto protege los root specs de deltas rotos
+sin agregar ceremony pesada (build + tests + issues, sin compliance matrix).
 
 ---
 
@@ -124,9 +133,12 @@ El Microplanning era una capa de "digestión" que el Orquestador hacía para que
 El workflow de tasks **no recibe el Tier como parámetro**. En su lugar, detecta el riesgo de forma autónoma al analizar el trabajo a realizar. Si identifica una tarea de alto impacto (ej. modificar auth, una query raíz, un contrato de API), lo reporta en su **Return Envelope**:
 > `⚠️ Riesgo detectado en Tarea N: [descripción]. Se recomienda revisar antes de continuar.`
 
-El Orquestador, que sí conoce el Tier y el contexto de negocio, actúa como Puerta de Escalamiento Dinámico al leer este Return Envelope:
-- **Riesgo manejable (T2):** El Orquestador añade una instrucción o guardrail extra directo en el prompt del Worker básico.
-- **Riesgo crítico (T3):** El Orquestador frena la ejecución y le pide al humano escalar la fase a Tier 3, reemplazando al Worker básico por `/funky-apply`.
+El Orquestador, que sí conoce el Tier y el contexto de negocio, evalúa el riesgo:
+- **Riesgo manejable:** El Orquestador añade una instrucción o guardrail extra
+  en el prompt del Worker, y ajusta el batching (más batches, más chicos).
+- **Riesgo crítico (seguridad, data loss, breaking change no detectado):**
+  El Orquestador **frena y alerta al humano**. NO escala de Tier automáticamente.
+  El humano decide el curso de acción.
 
 Separación limpia: el workflow detecta, el Orquestador evalúa y mitiga.
 

@@ -9,14 +9,17 @@ Inicialmente se usaba el parámetro `artifact_state` para indicar si se creaba d
 Si en el raro caso (10%) ya existe un borrador o un WIP que necesita ser continuado, el Orquestador **no usará un parámetro**, sino que inyectará una regla en lenguaje natural al delegar: *"este artefacto necesita mejoras, analízalo y compleméntalo"*.
 
 ### 1.1 El Contrato Base
+
+> `has_design` fue deprecado. El design corre siempre en Tier 3, nunca en Tier 2/1.
+> No hay flag, no hay decisión del orquestador. Ver `06-design.md` en funky-interactive.
+
 ```yaml
-has_design: true | false
 feature_name: string
 tag: string | null
 ```
 
 ### 1.2 Resolución por Tier y Frontmatter
-- **Cero Acoplamiento:** El Orquestador **no debe** conocer la firma interna de cada workflow. Simplemente deriva los valores del contrato según el **Tier** en curso (ej. T3/T4 → `has_design: true`).
+- **Cero Acoplamiento:** El Orquestador **no debe** conocer la firma interna de cada workflow. Simplemente deriva los valores del contrato según el **Tier** en curso.
 - **Inyección Limpia:** Los parámetros se pasan estrictamente como **Frontmatter en el prompt de delegación** hacia el workflow.
 - **Instrucción de WIP:** Si existe un avance, el Orquestador añade la instrucción explícita de *"analizar y complementar"* directo en el prompt.
 

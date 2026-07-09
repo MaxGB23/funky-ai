@@ -132,5 +132,5 @@ El Orquestador elabora el mismo prompt → lo pasa directamente al subagente nat
 
 
 3. Este punto tal vez podría corresponder a otra sección o file, por lo que hay que revisarlo antes de tomar decisiones. La idea es determinar qué diferencia al tier 3 del 4, actualmente creo que tienen la misma cantidad de workflows, creo que el tier 3 se ha probado el no usar el design y el verify, pero no se qué tan factible sea. El quitar el design puede hacer el proceso mas fluido, pero el verify creo que es importante ya que en mi experiencia siempre han salido inconsistencias que se solucionan en esta fase. 
-Tambien he pensado en deprecar el tier 4 y que el tier 3 sea el mas potente, para evitar las mierdas de meter has_design, etc, pero es algo que aun no tengo claro, y queda pendiente organizar todos los drafts primero antes de tomar decisiones pendejas.
+Tambien he pensado en deprecar el tier 4 y que el tier 3 sea el mas potente, para evitar las mierdas de meter has_design, etc. **Resuelto:** `has_design` deprecado — Tier 3 = design siempre, sin flag. Pendiente organizar drafts para decidir el futuro del Tier 4.
 

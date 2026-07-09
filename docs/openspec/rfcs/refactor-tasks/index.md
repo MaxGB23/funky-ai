@@ -29,7 +29,7 @@ Este índice consolida las especificaciones, contratos arquitectónicos, decisio
   * **Cuándo leerlo:** Relevante al programar o extender workflows y configurar delegaciones en Tiers altos.
   * **Contenido:**
     * **1. Contrato de Parámetros de Delegación (El E1)**
-      * Establece la estructura de metadatos (`has_design`, `feature_name`, `tag`) para delegar workflows en Tiers Altos y depreca `artifact_state`.
+      * Establece la estructura de metadatos (`feature_name`, `tag`) para delegar workflows en Tiers Altos y depreca `artifact_state` y `has_design`.
     * **2. El Template Siempre Manda (E2 - Caso Especial `tasks.md`)**
       * Regla absoluta que obliga a los workflows a respetar la estructura base inyectada por el CLI sin sobreescribirla.
       * *Fase de Merge Condicional:* Manejo inteligente del cierre y merge según si se inyectó `release.md`.

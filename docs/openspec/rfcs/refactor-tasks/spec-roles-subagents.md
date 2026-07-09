@@ -54,7 +54,7 @@ Cuando se requiere una Skill específica, **el Orquestador NUNCA debe leer el ar
 
 ### 2.2 Delegación de Workflows del SDD (Vía Slash Command)
 Hubo un cambio de paradigma: **los workflows ya NO se delegan empaquetándolos como una skill, sino inyectando su slash command.**
-* **Proceso:** Al crear un Chalán (`self`), el Orquestador le pasa el slash command (ej. `/funky-apply`) y los parámetros del contexto (`artifact_state`, `has_design`, etc.).
+* **Proceso:** Al crear un Chalán (`self`), el Orquestador le pasa el slash command (ej. `/funky-apply`) y los parámetros del contexto que apliquen.
 * **Validación:** Dado que el agente `self` hereda el catálogo del CLI, al recibir el slash command nace conociendo el workflow. **No es necesario exigir un `WORKFLOW_LOADED:`**, el subagente entra directo a jalar.
 
 ### 2.3 Mitigación de Conflicto de Identidad (Para agentes `self`)

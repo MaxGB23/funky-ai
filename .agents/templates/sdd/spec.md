@@ -12,6 +12,7 @@ root-sha256: {Ejecutar Get-FileHash -LiteralPath "docs/openspec/specs/{dominio}/
 >   Si ninguna sección aplica (refactor puro), escribir "**Spec-level changes:** None. Pure refactor — no behavior affected."
 > - MODIFIED: copiar bloque COMPLETO del spec base, luego editar. Parcial = pérdida de datos.
 > - REMOVED: identificar por nombre exacto del requirement.
+> - COBERTURA: Es OBLIGATORIO cubrir happy paths y edge cases. Error states son requeridos solo si hay I/O, red o asincronismo.
 
 ## ADDED Requirements
 <!-- Incluir SOLO si hay comportamiento nuevo. Omitir si no aplica. -->
@@ -21,14 +22,19 @@ root-sha256: {Ejecutar Get-FileHash -LiteralPath "docs/openspec/specs/{dominio}/
 El sistema MUST/SHALL/SHOULD [comportamiento específico].
 
 #### Scenario: [Happy path]
-- GIVEN [precondición]
+- GIVEN [precondición ideal]
 - WHEN [acción]
-- THEN [resultado]
+- THEN [resultado exitoso]
 
 #### Scenario: [Edge case]
-- GIVEN [precondición]
+- GIVEN [precondición inusual o límite]
 - WHEN [acción]
-- THEN [resultado]
+- THEN [resultado esperado]
+
+#### Scenario: [Error state] <!-- Opcional: Requerido solo si hay I/O, red o asincronismo -->
+- GIVEN [condición de falla o error]
+- WHEN [acción]
+- THEN [manejo del error o resultado]
 
 ## MODIFIED Requirements
 <!-- Incluir SOLO si cambia comportamiento existente. Omitir si no aplica. -->
