@@ -16,7 +16,7 @@ Bienvenido a la matriz documental de **{{project_name}}**. Este proyecto utiliza
 
 ### 3. Fases SDD Activas
 *El trabajo en curso.*
-- **[`docs/openspec/changes/`](./docs/openspec/changes/)**: Carpeta de propuestas, tareas y reportes de agentes.
+- **[`openspec/changes/`](./openspec/changes/)**: Carpeta de propuestas, tareas y reportes de agentes.
 
 ## 🛠️ Flujo de Trabajo (Funky AI)
 Para trabajar en este proyecto:

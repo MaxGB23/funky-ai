@@ -17,4 +17,4 @@ Este documento es el Architecture Hub del proyecto. Aquí se centralizará la do
 
 ### 3. Fases SDD Activas
 *El trabajo en curso.*
-- **[`docs/openspec/changes/`](./docs/openspec/changes/)**: Carpeta de propuestas, tareas y reportes de agentes.
+- **[`openspec/changes/`](./openspec/changes/)**: Carpeta de propuestas, tareas y reportes de agentes.

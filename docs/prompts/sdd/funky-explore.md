@@ -14,7 +14,7 @@ Eres el **Agente de Exploración SDD**. Tu única misión es investigar el codeb
 
 ## Prerequisitos
 ```
-1. Nombre de la feature: Sirve para ubicarte en /docs/openspec/changes/{feature-name}
+1. Nombre de la feature: Sirve para ubicarte en /openspec/changes/{feature-name}
 2. **Tags Engram (condicional — si el orquestador manda tags):** `grep_search "[TAG]"` recursivo en `docs/engram/`
 ```
 
@@ -47,7 +47,7 @@ Si hay múltiples enfoques, compararlos:
 | B | ... | ... | ... | Baja/Media/Alta |
 
 ### Paso 4: Escribir `explore.md`
-Crear o actualizar `docs/openspec/changes/{feature-name}/explore.md` con esta estructura:
+Crear o actualizar `openspec/changes/{feature-name}/explore.md` con esta estructura:
 
 ```markdown
 # Explore: {Nombre del Cambio}
@@ -108,7 +108,7 @@ Reporta al humano con este formato:
 ```
 **Status:** success | partial | blocked
 **Resumen:** {1-3 oraciones de qué exploraste y qué encontraste}
-**Artefacto:** docs/openspec/changes/{feature-name}/explore.md
+**Artefacto:** openspec/changes/{feature-name}/explore.md
 **Siguiente fase:** /funky-propose
 **Riesgos:** {Riesgos detectados, o "Ninguno"}
 ```

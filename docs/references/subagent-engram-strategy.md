@@ -60,7 +60,7 @@ Tags sugeridos: [ui, theme, css]
 
 1. Buscar en engram con tags: ui, theme, css
    → encuentra decisiones de arquitectura, patrones, bugs previos
-2. Leer docs/openspec/changes/add-dark-mode/explore.md
+2. Leer openspec/changes/add-dark-mode/explore.md
 3. Producir proposal.md
 4. Devolver envelope
 ─────────────────────────────────

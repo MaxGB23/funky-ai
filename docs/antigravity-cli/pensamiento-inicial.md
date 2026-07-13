@@ -71,7 +71,7 @@ A nivel de Protocolo (El Toque Funky AI): Como depender de "texto libre en el pr
 
 Así es como lo manejamos como verdaderos ingenieros:
 
-Yo (Orquestador) le paso al worker el ID del archivo de tareas (ej. docs/openspec/changes/feature/tasks.md).
+Yo (Orquestador) le paso al worker el ID del archivo de tareas (ej. openspec/changes/feature/tasks.md).
 El worker ejecuta su trabajo asíncrono.
 El worker escribe los resultados estructurados (el código, el log de test, el estado de la tarea) físicamente en el disco.
 Cuando el worker termina, usa el canal IPC de texto nativo SOLO para mandarme un "ping" que dice: "Señor Arquitecto, tarea completada. Dejé el reporte estructurado en el archivo X".

@@ -76,7 +76,7 @@
   - **NO aplica →** Marcar como `[OMITIDO: sin cambios en código fuente — solo docs/templates/config]`.
 - [ ] **Release Notes:** Generar notas de release en la ubicación acordada para el proyecto.
 - [ ] **Versión:** Actualizar manifest (`package.json` u otro) a la nueva versión.
-- [ ] **Archivado:** Mover `docs/openspec/changes/{feature}/` → `docs/openspec/archive/{version}-{feature}/`. Ejecutar AHORA (antes del Worker).
+- [ ] **Archivado:** Mover `openspec/changes/{feature}/` → `openspec/archive/{version}-{feature}/`. Ejecutar AHORA (antes del Worker).
 - [ ] **Sincronización:** Actualizar `ORCHESTRATOR-STATE.md` (versión, rama, estado estable).
 - [ ] **Preparar datos para Git-Ops:** Declarar en este mismo `tasks.md` (sección Git-Ops abajo): versión, mensaje de commit, nombre del branch, mensaje del tag.
 
@@ -124,6 +124,6 @@ Al finalizar cada fase, actualizar `report.md` con:
 
 > **[SISTEMA — ORQUESTADOR — LEER ANTES DE COMUNICAR AL HUMANO]**
 > Antes de escribir cualquier instrucción al humano, verificar **en este orden**:
-> 1. ¿`worker-handoff.md` generado en `docs/openspec/changes/{feature}/`? Si **NO** → generarlo AHORA. No se delega ninguna fase sin handoff.
+> 1. ¿`worker-handoff.md` generado en `openspec/changes/{feature}/`? Si **NO** → generarlo AHORA. No se delega ninguna fase sin handoff.
 > 2. ¿Revisaste el Orchestration Checklist (items 0–4) en `.agents/rules/sdd-orchestrator.md`? Si **NO** → leerlo antes de continuar.
-> 3. Solo después de confirmar los dos puntos anteriores, instruir al humano: *"Cerrá este chat, abrí uno nuevo y decíme: `@docs/openspec/changes/{feature}/worker-handoff.md Ejecutá la Fase N`"*
+> 3. Solo después de confirmar los dos puntos anteriores, instruir al humano: *"Cerrá este chat, abrí uno nuevo y decíme: `@openspec/changes/{feature}/worker-handoff.md Ejecutá la Fase N`"*

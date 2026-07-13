@@ -95,7 +95,7 @@ funky init
 ✅ Creado: docs/funky-ai/cli/canvas-planning-guide.md
 ✅ Creado: docs/funky-ai/workers/plantilla-worker-handoff.md
 ✅ Creado: docs/architecture-assessment.md
-✅ Creado: docs/openspec/rfcs/000-TEMPLATE.md
+✅ Creado: openspec/rfcs/000-TEMPLATE.md
 ✅ Creado: TEMPLATE_GUIDE.md
 ✅ Creado: README.md
 ✅ Creado: PROJECT-CANVAS.md (Dinámico)

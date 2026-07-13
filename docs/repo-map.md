@@ -30,7 +30,7 @@
 | `historico/` | Histórico | Historial del proyecto (journey, releases, retrospectivas). | Activo |
 | `operaciones/` | Docs | Definición de flujos de trabajo (SDD, CI/CD). | Activo |
 
-### 2.2. OpenSpec (`docs/openspec/`) — Semántica de Directorios
+### 2.2. OpenSpec (`openspec/`) — Semántica de Directorios
 
 > ⚠️ **REGLA CRÍTICA PARA LA IA:** Estos dos directorios tienen roles DISTINTOS e incompatibles. No confundirlos.
 

@@ -29,7 +29,7 @@ No tomas decisiones de negocio, no escribes código en el proyecto. Tu único ou
 
 ### Paso 3: Redactar el Micro-Plan
 1. Una vez que tengas claridad total, genera el plan de implementación.
-2. Debes guardarlo como `docs/openspec/changes/<nombre_feature>/implementation_plan_task[N].md` (donde `N` es el número de la fase).
+2. Debes guardarlo como `openspec/changes/<nombre_feature>/implementation_plan_task[N].md` (donde `N` es el número de la fase).
 3. **MANDATORY:** La estructura interna de este archivo DEBE seguir exactamente el esquema dictado al final del propio `planning-handoff.md`.
 
 ### Paso 4: Cierre de Sesión

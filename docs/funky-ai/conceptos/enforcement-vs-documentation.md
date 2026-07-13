@@ -191,7 +191,7 @@ Para cada falla se responde la pregunta del documento: **¿cuál es el mecanismo
 
 ### Falla 1 — Omisión de estructura de directorios (`changes/{feature}/`)
 
-**Síntoma:** El Orquestador propuso ejecución directa sin crear `docs/openspec/changes/007-architecture-readiness-v2/`.  
+**Síntoma:** El Orquestador propuso ejecución directa sin crear `openspec/changes/007-architecture-readiness-v2/`.  
 **Mecanismo real:** El ciclo de vida de directorios (`backlog/ → changes/ → archive/`) **no aparece como paso explícito en ningún artefacto que el Orquestador lee al inicio de una tarea**. Está documentado en el engram, pero el Memory Polling es condicional (Stage 2) — el Orquestador solo lo busca si el índice lo señala como relevante.
 
 | Clasificación | Detalle |
@@ -204,7 +204,7 @@ Para cada falla se responde la pregunta del documento: **¿cuál es el mecanismo
 **Propuesta de enforcement:**  
 Agregar en `sdd-orchestrator.md`, dentro del Planning Checklist (línea 32), un ítem obligatorio:
 ```
-| 0 | ¿Existe `docs/openspec/changes/{feature}/`? | Crear la carpeta ANTES de escribir cualquier artefacto |
+| 0 | ¿Existe `openspec/changes/{feature}/`? | Crear la carpeta ANTES de escribir cualquier artefacto |
 ```
 Este ítem debe ser el primero, antes que el Memory Polling.
 

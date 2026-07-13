@@ -1,5 +1,5 @@
 ---
-root-sha256: {Ejecutar Get-FileHash -LiteralPath "docs/openspec/specs/{dominio}/spec.md" -Algorithm SHA256. Si no existe Root Spec (dominio nuevo) → null}
+root-sha256: {Ejecutar Get-FileHash -LiteralPath "openspec/specs/{dominio}/spec.md" -Algorithm SHA256. Si no existe Root Spec (dominio nuevo) → null}
 ---
 # Spec: [Nombre de la Funcionalidad o Cambio]
 

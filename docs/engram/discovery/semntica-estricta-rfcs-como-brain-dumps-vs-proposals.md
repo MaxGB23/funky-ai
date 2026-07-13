@@ -1,5 +1,5 @@
 ### [DISCOVERY][rfc-semantics-enforcement] Semántica Estricta: RFCs como Brain Dumps vs Proposals
 **What:** Cuando el humano crea RFCs con lluvia de ideas crudas o chats de IA, Orquestadores frescos en sesiones posteriores pueden confundirlos con especificaciones técnicas formales (Proposals), saltándose la fase de planificación SDD y causando deuda arquitectónica.
 **Why:** La semántica de la carpeta `rfcs/` no estaba protegida por ningún Guardrail bloqueante. El LLM confía inherentemente en cualquier documento técnico provisto por el usuario, sin importar su nivel de madurez.
-**Where:** Archivos en `docs/openspec/rfcs/` frente a `docs/openspec/changes/`.
+**Where:** Archivos en `openspec/rfcs/` frente a `openspec/changes/`.
 **Learned:** (1) Los RFCs deben ser exclusivamente "Brain Dumps" libres para el humano, y los Proposals deben ser artefactos formales generados solo por el Orquestador. (2) La protección más efectiva es un `000-TEMPLATE.md` obligatorio con un bloque de advertencia para IA en la parte superior, distribuido estáticamente mediante `funky init`. (3) Reforzar la separación en las reglas globales del Orquestador (`.agents/rules/sdd-orchestrator.md`).

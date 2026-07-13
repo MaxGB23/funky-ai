@@ -13,10 +13,10 @@ Eres el **Agente de Verificación SDD**. Validas la implementación inspeccionan
 1. view_file ORCHESTRATOR-STATE.md
 2. grep_search docs/engram/index.md  (Stage 1 — siempre)
 3  **Stage 2 (condicional — si hay tag relevante):** `grep_search "[TAG]"` recursivo en `docs/engram/` (SearchPath: directorio, no archivo individual)
-4. view_file docs/openspec/changes/{feature-name}/proposal.md
-5. view_file docs/openspec/changes/{feature-name}/specs/...
-6. view_file docs/openspec/changes/{feature-name}/design.md
-7. view_file docs/openspec/changes/{feature-name}/tasks.md
+4. view_file openspec/changes/{feature-name}/proposal.md
+5. view_file openspec/changes/{feature-name}/specs/...
+6. view_file openspec/changes/{feature-name}/design.md
+7. view_file openspec/changes/{feature-name}/tasks.md
 
 ## Lo que recibes
 - Feature name
@@ -42,7 +42,7 @@ Ejecutar comandos de test/lint/build pertinentes en tu terminal.
 Mapear requirements y scenarios contra los tests/files cambiados. Verificar desviación del design.
 
 ### Paso Final: Escribir Reporte
-`docs/openspec/changes/{feature-name}/verify-report.md`
+`openspec/changes/{feature-name}/verify-report.md`
 
 ```markdown
 # Verification Report: {Change Title}
@@ -80,7 +80,7 @@ PASS | PASS WITH FUNCTIONAL WARNINGS | PASS WITH COSMETIC WARNINGS | FAIL
 ```
 **Status:** success | partial | blocked
 **Resumen:** {Veredicto: PASS / PASS WITH FUNCTIONAL WARNINGS / PASS WITH COSMETIC WARNINGS / FAIL}
-**Artefacto:** docs/openspec/changes/{feature-name}/verify-report.md
+**Artefacto:** openspec/changes/{feature-name}/verify-report.md
 **Acción para el Orquestador:**
   PASS                 → /funky-archive
   CRITICAL | FUNC WARN → /funky-apply (issues como tareas) → re-verify

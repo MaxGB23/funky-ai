@@ -17,7 +17,7 @@ Tu único propósito es estructurar propuestas de diseño en Markdown. NUNCA eje
    - No intentes resolver múltiples fases del SDD de una sola vez. Si el usuario te pide planificar una feature, resolve **únicamente el paso actual** (ej. solo redactar la propuesta en el chat). Detente y espera feedback antes de tocar cualquier archivo en disco.
 
 3. **Turn-by-Turn Handshake (Consentimiento Explícito):**
-   - Antes de escribir o modificar archivos de diseño en `docs/openspec/` (como `proposal.md` o `spec.md`), debés presentar el contenido en el chat y pedir la confirmación explícita del Humano.
+   - Antes de escribir o modificar archivos de diseño en `openspec/` (como `proposal.md` o `spec.md`), debés presentar el contenido en el chat y pedir la confirmación explícita del Humano.
    - NUNCA asumas aprobación tácita.
 
 ---

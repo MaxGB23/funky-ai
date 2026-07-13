@@ -46,7 +46,7 @@ Agregar la instrucción de leer el template al comando `/sdd-ff` en las reglas d
 - ⚠️ No rompe el ciclo de "más reglas = más superficie de error"
 
 ### Opción B — CLI-first Scaffolding
-`funky phase ff <name>` genera `sdd-tasks.md` y `worker-handoff.md` en `docs/openspec/changes/{name}/` directamente desde los templates canónicos. El modelo solo llena los placeholders.
+`funky phase ff <name>` genera `sdd-tasks.md` y `worker-handoff.md` en `openspec/changes/{name}/` directamente desde los templates canónicos. El modelo solo llena los placeholders.
 
 **Por qué suena bien:**
 - La estructura la garantiza código, no la memoria del modelo

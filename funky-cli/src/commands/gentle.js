@@ -27,8 +27,8 @@ export function runGentle({ featureName, cliTemplatesDir, cwd }) {
     templatesToUse = cliTemplatesDir;
   }
 
-  // 3. Crear docs/openspec/gentle/<featureName>
-  const featurePath = path.join(cwd, 'docs', 'openspec', 'gentle', sanitizedFeatureName);
+  // 3. Crear openspec/gentle/<featureName>
+  const featurePath = path.join(cwd, 'openspec', 'gentle', sanitizedFeatureName);
   
   if (fs.existsSync(featurePath)) {
     return { success: false, error: `El directorio de la feature ya existe: ${featurePath}` };
@@ -52,7 +52,7 @@ export function runGentle({ featureName, cliTemplatesDir, cwd }) {
 }
 
 export const gentleCommand = new Command('gentle')
-  .description('Inicializa el scaffolding para Tier 4 Deep SDD (docs/openspec/gentle/<nombre>)')
+  .description('Inicializa el scaffolding para Tier 4 Deep SDD (openspec/gentle/<nombre>)')
   .argument('<featureName>', 'Nombre de la feature (ej: auth-login)')
   .action((featureName) => {
     const cliTemplatesDir = path.join(__dirname, '..', 'templates', 'gentle');

@@ -21,7 +21,7 @@ El Big Bang. Se ejecuta una sola vez por repositorio para inicializar la matriz 
 ## 🏗️ 2. Flujo SDD Estándar (Tiers 1 a 3)
 
 ### Comando: `funky feature <name>`
-Scaffolding masivo. Crea la carpeta en `docs/openspec/changes/{name}/` con todos los templates de golpe.
+Scaffolding masivo. Crea la carpeta en `openspec/changes/{name}/` con todos los templates de golpe.
 
 | Archivo Inyectado | Función | Cómo se complementan (La Cascada) |
 |-------------------|---------|------------------------------------|
@@ -39,7 +39,7 @@ Scaffolding masivo. Crea la carpeta en `docs/openspec/changes/{name}/` con todos
 ## ☢️ 3. Flujo SDD Hipercrítico (Tier 4)
 
 ### Comando: `funky gentle <name>`
-Deep SDD. Se usa para tareas de altísimo riesgo. Crea `docs/openspec/gentle/{name}/`.
+Deep SDD. Se usa para tareas de altísimo riesgo. Crea `openspec/gentle/{name}/`.
 
 | Archivo(s) Inyectado(s) | Función | Cómo se complementan |
 |-------------------------|---------|----------------------|

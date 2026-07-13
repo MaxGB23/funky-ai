@@ -6,7 +6,7 @@
 
 ### C) Especificación de Tarea
 ```
-view_file docs/openspec/changes/{feature-name}/tasks.md
+view_file openspec/changes/{feature-name}/tasks.md
 ```
 
 ### D) Skills Requeridas (Explicit Routing)
@@ -33,7 +33,7 @@ view_file [⚠️ COMPLETAR: RUTAS EXACTAS DE LAS SKILLS EN .agents/skills/ O DE
 
 ## 5. Return Envelope (Al terminar)
 
-Actualizá `docs/openspec/changes/{feature-name}/report.md` con:
+Actualizá `openspec/changes/{feature-name}/report.md` con:
 
 ```markdown
 ## Fase [N] — [Nombre de la Fase]

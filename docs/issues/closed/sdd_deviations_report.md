@@ -3,7 +3,7 @@
 Durante la sesión de planificación de la Tarea 007 (Architecture Readiness v2), como Orquestador cometí 3 desviaciones estructurales graves respecto al protocolo estricto de Funky AI.
 
 ## 1. Omisión de la Estructura de Directorios (Ciclo de Vida)
-**El Salto:** Tras leer el borrador en `docs/openspec/proposals/`, propuse armar la ejecución directamente, sin establecer el "campo de batalla" aislando la feature en su carpeta `docs/openspec/changes/007-architecture-readiness-v2/`.
+**El Salto:** Tras leer el borrador en `openspec/proposals/`, propuse armar la ejecución directamente, sin establecer el "campo de batalla" aislando la feature en su carpeta `openspec/changes/007-architecture-readiness-v2/`.
 **El Motivo:** El sesgo hacia la inmediatez. Al responder a la orden *"decime cuál es el siguiente paso"*, prioricé avanzar en la lógica funcional e ignoré el protocolo de ordenamiento del Workspace.
 
 ## 2. Omisión de la Especificación Arquitectónica (`spec.md`)

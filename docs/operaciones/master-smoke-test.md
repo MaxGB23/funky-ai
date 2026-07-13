@@ -24,7 +24,7 @@
 ### Escenario 2: Scaffolding de Feature (`funky feature`)
 **Origen:** Feature 009.b (CLI Scaffolding)
 1. [ ] En el mismo directorio inicializado del Escenario 1, ejecutar `funky feature test-feature`.
-2. [ ] **Validación:** Comprobar que el comando copia correctamente los Golden Templates desde `.agents/templates/sdd/` hacia `docs/openspec/changes/test-feature/`.
+2. [ ] **Validación:** Comprobar que el comando copia correctamente los Golden Templates desde `.agents/templates/sdd/` hacia `openspec/changes/test-feature/`.
 3. [ ] **Validación:** Confirmar que NO inyecta los templates crudos de `funky-cli/src/templates/sdd/` si existen los Golden.
 
 ---
@@ -43,7 +43,7 @@
 ### Escenario 4: Scaffolding Tier 4 (`funky gentle`)
 **Origen:** Feature 012.b (Gentle SDD)
 1. [ ] En el mismo directorio inicializado del Escenario 1, ejecutar `funky gentle test-critical`.
-2. [ ] **Validación:** Comprobar que el comando crea `docs/openspec/gentle/test-critical/` con los 7 archivos (`1-explore.md` → `7-verify.md`).
+2. [ ] **Validación:** Comprobar que el comando crea `openspec/gentle/test-critical/` con los 7 archivos (`1-explore.md` → `7-verify.md`).
 3. [ ] **Validación:** Confirmar que usa los Golden Templates de `.agents/templates/gentle/` si existen.
 4. [ ] **Validación:** Verificar que cada template contiene un bloque `<system_prompt>` con la restricción del rol.
 5. [ ] **Validación:** Ejecutar `funky gentle test-critical` nuevamente — debe fallar con error "directorio ya existe".

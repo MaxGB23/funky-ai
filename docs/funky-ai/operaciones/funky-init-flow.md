@@ -95,7 +95,7 @@ Ubicación base: `src/templates/bootstrap/`
 | `plantilla-worker-handoff.md` | `docs/funky-ai/workers/plantilla-worker-handoff.md` | Estático general |
 | `canvas-planning-guide.md` | `docs/funky-ai/cli/canvas-planning-guide.md` | Estático general |
 | `../sdd/architecture-assessment.md` | `docs/architecture-assessment.md` | Estático general |
-| `../sdd/rfc-template.md` | `docs/openspec/rfcs/000-TEMPLATE.md` | Estático general |
+| `../sdd/rfc-template.md` | `openspec/rfcs/000-TEMPLATE.md` | Estático general |
 | `TEMPLATE_GUIDE.md` | `TEMPLATE_GUIDE.md` | Estático general |
 | `../README.md` | `README.md` | Estático general |
 

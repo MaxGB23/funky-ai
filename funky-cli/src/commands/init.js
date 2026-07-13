@@ -27,7 +27,7 @@ export function runInit({ templatesDir, targetBase, canvasConfig, selectedProtoc
     { src: 'agents-rules-sdd-orchestrator.md', dest: path.join('.agents', 'rules', 'sdd-orchestrator.md') },
     { src: 'canvas-planning-guide.md', dest: path.join('docs', 'funky-ai', 'cli', 'canvas-planning-guide.md') },
     { src: path.join('..', 'sdd', 'architecture-assessment.md'), dest: path.join('docs', 'architecture-assessment.md') },
-    { src: path.join('..', 'sdd', 'rfc-template.md'), dest: path.join('docs', 'openspec', 'rfcs', '000-TEMPLATE.md') },
+    { src: path.join('..', 'sdd', 'rfc-template.md'), dest: path.join('openspec', 'rfcs', '000-TEMPLATE.md') },
     { src: 'TEMPLATE_GUIDE.md', dest: 'TEMPLATE_GUIDE.md' },
     { src: path.join('..', 'README.md'), dest: 'README.md' }
   ];

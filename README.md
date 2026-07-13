@@ -56,8 +56,8 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 | `funky init` | Inyecta reglas, memoria (ecosystem) y genera/consume un `PROJECT-CANVAS.md` (modo interactivo y headless). |
 | `funky assess` | Evalúa el `architecture-assessment.md` con 3 reglas determinísticas. Genera un Challenge Pack si detecta riesgos. |
 | `funky estimate` | Calcula costo estimado cruzando el Canvas técnico con factores de negocio. Genera `pricing-analysis.md`. |
-| `funky feature <name>` | Inicializa el scaffolding SDD estándar (Tier 1–3) en `docs/openspec/changes/<name>/`. Ya **no genera** `worker-handoff.md`. |
-| `funky gentle <name>` | Inicializa el scaffolding **Tier 4 (Gentle SDD)** en `docs/openspec/gentle/<name>/`. 7 roles aislados para tareas hipercríticas. |
+| `funky feature <name>` | Inicializa el scaffolding SDD estándar (Tier 1–3) en `openspec/changes/<name>/`. Ya **no genera** `worker-handoff.md`. |
+| `funky gentle <name>` | Inicializa el scaffolding **Tier 4 (Gentle SDD)** en `openspec/gentle/<name>/`. 7 roles aislados para tareas hipercríticas. |
 | `funky phase <fase>` | Inyecta templates SDD individuales (explore, proposal, tasks, report). |
 | `funky release <version>` | Genera release notes estandarizados automáticamente. |
 | `pnpm test` *(en `funky-cli/`)* | Ejecuta la suite Vitest (TDD). Corre automáticamente en CI vía GitHub Actions. |

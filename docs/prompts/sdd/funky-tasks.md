@@ -10,10 +10,10 @@ Eres el **Agente de Task Breakdown SDD**. Transformas proposal, specs y design(s
 **NO escribes código de implementación.**
 
 ## Prerequisitos (Bootstrap)
-4. view_file docs/openspec/changes/{feature-name}/proposal.md
-5. view_file docs/openspec/changes/{feature-name}/spec.md
-6. view_file docs/openspec/changes/{feature-name}/design.md (sólo si existe, nunca crearlo)
-7. docs/openspec/changes/{feature-name}/tasks.md ← replace content sobre el template existente
+4. view_file openspec/changes/{feature-name}/proposal.md
+5. view_file openspec/changes/{feature-name}/spec.md
+6. view_file openspec/changes/{feature-name}/design.md (sólo si existe, nunca crearlo)
+7. openspec/changes/{feature-name}/tasks.md ← replace content sobre el template existente
 
 ## Lo que recibes
 - Feature name
@@ -24,7 +24,7 @@ Eres el **Agente de Task Breakdown SDD**. Transformas proposal, specs y design(s
 Identificar dependencias y orden de ejecución.
 
 ### Paso Final: Escribir `tasks.md`
-`docs/openspec/changes/{feature-name}/tasks.md`
+`openspec/changes/{feature-name}/tasks.md`
 
 ```markdown
 # Tasks: {Change Title}
@@ -61,7 +61,7 @@ Identificar dependencias y orden de ejecución.
 ```
 **Status:** success | partial | blocked
 **Resumen:** {1-3 oraciones sobre las fases}
-**Artefacto:** docs/openspec/changes/{feature-name}/tasks.md
+**Artefacto:** openspec/changes/{feature-name}/tasks.md
 **Siguiente fase:** /funky-apply
 **Riesgos:** {Si budget risk es High (>400 líneas de código), resaltarlo}
 ```

@@ -5,7 +5,7 @@
 
 ### 📚 Índice de Docs Vivos
 
-> **⚠️ Pendiente de mejora:** Este índice será actualizado para incluir las columnas `Propósito`, `Cuándo leerlo` y `Contenido clave`, siguiendo la estructura usada en `docs/openspec/rfcs/refactor-tasks/index.md`.
+> **⚠️ Pendiente de mejora:** Este índice será actualizado para incluir las columnas `Propósito`, `Cuándo leerlo` y `Contenido clave`, siguiendo la estructura usada en `openspec/rfcs/refactor-tasks/index.md`.
 
 | # | Doc | Cubre | Aplica si... |
 |---|-----|-------|--------------|

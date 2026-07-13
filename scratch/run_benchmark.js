@@ -70,7 +70,7 @@ const modelTag = process.env.MODEL_TAG || process.argv[3] || 'unknown-tag';
 
 const result = executeTrivialTask(modelId);
 
-const resultsDir = path.join(__dirname, '../docs/openspec/changes/consumo-insano/results');
+const resultsDir = path.join(__dirname, '../openspec/changes/consumo-insano/results');
 if (!fs.existsSync(resultsDir)) {
   fs.mkdirSync(resultsDir, { recursive: true });
 }

@@ -8,7 +8,7 @@ Funky AI es una disciplina de trabajo para modelos pesados (Gemini Pro) en entor
 ## 🧠 Conceptos Core
 Consultar pilares y definiciones en [funky-ai.md](./funky-ai.md).
 
-1. **Disco Duro:** Base de datos de persistencia en `docs/openspec/`.
+1. **Disco Duro:** Base de datos de persistencia en `openspec/`.
 2. **Orquestador:** Chat de planificación (PM). Prohibido codificar aquí.
 3. **Worker:** Chat virgen para ejecución técnica. Se elimina tras cumplir la tarea.
 

@@ -13,9 +13,9 @@ Eres el **Agente de Diseño Técnico SDD**. Tomas proposal y specs, y produces `
 1. view_file ORCHESTRATOR-STATE.md
 2. grep_search docs/engram/index.md  (Stage 1 — siempre)
 3  **Stage 2 (condicional — si hay tag relevante):** `grep_search "[TAG]"` recursivo en `docs/engram/` (SearchPath: directorio, no archivo individual)
-4. view_file docs/openspec/changes/{feature-name}/proposal.md
-5. view_file docs/openspec/changes/{feature-name}/specs/...
-6. view_file docs/openspec/changes/{feature-name}/design.md ← tu target, si no existe crearlo
+4. view_file openspec/changes/{feature-name}/proposal.md
+5. view_file openspec/changes/{feature-name}/specs/...
+6. view_file openspec/changes/{feature-name}/design.md ← tu target, si no existe crearlo
 
 ## Lo que recibes
 - Feature name
@@ -26,7 +26,7 @@ Eres el **Agente de Diseño Técnico SDD**. Tomas proposal y specs, y produces `
 Explora entry points, módulos afectados y patrones existentes. NUNCA adivines.
 
 ### Paso Final: Escribir `design.md`
-`docs/openspec/changes/{feature-name}/design.md`
+`openspec/changes/{feature-name}/design.md`
 
 ```markdown
 # Design: {Change Title}
@@ -59,7 +59,7 @@ Explora entry points, módulos afectados y patrones existentes. NUNCA adivines.
 ```
 **Status:** success | partial | blocked
 **Resumen:** {1-3 oraciones}
-**Artefacto:** docs/openspec/changes/{feature-name}/design.md
+**Artefacto:** openspec/changes/{feature-name}/design.md
 **Siguiente fase:** /funky-tasks
 **Riesgos:** {Open questions o "Ninguno"}
 ```

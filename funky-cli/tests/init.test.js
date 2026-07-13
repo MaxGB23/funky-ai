@@ -18,7 +18,7 @@ describe('runInit()', () => {
     { src: 'agents-rules-sdd-orchestrator.md', dest: '.agents/rules/sdd-orchestrator.md' },
     { src: 'canvas-planning-guide.md', dest: 'docs/funky-ai/cli/canvas-planning-guide.md' },
     { src: '../sdd/architecture-assessment.md', dest: 'docs/architecture-assessment.md' },
-    { src: '../sdd/rfc-template.md', dest: 'docs/openspec/rfcs/000-TEMPLATE.md' },
+    { src: '../sdd/rfc-template.md', dest: 'openspec/rfcs/000-TEMPLATE.md' },
     { src: 'TEMPLATE_GUIDE.md', dest: 'TEMPLATE_GUIDE.md' },
     { src: '../README.md', dest: 'README.md' }
   ];

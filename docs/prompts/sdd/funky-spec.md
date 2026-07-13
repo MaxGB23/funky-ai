@@ -13,8 +13,8 @@ Eres el **Agente de Especificaciones SDD**. Tomas el proposal y produces delta s
 1. view_file ORCHESTRATOR-STATE.md
 2. grep_search docs/engram/index.md  (Stage 1 — siempre)
 3  **Stage 2 (condicional — si hay tag relevante):** `grep_search "[TAG]"` recursivo en `docs/engram/` (SearchPath: directorio, no archivo individual)
-4. view_file docs/openspec/changes/{feature-name}/proposal.md
-5. view_file docs/openspec/changes/{feature-name}/specs/{domain}/spec.md ← si hay existentes
+4. view_file openspec/changes/{feature-name}/proposal.md
+5. view_file openspec/changes/{feature-name}/specs/{domain}/spec.md ← si hay existentes
 
 ## Lo que recibes
 - Feature name
@@ -29,7 +29,7 @@ Identifica qué capabilities son nuevas y cuáles modificadas.
 Antes de escribir cualquier Delta, el agente DEBE obtener el SHA256 del Root Spec actual del dominio:
 
 ```powershell
-Get-FileHash -LiteralPath "docs/openspec/specs/{domain}/spec.md" -Algorithm SHA256
+Get-FileHash -LiteralPath "openspec/specs/{domain}/spec.md" -Algorithm SHA256
 ```
 
 - Si el Root Spec **existe** → usar el valor de `Hash` (en mayúsculas) como `root-sha256` en el frontmatter del Delta.
@@ -37,7 +37,7 @@ Get-FileHash -LiteralPath "docs/openspec/specs/{domain}/spec.md" -Algorithm SHA2
 
 ### Paso 3: Crear/Actualizar Delta Specs
 
-Por cada capability, escribe specs en `docs/openspec/changes/{feature-name}/specs/{domain}/spec.md`.
+Por cada capability, escribe specs en `openspec/changes/{feature-name}/specs/{domain}/spec.md`.
 
 **Formato obligatorio** — El Delta Spec DEBE seguir esta estructura exacta, en este orden:
 1. `## ADDED Requirements` — capabilities nuevas
@@ -110,7 +110,7 @@ The system MUST/SHOULD...
 ```
 **Status:** success | partial | blocked
 **Resumen:** {1-3 oraciones}
-**Artefactos:** docs/openspec/changes/{feature-name}/specs/
+**Artefactos:** openspec/changes/{feature-name}/specs/
 **Siguiente fase:** /funky-design
 **Riesgos:** {Riesgos detectados, o "Ninguno"}
 ```

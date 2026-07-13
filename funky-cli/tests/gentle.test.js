@@ -20,7 +20,7 @@ describe('runGentle()', () => {
 
   it('crea directorio y copia archivos desde golden templates', () => {
     const featureName = 'auth-login';
-    const expectedFeaturePath = path.join(fakeCwd, 'docs', 'openspec', 'gentle', featureName);
+    const expectedFeaturePath = path.join(fakeCwd, 'openspec', 'gentle', featureName);
 
     fs.existsSync.mockImplementation((p) => {
       if (p === goldenTemplatesDir) return true; // Golden templates existen
@@ -43,7 +43,7 @@ describe('runGentle()', () => {
 
   it('usa fallback templates si golden no existen', () => {
     const featureName = 'auth-login';
-    const expectedFeaturePath = path.join(fakeCwd, 'docs', 'openspec', 'gentle', featureName);
+    const expectedFeaturePath = path.join(fakeCwd, 'openspec', 'gentle', featureName);
 
     fs.existsSync.mockImplementation((p) => {
       if (p === goldenTemplatesDir) return false; // Golden templates NO existen
@@ -68,7 +68,7 @@ describe('runGentle()', () => {
   it('sanitiza el nombre de la feature correctamente', () => {
     const rawFeatureName = '  Auth Login API  ';
     const expectedSanitized = 'auth-login-api';
-    const expectedFeaturePath = path.join(fakeCwd, 'docs', 'openspec', 'gentle', expectedSanitized);
+    const expectedFeaturePath = path.join(fakeCwd, 'openspec', 'gentle', expectedSanitized);
 
     fs.existsSync.mockImplementation((p) => {
       if (p === goldenTemplatesDir) return true;
@@ -85,7 +85,7 @@ describe('runGentle()', () => {
 
   it('falla si el directorio de la feature ya existe', () => {
     const featureName = 'auth-login';
-    const expectedFeaturePath = path.join(fakeCwd, 'docs', 'openspec', 'gentle', featureName);
+    const expectedFeaturePath = path.join(fakeCwd, 'openspec', 'gentle', featureName);
 
     fs.existsSync.mockImplementation((p) => {
       if (p === goldenTemplatesDir) return true;

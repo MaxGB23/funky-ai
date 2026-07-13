@@ -27,8 +27,8 @@ export function runFeature({ featureName, cliTemplatesDir, cwd }) {
     templatesToUse = cliTemplatesDir;
   }
 
-  // 3. Crear docs/openspec/changes/<featureName>
-  const featurePath = path.join(cwd, 'docs', 'openspec', 'changes', sanitizedFeatureName);
+  // 3. Crear openspec/changes/<featureName>
+  const featurePath = path.join(cwd, 'openspec', 'changes', sanitizedFeatureName);
   
   if (fs.existsSync(featurePath)) {
     return { success: false, error: `El directorio de la feature ya existe: ${featurePath}` };
@@ -55,7 +55,7 @@ export function runFeature({ featureName, cliTemplatesDir, cwd }) {
 }
 
 export const featureCommand = new Command('feature')
-  .description('Inicializa el scaffolding para una nueva feature SDD (docs/openspec/changes/<nombre>)')
+  .description('Inicializa el scaffolding para una nueva feature SDD (openspec/changes/<nombre>)')
   .argument('<featureName>', 'Nombre de la feature (ej: auth-login)')
   .action((featureName) => {
     const cliTemplatesDir = path.join(__dirname, '..', 'templates', 'sdd');
