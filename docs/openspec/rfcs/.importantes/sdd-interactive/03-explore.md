@@ -24,6 +24,10 @@
 ## Exploration: {topic}
 ### Current State
 ### Affected Areas
+### Context Preservation
+### Reglas del RFC
+### Definiciones clave
+### Scope no-negociable
 ### Approaches (con pros/cons/effort)
 ### Recommendation
 ### Risks

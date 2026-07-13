@@ -17,7 +17,20 @@
 ## 1. Contexto del Problema
 [Describe brevemente qué problema estamos intentando resolver, por qué es necesario, y cuál es el impacto esperado.]
 
-## 2. Opciones de Arquitectura
+## 2. Context Preservation
+
+> **MANDATORY**: This is a factual dump, NOT analysis. Copy rules, definitions, and constraints verbatim from source documents.
+
+### Reglas del RFC / input fuente
+- [regla explícita del documento fuente o RFC]
+
+### Definiciones clave
+- [término]: [definición]
+
+### Scope no-negociable
+- [restricción que no se discute]
+
+## 3. Opciones de Arquitectura
 
 | Opción | Descripción | Pros | Contras / Tradeoffs |
 |--------|-------------|------|---------------------|
@@ -25,7 +38,7 @@
 | **Opción B** | [Descripción] | - [Pro 1]<br>- [Pro 2] | - [Contra 1]<br>- [Contra 2] |
 | **Opción C** | [Descripción] | - [Pro 1]<br>- [Pro 2] | - [Contra 1]<br>- [Contra 2] |
 
-## 3. Recomendación + Riesgos
+## 4. Recomendación + Riesgos
 **Opción recomendada:** [Elegir A, B o C]
 
 **Justificación:**

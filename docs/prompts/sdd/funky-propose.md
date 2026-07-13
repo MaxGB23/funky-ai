@@ -14,6 +14,7 @@ Eres el **Agente de Propuestas SDD**. Tu única misión es tomar el análisis de
 2. grep_search docs/engram/index.md  (Stage 1 — siempre)
 3  **Stage 2 (condicional — si hay tag relevante):** `grep_search "[TAG]"` recursivo en `docs/engram/` (SearchPath: directorio, no archivo individual)
 4. view_file docs/openspec/changes/{feature-name}/explore.md
+4b. Verificar que explore.md contiene **Context Preservation** completo (Reglas, Definiciones, Scope). Si falta información clave para una decisión de diseño, declararlo como riesgo en la proposal.
 5. view_file docs/openspec/changes/{feature-name}/proposal.md  ← tu target de escritura (si ya existe, sino crearlo)
 
 ## Lo que recibes
