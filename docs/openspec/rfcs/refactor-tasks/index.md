@@ -20,7 +20,7 @@ Este índice consolida las especificaciones, contratos arquitectónicos, decisio
       * *Diagrama de Inyección:* Flujo de inyección y eliminación de pausas manuales redundantes en Tiers bajos.
     * **5. Modos de Ejecución del CLI**
       * *Modo Interactivo (Default Tiers Altos):* Pausas intencionales para aprobación humana y manejo de Return Envelopes.
-      * *Modo Automático:* Auto-inyección en T1/T2 y auto-delegación directa de prompts a subagentes nativos en T3/T4.
+      * *Modo Automático:* Auto-inyección en T1/T2 y auto-delegación directa de prompts a subagentes nativos en T3.
     * **6. Transición de Entorno: Puente Manual (v1) → CLI Nativo (v2)**
       * Detalla la evolución de la comunicación de subagentes usando envelopes manuales a mensajería directa en CLI bajo la Ley de Invarianza.
 
@@ -89,9 +89,9 @@ Este índice consolida las especificaciones, contratos arquitectónicos, decisio
   * **Cuándo leerlo:** Relevante al evaluar riesgos de features, gestionar ramas y configurar el workflow `/funky-tasks`.
   * **Contenido:**
     * **1. Escalera de Tiers (Jerarquía Operativa)**
-      * *Escalera Base:* Definición operativa de los Tiers 1 al 4.
+      * *Escalera Base:* Definición operativa de los Tiers 1 al 3.
       * *Escalera Refinada con T0:* Regla especial para Micro-fixes directos sin ramas ni `tasks.md`.
-      * *Branch Management:* Obligatoriedad de ramas y PRs (T1 a T4).
+      * *Branch Management:* Obligatoriedad de ramas y PRs (T1 a T3).
       * *Mutaciones a Medio Vuelo:* Protocolo de escalado y purga de artefactos en cambios de Tier en caliente.
     * **2. Reglas de Release: SemVer x SDD**
       * *Tabla de Correspondencia y Ley de Gravedad Inversa:* Relación estricta SemVer ↔ Tier.

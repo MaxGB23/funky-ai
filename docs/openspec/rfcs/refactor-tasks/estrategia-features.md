@@ -24,7 +24,7 @@ graph TD
 * **Qué se hace:**
   1. Modificar el comando `funky feature` en el CLI para ejecutar los 3 Inquirers (Tier, Docs Core, SemVer Release).
   2. Implementar la inyección fragmentada de templates: `tasks.md`, `docs.md` (condicional) y `release.md` (condicional).
-  3. Establecer el Contrato E1 de delegación en los prompts del Orquestador y deprecación de `artifact_state`.
+   3. Establecer el Contrato E1 de delegación en los prompts del Orquestador y deprecación de `artifact_state` y `has_design` (Tier 3 = design siempre).
 * **Criterio de Aceptación:** Ejecutar `funky feature` genera la estructura de carpetas correcta según el Tier y las respuestas del desarrollador, sin inyectar archivos dummy vacíos.
 
 ### 🔄 Semana 2 — Fase 2: Ciclo de Cierre Determinista y `/funky-archive`
@@ -40,8 +40,9 @@ graph TD
 * **Qué se hace:**
   1. Adaptar `/funky-tasks` para calcular el PR budget y generar las tareas a partir de la Fase 1 de forma adaptativa.
   2. Implementar la heurística de batches en el Orquestador (Tiers 1/2 en mínimo 2 batches: Batch A código, Batch B cierre/merge).
-  3. Codificar las reglas de Mutación de Tier a medio vuelo (de T1 a T2 reiniciando desde explore; de T2 a T3 purgando exploraciones intermedias).
-  4. Agregar el guardrail de Worker Reactivo: si el contexto se satura, commit parcial, escribe `report.md` y se detiene.
+   3. Codificar las reglas de Mutación de Tier a medio vuelo (de T1 a T2 reiniciando desde explore; de T2 a T3 solo en riesgo CRITICAL, con aprobación humana explícita — ver §1.4 de `spec-routing-tiers.md`).
+   4. Agregar el guardrail de Worker Reactivo: si el contexto se satura, commit parcial, escribe `report.md` y se detiene.
+   5. Implementar el checkpoint pre-apply: antes de cada batch, el orquestador presenta el plan y el humano elige dónde ejecutar (CLI o IDE). Ver §Modos de Ejecución en `spec-cli-ide-boundaries.md`.
 * **Criterio de Aceptación:** Una feature Tier 2 con más de 5 archivos en el PR budget se divide de manera transparente en batches manejables y permite escalar a Tier 3 en caliente de forma limpia.
 
 ### 🧪 Semana 4 — Fase 4: Quality Assurance e Inteligencia de Diagnóstico

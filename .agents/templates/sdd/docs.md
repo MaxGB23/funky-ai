@@ -4,6 +4,9 @@
 > **Regla de contexto:** NO abras ningún doc del índice todavía. La columna "Aplica si..." es suficiente para decidir. 
 
 ### 📚 Índice de Docs Vivos
+
+> **⚠️ Pendiente de mejora:** Este índice será actualizado para incluir las columnas `Propósito`, `Cuándo leerlo` y `Contenido clave`, siguiendo la estructura usada en `docs/openspec/rfcs/refactor-tasks/index.md`.
+
 | # | Doc | Cubre | Aplica si... |
 |---|-----|-------|--------------|
 | 1 | `docs/funky-ai/operaciones/funky-init-flow.md` | Árbol de decisión de `funky init`, tabla de archivos estáticos del bootstrap, modos Headless / Interactivo / `--template` | Se modificó `init.js`, cambió qué archivos copia el bootstrap, o cambió el comportamiento del flag `--template` o modo Headless |
@@ -14,13 +17,16 @@
 | 6 | `funky-cli/src/templates/bootstrap/canvas-planning-guide.md` | Opciones disponibles para cada campo de PROJECT-CANVAS e INFRA-CANVAS | Se agregaron / eliminaron opciones en los Canvas o cambió el schema de alguno |
 | 7 | `docs/funky-ai/operaciones/escenarios-de-uso.md` | Escenarios de uso del CLI mapeados al estado inicial del usuario (sin definir, definido, repo existente) | Se agrega un nuevo comando o modo al CLI que cambia alguno de los flujos de entrada |
 
-### FASE N+1 — Doc-Update [ORQUESTADOR — Inline]
+### FASE N+1 — Doc-Update
 > Completar SOLO si al menos un doc del índice aplica. Para cada doc afectado, identificar el concepto o comportamiento modificado que justifica el cambio.
 
 **🚫 Restricción de Contexto (Safe-Contexting y Tácticas de Cirujano):** 
-1. **Durante la Planeación:** NUNCA abrir los archivos documentales al redactar este checklist. Limítate a señalar la ruta y el concepto.
+1. **Durante la planeacíon (funky-tasks):** NUNCA abrir los archivos documentales al redactar este checklist. Limítate a señalar la ruta del file y el concepto.
 2. **Durante la Ejecución (Orquestador):** ESTÁ PROHIBIDO hacer un `view_file` completo del documento para editarlo. Debes usar `grep_search` para buscar subtítulos (ej. `grep_search "^## "`) o palabras clave, y aplicar reemplazos quirúrgicos o adiciones. ¡Protege tu ventana de contexto!
 
-- [ ] **Doc [#N]** — `{ruta}`: Actualizar documento para reflejar: `{concepto nuevo o comportamiento modificado}`
-- [ ] **Opcional:** Sólo si la feature actual en cuestión crea un documento "nuevo" (no contemplado en el indice) vital para el proyecto, debe añadirse al indice de docs vivos en el template .agents/templates/sdd/docs.md 
+- [ ] **Doc [#N]** — `{ruta}`: Actualizar documento X para reflejar: `{concepto nuevo o comportamiento modificado}`
+- [ ] **Opcional:** Sólo si la feature actual en cuestión crea un documento "nuevo" (no contemplado en el indice) vital para el proyecto, debe añadirse al indice de docs vivos en el golden template .agents/templates/sdd/docs.md 
+
+
+
 </OPTIONAL_DOC_UPDATE>

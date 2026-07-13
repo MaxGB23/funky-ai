@@ -46,7 +46,7 @@ Para mantener un "Change Folder" esbelto y cumplir con SRP (Responsabilidad Úni
 
 ### El Flujo de Inquirers
 Antes de inyectar plantillas, el comando `funky feature <name>` ejecuta 3 Inquirers (preguntas interactivas) en el CLI:
-1. **¿Qué Tier?** (T1 / T2 / T3 / T4)
+1. **¿Qué Tier?** (T1 / T2 / T3)
 2. **¿Impacta Docs Core?** (Sí / No) → Determina la inyección de `docs.md`.
 3. **¿Tipo de Release?** (Major / Minor / Patch / Ninguno) → Determina la inyección de `release.md`.
 
@@ -56,27 +56,71 @@ Antes de inyectar plantillas, el comando `funky feature <name>` ejecuta 3 Inquir
 Una vez resueltos los Inquirers, el CLI inyecta los templates en cascada.
 *Nota Arquitectónica: Históricamente existía un `[user: next]` para frenar la "alucinación en cadena" del Orquestador al llenar templates. Al introducir los subagentes "SDD ligeros" con alcance delimitado, este riesgo estructural desaparece. La inyección y planeación en Tier 1 y 2 ocurre de forma fluida, haciendo una pausa interactiva únicamente antes de la ejecución final.*
 
-**Pendiente por definir el diagrama final**
 ```text
 funky feature <name>
-  ├─ Inquirer 1: Tier
-  ├─ Inquirer 2: Docs Core?
-  └─ Inquirer 3: SemVer Release?
+  ├─ Inquirer 1: Tier (T1 / T2 / T3)
+  ├─ Inquirer 2: Docs Core? (Sí / No)
+  └─ Inquirer 3: SemVer Release? (Major / Minor / Patch / None)
 
 Flujo de Inyección de Templates:
   ├─ T1 (Tweaks/Bugs)
-  │     → inyecta tasks.md + [docs.md] + [release.md] → Espera Aprobación → Execute
+  │     → inyecta tasks.md + [docs.md condicional] (release.md OMITIDO — bump de versión va en tasks.md)
+  │     → Checkpoint Pre-Apply (CLI o IDE)
+  │     → Execute
   │
-  ├─ T2/T3 (Standard/Complex Features) 
-  │     → inyecta explore.md → [SDD ligero]
+  ├─ T2 (Standard Features)
+  │     → no inyecta explore.md, el explore ligero no escribe artefacto
   │     → inyecta proposal.md → [SDD ligero]
   │     → inyecta spec.md → [SDD ligero]
-  │     → inyecta tasks.md + worker-handoff.md + [docs.md = Obligatorio T3] + [release.md] 
-  │     → Espera Aprobación Humana Final → Execute
+  │     → inyecta tasks.md + ( [docs.md] + [release.md] CONDICIONALES)
+  │     → Checkpoint Pre-Apply (CLI o IDE)
+  │     → Execute
   │
-  └─ T4 (Rediseño Mayor)
-        → "Rediseño masivo. Correr: funky gentle <name>" → Exit
+    └─ T3 (Deep Features)
+        → No inyecta templates, workflows trabajan independientemente
+        → inyecta tasks.md + docs.md + release.md, únicos templates que sí aplican
+
+Modo Automático:
+  T1/T2 → fluido, sin pausas entre fases. Checkpoint pre-worker es el único freno.
+  T3 → opcional pero NO recomendado. Si se activa, checkpoint pre-apply obligatorio.
 ```
+
+PENDIENTE: Worker y funky-apply corren tests que ya menciona el tasks.md, el worker no debe tratar de corregirlos en caso de no pasar, debe retornar en su report.md los tests fallidos y algun detalle para mas info. El orquestador decide qué hacer.
+El funky-apply qué debería hacer?
+Al final en tier 2 y 3 todos pasan por un verify ligero o un funky-verify, es necesario correr los tests en tasks.md?
+Los tests en tier 1 si son buena idea ya que en ese tier no existe un verify.
+---
+
+## Reglas de Inyección: docs.md y release.md
+
+### ¿Cuándo inyectar docs.md?
+
+Se inyecta cuando el cambio afecta documentación o arquitectura:
+- Toca documentación oficial (README, docs/, API docs)
+- Hay decisiones arquitectónicas nuevas (ADRs)
+- El cambio afecta cómo los usuarios interactúan con el sistema
+- Se introducen patrones o convenciones nuevas
+
+### ¿Cuándo inyectar release.md?
+
+Se inyecta cuando hay funcionalidad nueva o breaking changes:
+- Feature nueva (MINOR) — incluye release notes
+- Breaking change (MAJOR) — incluye guía de migración
+- Updates de dependencias que afectan a usuarios
+
+### Regla por SemVer
+
+| Tipo | release.md | docs.md | Justificación |
+|------|-----------|---------|---------------|
+| **Bugfix (PATCH)** | ✗ — bump en tasks.md | ✗ | Solo se actualiza package.json |
+| **Feature (MINOR)** | ✓ | Cond. | Hay funcionalidad nueva, vale la pena |
+| **Breaking (MAJOR)** | ✓ — obligatorio | ✓ — obligatorio | Ambos son obligatorios |
+
+### ¿Cuándo NO inyectar ninguno?
+
+- Bugfix interno que no afecta docs ni versión
+- Refactor que no cambia comportamiento
+- Chores (linting, CI, config interna)
 
 ---
 
@@ -85,14 +129,14 @@ Flujo de Inyección de Templates:
 El CLI opera en dos modos que afectan **dos capas distintas** del flujo: la inyección de templates y la delegación a workflows.
 
 ### Modo Interactivo (Default para Tiers Altos)
-Las pausas intencionales entre cada fase se reservan principalmente para Tiers 3 y 4 (donde se requiere validación estricta de arquitectura de negocio). Esto no quita que no haya modo interactivo en tier 2.
+Las pausas intencionales entre cada fase se reservan principalmente para Tier 3 (donde se requiere validación estricta de arquitectura de negocio). Esto no quita que no haya modo interactivo en tier 2.
 
 **Capa 1 — Inyección de Templates (T1/T2):**
 *(Deprecado)* Anteriormente se usaba `[user: next]` en el CLI para pausar entre templates. Ahora, gracias al scope cerrado de los SDD ligeros, el CLI inyecta y ejecuta la delegación de forma continua (fluida). La **única pausa obligatoria** es antes de lanzar al Worker para asegurar que el humano apruebe el plan maestro final. 
 
-El cli creo que ya no debe preguntar el modo auto/interactivo, ya que dependiendo el tier elegido se inyectarán los templates necesarios de golpe, esto nos quita el trabajo manual de estar dando next constantemente, y lo mejor de todo, ya no hay riesgos de alucinaciones del orquestador inline, simplemente subagentes mas enfocados y un orquestador con contexto mas limpio.
+El cli creo que ya no debe preguntar el modo user:next, ya que dependiendo el tier elegido se inyectarán los templates necesarios de golpe, esto nos quita el trabajo manual de estar dando next constantemente, y lo mejor de todo, ya no hay riesgos de alucinaciones del orquestador inline, simplemente subagentes mas enfocados y un orquestador con contexto mas limpio.
 
-**Capa 2 — Delegación a Workflows (T3/T4):**
+**Capa 2 — Delegación a Workflows (T3):**
 Al terminar cada workflow, el Orquestador recibe el **Return Envelope** (resumen estructurado del resultado), lo presenta al humano y pregunta:
 > *"¿Cómo lo ves, lo aprobamos o tienes observaciones para despertar al mismo subagente?"*
 
@@ -107,8 +151,35 @@ El CLI inyecta todos los templates y ejecuta todas las fases secuencialmente sin
 - *Ideal para:* Standard Features altamente predecibles (CRUDs simples, cambios rutinarios).
 - *Riesgo:* Si la feature es más compleja de lo estimado, el agente se arranca sin supervisión y la primera alucinación contamina todas las fases siguientes.
 
-**En T3/T4 — Auto-delegación a Workflows:**
+**En T3 — Auto-delegación a Workflows:**
 No hay templates que inyectar. El "auto" aquí significa que las **delegaciones a workflows son automáticas**: el Orquestador elabora el prompt y lo pasa directamente al subagente nativo sin requerir copy-paste manual del humano. El Return Envelope también regresa automáticamente al Orquestador.
+> **Nota:** El modo Auto en T3 es **opcional pero NO recomendado**. Dado que T3 absorbió el alcance de Tier 4 (rediseños mayores), la complejidad justifica supervisión humana entre fases. El checkpoint pre-apply (definido en `spec-cli-ide-boundaries.md`) ya existe como safety net incluso en modo Auto.
+
+### Checkpoint Pre-Apply: CLI o IDE
+
+**Siempre hay un checkpoint antes de apply**, incluso en modo Auto. El orquestador presenta el plan de implementación (batches, estimación de líneas) y el humano decide dónde ejecutar:
+
+```markdown
+⚡ Plan de implementación listo — "login-con-google"
+
+**Batch 1**: Phase 1 (OAuthAccount model + migration) — ~120 líneas
+**Batch 2**: Phase 2-3 (Service + routes + tests) — ~400 líneas
+
+¿Dónde lo corremos?
+
+- **CLI**: lo delego directo al worker acá mismo
+- **IDE**: te preparo el bloque copy-paste para ver difs
+```
+
+**Comportamiento por modo:**
+
+| Modo | Checkpoint pre-apply | Durante apply |
+|------|---------------------|---------------|
+| **Interactivo** | Muestra plan + "¿CLI o IDE?" + "¿Arrancamos?" | Después de cada batch, resultado + "¿Ajustar o continuamos?" |
+| **Auto** | Checkpoint lite: muestra plan, pregunta solo si quiere IDE o deja que arranque | Si hay múltiples batches, arranca el siguiente automático. Si blocked, frena |
+| **Handoff** | Prepara bloque copy-paste. No pregunta CLI/IDE porque ya está en IDE | Humano trae Return Envelope después de cada batch |
+
+**Ley de Invarianza:** El prompt que el Orquestador genera para CLI (delegación directa) y para IDE (bloque copy-paste) debe ser **idéntico**. Solo cambia el canal de entrega, nunca el contenido.
 
 ---
 
@@ -123,14 +194,6 @@ El humano actúa como "cable" entre agentes. Es el precio a pagar por las herram
 **v2 — CLI Nativo (Futuro):**
 El Orquestador elabora el mismo prompt → lo pasa directamente al subagente nativo → recibe el Return Envelope sin fricción manual. El humano solo interviene en los checkpoints de aprobación del Modo Interactivo.
 
-**Ley de Invarianza:** El prompt que el Orquestador genera en v1 (copy-paste) y el que pasa en v2 (automático) deben ser **idénticos**. La única diferencia es el canal de entrega, nunca el contenido.
+**Ley de Invarianza:** El prompt que el Orquestador genera en v1 (copy-paste) y el que pasa en v2 (automático) deben ser **idénticos**. La única diferencia es el canal de entrega, nunca el contenido. El modo handoff no se deprecará, se mantendrá como una opción válida.
 
-**PENDIENTE** 
-1. El humano podría decidir hacer ciertas fases en modo auto y otras en interactivo. 
-2.Tambien en modo auto cuando llegamos a la fase de chambear (worker/apply), aun estando en modo auto ya se decidió que se debe pedir aprobación antes de lanzarlos directamente, por lo que aquí podríamos elegir que el orquestador los lance directamente él una vez aprobados o mencionarle que para esa feature en concreto nosotros como humanos lo haremos en el IDE para mas control y tools integradas.
-
-
-
-3. Este punto tal vez podría corresponder a otra sección o file, por lo que hay que revisarlo antes de tomar decisiones. La idea es determinar qué diferencia al tier 3 del 4, actualmente creo que tienen la misma cantidad de workflows, creo que el tier 3 se ha probado el no usar el design y el verify, pero no se qué tan factible sea. El quitar el design puede hacer el proceso mas fluido, pero el verify creo que es importante ya que en mi experiencia siempre han salido inconsistencias que se solucionan en esta fase. 
-Tambien he pensado en deprecar el tier 4 y que el tier 3 sea el mas potente, para evitar las mierdas de meter has_design, etc. **Resuelto:** `has_design` deprecado — Tier 3 = design siempre, sin flag. Pendiente organizar drafts para decidir el futuro del Tier 4.
-
+**Resolución:** El humano puede alternar entre modo Interactivo y Auto por fase dentro de un mismo Tier. El Orquestador debe respetar la decisión del humano en cada transición de fase. Esta flexibilidad es la razón por la que el checkpoint pre-apply se mantiene siempre activo, independientemente del modo seleccionado.

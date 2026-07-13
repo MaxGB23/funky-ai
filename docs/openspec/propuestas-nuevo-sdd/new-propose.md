@@ -1,25 +1,13 @@
-Lo que sí arreglaría del propose
-Los mismos vicios que ya sacamos del explore:
-Antes (propose)                          Después
-─────────────────────────────────────────────────
-1. view_file ORCHESTRATOR-STATE.md      → SACAR (vos sabés el estado)
-2. grep_search docs/engram/index.md     → SACAR (búsqueda genérica)
-3. grep_search "[TAG]"                   → SACAR o reemplazar por tags reales
-4. view_file explore.md                 → ✅ QUEDA
-5. view_file proposal.md (target)       → ✅ QUEDA
-Y si querés consistencia total, que el orquestador humano le pase el mismo formato de copy-paste que al explore:
 /funky-propose
 **Feature:** `023-deprecate-worker-handoff`
 **Tags:** worker, cli, deprecation
+
 Sin contexto extra porque el propose ya lee la explore, y la explore ya tiene todo lo que necesita.
 Resumen
 Leer explore entero no es el problema. El problema es lo que rodea al prompt — el bootstrap con basura. Limpiá eso y tenés un propose sólido.
 
 
-Cambios acordados — resumen general
-1. Copy-paste del orquestador (nuevo formato estándar)
-Pasa de ser solo el feature name a incluir contexto explícito:
-/funky-{fase}
+
 **Feature:** `023-deprecate-worker-handoff`
 **Contexto:** docs/openspec/rfcs/023-deprecate-worker-handoff.md
 **Tags:** worker, cli, deprecation
