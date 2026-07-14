@@ -95,6 +95,8 @@ Sesión 21-23: Orchestrator Rules (Fase Final) ───────────
 
 **Objetivo:** Que `spec-orchestrator-rules.md` cubra todos los puntos operativos del orquestador, sin drafts pendientes.
 
+**Doc clave para esta fase:** `.importantes/funky-inputs.md` — contiene las estructuras de los SDD ligeros (explore, propose, spec, verify) que el orquestador necesita conocer para delegar correctamente en Tier 2. Las rules JIT de delegación deben referenciar estas estructuras.
+
 ### Estado actual de las rules
 
 | § | Sección | Estado | Gap |
@@ -131,6 +133,10 @@ Sesión 21-23: Orchestrator Rules (Fase Final) ───────────
 2. ¿Ya ejecuté Memory Polling? Si no → ejecutar ahora.
 3. `funky feature` es intervención humana explícita. El orquestador solo recomienda.
 
+**Referencias obligatorias:**
+- `.importantes/funky-inputs.md` — estructura de cada fase ligera (qué viaja en el prompt)
+- `spec-roles-subagents.md` — taxonomía de roles y reglas de delegación
+
 **Formato:** Archivo separado, referenciado desde `spec-orchestrator-rules.md` §2.
 
 #### T3: Promover Notas a Rules
@@ -139,7 +145,7 @@ Las tres notas del final del spec actual deben convertirse en rules formales:
 
 | Nota actual | Nueva rule | Contenido |
 |-------------|-----------|-----------|
-| JIT por Tier | `jit-tier-routing.md` | Para cada Tier, qué fases corren y qué workflows se usan. Reference a `funky-inputs.md` y `tier2-delegation-rules.md`. |
+| JIT por Tier | `jit-tier-routing.md` | Para cada Tier, qué fases corren y qué workflows se usan. Reference a `funky-inputs.md` (estructuras ligeros) y `spec-roles-subagents.md` (taxonomía). |
 | Tier 0 ideation | §9 en spec principal | Regla: Tier 0 es ideación pura. Si hay features concretas, redactar RFC. En sesión nueva, pre-vuelo con Tier correcto. |
 | Escalado mid-SDD | §10 en spec principal | Regla: Escalar de T1→T2 reiniciando desde explore. Escalar de T2→T3 solo en riesgo CRITICAL con aprobación humana. Prohibido escalar de T0 a cualquier Tier en la misma sesión. |
 
@@ -191,6 +197,22 @@ Las tres notas del final del spec actual deben convertirse en rules formales:
 
 | Feature | Sesiones | Qué entrega |
 |---------|----------|-------------|
+| Returns (5 cortes) | ~18 | Framework completo de returns + capa interactiva |
+| Refactor Tasks (4 sprints) | ~16 | Templates fragmentados, batching, archive, QA |
+| Orchestrator Rules (fase final) | ~3 | Rules al 100%, sin drafts |
+| **Total** | **~37 sesiones** | **SDD completo y auditable** |
+
+---
+
+## 📚 Referencias clave para la Fase Final
+
+| Documento | Qué aporta a las orchestrator rules |
+|-----------|-------------------------------------|
+| `.importantes/funky-inputs.md` | **Estructuras de fases ligeras** — qué viaja en cada prompt de delegación Tier 2 |
+| `spec-roles-subagents.md` | Taxonomía de roles, reglas de nacimiento, Sabueso de Lava |
+| `spec-contracts-templates.md` | Contrato E1, reglas de templates |
+| `spec-cli-ide-boundaries.md` | Modos de ejecución, checkpoint pre-apply |
+| `spec-routing-tiers.md` | Escalera de Tiers, mutaciones, SemVer |
 | Returns (5 cortes) | ~18 | Framework completo de returns + capa interactiva |
 | Refactor Tasks (4 sprints) | ~16 | Templates fragmentados, batching, archive, QA |
 | Orchestrator Rules (fase final) | ~3 | Rules al 100%, sin drafts |
