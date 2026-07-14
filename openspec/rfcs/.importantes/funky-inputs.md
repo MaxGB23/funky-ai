@@ -131,7 +131,7 @@ profundo de opciones de arquitectura.
 
 ### Propose Ligero
 
-**Delegación:** Chalán Regular con prompt armado por orquestador.
+**Delegación:** Chalán Crikoso (`define_subagent`) con prompt armado por orquestador.
 
 **Prompt de delegación:**
 
@@ -162,7 +162,7 @@ para "{change}".
 
 ### Spec Ligero
 
-**Delegación:** Chalán Regular con prompt armado por orquestador.
+**Delegación:** Chalán Crikoso (`define_subagent`) con prompt armado por orquestador.
 
 **Prompt de delegación:**
 
@@ -197,7 +197,7 @@ para "{change}".
 
 ### Verify Ligero
 
-**Delegación:** Chalán Regular con prompt armado por orquestador.
+**Delegación:** Chalán Crikoso (`define_subagent`) con prompt armado por orquestador.
 
 **Prompt de delegación:**
 
@@ -216,7 +216,7 @@ Verifica que la implementación de "{change}" cumple con las especificaciones.
 ## Formato de retorno
 ## Verification Report
 **Change**: {change-name}
-**Verdict**: PASS | PASS WITH WARNINGS | FAIL
+**Verdict**: PASS | PASS WITH FUNCTIONAL WARNINGS | PASS WITH COSMETIC WARNINGS | FAIL
 
 ### Build & Tests
 **Build**: ✅/❌
@@ -226,7 +226,7 @@ Verifica que la implementación de "{change}" cumple con las especificaciones.
 {lista de issues o "None"}
 
 ### Acción para el Orquestador
-{PASS → archive | FAIL → funky-worker}
+{PASS → archive | FUNCTIONAL WARNINGS → re-apply | COSMETIC WARNINGS → fix inline si <5 líneas | FAIL → funky-worker}
 ```
 
 ---

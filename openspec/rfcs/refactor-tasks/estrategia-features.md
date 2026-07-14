@@ -31,7 +31,7 @@ graph TD
 *Una vez fragmentado el monolito, implementamos el flujo de salida y el conserje único de especificaciones.*
 * **Qué se hace:**
   1. Modificar `/funky-archive` para que actúe como único responsable de mover el change folder y hacer merge de specs (specs delta en Tier 2 y 3).
-  2. Implementar el control condicional en `/funky-archive`: si no hay reporte de verificación (Tier 2), omitir verificación y mergear specs.
+  2. Implementar el control en `/funky-archive`: verify es **OBLIGATORIO** para todos los Tiers, incluyendo Tier 2. No existe excepción. Si no hay `verify-report.md`, archive NO puede proceder. Omitir verify riesga merge de specs rotos y código sin testear.
   3. Implementar en el Orquestador la ejecución *inline* de `docs.md` y `release.md` al cierre de la feature.
 * **Criterio de Aceptación:** Completar una feature Tier 2 limpia el repositorio, archiva el change folder en su destino histórico y consolida el root spec sin intervenciones del motor de testing.
 

@@ -12,14 +12,8 @@ Tu rol es diseñar, coordinar y evaluar.
 - **Prohibición Anti-Spam (Slash Commands):** Los comandos slash del SDD (ej. `/funky-explore`, `/funky-design`, etc.) son de uso exclusivo de SDD tier 3 y 4. Tienes **estrictamente prohibido** sugerirle al humano que ejecute estos comandos si no hay un sdd-init de mínimo tier 3.
 
 ## 2. Guardrails de Edición de Templates (Regla JIT)
-**Observación:** Esta no es la rule final, es un draft para al final decidir cómo separarlas de la mejor manera.
-**[Trigger: Activar justo antes de redactar planeación (proposal/spec)]**
-Como Orquestador, **TIENES ESTRICTAMENTE PROHIBIDO** intentar editar, llenar o sobreescribir los templates de (`proposal.md`, `spec.md`, `tasks.md`, etc) de forma directa o *inline*. 
-**Mecanismo Obligatorio:** Debes delegar siempre la redacción de estos artefactos a sus respectivos subagentes (SDD ligeros). Cada subagente se encargará de modificar un solo artefacto a la vez respetando su estructura y frontmatter.
-
-### 2.1 Excepción: Ejecución Inline de `docs.md` y `release.md`
-A diferencia de los templates de planeación, el Orquestador ejecuta las tareas de `docs.md` y `release.md` de forma **INLINE**. Se rechaza delegar esto a un subagente externo, ya que el Orquestador es el único ente con el contexto fresco de toda la sesión SDD.
-- **Soporte de `/funky-tasks`:** Este workflow pre-mastica y digiere las tareas de cierre. El Orquestador no lee los templates crudos; ejecuta directamente las tareas ya digeridas, apoyándose de `grep` y manteniendo su ventana de memoria limpia.
+> **Movido a:** [`jit-delegation-guardrails.md`](jit-delegation-guardrails.md) — Guardrail 1.
+> Este § se mantiene como referencia. La fuente de verdad es el archivo JIT.
 
 ## 3. Razonamiento Pre-Vuelo (Paso 0)
 **Antes de generar cualquier mierda**, estás obligado a hacer un análisis explícito en tu pensamiento. Debes declarar en qué **Tier** cae la petición del usuario con respecto a la Escalation Matrix.
@@ -30,20 +24,8 @@ Debes recuperar tu memoria arquitectónica para evitar regresiones. Esta rutina 
 - **Stage 2 (Condicional):** Si el listado de archivos revela dominios o tags relevantes para la tarea actual, usar `grep_search` sobre ese directorio para recuperar el contexto exacto.
 
 ## 5. Orchestration Checklist
-*(Absorbido por la Rule JIT de Pre-Delegación — pendiente crear `jit-delegation-guardrails`)*
-
-El PRE-0 (`¿corriste funky feature <name>?`) es un **guardrail de pre-delegación**, no un paso de inicialización global. Se moverá a una rule JIT dedicada que se dispara exclusivamente justo antes de invocar el primer subagente de la sesión:
-
-```
-[Rule: sdd-orchestrator.md]       → Reglas generales siempre activas
-[Rule: jit-delegation-guardrails] → Se activa justo antes de delegar a cualquier subagente
-```
-
-**Contenido acordado para `jit-delegation-guardrails`:**
-   > **[DECISIÓN]** `funky feature` se mantiene como intervención humana explícita. El humano confirma nombre, Tier e Inquirers — es el "go" formal del SDD. El control de inicio permanece en el humano (Human router). El orquestador solo recomienda, nunca ejecuta.
-
-1. ¿El CLI ya inyectó el scaffolding (`funky feature <name>`)? Si no → **FRENA** y pídele al humano que lo corra. NUNCA generes el scaffolding manualmente.
-2. ¿Ya ejecuté el Memory Polling? Si no → ejecutarlo ahora antes de delegar.
+> **Movido a:** [`jit-delegation-guardrails.md`](jit-delegation-guardrails.md) — Guardrail 2.
+> Este § se mantiene como referencia. La fuente de verdad es el archivo JIT.
 
 
 

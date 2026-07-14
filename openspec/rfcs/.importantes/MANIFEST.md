@@ -16,7 +16,7 @@
 **Relación con aprobado en `index.md`:**
 - `spec-roles-subagents.md` — Punto 3: Ciclo de Vida, Retorno y Persistencia (el Return Envelope).
 
-**Estado:** Fragmento — no es un documento completo. Complementa a `funky-interactive/`.
+**Estado:** ❌ **Eliminado** — ya no existe.
 
 ---
 
@@ -29,11 +29,13 @@
 - Formato exacto del forecast en `tasks` (con las líneas literales para guards downstream).
 - Resumen visual del flujo de envelopes.
 
-**Estado:** ⚠️ **DESACTUALIZADO.** Basado en Gentle AI. Las decisiones del framework están ahora en `funky-interactive/`. Pendiente de reescribir.
+**Estado:** ✅ **Reescrito** — ahora referencia `funky-interactive/*` como fuente de verdad.
 
 ---
 
-## 📂 `sdd-interactive/` (HISTÓRICO)
+## 📂 `sdd-interactive/` (HISTÓRICO — cerrado)
+
+> **Ubicación real:** `refactor-tasks/closed/sdd-interactive/` (no en `.importantes/`).
 
 **Propósito:** Inspiración original de Gentle AI. **Ya no se utiliza como referencia activa.**  
 **Contenido:** 10 archivos (01–10) con templates de presentación del orquestador Gentle AI entre fases SDD.
@@ -169,13 +171,13 @@ Además, cada archivo incluye:
 |----------|----------------|----------------------------------|
 | Envelope común + fase-específico | Pendiente de actualizar en `sdd-phase-returns.md` | `funky-interactive/*` (cada archivo) |
 | Preflight (recomendación + confirmación) | `spec-cli-ide-boundaries.md` §5 | `funky-interactive/01-preflight.md` |
-| Return Envelope como mecanismo | `spec-roles-subagents.md` §3 | `return.md`, `funky-interactive/*` |
+| Return Envelope como mecanismo | `spec-roles-subagents.md` §3 | ~~`return.md`~~ (eliminado), `funky-interactive/*` |
 | Modos del orquestador (Interactivo/Auto/Handoff) | `spec-roles-subagents.md` §4 | Todo `funky-interactive/*` |
 | Phase batching / task budgeting | `spec-orchestrator-rules.md` §7 | `funky-interactive/07-tasks.md`, `08-apply.md` |
 | Explore Ligero (Sabueso) | `spec-roles-subagents.md` Anexo | `funky-interactive/03-explore.md` |
 | Checkpoint pre-apply | `spec-roles-subagents.md` §4.4 | `funky-interactive/08-apply.md` |
 | Verify con Acción explícita | — | `funky-interactive/09-verify.md` |
-| **Delegación Tier 2 (ligeros + workflows)** | `tier2-delegation-rules.md` | `funky-inputs.md` (§2, §3, §6, §8, §9) |
+| **Delegación Tier 2 (ligeros + workflows)** | ~~`tier2-delegation-rules.md`~~ (eliminado) | `funky-inputs.md` (§2, §3, §6, §8, §9) |
 
 ## Gaps resueltos vs el manifiesto anterior
 
@@ -188,11 +190,11 @@ Además, cada archivo incluye:
 
 | Archivo | Estado |
 |---------|--------|
-| `return.md` | ✅ Fragmento histórico — útil como referencia |
-| `sdd-phase-returns.md` | ⚠️ **Desactualizado** — pendiente de reescribir con datos de `funky-interactive/` |
+| `return.md` | ❌ **Eliminado** — ya no existe |
+| `sdd-phase-returns.md` | ✅ **Reescrito** — referencia `funky-interactive/*` como fuente de verdad |
 | `sdd-interactive/` | 🗄️ **Histórico** — inspiración Gentle AI, ya no se usa |
 | `funky-interactive/` | ✅ **Activo** — fuente de verdad del framework |
 | `funky-inputs.md` | ✅ **Activo** — estructura de fases ligeras (Tier 2) + Explore Tier 3 |
-| `tier2-delegation-rules.md` | ✅ **Activo** — contrato inline para ligeros, regla del tag, templates por fase |
+| `tier2-delegation-rules.md` | ❌ **Eliminado** — contrato migrado a `funky-inputs.md` |
 | `MANIFEST.md` | ✅ Actualizado |
-| `PLAN-consolidar-sdd-phase-returns.md` | ⚠️ Pendiente de actualizar |
+| `PLAN-consolidar-sdd-phase-returns.md` | ❌ **Eliminado** — ya no existe |

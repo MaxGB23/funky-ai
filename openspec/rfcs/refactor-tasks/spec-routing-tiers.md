@@ -18,13 +18,13 @@
 
 ### 1.2 Escalera Refinada con T0 (§7.3.1)
 
-- **Tier 0 (Micro-Fix):** Fix trivial de 1 línea (typos, imports). **Excepción por Override Humano:** El Orquestador detecta que es trivial, FRENA y pregunta al humano si quiere que lo edite *inline*. Si el humano aprueba, el Orquestador edita el código directo. Sin workflows, sin workers, sin `tasks.md`.
+- **Tier 0 (Conversación libre):** Cualquier tipo de conversación — chats, ideación, borrado de RFCs, brainstorming — **sin entrar al flujo SDD**. El orquestador y el humano discuten libremente. Cuando surjan features concretas, el humano puede crear un RFC y escalar a Tier 1+. **No hay workflows, no hay workers, no hay `tasks.md`.** El CLI no se invoca.
 - **Tier 1 (Fast Track):** Tarea chica (1-2 archivos).
-  - **Exploración:** Usa el "Explore Ligero" (Sabueso desechable) para no ensuciar la memoria del Orquestador leyendo código.
+  - **Exploración:** Usa Route A (Research Sencillo / Sabueso desechable) para no ensuciar la memoria del Orquestador leyendo código.
   - **Planeación:** El Orquestador redacta el `tasks.md` *inline*. (Regla: Si el tasks es demasiado complejo para redactarse inline, la feature debe escalarse a Tier 2).
   - **Ejecución:** Delegada al Worker básico.
 - **Tier 2 (Standard Feature):** Feature normal (3-5 archivos).
-  - **Exploración:** Delegada al sabueso "Explore Ligero".
+  - **Exploración:** Delegada a Route B (Explore Ligero Tier 2 / Sabueso de Lava).
   - **Planeación:** Orquestador delega `proposal.md` y `spec.md` ligeros.
   - **Tasks:** Delegada al workflow `/funky-tasks` (este workflow funge como detector de riesgo mediante su Return Envelope).
   - **Ejecución:** Delegada al Worker básico.
@@ -35,7 +35,7 @@
 ### 1.3 Branch Management (Aplica a Todos los Tiers)
 
 Para cualquier operación de Tier 1 a Tier 3, la creación de rama (branch) y PR es **OBLIGATORIA**, incluso si el SemVer es NONE.
-**La única excepción:** Tier 0 (Micro-fix inline directo).
+**La única excepción:** Tier 0 (conversación libre, sin SDD — no hay branch que crear).
 
 ### 1.4 Mutaciones a Medio Vuelo (Escenarios de Escalado)
 
@@ -61,7 +61,7 @@ Durante el ciclo SDD, el nivel de complejidad o el PR budget pueden exceder lo p
 
 | SemVer | Piso Mínimo de Tier | `release.md` | `docs.md` |
 |--------|---------------------|--------------|-----------|
-| **NONE** (Chores internos) | Tier 0 | ✗ No se sube versión | Condicional |
+| **NONE** (Chores internos) | Tier 0 (conversación libre, sin SDD) | ✗ No se sube versión | Condicional |
 | **PATCH** (Bugfixes) | Tier 1 | ✗ Sin `release.md`, pero tarea de bump de versión obligatoria en `tasks.md` | Condicional |
 | **MINOR** (Nuevas Features) | Tier 2 | ✅ OBLIGATORIO | Condicional |
 | **MAJOR** (Breaking Changes) | Tier 3 | ✅ OBLIGATORIO | ✅ OBLIGATORIO |

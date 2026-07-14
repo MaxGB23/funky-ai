@@ -1,8 +1,9 @@
 # Funky-ai Interactive — Explore
 
 > Investigación del código antes de comprometerse con un cambio.
-> En Funky-ai existe en dos versiones: **Explore SDD** (fase formal del ciclo)
-> y **Explore Ligero** (Sabueso desechable, fuera del SDD o en tiers bajos).
+> En Funky-ai existe en tres versiones: **Explore SDD** (fase formal del ciclo),
+> **Route A — Research Sencillo** (ad-hoc, cualquier tier, sin artefacto), y
+> **Route B — Explore Ligero Tier 2** (Sabueso de Lava, persiste `explore.md`).
 
 ---
 
@@ -67,9 +68,9 @@ No hay soporte para OAuth ni providers externos.
 
 | Modo | Explore SDD | Explore Ligero |
 |------|------------|----------------|
-| **Interactivo** | Muestra resultado + "¿Querés ajustar algo o continuamos?" | Disponible (CLI nativo) |
-| **Auto** | Si `Ready for Proposal: Yes`, arranca propose directo. Si `No`, frena | Disponible (CLI nativo) |
-| **Handoff** | Prepara bloque de copy-paste para IDE, espera Return Envelope | Prepara bloque copy-paste con prompt de Sabueso, humano corre en IDE y trae findings |
+| **Interactivo** | Muestra resultado + "¿Querés ajustar algo o continuamos?" | Route A: Disponible (CLI nativo). Route B: Persiste explore.md + resumen |
+| **Auto** | Si `Ready for Proposal: Yes`, arranca propose directo. Si `No`, frena | Route A: Disponible (CLI nativo). Route B: Persiste explore.md, propose lo lee desde disco |
+| **Handoff** | Prepara bloque de copy-paste para IDE, espera Return Envelope | Route A: Prepara bloque copy-paste con prompt de Sabueso. Route B: Prepara bloque copy-paste de Sabueso de Lava + template de explore.md |
 
 ### Casos especiales
 
@@ -79,13 +80,16 @@ No hay soporte para OAuth ni providers externos.
 
 ---
 
-## Explore Ligero (Sabueso desechable)
+## Route A — Research Sencillo (Sabueso desechable)
+
+Investigaciones rápidas ad-hoc, **independientes de cualquier tier**.
+No persiste artefacto. Los findings se devuelven inline.
 
 ### Cuándo se usa
 
-- Investigaciones rápidas fuera del flujo SDD (Tier 0 preguntas sueltas).
-- SDD Tier 1-2 donde `funky-explore` completo es excesivo.
-- El orquestador necesita entender algo sin ensuciar su contexto.
+- Preguntas sueltas de Tier 0 (el orquestador investiga para responder).
+- Cualquier tier donde `funky-explore` completo es innecesario.
+- El orquestador necesita entender algo rápido sin ensuciar su contexto.
 - En CLI: se delega directo a sub-agente nativo.
 - En Handoff: el orquestador prepara bloque copy-paste, el humano lo corre en el IDE.
 
@@ -103,18 +107,14 @@ El Sabueso devuelve **únicamente** esto — sin envelope, sin status, sin artif
 Si hay múltiples hallazgos, se repite el bloque. Cada Sabueso resuelve una
 sola investigación — no mezclar preguntas distintas en una misma invocación.
 
-### Consumo por el propose (Tier 2)
+### Consumo por el orquestador
 
-El Explore Ligero **no persiste artefacto**. Los hallazgos se pasan al propose
-inline en el prompt de delegación:
+Route A **no persiste artefacto**. Los hallazgos se usan inline para responder
+al humano o como contexto en el prompt de otra delegación:
 
 ```
 Prompt del propose (Tier 2) = template de funky feature + EXPLORE FINDINGS
 ```
-
-El orquestador toma el return del Sabueso y lo inyecta como una sección adicional
-dentro del prompt del sub-agente propose. El propose **lee findings del prompt**,
-no de un archivo.
 
 **En Handoff:** el orquestador no puede inyectar findings porque el Sabueso
 corre en el IDE. El flujo es:
@@ -124,7 +124,7 @@ corre en el IDE. El flujo es:
 2. Humano abre chat en IDE, pega, ejecuta
 3. Sabueso devuelve findings
 4. Humano copia findings de vuelta al chat del orquestador
-5. Orquestador los recibe y los pone en el bloque copy-paste del propose
+5. Orquestador los recibe y los usa inline
 ```
 
 El bloque de copy-paste del Sabueso en Handoff:
@@ -142,9 +142,6 @@ Sos un Sabueso de solo lectura. Devolveme SOLO esto:
 Sin ruido, sin explicaciones, sin resúmenes.
 ```
 
-Esto solo aplica en Tier 2. En Tier 3+, el explore persiste artefacto y el
-propose lo lee desde disco.
-
 ### Lo que presenta el orquestador
 
 ```markdown
@@ -157,9 +154,8 @@ el event loop. Conviene planificar el cambio.
 ```
 
 No hay "¿Querés ajustar algo?" porque es una respuesta, no una fase del ciclo.
-El Sabueso no persiste artefacto ni tiene Return Envelope formal.
 
-### Lo que NO hace el Explore Ligero
+### Lo que NO hace Route A
 
 - No persiste artefacto
 - No tiene status/return envelope formal
@@ -167,6 +163,46 @@ El Sabueso no persiste artefacto ni tiene Return Envelope formal.
 - No pregunta "Ready for Proposal"
 - No recibe skills — es desechable y no escribe código
 - En Handoff: el humano hace de puente, el orquestador prepara el copy-paste
+
+---
+
+## Route B — Explore Ligero Tier 2 (Sabueso de Lava)
+
+**Tier 2 exclusivo.** Persiste `explore.md` como insumo para propose.
+Usa `define_subagent` (lectura + escritura). No reemplaza a Explore SDD (Tier 3+).
+
+### Cuándo se usa
+
+- Tier 2 cuando hay un RFC/spec como input, o la tarea requiere entender
+  reglas, definiciones y constraints de un documento fuente.
+- El orquestador delega para no ensuciar su contexto con código basura.
+
+### Lo que devuelve
+
+Persiste el artefacto `explore.md` en `openspec/changes/{change}/explore.md`.
+Devuelve un hallazgo resumen:
+
+```markdown
+## Hallazgo: {título corto}
+**Qué**: {1-3 líneas — resumen del análisis}
+**Dónde**: `openspec/changes/{change}/explore.md`
+**Context Preservation**: {SÍ/NO — si se pudo volcar el contexto del RFC}
+```
+
+### Consumo por el propose (Tier 2)
+
+El propose **lee `explore.md` desde disco**, no del prompt.
+El orquestador pasa el path al propose como artefacto anterior:
+
+```
+Prompt del propose (Tier 2) = template de funky feature + path a explore.md
+```
+
+### Lo que NO hace Route B
+
+- No reemplaza a Explore SDD (Tier 3+) — es un template ligero enfocado
+  en Context Preservation, no en análisis profundo de opciones de arquitectura.
+- No tiene Return Envelope formal.
 
 ---
 
@@ -183,7 +219,8 @@ pasar skills relevantes a los sub-agentes SDD que **escriben código**:
 | `sdd-spec` | cognitive-doc-design (opcional) |
 | `sdd-explore` | Ninguna — investigación pura |
 | `sdd-propose` | Ninguna — definición de alcance |
-| Explore Ligero | **No** — es desechable |
+| Explore Ligero Route A | **No** — es desechable, no persiste nada |
+| Explore Ligero Route B | **No** — enfocado en Context Preservation, no escribe código |
 
 El orquestador cachea el skill registry una vez por sesión y filtra por fase.
 Las skills se pasan como paths en el prompt de delegación, no como contenido
@@ -195,7 +232,7 @@ inline. El sub-agente las lee antes de arrancar su trabajo.
 
 | Gentle AI | Funky-ai |
 |-----------|----------|
-| Un solo explore | Dos niveles: Explore SDD (formal) + Explore Ligero (desechable) |
-| Siempre persiste artefacto | El Ligero no persiste nada |
+| Un solo explore | Tres variantes: Explore SDD (formal), Route A (desechable, sin persistencia), Route B Tier 2 (persiste `explore.md`) |
+| Siempre persiste artefacto | Route A no persiste nada; Route B persiste `explore.md` |
 | El orquestador siempre pregunta "Ready for Proposal" | El Ligero no tiene ese campo |
 | No menciona Sabueso | El Sabueso es un rol documentado en spec-roles-subagents.md |
