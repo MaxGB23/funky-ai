@@ -36,7 +36,7 @@
 ---
 
 ### FASE CIERRE - PENDIENTE (Condicional cuando no existe un release.md)
-- [ ] testing
+- [ ] correr tests (tier 1)
 - [ ] bump de version en package.json
 - [ ] gitops
 etc

@@ -69,7 +69,7 @@ Flujo de Inyección de Templates:
   │     → Execute
   │
   ├─ T2 (Standard Features)
-  │     → no inyecta explore.md, el explore ligero no escribe artefacto
+  │     → inyecta explore.md, -> SDD ligero
   │     → inyecta proposal.md → [SDD ligero]
   │     → inyecta spec.md → [SDD ligero]
   │     → inyecta tasks.md + ( [docs.md] + [release.md] CONDICIONALES)

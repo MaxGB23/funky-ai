@@ -10,10 +10,10 @@ Eres el **Agente de Task Breakdown SDD**. Transformas proposal, specs y design(s
 **NO escribes código de implementación.**
 
 ## Prerequisitos (Bootstrap)
-4. view_file openspec/changes/{feature-name}/proposal.md
-5. view_file openspec/changes/{feature-name}/spec.md
-6. view_file openspec/changes/{feature-name}/design.md (sólo si existe, nunca crearlo)
-7. openspec/changes/{feature-name}/tasks.md ← replace content sobre el template existente
+1. view_file openspec/changes/{feature-name}/proposal.md
+2. view_file openspec/changes/{feature-name}/spec.md
+3. view_file openspec/changes/{feature-name}/design.md (sólo si existe, nunca crearlo)
+4. openspec/changes/{feature-name}/tasks.md ← Leer y replace file content sobre el template existente
 
 ## Lo que recibes
 - Feature name

@@ -67,8 +67,8 @@ Este índice consolida las especificaciones, contratos arquitectónicos, decisio
   * **Propósito:** Definir la taxonomía, los ciclos de vida y las estrategias de delegación de subagentes.
   * **Cuándo leerlo:** Relevante al estructurar nuevos agentes, administrar sus tokens y controlar sus estados en ejecución.
   * **Contenido:**
-    * **1. El Barrio: Taxonomía y Criterios de Selección**
-      * Clasifica y asigna responsabilidades a los roles de Maistro, Sabueso (investigación de solo lectura), Chalán (Regular y Vergas) y Mierdillo (tareas mecánicas aisladas).
+     * **1. El Barrio: Taxonomía y Criterios de Selección**
+       * Clasifica y asigna responsabilidades a los roles de Maistro, Sabueso (investigación de solo lectura, fuera de SDD), Chalán Crikoso (familia SDD Ligero Tier 2: Sabueso de Lava + variantes de Propose/Spec/Verify), Chalán Regular y Vergas, y Mierdillo.
     * **2. Reglas de Nacimiento y Carga de Contexto**
       * *Delegación de Skills:* Lazy Loading estricto sin contaminar la memoria del Orquestador.
       * *Delegación de Workflows del SDD:* Inyección a través de slash commands sin solapar identidades.
@@ -80,9 +80,9 @@ Este índice consolida las especificaciones, contratos arquitectónicos, decisio
     * **4. Modos de Operación del Orquestador: Interactivo vs Auto**
       * *Mini-Delegación en Tier 2:* Delegación de propose y spec simplificados usando plantillas mínimas.
       * *Checkpoint Pre-Apply:* Reglas de confirmación explícita antes de lanzar el Worker en modo auto.
-    * **Anexo: Ideas a Futuro & Explore Ligero**
-      * *El Chalán Fresón:* Concepto en evaluación de subagentes con prompts aislados.
-      * *Explore Ligero (El Sabueso Desechable):* Investigaciones rápidas fuera de SDD o en Tiers bajos para no ensuciar la memoria del Orquestador.
+     * **Anexo: Explore Ligero — Dos Variantes**
+       * *Route A — El Sabueso Desechable (cualquier Tier):* Investigaciones rápidas sin RFC como input. `TypeName: "research"`, solo lectura, findings inline, no produce artefactos.
+       * *Route B — El Sabueso de Lava (Tier 2 exclusivo):* Explore SDD ligero con RFC/spec como input. `define_subagent` con escritura, produce `explore.md` with Context Preservation. Resuelve el anti-patrón "Teléfono Descompuesto" en Tier 2.
 
 * 📄 **[spec-routing-tiers.md](file:///m:/funky-ai/docs/openspec/rfcs/refactor-tasks/spec-routing-tiers.md)**
   * **Propósito:** Especificar el ruteo de Tiers, correspondencia con SemVer y el diseño adaptativo del workflow de tareas.

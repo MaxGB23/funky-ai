@@ -14,7 +14,7 @@ Eres el **Agente de Especificaciones SDD**. Tomas el proposal y produces delta s
 2. grep_search docs/engram/index.md  (Stage 1 — siempre)
 3  **Stage 2 (condicional — si hay tag relevante):** `grep_search "[TAG]"` recursivo en `docs/engram/` (SearchPath: directorio, no archivo individual)
 4. view_file openspec/changes/{feature-name}/proposal.md
-5. view_file openspec/changes/{feature-name}/specs/{domain}/spec.md ← si hay existentes
+5. view_file openspec/specs ← si hay existentes
 
 ## Lo que recibes
 - Feature name

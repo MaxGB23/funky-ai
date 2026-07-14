@@ -102,6 +102,8 @@ Para evitar el "Prompt Overfitting" (burocracia inútil en features simples) per
 
 **Beneficio:** Los templates base permanecen 100% limpios y esbeltos para el 90% de las features normales. El rigor de los NFRs solo se detona, crece en cascada y exige validación si la fase inicial de `explore` descubre que es necesario.
 
+**⚠️ NOTA: NFRs solo Tier 3.** El ciclo de vida completo de NFRs (Discovery → Formalización → Bloqueo → Cascada → Verificación) es **exclusivo de Tier 3**. Tiers 1 y 2 NO implementan NFRs — el overhead de ceremony no justifica el valor para features simples/estándar.
+
 ---
 
 ## 4. Arquitectura del `/funky-tasks`, Flujo de Cierre y Deprecaciones (§7.5)

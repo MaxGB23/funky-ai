@@ -13,7 +13,7 @@
   Corre rápido y protege los root specs de deltas rotos.
 
 - **Tier 3**: obligatorio. Verify **completo**: build + tests + compliance matrix
-  + design coherence + NFR tracing.
+  + design coherence + NFR tracing. funky-verify
 
 - **Tier 1**: no hay verify.
 
@@ -35,7 +35,6 @@
 ## Verification Report
 
 **Change**: {change-name}
-**Mode**: {Tier 2 Light | Tier 3 Full}
 **Verdict**: PASS | PASS WITH FUNCTIONAL WARNINGS | PASS WITH COSMETIC WARNINGS | FAIL
 
 ### Completeness

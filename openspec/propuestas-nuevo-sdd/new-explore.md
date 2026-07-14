@@ -1,6 +1,5 @@
 Que el prompt refleje lo que ya hacés, en vez de tener features muertas:
 ## Lo que recibes
-Del orquestador humano (formato estándar de copy-paste):
 - `/funky-explore`
 - **Feature:** {nombre del cambio}
 - **Contexto a analizar:** {path a RFC, engram entry, o descripción directa}

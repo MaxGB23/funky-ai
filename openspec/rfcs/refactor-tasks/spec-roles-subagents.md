@@ -8,19 +8,20 @@
 
 ## 1. El Barrio: Taxonomía y Criterios de Selección
 
-Para mantener una arquitectura limpia y evitar confusiones operativas, los agentes se clasifican en cuatro roles principales, cada uno con permisos y casos de uso específicos:
+Para mantener una arquitectura limpia y evitar confusiones operativas, los agentes se clasifican en cinco roles, cada uno con permisos y casos de uso específicos:
 
 ### 1.1 El Maistro (Orquestador Principal)
 * **Rol:** El agente principal que interactúa con el humano. Diseña la arquitectura, toma decisiones de alto nivel, planifica el SDD y dirige a los subagentes.
 * **Permisos:** Completos.
 * **Tokens:** Carga el contexto mínimo necesario, no se ensucia las manos si no lo necesita, esto le otorga máxima precisión.
 
-### 1.2 El Sabueso (`research` - Estático)
-* **Rol:** Exploración rápida y desechable ("Explore ligero"). Buscar definiciones, leer stack traces o revisar documentación web sin alterar el proyecto.
-* **Permisos:** Solo lectura (`view_file`, `grep_search`, `read_url_content`, etc). Sin acceso a escritura o terminal.
-* **Ventaja:** Imposible que rompa el código. Barato en tokens.
+### 1.2 El Sabueso (`research` — Solo Lectura, Fuera de SDD)
+* **Rol:** Exploración rápida y desechable para investigaciones **fuera del flujo SDD** (o en cualquier tier donde solamente se quiera investigar sin generar artefacto). Buscar definiciones, leer stack traces, revisar documentación web. Disponible en cualquier Tier (T0–T3), pero su contexto natural es fuera de SDD.
+* **Permisos:** Solo lectura (`view_file`, `grep_search`, `read_url_content`, etc). Sin acceso a escritura ni terminal.
+* **Ventaja:** Imposible que rompa el código. Barato en tokens. No produce artefactos — los findings llegan inline al Orquestador.
 * **Invocación:** `invoke_subagent(TypeName: "research")`.
-Leer anexo de Explore Ligero para más detalles.
+* **Trigger:** El Orquestador necesita buscar algo en el código o en la web sin ensuciar su contexto. No hay RFC/spec como input ni fase SDD activa que requiera un artefacto.
+Ver Anexo §Explore Ligero — Route A para detalles de invocación.
 
 ### 1.3 El Chalán (`self`)
 El ejecutor principal de tareas. Hereda al 100% las `<user_rules>` y el prompt del Orquestador (~3,000+ tokens base). Nace sabiendo usar `pnpm` y conociendo los comandos de los workflows. Tiene permisos completos (escritura, terminal, MCP). Se divide en dos variantes según su uso:
@@ -35,7 +36,30 @@ El ejecutor principal de tareas. Hereda al 100% las `<user_rules>` y el prompt d
 * **Invocación:** Usado para delegar Workflows completos mediante slash commands y parámetros.
 * **Ejecución en Batches:** A diferencia del Worker regular, aquí el batch de cierre/mergeo no vive en `tasks.md` (se pasa a `release.md`). Por ello, `/funky-apply` puede ejecutar sus tasks operativas de un solo jalón. Si la complejidad exige dividir el Apply en múltiples batches lógicos, cada batch corresponde a un subagente *diferente* de forma estrictamente secuencial. Jamás paralelos.
 
-### 1.4 El Mierdillo (`custom` - Creado al vuelo)
+### 1.4 El Chalán Crikoso (`define_subagent` — SDD Ligero, Tier 2)
+
+Familia de subagentes para las fases SDD en **Tier 2**. Son "crikosos" porque están flacos: nada de workflows completos, nada de herencia de reglas del Orquestador, prompt mínimo enfocado en una sola tarea. Todos son `define_subagent` con los permisos exactos que su tarea requiere.
+
+* **Tier:** Exclusivo de Tier 2.
+* **ADN:** Nace limpio — sin `user_rules`, sin catálogo de skills, sin personalidad del Orquestador. Solo el prompt que el Orquestador le arma.
+* **Permisos:** Los mínimos necesarios para su variante (lectura, lectura+escritura, o escritura acotada).
+* **Invocación:** `define_subagent` con prompt estricto y permisos declarados explícitamente.
+* **Return:** Formato reducido (no Return Envelope completo) — el Orquestador sabe lo que necesita sin leer el artefacto entero.
+
+**Diferencia clave vs Chalán Regular/Vergas:** El Crikoso no hereda las `user_rules` ni el catálogo del CLI. No conoce slash commands. Es más barato en tokens de arranque pero más dependiente de que el Orquestador arme un prompt preciso.
+
+#### Variantes del Chalán Crikoso
+
+| Variante | Apodo | Fase SDD | Permisos | Produce |
+|----------|-------|----------|----------|---------|
+| Explore Ligero | **Sabueso de Lava** | Explore (Tier 2) | Lectura + escritura | `explore.md` con Context Preservation |
+| Propose Ligero | — | Propose (Tier 2) | Lectura + escritura | `proposal.md` |
+| Spec Ligero | — | Spec (Tier 2) | Lectura + escritura | `specs/{domain}.md` |
+| Verify Ligero | — | Verify (Tier 2) | Lectura + escritura | `verify-report.md` |
+
+> El **Sabueso de Lava** es el único Crikoso con apodo propio porque su naturaleza es distinta al resto: en lugar de recibir un artefacto ya existente y transformarlo, lee un RFC externo y produce Context Preservation desde cero. Ver Anexo §Explore Ligero — Route B para detalles.
+
+### 1.5 El Mierdillo (`custom` - Creado al vuelo)
 * **Rol:** Tareas mecánicas, súper aisladas y especializadas (ej. ejecutar linters, formateo, auditoría de dependencias, aplicar un skill específico).
 * **Permisos:** Definidos al momento de crear (`enable_write_tools`, etc).
 * **ADN y Costo:** Nace completamente limpio, sin reglas de estilo ni persona, a menos que se le inyecten. Muy bajo consumo de tokens de arranque.
@@ -130,17 +154,19 @@ En Tier 3+, el Orquestador en modo auto **no debe delegar `/funky-apply` sin par
 
 ---
 
-### Explore Ligero — El Sabueso Desechable (§7.4)
+### Explore Ligero — Dos Variantes (§7.4)
 
-Para investigaciones rápidas fuera del flujo SDD (ej. "¿dónde se define X?", "¿qué archivo maneja el stack trace de Y?"), donde lanzar `/funky-explore` completo es excesivo y que el Orquestador lea código directamente ensuciaría su memoria.
+Para investigaciones rápidas fuera del flujo SDD o en Tiers bajos, donde lanzar `/funky-explore` completo es excesivo y que el Orquestador lea código directamente ensuciaría su memoria. El Explore Ligero tiene **dos rutas** según si hay un RFC/spec como input o no.
 
-Escenario de uso:
-En SDD Tier 3+ tenemos un workflow funky-explore potente, pero para los tiers bajos de SDD (Tier 1 y 2) sería matar una mosca a cañonazos. Además, ni siquiera hace falta estar en SDD: el humano podría estar en una conversación normal (Tier 0) y decir algo como: "karnal, la feature X ha ocasionado estos problemas en producción".
-El Orquestador detecta que necesita revisar algunos archivos para encontrar la causa, pero también sabe que ponerse a explorar código él mismo sería ensuciar su contexto a lo imbécil. Su jale es mantenerse fresco para seguir orquestando, así que mejor delega un Sabueso Desechable (Explore Ligero) que investigue rápido, le regrese únicamente los hallazgos relevantes y luego desaparezca con todo el contexto que acumuló.
-Con esto resolvemos investigaciones rápidas tanto en conversaciones normales (Tier 0, fuera de SDD) como en SDD Tier 1 y 2, sin tener que lanzar un funky-explore completo.
+**Escenario de uso:**
+En SDD Tier 3+ existe el workflow `funky-explore` completo, pero para Tiers bajos (T0–T2) sería matar una mosca a cañonazos. El Orquestador detecta que necesita investigar sin ensuciar su contexto y delega al agente correcto según el tipo de tarea.
+
+#### Route A — El Sabueso (Desechable, cualquier Tier)
+
+**Cuándo:** No hay RFC/spec como input, o la tarea es pura búsqueda en código ("¿dónde se define X?", "¿qué archivo maneja Y?"). Disponible en T0, T1, T2, T3.
 
 **Patrón de Invocación:**
-El Orquestador delega a un Sabueso (`TypeName: "research"`) con un prompt hiper-estricto. El agente hace el trabajo sucio y muere. El Orquestador recibe **únicamente un resumen de 2 líneas**, con su contexto intacto.
+El Orquestador delega a un Sabueso (`TypeName: "research"`) con un prompt hiper-estricto. El agente hace el trabajo sucio y muere. El Orquestador recibe **únicamente los hallazgos**, con su contexto intacto. No produce artefactos — los findings se inyectan inline en el siguiente prompt.
 
 ```
 Prompt del Sabueso (estructura mínima):
@@ -156,3 +182,30 @@ Prompt del Sabueso (estructura mínima):
 - **`v2` (Producción — Autónomo):** Una vez validado el comportamiento, la rule se actualiza para que el Orquestador lance el Sabueso **sin avisar**, reportando el resultado directo al humano como parte de su respuesta normal.
 
 > **Nota:** Este ciclo v1→v2 es el mismo patrón que aplica a toda delegación del Orquestador (ver Transición de Entorno en `spec-cli-ide-boundaries.md`). El Sabueso fue el primer caso de uso donde se formalizó.
+
+#### Route B — El Sabueso de Lava (Con Artefacto, Tier 2 exclusivo)
+
+**Cuándo:** Hay un RFC/spec como input, o el orquestador detecta que la tarea requiere entender reglas, definiciones y constraints de un documento fuente. Exclusivo de Tier 2 — es el Explore SDD ligero.
+
+**Problema que resuelve:** El anti-patrón de "Teléfono Descompuesto" en Tier 2. Sin artefacto persistente, los findings del explore se degradan al pasarse inline entre fases. El Sabueso de Lava produce `explore.md` con Context Preservation — el mismo template que Tier 3 pero enfocado solo en preservar el contexto del RFC, no en análisis profundo de opciones arquitectónicas.
+
+**Patrón de Invocación:**
+El Orquestador delega a un Sabueso de Lava (`define_subagent` con escritura habilitada). Lee el RFC fuente y escribe sobre el template `explore.md` del change folder. El Propose Ligero lee `explore.md` desde disco.
+
+```
+Prompt del Sabueso de Lava (estructura mínima):
+  - Tarea: analizar RFC/spec fuente y producir explore.md
+  - Artefactos a leer: {rfc_path}
+  - Artefacto a trabajar: docs/openspec/changes/{change}/explore.md
+  - Output obligatorio: explore.md con sección Context Preservation
+  - Formato de retorno: Hallazgo con estado de Context Preservation
+```
+
+**Árbol de decisión del Orquestador:**
+```
+¿Estamos en Tier 2 delegando una fase SDD con RFC/spec como input?
+  ├── SÍ → Route B (Sabueso de Lava)
+  │         Produce explore.md → Propose Ligero lo lee desde disco
+  └── NO → Route A (Sabueso)
+            Findings inline → Orquestador los inyecta en el siguiente prompt
+```

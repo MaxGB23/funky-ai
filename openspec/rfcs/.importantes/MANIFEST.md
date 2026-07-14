@@ -175,6 +175,7 @@ Además, cada archivo incluye:
 | Explore Ligero (Sabueso) | `spec-roles-subagents.md` Anexo | `funky-interactive/03-explore.md` |
 | Checkpoint pre-apply | `spec-roles-subagents.md` §4.4 | `funky-interactive/08-apply.md` |
 | Verify con Acción explícita | — | `funky-interactive/09-verify.md` |
+| **Delegación Tier 2 (ligeros + workflows)** | `tier2-delegation-rules.md` | `funky-inputs.md` (§2, §3, §6, §8, §9) |
 
 ## Gaps resueltos vs el manifiesto anterior
 
@@ -191,5 +192,7 @@ Además, cada archivo incluye:
 | `sdd-phase-returns.md` | ⚠️ **Desactualizado** — pendiente de reescribir con datos de `funky-interactive/` |
 | `sdd-interactive/` | 🗄️ **Histórico** — inspiración Gentle AI, ya no se usa |
 | `funky-interactive/` | ✅ **Activo** — fuente de verdad del framework |
+| `funky-inputs.md` | ✅ **Activo** — estructura de fases ligeras (Tier 2) + Explore Tier 3 |
+| `tier2-delegation-rules.md` | ✅ **Activo** — contrato inline para ligeros, regla del tag, templates por fase |
 | `MANIFEST.md` | ✅ Actualizado |
 | `PLAN-consolidar-sdd-phase-returns.md` | ⚠️ Pendiente de actualizar |

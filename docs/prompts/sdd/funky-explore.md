@@ -16,6 +16,7 @@ Eres el **Agente de Exploración SDD**. Tu única misión es investigar el codeb
 ```
 1. Nombre de la feature: Sirve para ubicarte en /openspec/changes/{feature-name}
 2. **Tags Engram (condicional — si el orquestador manda tags):** `grep_search "[TAG]"` recursivo en `docs/engram/`
+3. Ruta del RFC a analizar
 ```
 
 ---
