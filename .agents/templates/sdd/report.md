@@ -25,12 +25,11 @@
 > **[SISTEMA - PARA EL WORKER]** Añade tus reportes al final de esta sección copiando la estructura base de la "Fase 1". TIENES PROHIBIDO borrar los reportes de workers anteriores o sobrescribir el archivo completo.
 
 ### Fase 1 — [Nombre]
-- **Status:** [✅ Completada / ❌ Bloqueada]
-- **🔴 Cambio de Scope Detectado:** [No / Sí - Razón]
-- **Archivos creados/modificados:**
+- **Status:** [success / partial / blocked]
+- **Summary:** [Resumen de 1-3 frases de lo que se hizo en esta fase]
+- **Artifacts:**
   - `archivo.js`: Breve descripción del cambio
-- **Bugs encontrados:** [Ninguno]
-- **Próxima acción:** [Instrucción para el orquestador]
+- **Risks:** [Ninguno / Cambio de Scope Detectado / Bugs encontrados]
 
 ---
 

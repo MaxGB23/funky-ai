@@ -13,12 +13,10 @@
 1. **Tier 1 (Fast Track):** Operación directa hacia la ejecución. Se salta las fases de diseño profundo (`explore`, `proposal`, `spec`). El Orquestador puede decidir delegar la creación del `tasks.md` a un workflow dedicado o hacerlo inline. También puede delegar un worker para ejecutar las tasks, o hacerlo él mismo si el cambio es sumamente trivial.
 2. **Tier 2 (Orquestador Híbrido "Sandwich"):** El Orquestador funge como Manager de Alto Nivel. Para **proteger su contexto** de código basura o I/O masivo, delega la exploración inicial (`/funky-explore`) y la ejecución final (`/funky-tasks`) a workflows especializados. El Orquestador *únicamente* redacta de forma *inline* las piezas de negocio y diseño (`proposal.md` y `spec.md`), apoyándose en los reportes limpios que le traen los workflows.
 3. **Tier 3 (Workflows Aislados por Fase):** Para features complejas donde incluso redactar el spec satura la memoria. Se aísla *CADA* fase SDD en chats dedicados (`/funky-propose`, `/funky-spec`, `/funky-design`, etc.). Los templates no se inyectan masivamente al inicio, y los NFRs bajan en cascada. El Context Window es 100% virgen para cada artefacto.
-> **DEPRECADO:** Tier 4 fue absorbido por Tier 3. Ver nota en 1.1.
-4. ~~**Tier 4 (Rediseño Mayor):**~~ **DEPRECADO.** Rediseño arquitectónico. Su alcance fue absorbido por Tier 3.
 
 ### 1.2 Escalera Refinada con T0 (§7.3.1)
 
-- **Tier 0 (Conversación libre):** Cualquier tipo de conversación — chats, ideación, borrado de RFCs, brainstorming — **sin entrar al flujo SDD**. El orquestador y el humano discuten libremente. Cuando surjan features concretas, el humano puede crear un RFC y escalar a Tier 1+. **No hay workflows, no hay workers, no hay `tasks.md`.** El CLI no se invoca.
+- **Tier 0 (Conversación libre):** Cualquier tipo de conversación — chats, ideación, RFCs, brainstorming — **sin entrar al flujo SDD**. El orquestador y el humano discuten libremente. Cuando surjan features concretas, el humano puede crear un RFC, en caso de querer ejecutarla ya con sdd, se recomienda un nuevo orquestador fresco dedicado al sdd siguiendo el RFC.
 - **Tier 1 (Fast Track):** Tarea chica (1-2 archivos).
   - **Exploración:** Usa Route A (Research Sencillo / Sabueso desechable) para no ensuciar la memoria del Orquestador leyendo código.
   - **Planeación:** El Orquestador redacta el `tasks.md` *inline*. (Regla: Si el tasks es demasiado complejo para redactarse inline, la feature debe escalarse a Tier 2).
@@ -28,9 +26,8 @@
   - **Planeación:** Orquestador delega `proposal.md` y `spec.md` ligeros.
   - **Tasks:** Delegada al workflow `/funky-tasks` (este workflow funge como detector de riesgo mediante su Return Envelope).
   - **Ejecución:** Delegada al Worker básico.
-  - **Verificación:** Verify ligero obligatorio (build + tests + issues, sin template).
+  - **Verificación:** Verify ligero obligatorio (Comparar specs primero, task completion segundo + build + tests + issues, sin template).
 - **Tier 3 (Deep):** Cambios complejos o de alto riesgo. CADA fase se aísla en su propio workflow. La ejecución la toma `/funky-apply` (que lee el `spec.md` y `design.md` directo, eliminando la necesidad de microplanning en el Orquestador). Absorbió el alcance del antiguo Tier 4 (rediseños mayores).
-> **DEPRECADO:** Tier 4 fue absorbido por Tier 3. Ver nota en 1.1.
 
 ### 1.3 Branch Management (Aplica a Todos los Tiers)
 
