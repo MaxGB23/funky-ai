@@ -24,11 +24,11 @@ Esta sesión consumió demasiados tokens por leer docs de referencia que no eran
 
 | Corte | Archivo | Estado | Descripción |
 |-------|---------|--------|-------------|
-| **Corte 1** | [corte-1.md](./corte-1.md) | 🟡 En progreso | Core del Framework: envelope, preflight, cacheo, routing |
-| **Corte 2** | [corte-2.md](./corte-2.md) | ⏳ Pendiente | End-to-End Tier 2 en Automático |
-| **Corte 3** | [corte-3.md](./corte-3.md) | ⏳ Pendiente | Capa Interactiva |
-| **Corte 4** | [corte-4.md](./corte-4.md) | ⏳ Pendiente | Tier 3 |
-| **Corte 5** | [corte-5.md](./corte-5.md) | ⏳ Pendiente | Modo Handoff |
+| **Corte 1** | [corte-1.md](./corte-1.md) | ✅ Completado | Core del Framework: envelope, preflight, cacheo, routing |
+| **Corte 2** | [corte-2.md](./corte-2.md) | ✅ Completado | End-to-End Tier 2 en Automático |
+| **Corte 3** | [corte-3.md](./corte-3.md) | ✅ Completado | Capa Interactiva |
+| **Corte 4** | [corte-4.md](./corte-4.md) | ✅ Completado | Tier 3 |
+| **Corte 5** | [corte-5.md](./corte-5.md) | ✅ Completado | Modo Handoff |
 
 ---
 

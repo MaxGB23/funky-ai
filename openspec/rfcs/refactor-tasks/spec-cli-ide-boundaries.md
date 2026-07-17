@@ -67,20 +67,21 @@ funky feature <name>
 Flujo de Inyección de Templates:
   ├─ T1 (Tweaks/Bugs)
   │     → inyecta tasks.md + [docs.md condicional] (release.md OMITIDO — bump de versión va en tasks.md)
-  │     → Checkpoint Pre-Apply (CLI o IDE)
-  │     → Execute
+  │     → inyecta report.md
   │
   ├─ T2 (Standard Features)
   │     → inyecta explore.md, -> SDD ligero
   │     → inyecta proposal.md → [SDD ligero]
   │     → inyecta spec.md → [SDD ligero]
   │     → inyecta tasks.md + ( [docs.md] + [release.md] CONDICIONALES)
-  │     → Checkpoint Pre-Apply (CLI o IDE)
-  │     → Execute
+  │     → inyecta report.md
   │
-    └─ T3 (Deep Features)
+  └─ T3 (Deep Features)
         → No inyecta templates, workflows trabajan independientemente
         → inyecta tasks.md + docs.md + release.md, únicos templates que sí aplican
+
+El modo Auto, interactivo y handoff no se implementarán en el cli, ya que no aportan nada en la inyeccion de templates. El cli está diseñado para agilizar este proceso unicamente.
+
 
 Modo Automático:
   T1/T2 → fluido, sin pausas entre fases. Checkpoint pre-worker es el único freno.

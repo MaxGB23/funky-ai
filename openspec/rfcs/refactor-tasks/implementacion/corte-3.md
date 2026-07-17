@@ -8,10 +8,10 @@
 
 ## Objetivos
 
-- [ ] **1. Presentación por Fase:** Implementar los templates de presentación que usa el Orquestador para mostrar los resultados de cada fase al humano (Modo Interactivo).
-- [ ] **2. Review Workload Guard:** Implementar la pregunta en Modo Interactivo para subdividir batches si el forecast excede las 400 líneas en `tasks.md`.
-- [ ] **3. Veredictos de Verify:** Implementar el manejo interactivo de los veredictos (PASS, FAIL, WARNINGS) y las acciones recomendadas al humano.
-- [ ] **4. Checkpoint Pre-Apply:** Implementar la pausa y decisión explícita antes de lanzar el Worker.
+- [x] **1. Presentación por Fase:** Implementar los templates de presentación que usa el Orquestador para mostrar los resultados de cada fase al humano (Modo Interactivo).
+- [x] **2. Review Workload Guard:** Implementar la pregunta en Modo Interactivo para subdividir batches si el forecast excede las 400 líneas en `tasks.md`.
+- [x] **3. Veredictos de Verify:** Implementar el manejo interactivo de los veredictos (PASS, FAIL, WARNINGS) y las acciones recomendadas al humano.
+- [x] **4. Checkpoint Pre-Apply:** Implementar la pausa y decisión explícita antes de lanzar el Worker.
 
 ---
 

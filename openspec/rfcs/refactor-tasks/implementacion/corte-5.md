@@ -8,9 +8,9 @@
 
 ## Objetivos
 
-- [ ] **1. Detección de Entorno:** Implementar la lógica para detectar si la ejecución está en el CLI o en el IDE (Kill Switch del IDE).
-- [ ] **2. Bloques Copy-Paste:** Generar los bloques de texto listos para copy-paste en el chat del IDE cuando el CLI está en Modo Handoff.
-- [ ] **3. Ley de Invarianza:** Asegurar que los mensajes delegados desde el CLI al IDE contengan todo el contexto necesario sin depender del historial de chat previo.
+- [x] **1. Detección de Entorno:** Implementar la lógica para detectar si la ejecución está en el CLI o en el IDE (Kill Switch del IDE).
+- [x] **2. Bloques Copy-Paste:** Generar los bloques de texto listos para copy-paste en el chat del IDE cuando el CLI está en Modo Handoff.
+- [x] **3. Ley de Invarianza:** Asegurar que los mensajes delegados desde el CLI al IDE contengan todo el contexto necesario sin depender del historial de chat previo.
 
 ---
 

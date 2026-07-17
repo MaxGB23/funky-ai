@@ -8,10 +8,10 @@
 
 ## Objetivos
 
-- [ ] **1. Workflows Completos:** Implementar los workflows completos para `funky-propose` y `funky-spec` en Tier 3.
-- [ ] **2. Fase de Design:** Implementar la fase `design.md` exclusiva de Tier 3 (decisiones técnicas, arquitectura, estrategia de testing).
-- [ ] **3. Verify Completo:** Implementar el verify exhaustivo (Compliance matrix + design coherence + NFR tracing).
-- [ ] **4. Control de NFRs:** Implementar el rastreo y bloqueo de requerimientos no funcionales (Discovery → Verificación).
+- [x] **1. Workflows Completos:** Implementar los workflows completos para `funky-propose` y `funky-spec` en Tier 3.
+- [x] **2. Fase de Design:** Implementar la fase `design.md` exclusiva de Tier 3 (decisiones técnicas, arquitectura, estrategia de testing).
+- [x] **3. Verify Completo:** Implementar el verify exhaustivo (Compliance matrix + design coherence + NFR tracing).
+- [x] **4. Control de NFRs:** Implementar el rastreo y bloqueo de requerimientos no funcionales (Discovery → Verificación).
 
 ---
 
