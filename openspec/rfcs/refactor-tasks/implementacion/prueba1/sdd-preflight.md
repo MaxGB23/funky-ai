@@ -41,7 +41,7 @@ Se inyecta cuando hay funcionalidad nueva o breaking changes:
 ### 3. Tipos de Modo
 - **Interactivo:** Pausa entre fases para revisión del humano.
 - **Auto:** Fluido, avanza entre fases sin pausas (excepto antes de ejecutar código).
-- **Handoff:** Genera bloques copy-paste para llevar al IDE.
+- **Handoff:** Similar a Interactivo, mismos prompts, pero genera bloques copy-paste para llevar al IDE, donde no existen subagentes nativos. 
 
 ## 4. Cacheo de Sesión (Post-Preflight)
 Cuando el desarrollador regrese con los valores confirmados, alménalos como constantes de sesión. **NUNCA vuelvas a preguntar Tier, Docs, Release ni Modo durante esta sesión.**
