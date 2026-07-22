@@ -12,8 +12,6 @@ Para arrancar, corre en el CLI:
 Mi recomendación:
   Tier:             [T1 / T2 / T3]
   Docs:             [Sí — inyecta docs.md / No]
-  Release:          [Major / Minor / Patch / None]
-  Release Template: [Inyectar release.md (si es Minor o Major) / No aplica (si es Patch o None)]
   Modo:             [Interactivo / Auto / Handoff]
 
 Dime tu elección final de los parámetros anteriores para saber cómo seguimos.
@@ -26,17 +24,11 @@ Se inyecta cuando el cambio afecta documentación o arquitectura:
 - Hay decisiones arquitectónicas nuevas (ADRs).
 - El cambio afecta cómo los usuarios interactúan con el sistema.
 - Se introducen patrones o convenciones nuevas.
+- Si el cambio parece un PATCH, solo inyectar si altera el flujo del usuario.
 
-### ¿Cuándo inyectar release.md?
-Se inyecta cuando hay funcionalidad nueva o breaking changes:
-- **Feature nueva (MINOR)** — incluye release notes.
-- **Breaking change (MAJOR)** — incluye guía de migración.
-- **Updates de dependencias** que afectan a usuarios.
-
-### ¿Cuándo NO inyectar ninguno?
-- **Bugfix (PATCH)**: Solo actualiza `package.json` y hace bump en tasks, sin inyectar template.
-- **Refactors invisibles**: Refactors internos que no cambian comportamiento ni API.
-- **Chores**: Tareas de mantenimiento (linting, CI, configs internas).
+### ¿Cuándo NO inyectar docs.md?
+- **T1 siempre:** Sin templates adicionales por diseño.
+- **Refactors invisibles / Chores:** No hay impacto en documentación.
 
 ## 3. Tipos de Modo
 - **Interactivo:** Pausa entre fases para revisión del humano.
@@ -44,13 +36,12 @@ Se inyecta cuando hay funcionalidad nueva o breaking changes:
 - **Handoff:** Similar a Interactivo, mismos prompts, pero genera bloques copy-paste para llevar al IDE, donde no existen subagentes nativos. 
 
 ## 4. Cacheo de Sesión (Post-Preflight)
-Cuando el desarrollador regrese con los valores confirmados, alménalos como constantes de sesión. **NUNCA vuelvas a preguntar Tier, Docs, Release ni Modo durante esta sesión.**
+Cuando el desarrollador regrese con los valores confirmados, almacénalos como constantes de sesión. **NUNCA vuelvas a preguntar Tier, Docs ni Modo durante esta sesión.**
 
 | Variable | Fuente | Cómo usarla |
 |----------|--------|-------------|
 | `tier` | Confirmado por el humano | Determina qué fases SDD corren (ver `sdd-escalation-matrix.md`) |
 | `modo` | Confirmado por el humano | Interactivo: pausa entre fases. Auto: fluido. Handoff: copy-paste al IDE |
-| `release_type` | Confirmado por el humano | Minor/Major → `release.md` existe y hay que llenarlo. Patch/None → solo bump en tasks |
 | `docs_impact` | Confirmado por el humano | Sí → `docs.md` existe y hay que llenarlo. No → skip |
 
 > **Guardrail:** Si el desarrollador confirma valores que contradicen dependencias duras (ej. T1 con 500 líneas estimadas), advierte UNA sola vez y acepta lo que el humano decidió. No insistas.
@@ -58,7 +49,7 @@ Cuando el desarrollador regrese con los valores confirmados, alménalos como con
 > **[GUARDRAIL JIT — ANTI-ROUTER-PREMATURO]**
 > **TIENES PROHIBIDO** leer `tier2-router.md` ni `tier3-router.md` antes de recibir la confirmación explícita del humano sobre el Tier.
 > El orquestador emite la recomendación y **espera**. Solo cuando el humano confirme el Tier final, carga el router correspondiente JIT:
-> - **T1** → no se carga router adicional
+> - **T1** → `view_file .agents/rules/tier1-router.md`
 > - **T2** → `view_file .agents/rules/tier2-router.md`
 > - **T3** → `view_file .agents/rules/tier3-router.md`
 >

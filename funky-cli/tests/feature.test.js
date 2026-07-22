@@ -25,78 +25,70 @@ describe('resolveFiles()', () => {
   });
 
   describe('conditional injection matrix', () => {
-    // T1: tasks.md + report.md. No release.md ever. Docs conditional.
-    it('T1 / No → 2 files (tasks.md + report.md)', () => {
-      const files = resolveFiles({ tier: 'T1', docsImpact: false, releaseType: 'None' });
+    // T1: tasks.md + report.md only. No docs, no release.
+    it('T1 → 2 files (tasks.md + report.md)', () => {
+      const files = resolveFiles({ tier: 'T1', docsImpact: false });
       expect(files).toEqual(['tasks.md', 'report.md']);
     });
 
-    it('T1 / Sí → 3 files (tasks.md + report.md + docs.md)', () => {
-      const files = resolveFiles({ tier: 'T1', docsImpact: true, releaseType: 'None' });
-      expect(files).toEqual(['tasks.md', 'report.md', 'docs.md']);
+    it('T1 ignores docsImpact (docs never injected)', () => {
+      const files = resolveFiles({ tier: 'T1', docsImpact: true });
+      expect(files).toEqual(['tasks.md', 'report.md']);
+      expect(files).not.toContain('docs.md');
     });
 
-    it('T1 always omits release.md regardless of releaseType', () => {
-      for (const rt of ['Patch', 'Minor', 'Major']) {
-        const files = resolveFiles({ tier: 'T1', docsImpact: false, releaseType: rt });
-        expect(files).not.toContain('release.md');
-      }
+    it('T1 never includes release.md', () => {
+      const files = resolveFiles({ tier: 'T1', docsImpact: false });
+      expect(files).not.toContain('release.md');
     });
 
-    // T2: tasks.md + report.md + explore/proposal/spec. Docs + release conditional.
-    it('T2 / No / None → 5 files (base + explore/proposal/spec)', () => {
-      const files = resolveFiles({ tier: 'T2', docsImpact: false, releaseType: 'None' });
-      expect(files).toEqual(['tasks.md', 'report.md', 'explore.md', 'proposal.md', 'spec.md']);
-    });
-
-    it('T2 / Sí / Patch → 7 files (+ docs + release)', () => {
-      const files = resolveFiles({ tier: 'T2', docsImpact: true, releaseType: 'Patch' });
-      expect(files).toEqual([
-        'tasks.md', 'report.md', 'explore.md', 'proposal.md', 'spec.md',
-        'docs.md', 'release.md',
-      ]);
-    });
-
-    it('T2 / No / Minor → 6 files (+ release only)', () => {
-      const files = resolveFiles({ tier: 'T2', docsImpact: false, releaseType: 'Minor' });
+    // T2: tasks.md + report.md + explore/proposal/spec + release.md (always) + [docs].
+    it('T2 / No → 6 files (base + tier + release)', () => {
+      const files = resolveFiles({ tier: 'T2', docsImpact: false });
       expect(files).toEqual([
         'tasks.md', 'report.md', 'explore.md', 'proposal.md', 'spec.md',
         'release.md',
       ]);
     });
 
-    it('T2 / None → no release.md even if releaseType is not None', () => {
-      const files = resolveFiles({ tier: 'T2', docsImpact: false, releaseType: 'None' });
-      expect(files).not.toContain('release.md');
+    it('T2 / Sí → 7 files (+ docs)', () => {
+      const files = resolveFiles({ tier: 'T2', docsImpact: true });
+      expect(files).toEqual([
+        'tasks.md', 'report.md', 'explore.md', 'proposal.md', 'spec.md',
+        'docs.md', 'release.md',
+      ]);
     });
 
-    // T3: tasks.md + release.md (always). Docs conditional. No report.md.
+    it('T2 always injects release.md', () => {
+      const files = resolveFiles({ tier: 'T2', docsImpact: false });
+      expect(files).toContain('release.md');
+    });
+
+    // T3: tasks.md + release.md (always) + [docs]. No report.md.
     it('T3 / No → 2 files (tasks.md + release.md)', () => {
-      const files = resolveFiles({ tier: 'T3', docsImpact: false, releaseType: 'None' });
+      const files = resolveFiles({ tier: 'T3', docsImpact: false });
       expect(files).toEqual(['tasks.md', 'release.md']);
     });
 
     it('T3 / Sí → 3 files (tasks.md + docs.md + release.md)', () => {
-      const files = resolveFiles({ tier: 'T3', docsImpact: true, releaseType: 'None' });
+      const files = resolveFiles({ tier: 'T3', docsImpact: true });
       expect(files).toEqual(['tasks.md', 'docs.md', 'release.md']);
     });
 
-    it('T3 always injects release.md regardless of releaseType', () => {
-      for (const rt of ['None', 'Patch', 'Minor', 'Major']) {
-        const files = resolveFiles({ tier: 'T3', docsImpact: false, releaseType: rt });
-        expect(files).toContain('release.md');
-      }
+    it('T3 always injects release.md', () => {
+      const files = resolveFiles({ tier: 'T3', docsImpact: false });
+      expect(files).toContain('release.md');
     });
 
     it('T3 never includes report.md', () => {
-      const files = resolveFiles({ tier: 'T3', docsImpact: true, releaseType: 'Major' });
+      const files = resolveFiles({ tier: 'T3', docsImpact: true });
       expect(files).not.toContain('report.md');
     });
 
     // Cross-tier guards
     it('never includes design.md (created by sdd-design phase)', () => {
       for (const tier of ['T1', 'T2', 'T3']) {
-        const files = resolveFiles({ tier, docsImpact: true, releaseType: 'Major' });
+        const files = resolveFiles({ tier, docsImpact: true });
         expect(files).not.toContain('design.md');
       }
     });
@@ -104,7 +96,7 @@ describe('resolveFiles()', () => {
     it('never includes legacy files (apply.md, verify.md, planning-handoff.md)', () => {
       const legacy = ['apply.md', 'verify.md', 'planning-handoff.md'];
       for (const tier of ['T1', 'T2', 'T3']) {
-        const files = resolveFiles({ tier, docsImpact: true, releaseType: 'Major' });
+        const files = resolveFiles({ tier, docsImpact: true });
         for (const l of legacy) {
           expect(files).not.toContain(l);
         }
@@ -173,7 +165,7 @@ describe('runFeature()', () => {
   });
 
   describe('with injectionParams', () => {
-    it('T2 / Sí / Patch → copies 7 files from golden', () => {
+    it('T2 / Sí → copies 7 files from golden', () => {
       const featureName = 'auth-login';
       const expectedFeaturePath = path.join(fakeCwd, 'openspec', 'changes', featureName);
 
@@ -190,7 +182,7 @@ describe('runFeature()', () => {
         featureName,
         cliTemplatesDir: fakeCliTemplatesDir,
         cwd: fakeCwd,
-        injectionParams: { tier: 'T2', docsImpact: true, releaseType: 'Patch' },
+        injectionParams: { tier: 'T2', docsImpact: true },
       });
 
       expect(result.success).toBe(true);
@@ -222,7 +214,7 @@ describe('runFeature()', () => {
         featureName,
         cliTemplatesDir: fakeCliTemplatesDir,
         cwd: fakeCwd,
-        injectionParams: { tier: 'T1', docsImpact: false, releaseType: 'None' },
+        injectionParams: { tier: 'T1', docsImpact: false },
       });
 
       expect(result.success).toBe(true);
@@ -247,7 +239,7 @@ describe('runFeature()', () => {
         featureName,
         cliTemplatesDir: fakeCliTemplatesDir,
         cwd: fakeCwd,
-        injectionParams: { tier: 'T3', docsImpact: false, releaseType: 'None' },
+        injectionParams: { tier: 'T3', docsImpact: false },
       });
 
       expect(result.success).toBe(true);

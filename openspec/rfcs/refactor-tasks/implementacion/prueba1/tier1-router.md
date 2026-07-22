@@ -6,15 +6,20 @@ SDD tier 1 no contiene artefactos, únicamente se hace una exploración con un s
 
 Leer el template openspec/changes/{feature_name}/tasks.md y hacer replace file content
 
-Añade una sección final de mergeo y cierre, esta sólo es ejecutada por el orquestador, el worker no debe hacerlo. 
+Añade una sección final de mergeo y cierre (inyectar al final del tasks.md generado). Esta sólo es ejecutada por el orquestador, el worker no debe hacerlo:
 
-Sección propuesta:
+---
+> 🔴 **STOP — WORKER PARA AQUÍ. Las siguientes secciones son exclusivas del Orquestador. No las ejecutes.**
+---
 ## Tests de validación
-- [ ] pnpm build
 - [ ] pnpm lint
 - [ ] pnpm test
+- [ ] pnpm build
+
 ## Mergeo y cierre
 - [ ] Revisar versión actual en package.json: `cat package.json`
+- [ ] Bumpar versión en package.json
+- [ ] Actualizar ORCHESTRATOR-STATE.md
 - [ ] `git status` — confirmar limpio
 - [ ] `git add -A && git commit -m "{mensaje}"`
 - [ ] `git checkout main && git merge --no-ff {branch}`
@@ -24,7 +29,9 @@ Sección propuesta:
 
 
 ## 2. Apply
-Invocar un subagente type "self", con la ruta al tasks.md. Debes indicarle que ejecute todas las tareas, excepto la fase de tests de validación y mergeo y cierre.
+**CHECKPOINT PRE-APPLY EN TODOS LOS MODOS**: Incluso en modo Auto muestra resumen de las decisiones tomadas y solicita aprobación humana antes de iniciar la ejecución de Apply.
+Una vez aprobado:
+Invocar un subagente type "self", con la ruta al tasks.md. Debes indicarle que ejecute todas las tareas, excepto la fase de tests de validación y mergeo y cierre. 
 
 ## 3. Preparación de release
 Tú como orquestador ejecuta la fase tests de validación. Si fallan menciona al humano qué ha fallado, pregunta cómo lo solucionan juntos, propon alternativas como lanzar un sabueso regular para que vaya a explorar.

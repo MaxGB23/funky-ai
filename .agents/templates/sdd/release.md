@@ -9,6 +9,9 @@ La versión se determina DESPUÉS de funky-archive: leer `package.json` → incr
 
 ### FASE X — Release Notes [Solo MINOR o MAJOR]
 > ⚠️ **OMITIR COMPLETAMENTE si el release_type es PATCH o None.**
+> 
+> **Tipo de release:** Se clasifica ahora (post-archive), no antes. 
+> Decidir con todo lo recabado durante el flujo SDD, si corresponde a PATCH, MINOR o MAJOR.
 
 **🚨 CHECKLIST:**
 - [ ] **Release Notes:** Generar `docs/funky-ai/releases/vX.Y.Z-release.md`

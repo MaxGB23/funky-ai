@@ -1,9 +1,12 @@
 # Tier 3 Router — Deep
 
-> **Contexto:** Este archivo se carga JIT únicamente cuando el humano confirma Tier 3. Contiene el routing completo de fases para T3.
+> 🔴 **[REGLA ESTRICTA DE DELEGACIÓN TIER 2]**
+> Te estás preparando para delegar una fase del SDD a un subagente en Tier 2. 
+> **TIENES PROHIBIDO** usar tu memoria para redactar el prompt o inventarte la estructura. Vas a generar basura si lo haces.
+> 
+> Según la fase que vayas a delegar, tu **PRIMERA ACCIÓN Y OBLIGATORIA** antes de invocar al subagente es ejecutar el comando `view_file` sobre el contrato correspondiente, copiar el formato estricto que dice "Prompt estricto a inyectar al subagente", y enviárselo tal cual:
 
 ## 1. Routing de Fases
-
 | Fase SDD | Acción T3 |
 |---|---|
 | **1. Explore** | Workflow `/funky-explore` (incluye NFRs si aplica) |
@@ -11,6 +14,7 @@
 | **3. Spec** | Workflow `/funky-spec` — genera requirements detallados (happy paths + edge cases + error states) |
 | **4. Design** | Workflow `/funky-design` — **Exclusivo T3. OBLIGATORIO.** Documenta arquitectura, decisiones técnicas y testing strategy en `design.md`. NO SE PUEDE SALTAR salvo excepción explícita del humano |
 | **5. Tasks** | Workflow `/funky-tasks` (adaptativo) |
+**CHECKPOINT PRE-APPLY EN TODOS LOS MODOS**: Incluso en modo Auto muestra resumen de las decisiones tomadas y solicita aprobación humana antes de iniciar la ejecución de Apply |
 | **6. Apply** | Workflow `/funky-apply` — secuencial por batch - Requiere aprobación humana al checkpoint pre-apply |
 | **7. Verify** | Workflow `/funky-verify` — exhaustivo: build, tests, spec compliance matrix, design coherence y NFR tracing |
 | **8. Archive** | Workflow `/funky-archive` |
@@ -49,3 +53,16 @@ Propose, Spec, Design, Tasks, Apply, Verify y Archive utilizan únicamente E1.
 feature_name: {change-name}
 tag: {tag-opcional}
 ```
+
+### 3.3 Flujo de Vida del Subagente (Según Modo de Operación)
+Relanzar un subagente desde cero para una corrección es tirar miles de tokens a la basura.
+
+**Modo Interactivo:**
+1. **Running:** El Subagente hace la chamba.
+2. **Idle:** Termina, envía su Return Envelope y se queda dormido. **EL ORQUESTADOR NO LO MATA DE INMEDIATO.**
+3. **Feedback:** Si el humano pide ajustes, el Orquestador lo despierta vía `send_message`. Revive con todo su contexto previo y corrige.
+4. **Kill:** Una vez que el humano aprueba, el Orquestador llama a `manage_subagents(Action: "kill")`.
+
+**Modo Auto:**
+1. **Running:** El Subagente hace la chamba.
+2. **Kill:** Termina, envía su Return Envelope y el Orquestador lo mata de inmediato. No hay aprobación humana pendiente.

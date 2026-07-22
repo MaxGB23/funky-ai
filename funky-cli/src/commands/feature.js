@@ -13,31 +13,28 @@ const __dirname = path.dirname(__filename);
  * Resolves which template files to inject per tier.
  * Source of truth: spec-cli-ide-boundaries.md §Diagrama de Inyección.
  *
- * T1: tasks.md + report.md + [docs.md]. release.md OMITIDO.
- * T2: explore.md + proposal.md + spec.md + tasks.md + report.md + [docs.md] + [release.md].
- * T3: tasks.md + [docs.md] + release.md (siempre). No report.md.
+ * T1: tasks.md + report.md. No docs, no release.
+ * T2: tasks.md + report.md + explore.md + proposal.md + spec.md + [docs.md] + release.md.
+ * T3: tasks.md + [docs.md] + release.md. No report.md.
  */
 const INJECTION_MATRIX = {
   T1: {
     base: ['tasks.md', 'report.md'],
     tier: [],
-    docsConditional: true,
-    releaseConditional: false, // T1 always omits release.md
-    releaseAlways: false,
+    docsConditional: false, // T1 never asks about docs
+    release: false,         // T1 never injects release.md
   },
   T2: {
     base: ['tasks.md', 'report.md'],
     tier: ['explore.md', 'proposal.md', 'spec.md'],
     docsConditional: true,
-    releaseConditional: true,
-    releaseAlways: false,
+    release: true,          // T2 always injects release.md
   },
   T3: {
     base: ['tasks.md'],
     tier: [],
     docsConditional: true,
-    releaseConditional: false,
-    releaseAlways: true, // T3 always injects release.md
+    release: true,          // T3 always injects release.md
   },
 };
 
@@ -45,7 +42,7 @@ const INJECTION_MATRIX = {
  * Pure function — resolves which template files to inject.
  * No I/O, no prompts. Testable in isolation.
  *
- * @param {{ tier: string, docsImpact: boolean, releaseType: string } | undefined} injectionParams
+ * @param {{ tier: string, docsImpact: boolean } | undefined} injectionParams
  *   When omitted, returns the legacy 9-file list (backward compat).
  * @returns {string[]} List of template filenames to copy.
  */
@@ -58,7 +55,7 @@ export function resolveFiles(injectionParams) {
     ];
   }
 
-  const { tier, docsImpact, releaseType } = injectionParams;
+  const { tier, docsImpact } = injectionParams;
   const config = INJECTION_MATRIX[tier];
 
   const files = [...config.base, ...config.tier];
@@ -67,9 +64,7 @@ export function resolveFiles(injectionParams) {
     files.push('docs.md');
   }
 
-  if (config.releaseAlways) {
-    files.push('release.md');
-  } else if (config.releaseConditional && releaseType !== 'None') {
+  if (config.release) {
     files.push('release.md');
   }
 
@@ -84,8 +79,7 @@ export function resolveFiles(injectionParams) {
  * @param {string} opts.cwd            - Directorio de trabajo destino.
  * @param {object} [opts.injectionParams] - Optional. When omitted, copies all 9 legacy files (backward compat).
  * @param {string} opts.injectionParams.tier - 'T1' | 'T2' | 'T3'
- * @param {boolean} opts.injectionParams.docsImpact - true if user wants docs.md
- * @param {string} opts.injectionParams.releaseType - 'None' | 'Patch' | 'Minor' | 'Major'
+ * @param {boolean} opts.injectionParams.docsImpact - true if user wants docs.md (T2/T3 only)
  * @returns {{ success: boolean, error?: string, path?: string, copiedFiles?: string[] }}
  */
 export function runFeature({ featureName, cliTemplatesDir, cwd, injectionParams }) {
@@ -149,34 +143,23 @@ export const featureCommand = new Command('feature')
       process.exit(1);
     }
 
-    // Inquirer 2: Docs Core (always asked)
-    const docsImpact = await p.confirm({
-      message: '¿Este cambio afecta documentación pública?',
-      initialValue: false,
-    });
-
-    if (p.isCancel(docsImpact)) {
-      p.cancel('Operación cancelada.');
-      process.exit(1);
-    }
-
-    // Inquirer 3: Release — ONLY for T2 (T1 omits, T3 always injects)
-    let releaseType = 'None';
-    if (tier === 'T2') {
-      const injectRelease = await p.confirm({
-        message: '¿Inyecta release.md?',
+    // Inquirer 2: Docs Core (only for T2/T3 — T1 never asks)
+    let docsImpact = false;
+    if (tier === 'T2' || tier === 'T3') {
+      docsImpact = await p.confirm({
+        message: '¿Este cambio afecta documentación pública?',
         initialValue: false,
       });
 
-      if (p.isCancel(injectRelease)) {
+      if (p.isCancel(docsImpact)) {
         p.cancel('Operación cancelada.');
         process.exit(1);
       }
-
-      releaseType = injectRelease ? 'Minor' : 'None';
     }
 
-    const injectionParams = { tier, docsImpact, releaseType };
+    // Release: mandatory in T2/T3, never in T1 — no inquirer needed
+
+    const injectionParams = { tier, docsImpact };
     const result = runFeature({ featureName, cliTemplatesDir, cwd, injectionParams });
 
     if (!result.success) {

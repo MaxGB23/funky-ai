@@ -1,5 +1,5 @@
 ---
-description: SDD Worker Workflow Tier 1 y 2 - Ejecución y Escritura Directa al Disco
+description: SDD Worker Workflow Tier 1 y 2 - Requiere aprobación del checkpoint pre-apply. Ejecución y Escritura Directa al Disco
 ---
 
 # SDD Worker — Funky AI
