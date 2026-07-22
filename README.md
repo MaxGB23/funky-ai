@@ -1,8 +1,8 @@
-# 👻 Funky AI v2.5.1: Índice y Mapa de Navegación
+# 👻 Funky AI v3.0.0: Índice y Mapa de Navegación
 
 Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia Artificial que te permite emular redes asíncronas de agentes (SDD) usando recursos manuales y archivos físicos locales sobre el IDE Antigravity.
 
-> **🚀 Estado del Arte (v2.5.1 — Message Passing Directo):** Deprecación completa del `worker-handoff.md`. El Orquestador ahora inyecta scope y tareas directamente en el prompt del Worker (Message Passing). El CLI ya no genera archivos handoff en ningun scaffolding. El `report.md` asume el rol de contrato de salida del worker por diseño.
+> **🚀 Estado del Arte (v3.0.0 — Subagentes Nativos y Carga JIT):** El framework ahora utiliza carga JIT (Just-In-Time) para aislar las reglas por Tier, minimizando el ruido de contexto. El Orquestador delega exploraciones pesadas a subagentes nativos (sabuesos), iterando sobre ellos sin destruirlos, lo que ahorra miles de tokens y mantiene la memoria inmaculada.
 
 > **🛡️ CI Status:** ![CI](https://github.com/MaxGB23/funky-ai/actions/workflows/ci.yml/badge.svg)
 
@@ -69,7 +69,8 @@ Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia 
 
 | Archivo | Propósito |
 |---|---|
-| [`v2.5.1-release.md`](./docs/funky-ai/releases/v2.5.1-release.md) | ⭐ **Actual** — Message Passing Directo: Deprecación completa de `worker-handoff.md`, refactor del CLI y del `funky-worker` workflow |
+| [`v3.0.0-release.md`](./docs/funky-ai/releases/v3.0.0-release.md) | ⭐ **Actual** — Arquitectura JIT y Subagentes Nativos: Separación dinámica de contexto, sabuesos de investigación y delegación por Tiers. |
+| [`v2.5.1-release.md`](./docs/funky-ai/releases/v2.5.1-release.md) | Message Passing Directo: Deprecación completa de `worker-handoff.md`, refactor del CLI y del `funky-worker` workflow |
 | [`v2.5.0-release.md`](./docs/funky-ai/releases/v2.5.0-release.md) | Engram Sharding y comando `funky engram add`. Indexación semántica distribuida |
 | [`v2.4.0-release.md`](./docs/funky-ai/releases/v2.4.0-release.md) | Ecosistema Híbrido, Cherry-Pick Arquitectónico de Templates SDD y nuevos guardrails anti-alucinación |
 | [`v2.1.0-release.md`](./docs/funky-ai/releases/v2.1.0-release.md) | Protocolos On-Demand: Protocolos selectivos, selector interactivo en CLI y `devil-advocate.md` |
