@@ -66,3 +66,5 @@ Relanzar un subagente desde cero para una corrección es tirar miles de tokens a
 **Modo Auto:**
 1. **Running:** El Subagente hace la chamba.
 2. **Kill:** Termina, envía su Return Envelope y el Orquestador lo mata de inmediato. No hay aprobación humana pendiente.
+
+**Si no lees el archivo antes de delegar, estarás rompiendo una regla absoluta de orquestación.**

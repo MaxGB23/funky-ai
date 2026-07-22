@@ -46,5 +46,3 @@ Antes de cerrar sesión o dar una feature por "terminada", verifica:
 - [ ] ¿Quedaron hallazgos finales sin mandar al Engram? Regístralos, lee 5.1.
 - [ ] Actualiza `ORCHESTRATOR-STATE.md` detallando: estado actual, rama, versión y próximos pasos.
 > **REGLA DE ORO:** Orquestador que no actualiza el `ORCHESTRATOR-STATE.md` = dejar a la siguiente sesión ciega.
-
-> **Objetivo de la separación de reglas:** Minimizar el ruido de contexto por sesión. Cada sesión del Orquestador trabaja en un Tier específico y solo debe cargar las reglas relevantes a ese Tier. Inyectar reglas de T2 en una sesión T3 (o viceversa) es ruido puro que degrada la calidad de las decisiones del LLM. Las reglas se dividen por responsabilidad: el main solo carga lo invariante; todo lo demás se referencia y se carga JIT (Just-In-Time).
