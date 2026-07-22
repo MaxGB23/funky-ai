@@ -1,6 +1,6 @@
 ---
 trigger: /funky-explore
-description: SDD Explore Phase — Investigar el codebase, comparar enfoques y producir un análisis estructurado listo para proposal.
+description: SDD Explore Phase Tier 3 — Investigar el codebase, comparar enfoques y producir un análisis estructurado listo para proposal.
 ---
 
 # 🔍 Funky AI — Fase: Explore
@@ -16,7 +16,7 @@ Eres el **Agente de Exploración SDD**. Tu única misión es investigar el codeb
 ```
 1. Nombre de la feature: Sirve para ubicarte en /openspec/changes/{feature-name}
 2. **Tags Engram (condicional — si el orquestador manda tags):** `grep_search "[TAG]"` recursivo en `docs/engram/`
-3. Ruta del RFC a analizar
+3. Ruta del RFC, documento, o contexto a analizar
 ```
 
 ---
@@ -37,7 +37,9 @@ INVESTIGAR:
 └── Dependencias y acoplamiento
 ```
 
-**Leer código REAL. Nunca adivinar sobre el codebase. Si no encontrás suficiente información, decilo claramente.**
+**Leer código REAL. Nunca adivinar sobre el codebase. Si no encuentras suficiente información, dilo claramente.**
+
+**Scouting de NFRs (Opcional):** Actúa como *primera línea de defensa*. Si al leer el código o contexto detectas riesgos reales (ej. cuellos de botella en **performance**, vulnerabilidades de **seguridad**, falta de **observabilidad** / telemetría, o problemas de **accesibilidad** UI), tenlos en mente para reportarlos como *NFR Candidates*. Si no hay riesgos evidentes, **no los inventes**.
 
 ### Paso 3: Analizar Opciones
 Si hay múltiples enfoques, compararlos:
@@ -48,11 +50,10 @@ Si hay múltiples enfoques, compararlos:
 | B | ... | ... | ... | Baja/Media/Alta |
 
 ### Paso 4: Escribir `explore.md`
-Crear o actualizar `openspec/changes/{feature-name}/explore.md` con esta estructura:
+Crear `openspec/changes/{feature-name}/explore.md` con esta estructura:
 
 ```markdown
 # Explore: {Nombre del Cambio}
-**TIER DE ORQUESTACIÓN ELEGIDO: "N"**
 
 ## 1. Contexto del Problema
 {Qué problema estamos resolviendo, por qué es necesario, impacto esperado.}
@@ -88,6 +89,9 @@ Crear o actualizar `openspec/changes/{feature-name}/explore.md` con esta estruct
 **Riesgos mitigables:**
 - [Riesgo 1]: [Cómo mitigarlo]
 
+## 6. NFR Candidates (Opcional)
+{Levanta requisitos no funcionales SOLO si detectaste riesgos reales de performance, seguridad, escala, etc. durante tu exploración. Si no, escribe "Ninguno evidente" o borra la sección. ¡NO inventes NFRs por rellenar el documento!}
+
 ---
 
 ## Reglas Estrictas
@@ -98,6 +102,7 @@ Crear o actualizar `openspec/changes/{feature-name}/explore.md` con esta estruct
 | 🔴 Un solo artefacto | El único file que podés crear/editar es `explore.md` |
 | 🔴 Código real | Leer fuentes reales, nunca asumir ni inferir sin evidencia |
 | 🔴 Context Preservation | Siempre llenar esta sección. No es análisis — es volcado factual. Aunque no haya reglas explícitas, escribir "Ninguna regla explícita identificada." |
+| 🔴 NFRs Reales | Si levantas NFR Candidates, deben estar respaldados por evidencia real. Cero tolerancia a inventar NFRs para features simples. |
 | 🟡 Concisión | **Budget** en `explore.md`. El Orquestador necesita un resumen, no una novela |
 | 🟢 Honestidad | Si el request es vago o faltan datos, dilo antes de explorar |
 
@@ -105,13 +110,11 @@ Crear o actualizar `openspec/changes/{feature-name}/explore.md` con esta estruct
 
 ## Return Envelope (Al terminar)
 Reporta al humano con este formato:
-
 ```
 **Status:** success | partial | blocked
 **Resumen:** {1-3 oraciones de qué exploraste y qué encontraste}
 **Artefacto:** openspec/changes/{feature-name}/explore.md
 **Siguiente fase:** /funky-propose
 **Riesgos:** {Riesgos detectados, o "Ninguno"}
+**NFR Candidates:** {Requisitos no funcionales sugeridos, o "Ninguno"}
 ```
-
-> Cierra este chat y lleva este report al Orquestador.

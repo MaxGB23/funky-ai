@@ -60,35 +60,34 @@ Una vez resueltos los Inquirers, el CLI inyecta los templates en cascada.
 funky feature <name>
   ├─ Inquirer 1: Tier (T1 / T2 / T3)
   ├─ Inquirer 2: Docs Core? (Sí / No)
-  └─ Inquirer 3: SemVer Release? (Major / Minor / Patch / None)
+  └─ Inquirer 3: SemVer Release? (Sí / No)
+  Inquirer 3 debe decidirse con respecto a:
+  - (Major / Minor / Patch / None)
 
 Flujo de Inyección de Templates:
   ├─ T1 (Tweaks/Bugs)
   │     → inyecta tasks.md + [docs.md condicional] (release.md OMITIDO — bump de versión va en tasks.md)
-  │     → Checkpoint Pre-Apply (CLI o IDE)
-  │     → Execute
+  │     → inyecta report.md
   │
   ├─ T2 (Standard Features)
   │     → inyecta explore.md, -> SDD ligero
   │     → inyecta proposal.md → [SDD ligero]
   │     → inyecta spec.md → [SDD ligero]
   │     → inyecta tasks.md + ( [docs.md] + [release.md] CONDICIONALES)
-  │     → Checkpoint Pre-Apply (CLI o IDE)
-  │     → Execute
+  │     → inyecta report.md
   │
-    └─ T3 (Deep Features)
+  └─ T3 (Deep Features)
         → No inyecta templates, workflows trabajan independientemente
         → inyecta tasks.md + docs.md + release.md, únicos templates que sí aplican
+
+El modo Auto, interactivo y handoff no se implementarán en el cli, ya que no aportan nada en la inyeccion de templates. El cli está diseñado para agilizar este proceso unicamente.
+
 
 Modo Automático:
   T1/T2 → fluido, sin pausas entre fases. Checkpoint pre-worker es el único freno.
   T3 → opcional pero NO recomendado. Si se activa, checkpoint pre-apply obligatorio.
 ```
 
-PENDIENTE: Worker y funky-apply corren tests que ya menciona el tasks.md, el worker no debe tratar de corregirlos en caso de no pasar, debe retornar en su report.md los tests fallidos y algun detalle para mas info. El orquestador decide qué hacer.
-El funky-apply qué debería hacer?
-Al final en tier 2 y 3 todos pasan por un verify ligero o un funky-verify, es necesario correr los tests en tasks.md?
-Los tests en tier 1 si son buena idea ya que en ese tier no existe un verify.
 ---
 
 ## Reglas de Inyección: docs.md y release.md

@@ -68,7 +68,7 @@ No hay soporte para OAuth ni providers externos.
 
 | Modo | Explore SDD | Explore Ligero |
 |------|------------|----------------|
-| **Interactivo** | Muestra resultado + "¿Querés ajustar algo o continuamos?" | Route A: Disponible (CLI nativo). Route B: Persiste explore.md + resumen |
+| **Interactivo** | Muestra resultado + "¿Quieres ajustar algo o continuamos?" | Route A: Disponible (CLI nativo). Route B: Persiste explore.md + resumen |
 | **Auto** | Si `Ready for Proposal: Yes`, arranca propose directo. Si `No`, frena | Route A: Disponible (CLI nativo). Route B: Persiste explore.md, propose lo lee desde disco |
 | **Handoff** | Prepara bloque de copy-paste para IDE, espera Return Envelope | Route A: Prepara bloque copy-paste con prompt de Sabueso. Route B: Prepara bloque copy-paste de Sabueso de Lava + template de explore.md |
 

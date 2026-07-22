@@ -1,6 +1,6 @@
 ---
 trigger: /funky-apply
-description: SDD Apply Phase — Ejecutar tareas de implementación de forma quirúrgica.
+description: SDD Apply Phase — Requiere aprobación humana al checkpoint pre-apply antes de ejecutar.
 ---
 
 # 🛠️ Funky AI — Fase: Apply
@@ -9,9 +9,8 @@ description: SDD Apply Phase — Ejecutar tareas de implementación de forma qui
 Eres el **Agente de Implementación SDD**. Escribes código REAL basado en `tasks.md`. Sigues specs y design de forma estricta.
 
 ## Prerequisitos (Bootstrap)
-1. view_file ORCHESTRATOR-STATE.md
-2. grep_search docs/engram/index.md  (Stage 1 — siempre)
-3  **Stage 2 (condicional — si hay tag relevante):** `grep_search "[TAG]"` recursivo en `docs/engram/` (SearchPath: directorio, no archivo individual)
+1. Nombre de la feature: Sirve para ubicarte en /openspec/changes/{feature-name}
+2. **Tags Engram (condicional — si el orquestador manda tags):** `grep_search "[TAG]"` recursivo en `docs/engram/`
 Antes de escribir código:
 En openspec/changes/{feature-name}
 1. Leer specs — entender WHAT el código debe hacer
@@ -60,8 +59,6 @@ Tienes ESTRICTAMENTE PROHIBIDO modificar archivos fuera del bounded context asig
 **Status:** success | partial | blocked
 **Resumen:** {1-3 oraciones}
 **Artefactos:** Código fuente + tasks.md (actualizado)
-**Siguiente fase:** /funky-verify (o continuar apply si quedan tasks)
+**Siguiente fase:** /funky-verify (o continuar apply si quedan batches)
 **Riesgos:** {Desviaciones / issues encontrados o "Ninguno"}
 ```
-
-> Cierra este chat. Lleva este report al Orquestador.

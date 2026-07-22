@@ -2,9 +2,74 @@ import { Command } from 'commander';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import * as p from '@clack/prompts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// --- Injection Matrix (Design: single source of truth for conditional file mapping) ---
+
+/**
+ * Resolves which template files to inject per tier.
+ * Source of truth: spec-cli-ide-boundaries.md §Diagrama de Inyección.
+ *
+ * T1: tasks.md + report.md. No docs, no release.
+ * T2: tasks.md + report.md + explore.md + proposal.md + spec.md + [docs.md] + release.md.
+ * T3: tasks.md + [docs.md] + release.md. No report.md.
+ */
+const INJECTION_MATRIX = {
+  T1: {
+    base: ['tasks.md', 'report.md'],
+    tier: [],
+    docsConditional: false, // T1 never asks about docs
+    release: false,         // T1 never injects release.md
+  },
+  T2: {
+    base: ['tasks.md', 'report.md'],
+    tier: ['explore.md', 'proposal.md', 'spec.md'],
+    docsConditional: true,
+    release: true,          // T2 always injects release.md
+  },
+  T3: {
+    base: ['tasks.md'],
+    tier: [],
+    docsConditional: true,
+    release: true,          // T3 always injects release.md
+  },
+};
+
+/**
+ * Pure function — resolves which template files to inject.
+ * No I/O, no prompts. Testable in isolation.
+ *
+ * @param {{ tier: string, docsImpact: boolean } | undefined} injectionParams
+ *   When omitted, returns the legacy 9-file list (backward compat).
+ * @returns {string[]} List of template filenames to copy.
+ */
+export function resolveFiles(injectionParams) {
+  if (!injectionParams) {
+    // Backward compat: exact original 9-file list
+    return [
+      'explore.md', 'proposal.md', 'design.md', 'spec.md', 'tasks.md',
+      'planning-handoff.md', 'report.md', 'apply.md', 'verify.md',
+    ];
+  }
+
+  const { tier, docsImpact } = injectionParams;
+  const config = INJECTION_MATRIX[tier];
+
+  const files = [...config.base, ...config.tier];
+
+  if (config.docsConditional && docsImpact) {
+    files.push('docs.md');
+  }
+
+  if (config.release) {
+    files.push('release.md');
+  }
+
+  return files;
+}
 
 /**
  * Lógica pura del comando `funky feature`.
@@ -12,9 +77,12 @@ const __dirname = path.dirname(__filename);
  * @param {string} opts.featureName    - Nombre de la feature (ej: 'auth-login').
  * @param {string} opts.cliTemplatesDir- Directorio absoluto de templates genéricos del CLI.
  * @param {string} opts.cwd            - Directorio de trabajo destino.
- * @returns {{ success: boolean, error?: string, path?: string }}
+ * @param {object} [opts.injectionParams] - Optional. When omitted, copies all 9 legacy files (backward compat).
+ * @param {string} opts.injectionParams.tier - 'T1' | 'T2' | 'T3'
+ * @param {boolean} opts.injectionParams.docsImpact - true if user wants docs.md (T2/T3 only)
+ * @returns {{ success: boolean, error?: string, path?: string, copiedFiles?: string[] }}
  */
-export function runFeature({ featureName, cliTemplatesDir, cwd }) {
+export function runFeature({ featureName, cliTemplatesDir, cwd, injectionParams }) {
   // 1. Sanitizar featureName
   const sanitizedFeatureName = featureName.trim().replace(/\s+/g, '-').toLowerCase();
 
@@ -29,7 +97,7 @@ export function runFeature({ featureName, cliTemplatesDir, cwd }) {
 
   // 3. Crear openspec/changes/<featureName>
   const featurePath = path.join(cwd, 'openspec', 'changes', sanitizedFeatureName);
-  
+
   if (fs.existsSync(featurePath)) {
     return { success: false, error: `El directorio de la feature ya existe: ${featurePath}` };
   }
@@ -37,36 +105,68 @@ export function runFeature({ featureName, cliTemplatesDir, cwd }) {
   fs.mkdirSync(featurePath, { recursive: true });
 
   // 4. Copiar archivos del ciclo SDD a la carpeta de la feature
-  const filesToCopy = [
-    'explore.md', 'proposal.md', 'design.md', 'spec.md', 'tasks.md', 
-    'planning-handoff.md', 'report.md', 'apply.md', 'verify.md'
-  ];
-  
+  const filesToCopy = resolveFiles(injectionParams);
+
+  const copiedFiles = [];
   for (const file of filesToCopy) {
     const srcFile = path.join(templatesToUse, file);
     if (fs.existsSync(srcFile)) {
       const destFile = path.join(featurePath, file);
       fs.copyFileSync(srcFile, destFile);
+      copiedFiles.push(file);
     }
   }
 
   // 5. Retornar success
-  return { success: true, path: featurePath };
+  return { success: true, path: featurePath, copiedFiles };
 }
 
 export const featureCommand = new Command('feature')
   .description('Inicializa el scaffolding para una nueva feature SDD (openspec/changes/<nombre>)')
   .argument('<featureName>', 'Nombre de la feature (ej: auth-login)')
-  .action((featureName) => {
+  .action(async (featureName) => {
     const cliTemplatesDir = path.join(__dirname, '..', 'templates', 'sdd');
     const cwd = process.cwd();
 
-    const result = runFeature({ featureName, cliTemplatesDir, cwd });
+    // Inquirer 1: Tier (always asked)
+    const tier = await p.select({
+      message: '¿Qué tier de cambio es?',
+      options: [
+        { value: 'T1', label: 'T1 — Fix / Hotfix / Cambio trivial' },
+        { value: 'T2', label: 'T2 — Feature / SDD ligero' },
+        { value: 'T3', label: 'T3 — Feature compleja / Archivo viviente' },
+      ],
+    });
+
+    if (p.isCancel(tier)) {
+      p.cancel('Operación cancelada.');
+      process.exit(1);
+    }
+
+    // Inquirer 2: Docs Core (only for T2/T3 — T1 never asks)
+    let docsImpact = false;
+    if (tier === 'T2' || tier === 'T3') {
+      docsImpact = await p.confirm({
+        message: '¿Este cambio afecta documentación pública?',
+        initialValue: false,
+      });
+
+      if (p.isCancel(docsImpact)) {
+        p.cancel('Operación cancelada.');
+        process.exit(1);
+      }
+    }
+
+    // Release: mandatory in T2/T3, never in T1 — no inquirer needed
+
+    const injectionParams = { tier, docsImpact };
+    const result = runFeature({ featureName, cliTemplatesDir, cwd, injectionParams });
 
     if (!result.success) {
       console.error(`❌ Error: ${result.error}`);
       process.exit(1);
     } else {
       console.log(`🚀 Scaffolding de feature creado exitosamente en: ${result.path}`);
+      console.log(`📄 Archivos inyectados: ${result.copiedFiles.length} — ${result.copiedFiles.join(', ')}`);
     }
   });
