@@ -17,6 +17,7 @@
 
 ✅ **Recomendación**: [Opción recomendada]
 ⚠️ **Riesgos**: [Posibles problemas o dependencias]
+🛡️ **NFR Candidates**: [Si el agente detectó riesgos de performance/seguridad, o se omite si es "Ninguno"]
 ```
 
 ### Comportamiento por modo

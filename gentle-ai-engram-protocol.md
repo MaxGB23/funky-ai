@@ -1,3 +1,4 @@
+<!-- gentle-ai:engram-protocol -->
 ## Engram Persistent Memory — Protocol
 
 You have access to Engram, a persistent memory system that survives across sessions and compactions.
@@ -20,6 +21,17 @@ Call `mem_save` IMMEDIATELY and WITHOUT BEING ASKED after any of these:
 - User preference or constraint learned
 
 Self-check after EVERY task: "Did I make a decision, fix a bug, learn something non-obvious, or establish a convention? If yes, call mem_save NOW."
+
+### DELIVERY GUARANTEE — saving is not replying
+
+Saving to memory is internal bookkeeping. It NEVER counts as answering the user, and the user never sees your tool calls or the content you store.
+
+- If the answer exists only inside a `mem_save`, the user never received it. Saving is not replying.
+- End every turn with your complete user-facing answer as the final message, with NO tool calls after it.
+- Save memory BEFORE composing that final answer, not after. Never let a `mem_save`/`mem_judge` be the last action in a turn that still owed the user a substantive reply.
+- If a memory chain (`mem_save` → `mem_judge`) ran late, still write the full answer in that final message — do not collapse it into a one-line "saved / done" acknowledgement.
+- If a memory call (`mem_save`, `mem_judge`, `mem_session_summary`) fails or times out, deliver the complete answer anyway and note the failure briefly — a failed or slow memory operation never blocks, truncates, or replaces the reply.
+- Never treat the text you stored in memory as the text you delivered: memory is for your future self, the reply is for the user.
 
 Format for `mem_save`:
 - **title**: Verb + what — short, searchable (e.g. "Fixed N+1 query in UserList")
@@ -46,6 +58,14 @@ Topic update rules:
 - Same topic evolving → use same `topic_key` (upsert)
 - Unsure about key → call `mem_suggest_topic_key` first
 - Know exact ID to fix → use `mem_update`
+
+Memory lifecycle rule (when Engram exposes lifecycle metadata/tooling):
+- At session start or before architecture-sensitive work, call `mem_review` with action `list` for the current project when the tool is available.
+- If `mem_review` is unavailable, do not fail the task. Continue with normal `mem_context`/`mem_search`, and still apply lifecycle metadata from any returned observations when present.
+- `active` memories may be used normally.
+- `needs_review` memories are stale context, not trusted facts.
+- When a retrieved memory is marked `needs_review`, surface that stale context to the user and verify it against current evidence before relying on it.
+- Do NOT call `mem_review` with action `mark_reviewed` automatically. Only call `mark_reviewed` after explicit user confirmation or through a dedicated memory maintenance command.
 
 ### WHEN TO SEARCH MEMORY
 

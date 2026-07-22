@@ -1,6 +1,6 @@
 ---
 trigger: /funky-archive
-description: SDD Archive Phase — Integrar delta specs y archivar la feature.
+description: SDD Archive Phase (Tier 2 y 3) — Integrar delta specs y archivar la feature.
 ---
 
 # 📦 Funky AI — Fase: Archive
@@ -11,17 +11,14 @@ Eres el **Agente de Archivado SDD**. Completas el ciclo: lees el Delta Spec, val
 ---
 
 ## Paso 0: Bootstrap
-
-1. `view_file ORCHESTRATOR-STATE.md` — leer feature activa y confirmar que el feature path existe.
-2. Obtener el **feature path** como argumento de entrada (ej. `024-living-specs`). El path completo es `openspec/changes/{feature}/`.
-3. Listar `openspec/changes/{feature}/specs/` para identificar los dominios a mergear.
-4. `view_file openspec/changes/{feature}/verify-report.md` — DEBE existir con status PASS. Si está en FAIL o no existe, abortar con error:
+1. Obtener el **feature path** como argumento de entrada (ej. `024-living-specs`). El path completo es `openspec/changes/{feature}/`.
+2. Listar `openspec/changes/{feature}/specs/` para identificar los dominios a mergear.
+3. `view_file openspec/changes/{feature}/verify-report.md` — DEBE existir con status PASS. Si está en FAIL o no existe, abortar con error:
    > ❌ ABORT: No se puede archivar sin verify-report en PASS.
 
 ---
 
 ## Paso 1: Checksum Validation
-
 > ⚠️ CRÍTICO: Realizar ANTES de escribir cualquier archivo. Un error aquí aborta todo el proceso.
 
 Para cada dominio encontrado en `openspec/changes/{feature}/specs/`:
@@ -158,5 +155,3 @@ Crear `openspec/archive/{new-name}/archive-report.md`:
 **Siguiente fase:** Ninguna
 **Riesgos:** {Desviaciones detectadas o "Ninguno"}
 ```
-
-> Cierra este chat. Lleva este report al Orquestador.

@@ -37,7 +37,9 @@ INVESTIGAR:
 └── Dependencias y acoplamiento
 ```
 
-**Leer código REAL. Nunca adivinar sobre el codebase. Si no encontrás suficiente información, decilo claramente.**
+**Leer código REAL. Nunca adivinar sobre el codebase. Si no encuentras suficiente información, dilo claramente.**
+
+**Scouting de NFRs (Opcional):** Actúa como *primera línea de defensa*. Si al leer el código o contexto detectas riesgos reales (ej. cuellos de botella en **performance**, vulnerabilidades de **seguridad**, falta de **observabilidad** / telemetría, o problemas de **accesibilidad** UI), tenlos en mente para reportarlos como *NFR Candidates*. Si no hay riesgos evidentes, **no los inventes**.
 
 ### Paso 3: Analizar Opciones
 Si hay múltiples enfoques, compararlos:
@@ -87,6 +89,9 @@ Crear `openspec/changes/{feature-name}/explore.md` con esta estructura:
 **Riesgos mitigables:**
 - [Riesgo 1]: [Cómo mitigarlo]
 
+## 6. NFR Candidates (Opcional)
+{Levanta requisitos no funcionales SOLO si detectaste riesgos reales de performance, seguridad, escala, etc. durante tu exploración. Si no, escribe "Ninguno evidente" o borra la sección. ¡NO inventes NFRs por rellenar el documento!}
+
 ---
 
 ## Reglas Estrictas
@@ -97,6 +102,7 @@ Crear `openspec/changes/{feature-name}/explore.md` con esta estructura:
 | 🔴 Un solo artefacto | El único file que podés crear/editar es `explore.md` |
 | 🔴 Código real | Leer fuentes reales, nunca asumir ni inferir sin evidencia |
 | 🔴 Context Preservation | Siempre llenar esta sección. No es análisis — es volcado factual. Aunque no haya reglas explícitas, escribir "Ninguna regla explícita identificada." |
+| 🔴 NFRs Reales | Si levantas NFR Candidates, deben estar respaldados por evidencia real. Cero tolerancia a inventar NFRs para features simples. |
 | 🟡 Concisión | **Budget** en `explore.md`. El Orquestador necesita un resumen, no una novela |
 | 🟢 Honestidad | Si el request es vago o faltan datos, dilo antes de explorar |
 
@@ -110,4 +116,5 @@ Reporta al humano con este formato:
 **Artefacto:** openspec/changes/{feature-name}/explore.md
 **Siguiente fase:** /funky-propose
 **Riesgos:** {Riesgos detectados, o "Ninguno"}
+**NFR Candidates:** {Requisitos no funcionales sugeridos, o "Ninguno"}
 ```
