@@ -19,7 +19,7 @@ trigger: manual
 > ## Artefactos a leer
 > - `docs/openspec/changes/[CHANGE]/proposal.md`
 > ## Template a seguir
-> - `docs/openspec/changes/[CHANGE]/specs/[DOMAIN].md` — Leer y usar `replace_file_content`.
+> - `docs/openspec/changes/[CHANGE]/spec.md` — Leer y usar `replace_file_content`.
 > ## Tags de engram relevantes (opcional)
 > - Nombre: [Nombre]
 > - Descripción: [Descripción]

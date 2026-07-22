@@ -20,7 +20,7 @@ Antes de generar artefactos o responder soluciones, ejecuta estos pasos en orden
 
 ## 3. Memory Polling — Two-Stage (OBLIGATORIO antes de cambios)
 **Stage 1 (siempre):** `ACTION: Execute list_dir on docs/engram/`
-**Stage 2 (condicional — si hay tag relevante):** `grep_search "[TAG]"` recursivo en `docs/engram/` (SearchPath: directorio, no archivo individual)
+**Stage 2 (opcional — solo si el index contiene un tag semánticamente relacionado con la feature):** `grep_search "[TAG]"` recursivo en `docs/engram/` (SearchPath: directorio, no archivo individual). Si no hay coincidencia, omitir y continuar — no es obligatorio, es una ayuda.
 
 > **[REGLA DE ORO - RESOLUCIÓN DE CONCEPTOS]:** Si el humano menciona un término, componente o patrón que no conoces (ej. "golden templates"), **TIENES PROHIBIDO** hacer búsquedas globales (`Get-ChildItem`, etc.) a ciegas. Tu **PRIMERA ACCIÓN** debe ser ejecutar `grep_search` sobre `docs/engram/` para entender el concepto desde nuestra base de conocimiento. No gastes tokens buscando basura.
 
@@ -51,5 +51,6 @@ Si resuelves un bug, tomas una decisión arquitectónica, o recibes hallazgos de
 ### 5.2. Session Close (Checklist OBLIGATORIO)
 Antes de cerrar sesión o dar una feature por "terminada", verifica:
 - [ ] ¿Quedaron hallazgos finales sin mandar al Engram? Regístralos, lee 5.1.
+- [ ] Guarda en engram el resumen de la feature implementada.
 - [ ] Actualiza `ORCHESTRATOR-STATE.md` detallando: estado actual, rama, versión y próximos pasos.
 > **REGLA DE ORO:** Orquestador que no actualiza el `ORCHESTRATOR-STATE.md` = dejar a la siguiente sesión ciega.

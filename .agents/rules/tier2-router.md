@@ -22,3 +22,9 @@ description: Leer obligatoriamente antes de CUALQUIER delegación a un subagente
 
 
 **Si no lees el archivo de la fase antes de delegar, estarás rompiendo una regla absoluta de orquestación.**
+
+## Fallback — Subagente no disponible
+**REGLA: NO investigues ni escribas el artefacto directamente.**
+- Absorcible (tasks/explore/propose) → `self` con template como contexto
+- No absorcible (apply/verify) → frena, explica al humano
+- Última opción → sugiere Handoff (copiar prompt al IDE)
