@@ -1,116 +1,63 @@
-# 👻 Funky AI v3.0.0: Índice y Mapa de Navegación
+# 👻 Funky AI v3.0.0: Protocolo de Arquitectura de Agentes
 
-Bienvenido a la matriz documental de **Funky AI**, el protocolo de Inteligencia Artificial que te permite emular redes asíncronas de agentes (SDD) usando recursos manuales y archivos físicos locales sobre el IDE Antigravity.
+Bienvenido a **Funky AI**, el framework de Inteligencia Artificial diseñado para emular redes asíncronas de agentes (SDD - Software Design Document) integrándose de forma nativa con el IDE Antigravity.
 
-> **🚀 Estado del Arte (v3.0.0 — Subagentes Nativos y Carga JIT):** El framework ahora utiliza carga JIT (Just-In-Time) para aislar las reglas por Tier, minimizando el ruido de contexto. El Orquestador delega exploraciones pesadas a subagentes nativos (sabuesos), iterando sobre ellos sin destruirlos, lo que ahorra miles de tokens y mantiene la memoria inmaculada.
-
+> **🚀 Estado del Arte (v3.0.0): Subagentes Nativos y Carga JIT**
+> El framework utiliza carga JIT (Just-In-Time) para aislar reglas por Tier y minimizar el ruido de contexto. El Orquestador delega exploraciones pesadas a subagentes nativos (sabuesos), iterando sobre ellos sin destruirlos. ¡Ahorramos tokens y mantenemos la memoria inmaculada!
+>
 > **🛡️ CI Status:** ![CI](https://github.com/MaxGB23/funky-ai/actions/workflows/ci.yml/badge.svg)
 
-> **¿Perdido?** Empezá por el **Manifiesto** → leé la **Filosofía** → aplicá la **Team Guide**.
+---
+
+## ⚡ Quick Start
+
+Deja de leer teoría y empieza a construir. Así se arranca la orquestación:
+
+1. **Bootstrap inicial:** Inyecta las reglas, la memoria y el lienzo del proyecto.
+   ```bash
+   funky init
+   ```
+2. **Arrancar un feature:** Genera el andamiaje SDD para delegar código.
+   ```bash
+   funky feature mi-nuevo-modulo
+   ```
+
+*(Consulta [`docs/funky-ai/workflows/guia-flujo-completo.md`](./docs/funky-ai/workflows/guia-flujo-completo.md) para dominar el flujo End-to-End).*
 
 ---
 
-## 🏛️ 1. Core Concepts (Teoría Fundamental)
-*Leer una sola vez para entender el sistema.*
+## 🏛️ Flujo de Orquestación y Tiers (Escalation Matrix)
 
-| Archivo | Propósito |
-|---|---|
-| [`docs/funky-ai/core-concepts/manifiesto.md`](./docs/funky-ai/core-concepts/manifiesto.md) | Qué es Funky AI y sus 6 Reglas Inviolables |
-| [`docs/funky-ai/core-concepts/filosofia.md`](./docs/funky-ai/core-concepts/filosofia.md) | Cómo funciona Gentle AI por dentro y cómo lo adaptamos |
-| [`docs/funky-ai/core-concepts/rules-vs-skills.md`](./docs/funky-ai/core-concepts/rules-vs-skills.md) | Cuándo una lógica va en Rule vs en Skill |
-| [`docs/funky-ai/core-concepts/testing-landscape.md`](./docs/funky-ai/core-concepts/testing-landscape.md) | Landscape de testing: Vitest, TDD y CI en el ecosistema Funky AI |
-| [`docs/funky-ai/core-concepts/enforcement-vs-documentation.md`](./docs/funky-ai/core-concepts/enforcement-vs-documentation.md) | Por qué documentar no es suficiente sin forzar reglas |
+Funky AI categoriza y enruta dinámicamente las tareas para evitar sobre-ingeniería. Carga las reglas precisas en el momento preciso.
 
----
+| Tier | Escala de Impacto | Flujo y Delegación |
+|------|-------------------|--------------------|
+| **T1 (Flash)** | 1-2 archivos. Fixes rápidos. | Sin planning pesado. El Orquestador redacta tasks inline y ejecuta directo. |
+| **T2 (Standard)**| 3-5 archivos. Features regulares. | Delegación estricta vía templates inyectables. Mantiene el scope seguro y acotado. |
+| **T3 (Deep)** | Refactors, arquitecturas complejas. | SDD completo (Explore → Propose → Spec → Design → Tasks → Apply). Uso intenso de Subagentes nativos para investigación profunda. |
 
-## ⚡ 2. Manuales Operativos
-*Guías prácticas para el trabajo diario.*
-
-| Archivo | Propósito |
-|---|---|
-| [`docs/funky-ai/guias/funky-ai.md`](./docs/funky-ai/guias/funky-ai.md) | Protocolo completo: Pilares, Tiers, Engram y Return Envelopes |
-| [`docs/funky-ai/guias/funky-ai-team-guide.md`](./docs/funky-ai/guias/funky-ai-team-guide.md) | Paso a paso del Router Humano: cómo crear Workers, cuándo matarlos |
-| [`docs/funky-ai/workflows/guia-flujo-completo.md`](./docs/funky-ai/workflows/guia-flujo-completo.md) | Guía End-to-End de inicio y SDD con el CLI |
-| [`docs/funky-ai/workflows/funky-init-flow.md`](./docs/funky-ai/workflows/funky-init-flow.md) | Flujo detallado de la inicialización y el ecosistema |
+### 🛠️ Checkpoint Pre-Apply: ¿CLI o IDE?
+En cualquier Tier, justo antes de meterle mano al código (Fase Apply), el framework hace una pausa obligatoria y te da el volante para elegir cómo ejecutar:
+- **CLI (Nativo):** Ejecución 100% automatizada con Subagentes asíncronos en background.
+- **IDE (Handoff):** Generación de bloques copy-paste listos para que tú tengas el control visual en tu editor.
 
 ---
 
-## 🧠 3. Configuración del Sistema (IDE Setup)
-*Archivos a inyectar en Antigravity para activar el protocolo.*
+## 📦 Releases Históricos
 
-| Archivo | Propósito |
+| Versión | Detalle |
 |---|---|
-| [`docs/prompts/GEMINI-funky-global.md`](./docs/prompts/GEMINI-funky-global.md) | Perfil Global: Personalidad, Auto-Descubrimiento de Skills, Protocolo MCP |
-| [`.agents/rules/engram-protocol.md`](./.agents/rules/engram-protocol.md) | Rule Topológica: Dispara el polling de memoria en carpeta `docs/` |
-| [`.agents/rules/secops.md`](./.agents/rules/secops.md) | Rule de Seguridad: Obliga uso de `pnpm`, auditoría de `package.json` |
-| [`.agents/rules/sdd-orchestrator.md`](./.agents/rules/sdd-orchestrator.md) | Rule del Orquestador: Aplicar para planificación de proyectos |
-| [`.agents/protocols/index.md`](./.agents/protocols/index.md) | Catálogo de Protocolos On-Demand (Roles sugeridos dinámicamente) |
+| **[v3.0.0](./docs/funky-ai/releases/v3.0.0-release.md)** | ⭐ **Actual** — Arquitectura JIT, Sabuesos de investigación y separación estricta de contexto por Tiers. |
+
+> 📂 [Explora el historial completo de versiones en `docs/funky-ai/releases/`](./docs/funky-ai/releases/)
 
 ---
 
-## 🛠️ 4. Herramientas CLI (Automatización)
-*Automatización del SDD y Bootstrap.*
+## 📚 Índice Profundo (Wiki y Teoría)
 
-| Comando | Propósito |
-|---|---|
-| `funky init` | Inyecta reglas, memoria (ecosystem) y genera/consume un `PROJECT-CANVAS.md` (modo interactivo y headless). |
-| `funky assess` | Evalúa el `architecture-assessment.md` con 3 reglas determinísticas. Genera un Challenge Pack si detecta riesgos. |
-| `funky estimate` | Calcula costo estimado cruzando el Canvas técnico con factores de negocio. Genera `pricing-analysis.md`. |
-| `funky feature <name>` | Inicializa el scaffolding SDD estándar (Tier 1–3) en `openspec/changes/<name>/`. Ya **no genera** `worker-handoff.md`. |
-| `funky gentle <name>` | Inicializa el scaffolding **Tier 4 (Gentle SDD)** en `openspec/gentle/<name>/`. 7 roles aislados para tareas hipercríticas. |
-| `funky phase <fase>` | Inyecta templates SDD individuales (explore, proposal, tasks, report). |
-| `funky release <version>` | Genera release notes estandarizados automáticamente. |
-| `pnpm test` *(en `funky-cli/`)* | Ejecuta la suite Vitest (TDD). Corre automáticamente en CI vía GitHub Actions. |
+¿Quieres meterte a las tripas del protocolo? Todo el material de diseño, el Engram (memoria) y el diario de evolución fue movido al interior del repositorio para mantener este lobby limpio.
 
----
-
-## 📦 5. Roadmap y Releases
-*Estado del proyecto y planificación de versiones.*
-
-| Archivo | Propósito |
-|---|---|
-| [`v3.0.0-release.md`](./docs/funky-ai/releases/v3.0.0-release.md) | ⭐ **Actual** — Arquitectura JIT y Subagentes Nativos: Separación dinámica de contexto, sabuesos de investigación y delegación por Tiers. |
-| [`v2.5.1-release.md`](./docs/funky-ai/releases/v2.5.1-release.md) | Message Passing Directo: Deprecación completa de `worker-handoff.md`, refactor del CLI y del `funky-worker` workflow |
-| [`v2.5.0-release.md`](./docs/funky-ai/releases/v2.5.0-release.md) | Engram Sharding y comando `funky engram add`. Indexación semántica distribuida |
-| [`v2.4.0-release.md`](./docs/funky-ai/releases/v2.4.0-release.md) | Ecosistema Híbrido, Cherry-Pick Arquitectónico de Templates SDD y nuevos guardrails anti-alucinación |
-| [`v2.1.0-release.md`](./docs/funky-ai/releases/v2.1.0-release.md) | Protocolos On-Demand: Protocolos selectivos, selector interactivo en CLI y `devil-advocate.md` |
-| [`v2.0.1-release.md`](./docs/funky-ai/releases/v2.0.1-release.md) | Fix Asimetria Operativa: Orquestador → Capa 2, rescate Auto-Tiering (Feature 012), nueva guia `agent-config-architecture.md` |
-| [`v2.0.0-release.md`](./docs/funky-ai/releases/v2.0.0-release.md) | Arquitectura de Agentes v2.0.0 (Workflows On-Demand y Fragmentación) |
-| [`v1.16.0-release.md`](./docs/funky-ai/releases/v1.16.0-release.md) | Handoff Enforcement: Return Statement G1/G2/G3 + prerequisito `view_file tasks.md` en `/sdd-ff` |
-| [`v1.15.0-release.md`](./docs/funky-ai/releases/v1.15.0-release.md) | Enforcement Analysis & Housekeeping (v1.14.0 + v1.15.0) |
-| [`v1.13.0-release.md`](./docs/funky-ai/releases/v1.13.0-release.md) | Architecture Readiness v2 (NFRs obligatorios en `funky assess`) |
-| [`v1.12.0-release.md`](./docs/funky-ai/releases/v1.12.0-release.md) | Architecture Readiness Gate — nuevo comando `funky assess` |
-
-> 📂 [Ver historial completo de releases](./docs/funky-ai/releases/)
-
-
----
-
-## 🧠 6. Falso Engram (Memoria del Proyecto)
-*La base de datos del sistema. Consultar al inicio de cada sesión.*
-
-| Archivo | Propósito |
-|---|---|
-| [`docs/engram/index.md`](./docs/engram/index.md) | Índice liviano para Two-Stage Memory Polling |
-| [`docs/engram/`](./docs/engram/) | Memoria persistente sharded: discoveries y bugfixes del proyecto |
-
----
-
-## 📚 7. Referencia e Investigación
-*Material de estudio. No se ejecuta directamente.*
-
-| Archivo | Propósito |
-|---|---|
-| [`docs/funky-ai/auditoria-gentle-ai/auditoria-claude-md.md`](./docs/funky-ai/auditoria-gentle-ai/auditoria-claude-md.md) | Estrategias portables extraídas de Gentle AI CLAUDE.md |
-| [`docs/gentle-ai/`](./docs/gentle-ai/) | Documentación original de Gentle AI (solo referencia) |
-
----
-
-## 🗺️ 8. Journey y Lecciones (Diario de Madurez)
-*Registro de decisiones arquitectónicas y evolución del pensamiento.*
-
-| Archivo | Contenido |
-|---|---|
-| [`docs/funky-ai/journey/01-orchestrator-vs-worker-boundary.md`](./docs/funky-ai/journey/01-orchestrator-vs-worker-boundary.md) | Cuándo el Orquestador puede escribir y cuándo debe delegar |
-| [`docs/funky-ai/journey/journey.md`](./docs/funky-ai/journey/journey.md) | Bitácora principal del viaje de construcción |
-| [`docs/funky-ai/retrospectivas-lecciones/v1.7.0-smoke-test.md`](./docs/funky-ai/retrospectivas-lecciones/v1.7.0-smoke-test.md) | Retrospectiva y smoke test de la versión 1.7.0 |
+- **[Manifiesto y Filosofía Core](./docs/funky-ai/core-concepts/manifiesto.md)**
+- **[Base de Conocimiento (Engram)](./docs/engram/index.md)**
+- **[Diario Arquitectónico (Journey)](./docs/funky-ai/journey/journey.md)**
+- **[Auditorías y Referencia de Gentle AI](./docs/gentle-ai/)**
