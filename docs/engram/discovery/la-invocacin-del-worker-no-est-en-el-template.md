@@ -1,5 +1,0 @@
-### [DISCOVERY][worker-invocation-prompt] La Invocación del Worker no está en el Template
-**What:** El usuario (Router Humano) a menudo no sabe qué "prompt" usar para invocar al Worker, porque el protocolo Funky AI reemplaza los prompts largos por el archivo `worker-handoff.md`. Sin embargo, la cadena de invocación exacta (`@archivo Ejecutá la Fase X`) no está estandarizada en ningún lado.
-**Why:** Asumimos que el Orquestador siempre le diría al usuario qué copiar y pegar en el chat, pero si el Orquestador no lo hace (o el usuario no lee el chat), se pierde la fluidez.
-**Where:** Protocolo de Worker Handoff.
-**Learned:** El `worker-handoff.md` (y el template de la CLI) debería incluir en su parte superior o inferior un bloque para el humano: `[HUMANO] Para ejecutar este worker, abrí un chat nuevo y pegá: @ruta/al/worker-handoff.md Ejecutá la Fase X`.

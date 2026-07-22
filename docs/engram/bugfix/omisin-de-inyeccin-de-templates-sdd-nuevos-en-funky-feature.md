@@ -1,5 +1,0 @@
-### [bugfix][feature-scaffolding-bug] Omisión de inyección de templates SDD nuevos en `funky feature`
-**What:** El comando `funky feature` no inyectaba los nuevos templates del ciclo SDD (v2.4.0) (`report.md`, `design.md`, `apply.md`, `verify.md`, `planning-handoff.md`).
-**Why:** El array `filesToCopy` dentro de `funky-cli/src/commands/feature.js` estaba hardcodeado y no se actualizó al momento de introducir los nuevos templates al ecosistema Funky AI.
-**Where:** Lógica de inicialización de scaffolding de features (`funky-cli/src/commands/feature.js`).
-**Learned:** Siempre que se añadan nuevos templates a `.agents/templates/sdd/` que sean parte del workflow estándar de un *feature*, es CRÍTICO actualizar los arreglos hardcodeados (`filesToCopy`) correspondientes en la CLI (`feature.js`) para prevenir inconsistencias y roturas del workflow SDD en nuevos cambios.

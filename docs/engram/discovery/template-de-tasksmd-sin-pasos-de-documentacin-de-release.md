@@ -1,5 +1,0 @@
-### [DISCOVERY][release-dod-gap] Template de tasks.md sin pasos de documentación de Release
-**What:** La Fase de Release en todos los `tasks.md` generados hasta v1.4 solo incluía `git commit + merge + tag + actualizar ORCHESTRATOR-STATE.md`. Nunca incluyó: crear `docs/funky-ai/releases/vX.Y.Z-release.md`, actualizar `README.md` con la nueva versión, ni verificar que ORCHESTRATOR-STATE.md quedara sincronizado post-merge. Resultado: v1.3 y v1.4 no tienen release notes, el README quedó en v1.2, y el ORCHESTRATOR-STATE.md quedó stale después del merge.
-**Why:** El gap está en el template `funky-cli/src/templates/sdd/tasks.md` — la sección de Fase Release nunca tuvo esos pasos. Todos los Orquestadores heredaron el gap al usar `funky phase tasks`.
-**Where:** `funky-cli/src/templates/sdd/tasks.md` — Sección de Release. Efecto cascada en v1.3 y v1.4.
-**Learned:** El template de `tasks.md` DEBE tener una Fase de Release con checklist explícito: (1) git commit+merge+tag, (2) crear release notes en `docs/funky-ai/releases/`, (3) actualizar README.md con nueva versión, (4) sincronizar ORCHESTRATOR-STATE.md post-merge y verificar que no quede stale.

@@ -1,5 +1,0 @@
-### [DISCOVERY][sdd-template-quality-gap] Gap entre Plantilla Canónica y Templates del CLI
-**What:** Los templates SDD generados por `funky phase` (en `src/templates/sdd/`) son esqueletos mínimos de ~14 líneas, mientras que la plantilla canónica oficial (`docs/funky-ai/workers/plantilla-worker-handoff.md`) tiene 83 líneas con estructura completa: Memory Polling, Reglas de Ejecución, Return Envelope.
-**Why:** La Fase 3 de v1.4 fue ejecutada por un Worker con instrucciones demasiado vagas sobre el nivel de detalle esperado. El Worker interpretó "template" como "esqueleto vacío".
-**Where:** `funky-cli/src/templates/sdd/` — todos los 5 archivos afectados.
-**Learned:** Al instruir a un Worker para crear templates, el Orquestador DEBE adjuntar un ejemplo de referencia concreto o especificar explícitamente el nivel de detalle. "Template con estructura X" no es suficiente — hay que mostrar el modelo canónico.

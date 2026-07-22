@@ -1,5 +1,0 @@
-### [bugfix][phase-template-path] Mismatch de ruta en `phase.js` tras mover templates a subcarpeta
-**What:** Al mover los templates SDD de `src/templates/` a `src/templates/sdd/`, el comando `phase.js` quedó apuntando a la ruta antigua y hubiera fallado con "template no existe".
-**Why:** La instrucción de la Fase 3 prohibía tocar archivos `.js`, por lo que el Worker creó la subcarpeta sin actualizar la referencia en el comando.
-**Where:** `funky-cli/src/commands/phase.js` línea 14.
-**Learned:** Cuando un Worker mueve o reorganiza templates, DEBE listar explícitamente en sus restricciones si puede o no actualizar las referencias en los comandos JS. La ambigüedad genera deuda. Alternativa: el Orquestador debe delegar la reorganización de templates y la actualización de rutas en la misma Fase, no en fases separadas.

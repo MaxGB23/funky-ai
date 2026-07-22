@@ -1,5 +1,0 @@
-### [DISCOVERY][cli-orchestrator-circular-dependency] Dependencia Circular entre Orquestador y Templates del CLI
-**What:** Cuando un Orquestador gestiona un repositorio que ES un CLI distribuidor de templates (ej. `funky-ai`), las reglas locales de orquestación terminan acopladas a las rutas públicas del CLI (`src/templates/`). Al intentar agnostizar los templates públicos para nuevos proyectos, se corre el riesgo de destruir el ciclo operativo del propio Orquestador.
-**Why:** El CLI y el Orquestador local comparten la misma fuente de verdad. El Orquestador necesita reglas rígidas y específicas, mientras que el CLI público debe inyectar esqueletos agnósticos.
-**Where:** Rutas de templates en `.agents/rules/sdd-orchestrator.md` y `funky-cli/src/templates/`.
-**Learned:** Siempre realizar una "Fase de Aislamiento y Backup": copiar todos los templates vitales a un directorio protegido (`.agents/templates/`) y re-mapear las reglas locales del Orquestador ANTES de purgar la versión pública. Esto previene la rotura del propio ciclo SDD y mantiene un registro legacy.

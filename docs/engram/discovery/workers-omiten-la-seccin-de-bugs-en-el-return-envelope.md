@@ -1,5 +1,0 @@
-### [DISCOVERY][worker-return-envelope-compliance] Workers omiten la sección de Bugs en el Return Envelope
-**What:** El Worker de la Fase 2 (v1.6) entregó un reporte en formato libre, omitiendo la sección `Bugs encontrados` del Return Envelope canónico definido en `tasks.md`. Los fallos iniciales (2-3 intentos) no quedaron documentados hasta que el Orquestador lo detectó.
-**Why:** El Worker priorizó reportar los éxitos y omitió los fallos intermedios. El schema del Return Envelope no tenía una instrucción explícita de "documentar TODOS los intentos fallidos, no solo el resultado final".
-**Where:** Protocolo Return Envelope en `funky-cli/src/templates/sdd/tasks.md`.
-**Learned:** El template de Return Envelope debe aclarar explícitamente: "Bugs encontrados incluye intentos fallidos y los anti-patrones descartados, no solo bugs en producción". El Orquestador debe validar el schema del report antes de aprobar la siguiente fase.
