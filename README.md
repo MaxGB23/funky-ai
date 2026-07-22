@@ -11,13 +11,13 @@ Bienvenido a **Funky AI**, el framework de Inteligencia Artificial diseñado par
 
 ## ⚡ Quick Start
 
-Deja de leer teoría y empieza a construir. Así se arranca la orquestación:
+Deja de leer teoría y empieza a construir. Así se inicia la orquestación:
 
 1. **Bootstrap inicial:** Inyecta las reglas, la memoria y el lienzo del proyecto.
    ```bash
    funky init
    ```
-2. **Arrancar un feature:** Genera el andamiaje SDD para delegar código.
+2. **Iniciar un feature:** Genera el andamiaje SDD para delegar código.
    ```bash
    funky feature mi-nuevo-modulo
    ```
@@ -37,7 +37,7 @@ Funky AI categoriza y enruta dinámicamente las tareas para evitar sobre-ingenie
 | **T3 (Deep)** | Refactors, arquitecturas complejas. | SDD completo (Explore → Propose → Spec → Design → Tasks → Apply). Uso intenso de Subagentes nativos para investigación profunda. |
 
 ### 🛠️ Checkpoint Pre-Apply: ¿CLI o IDE?
-En cualquier Tier, justo antes de meterle mano al código (Fase Apply), el framework hace una pausa obligatoria y te da el volante para elegir cómo ejecutar:
+En cualquier Tier, justo antes de meterle mano al código (Fase Apply), el framework hace una pausa obligatoria y te da el control para elegir cómo ejecutar:
 - **CLI (Nativo):** Ejecución 100% automatizada con Subagentes asíncronos en background.
 - **IDE (Handoff):** Generación de bloques copy-paste listos para que tú tengas el control visual en tu editor.
 
