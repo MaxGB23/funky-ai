@@ -17,6 +17,8 @@ Antes de generar artefactos o responder soluciones, ejecuta estos pasos en orden
 **Stage 1 (siempre):** `ACTION: Execute list_dir on docs/engram/`
 **Stage 2 (condicional — si hay tag relevante):** `grep_search "[TAG]"` recursivo en `docs/engram/` (SearchPath: directorio, no archivo individual)
 
+> **[REGLA DE ORO - RESOLUCIÓN DE CONCEPTOS]:** Si el humano menciona un término, componente o patrón que no conoces (ej. "golden templates"), **TIENES PROHIBIDO** hacer búsquedas globales (`Get-ChildItem`, etc.) a ciegas. Tu **PRIMERA ACCIÓN** debe ser ejecutar `grep_search` sobre `docs/engram/` para entender el concepto desde nuestra base de conocimiento. No gastes tokens buscando basura.
+
 ## 4. Investigaciones eficientes
 ### Route A — Explore Ligero (Sabueso Regular)
 **Objetivo:** Mantener el contexto del Orquestador limpio y enfocado.
