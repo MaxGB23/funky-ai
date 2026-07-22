@@ -1,10 +1,9 @@
 ---
-trigger: manual
+trigger: model_decision
+description: Aplicar SIEMPRE que el Orquestador deba emitir la recomendación de `funky feature` o el humano sugiera iniciar sdd, sdd-init, sdd-new
 ---
 
 # Reglas de Pre-Vuelo y Templates SDD
-
-**Trigger:** Aplicar SIEMPRE que el Orquestador deba emitir la recomendación de `funky feature` o el humano sugiera iniciar sdd, sdd-init, sdd-new
 
 ## 1. Bloque de Recomendación (Obligatorio)
 Cuando se arranque un sdd nuevo se debe presentar al humano el siguiente bloque de recomendación:
@@ -22,6 +21,9 @@ Dime tu elección final de los parámetros anteriores para saber cómo seguimos.
 ```
 
 ## 2. Criterios para Completar la Recomendación
+
+### Ejecuté el Memory Polling de Engram?
+
 ### ¿Cuándo inyectar docs.md?
 Se inyecta cuando el cambio afecta documentación o arquitectura:
 - Toca documentación oficial (README, docs/, API docs).
@@ -51,10 +53,9 @@ Cuando el desarrollador regrese con los valores confirmados, almacénalos como c
 > **Guardrail:** Si el desarrollador confirma valores que contradicen dependencias duras (ej. T1 con 500 líneas estimadas), advierte UNA sola vez y acepta lo que el humano decidió. No insistas.
 
 > **[GUARDRAIL JIT — ANTI-ROUTER-PREMATURO]**
-> **TIENES PROHIBIDO** leer `tier2-router.md` ni `tier3-router.md` antes de recibir la confirmación explícita del humano sobre el Tier.
+> **TIENES PROHIBIDO** leer `tier1-router.md`, `tier2-router.md` ni `tier3-router.md` antes de recibir la confirmación explícita del humano sobre el Tier.
 > El orquestador emite la recomendación y **espera**. Solo cuando el humano confirme el Tier final, carga el router correspondiente JIT:
 > - **T1** → `view_file .agents/rules/tier1-router.md`
 > - **T2** → `view_file .agents/rules/tier2-router.md`
 > - **T3** → `view_file .agents/rules/tier3-router.md`
->
 > Leer los routers antes de la confirmación es una violación directa de la separación JIT de contexto.

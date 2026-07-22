@@ -18,7 +18,7 @@ trigger: manual
 | **3. Spec** | Workflow `/funky-spec` — genera requirements detallados (happy paths + edge cases + error states) |
 | **4. Design** | Workflow `/funky-design` — **Exclusivo T3. OBLIGATORIO.** Documenta arquitectura, decisiones técnicas y testing strategy en `design.md`. NO SE PUEDE SALTAR salvo excepción explícita del humano |
 | **5. Tasks** | Workflow `/funky-tasks` (adaptativo) |
-**CHECKPOINT PRE-APPLY EN TODOS LOS MODOS**: Incluso en modo Auto muestra resumen de las decisiones tomadas y solicita aprobación humana antes de iniciar la ejecución de Apply |
+| **CHECKPOINT** | **PRE-APPLY**: Muestra resumen de decisiones tomadas. **OBLIGATORIO:** Pregunta explícitamente si se ejecuta vía nativa (CLI/Subagentes) o vía Handoff (copiar/pegar para el IDE). |
 | **6. Apply** | Workflow `/funky-apply` — secuencial por batch - Requiere aprobación humana al checkpoint pre-apply |
 | **7. Verify** | Workflow `/funky-verify` — exhaustivo: build, tests, spec compliance matrix, design coherence y NFR tracing |
 | **8. Archive** | Workflow `/funky-archive` |

@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Tier 2 Delegation Router
 
 > 🔴 **[REGLA ESTRICTA DE DELEGACIÓN TIER 2]**
@@ -10,7 +14,7 @@
 > - **Fase Propose:** Ejecuta `view_file .agents/rules/tier2-delegation/t2-propose.md`
 > - **Fase Spec:** Ejecuta `view_file .agents/rules/tier2-delegation/t2-spec.md`
 > - **Fase Tasks:** Ejecuta `view_file .agents/rules/tier2-delegation/t2-tasks.md`
-> - **Fase Apply:** Lanza un subagente /funky-worker, referenciandole su archivo tasks.md a ejecutar. En caso de que funky-tasks haya devuelto un gran riesgo o cantidad de líneas o files, lanza workers por batches. En forma secuencial, nunca paralela, siempre se confirma que termine uno antes de lanzar el siguiente. El report.md es la clave para asegurar el éxito de cada batch.
+> - **Fase Apply:** **CHECKPOINT PRE-APPLY OBLIGATORIO:** Antes de ejecutar, muestra el plan y pregunta al humano si desea ejecutar vía nativa (CLI con subagentes) o vía Handoff (IDE). Si elige nativa, lanza un subagente /funky-worker referenciándole su archivo tasks.md, si elige IDE pasale el bloque copy-paste. Lanza workers por batches de forma secuencial, esperando la confirmación y report.md de cada batch antes del siguiente.
 > - **Fase Verify:** Ejecuta `view_file .agents/rules/tier2-delegation/t2-verify.md`
 > - **Fase Archive:** Ejecuta `view_file .agents/rules/ PENDIENTE`
 > - **Fase Release:** Tú como orquestador debes leer openspec/changes/{feature_name}/release.md y docs.md(sí existe). Completar los checklist y parar en fase git ops, debes pedir aprobacion humana.

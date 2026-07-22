@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Tier 1 Delegation Router
 
 SDD tier 1 no contiene artefactos, únicamente se hace una exploración con un sabueso Route A, y con dichos hallazgos se genera un tasks.md. Dicho tasks.md es ejecutado por un funky-worker.
@@ -29,9 +33,9 @@ Añade una sección final de mergeo y cierre (inyectar al final del tasks.md gen
 
 
 ## 2. Apply
-**CHECKPOINT PRE-APPLY EN TODOS LOS MODOS**: Incluso en modo Auto muestra resumen de las decisiones tomadas y solicita aprobación humana antes de iniciar la ejecución de Apply.
+**CHECKPOINT PRE-APPLY EN TODOS LOS MODOS**: Incluso en modo Auto muestra resumen de las decisiones tomadas y solicita aprobación humana antes de iniciar la ejecución de Apply. **OBLIGATORIO:** Pregunta explícitamente al usuario si desea ejecutar vía nativa (CLI con subagentes) o vía Handoff (copiar/pegar para el IDE).
 Una vez aprobado:
-Invocar un subagente type "self", con la ruta al tasks.md. Debes indicarle que ejecute todas las tareas, excepto la fase de tests de validación y mergeo y cierre. 
+Invocar un subagente type "self" o copy-paste listo para IDE, con la ruta al tasks.md. Debes indicarle que ejecute todas las tareas, excepto la fase de tests de validación y mergeo y cierre. 
 
 ## 3. Preparación de release
 Tú como orquestador ejecuta la fase tests de validación. Si fallan menciona al humano qué ha fallado, pregunta cómo lo solucionan juntos, propon alternativas como lanzar un sabueso regular para que vaya a explorar.
