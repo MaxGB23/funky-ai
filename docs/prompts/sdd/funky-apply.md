@@ -1,6 +1,6 @@
 ---
 trigger: /funky-apply
-description: SDD Apply Phase — Ejecutar tareas de implementación de forma quirúrgica.
+description: SDD Apply Phase — Requiere aprobación humana al checkpoint pre-apply antes de ejecutar.
 ---
 
 # 🛠️ Funky AI — Fase: Apply

@@ -63,6 +63,6 @@ Identificar dependencias y orden de ejecución.
 **Status:** success | partial | blocked (Si status es blocked, detalla el bloqueador y no sugieras avanzar)
 **Resumen:** {1-3 oraciones sobre las fases}
 **Artefacto:** openspec/changes/{feature-name}/tasks.md
-**Siguiente fase:** Checkpoint pre worker/apply, el humano decide si avanzar o no, incluso en modo auto (sólo si Status no es blocked)
+**Siguiente fase:** Checkpoint pre worker/apply, preguntar al humano si avanzar o no, incluso en modo auto mencionar el resumen y parar (sólo si Status no es blocked).
 **Riesgos:** {Resaltar si el forecast excedió >400 líneas o >5 archivos, si hay 3+ fases, o si hay Risk Level High. Mencionar la partición en batches recomendada.}
 ```
