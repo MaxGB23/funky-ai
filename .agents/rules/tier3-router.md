@@ -1,6 +1,6 @@
 ---
 trigger: model_decision
-description: Usar justo antes de delegar un subagente tier 3, esto evita olvidar su contrato de invocación
+description: Leer obligatoriamente antes de CUALQUIER delegación a un subagente Tier 1 (nueva fase, reintento o feedback).
 ---
 
 # Tier 3 Router — Deep

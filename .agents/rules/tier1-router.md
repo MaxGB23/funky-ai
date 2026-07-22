@@ -1,6 +1,6 @@
 ---
 trigger: model_decision
-description: Usar justo antes de pasar a una nueva fase SDD de tier 1
+description: Leer obligatoriamente antes de CUALQUIER delegación a un subagente Tier 1 (nueva fase, reintento o feedback).
 ---
 
 # Tier 1 Delegation Router
