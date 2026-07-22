@@ -1,3 +1,7 @@
+---
+trigger: manual
+---
+
 # Guardrails Tier 2 - Verify Ligero
 
 ## 1. ⚠️ Orchestration Checklist (EJECUTAR ANTES de delegar)

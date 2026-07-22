@@ -1,3 +1,7 @@
+---
+trigger: manual
+---
+
 # Guardrails - Tasks Adaptado a Tier 2
 
 ## 1. ⚠️ Orchestration Checklist (EJECUTAR ANTES de delegar)

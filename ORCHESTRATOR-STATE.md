@@ -5,31 +5,40 @@
 ---
 
 ## 🏷️ Estado Actual
-- **Versión:** v2.5.1
-- **Rama activa:** `feature/refactor-tasks-sdd`
-- **Última sesión:** 2026-06-21
-- **Estado:** 🟡 En progreso. 
+- **Versión:** v3.0.0
+- **Rama activa:** `main`
+- **Última sesión:** 2026-07-22
+- **Estado:** 🟢 Publicada. Post-release: refinamiento de README y prompt handoff vs native execution.
 
 ---
 
 ## 📂 Archivos Clave
-| Archivo / Directorio | Rol |
+
+### Invariantes (siempre en memoria)
+| Archivo | Rol |
 |---------|-----|
-| `.agents/rules/sdd-orchestrator.md` | Reglas del orquestador |
-| `.agents/rules/engram-protocol.md` | Reglas del protocolo de memoria |
-| `docs/engram/index.md` | Índice de memoria persistente Two-Stage (`discoveries`, `bugfixes`, etc) |
-| `.agents/templates/sdd/` | Templates "golden" (personalizados de este workspace de funky-ai). **¡USAR ESTOS SIEMPRE COMO REFERENCIA PARA ESTE REPO!** |
-| `funky-cli/src/commands/` | Lógica core del CLI (`init`, `phase`) |
-| `funky-cli/src/templates/sdd/` | Templates "base" estáticos del CLI (los que se empaquetan y distribuyen a terceros). **¡NO USAR PARA LAS FEATURES DE ESTE REPOSITORIO!** |
-| `funky-cli/src/utils/canvas.js` | Motor del Project Canvas (`generateCanvasMarkdown`) |
-| `docs/repo-map.md` | Mapa estructural oficial del repositorio (Fuente de la verdad) |
-| `docs/funky-ai/conceptos/` | Fundamentos del framework (Manifiesto, reglas base) |
-| `docs/funky-ai/historico/` | Cápsula del tiempo (Releases, Journey, Retrospectivas) |
-| `openspec/changes/` | Zona activa de ejecución de features del ciclo SDD |
+| `.agents/rules/sdd-orchestrator.md` | Reglas del orquestador (invariantes globales, Route A) |
+| `.agents/rules/sdd-preflight.md` | Guardrail anti-router prematuro, control de modo y cacheo de sesión |
+| `.agents/rules/engram-protocol.md` | Protocolo de memoria persistente |
+| `.agents/templates/sdd/` | Templates "golden" — referencia para este workspace |
+| `funky-cli/src/commands/` | Lógica core del CLI |
+
+### Contextuales (cargar bajo demanda)
+| Categoría | Dónde |
+|-----------|-------|
+| Tier routers (1/2/3) + escalation matrix | `.agents/rules/tier*-router.md`, `sdd-escalation-matrix.md` |
+| Tier 2 delegation templates | `.agents/rules/tier2-delegation/` |
+| CLI base templates (distribución) | `funky-cli/src/templates/sdd/` — **no usar para features de este repo** |
+| System prompts globales | `docs/prompts/globals/` |
+| Prompts SDD por fase | `docs/prompts/sdd/` |
+| Living Specs + RFCs + Changes | `openspec/specs/`, `openspec/rfcs/`, `openspec/changes/` |
+| Release notes | `docs/funky-ai/releases/` |
 
 ---
 
 ## ✅ Tareas Completadas
+- [x] **v3.0.0 — Subagentes Nativos + JIT Context Loading:** Rediseño arquitectónico completo. Orquestador arranca liviano con solo invariantes globales. Routers JIT por Tier (1/2/3) cargan reglas dinámicamente. Integración de `invoke_subagent` para research sin contaminar contexto. Subagentes con estado Idle para iterar sin re-inicialización. Lanzado 2026-07-21.
+- [x] **Post-release v3.0.0:** Refactor radical de README (eliminación de clutter legacy). Prompt de handoff vs native execution agregado a reglas SDD. Wording español neutralizado.
 
 ---
 
@@ -53,3 +62,4 @@
 | v2.0.0 | Arquitectura de 3 Capas (Global, Workspace Rules, Workflows On-Demand). Migración de flujos SDD a Antigravity Workflows para prevenir el Context Dilution. |
 | v2.5.0 | Engram Sharding y comando `funky engram add`. Reemplazo de historial monolítico por indexación semántica distribuida. |
 | 2026-06-30 | Feature 024-living-specs completada: Transición a Living Specs en `openspec/specs/`. Flujo de deltas validado con checksums y merge por LLM. |
+| v3.0.0 | **MAJOR** — Subagentes Nativos + JIT Context Loading. Routers por Tier (1/2/3). Subagentes con estado Idle. Memory Polling vía Engram. 99 archivos, +3763/-685 líneas. |

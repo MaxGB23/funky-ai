@@ -1,5 +1,6 @@
 ---
-trigger: always_on
+trigger: model_decision
+description: Usar justo antes de pasar a una nueva fase SDD de tier 1
 ---
 
 # Tier 1 Delegation Router

@@ -1,3 +1,7 @@
+---
+trigger: manual
+---
+
 # Guardrails Tier 2 - Explore Ligero (Sabueso de Lava)
 
 ## 1. ⚠️ Orchestration Checklist (EJECUTAR ANTES de delegar)

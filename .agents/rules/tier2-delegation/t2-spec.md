@@ -1,3 +1,7 @@
+---
+trigger: manual
+---
+
 # Guardrails Tier 2 - Spec Ligero
 
 ## 1. ⚠️ Orchestration Checklist (EJECUTAR ANTES de delegar)

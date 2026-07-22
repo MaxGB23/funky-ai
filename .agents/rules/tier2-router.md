@@ -1,5 +1,6 @@
 ---
-trigger: always_on
+trigger: model_decision
+description: Usar justo antes de delegar un subagente tier 2, esto evita olvidar su contrato de invocación
 ---
 
 # Tier 2 Delegation Router
