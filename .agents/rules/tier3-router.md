@@ -6,7 +6,7 @@ description: Leer obligatoriamente antes de CUALQUIER delegación a un subagente
 # Tier 3 Router — Deep
 
 > 🔴 **[REGLA ESTRICTA DE DELEGACIÓN TIER 3]**
-> Antes de delegar a un subagente Tier 3 debes leer este archivo. No construyas el prompt desde memoria ni inventes la estructura.
+> Antes de delegar a un subagente Tier 3 debes leer este archivo. No construyas el prompt desde memoria ni inventes la estructura.  Nunca debes leer los prompts internos de los custom workflows.
 
 ## 1. Routing de Fases
 | Fase | Workflow |
