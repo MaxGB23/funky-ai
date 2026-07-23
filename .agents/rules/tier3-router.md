@@ -6,7 +6,7 @@ description: Leer obligatoriamente antes de CUALQUIER delegación a un subagente
 # Tier 3 Router — Deep
 
 > 🔴 **[REGLA ESTRICTA DE DELEGACIÓN TIER 3]**
-> Antes de delegar a un subagente Tier 3 debes leer este archivo. No construyas el prompt desde memoria ni inventes la estructura.  Nunca debes leer los prompts internos de los custom workflows.
+> Antes de delegar a un subagente Tier 3 debes leer este archivo. No construyas el prompt desde memoria ni inventes la estructura.  Nunca debes leer los prompts internos de los custom workflows. Se delega usando "self": /funky-{fase} Contrato
 
 ## 1. Routing de Fases
 | Fase | Workflow |
@@ -16,7 +16,7 @@ description: Leer obligatoriamente antes de CUALQUIER delegación a un subagente
 | 3. Spec | `/funky-spec` → requirements completos |
 | 4. Design | `/funky-design` (**obligatorio, exclusivo T3**) → `design.md` |
 | 5. Tasks | `/funky-tasks` |
-| **Checkpoint** | **PRE-APPLY OBLIGATORIO:** Mostrar resumen + preguntar nativa (CLI) o Handoff (IDE) |
+| **Checkpoint** | **PRE-APPLY OBLIGATORIO:** Mostrar resumen + preguntar nativa (CLI) o Handoff (IDE). En caso de haber Risk, leer `.agents/rules/tier3-interactive/risk-decision.md`
 | 6. Apply | `/funky-apply` secuencial por batch |
 | 7. Verify | `/funky-verify` (build, tests, compliance, design, NFR) |
 | 8. Archive | `/funky-archive` |
@@ -35,11 +35,14 @@ En modo Interactivo, después del Return Envelope, leer `.agents/rules/tier3-int
 
 **Excepción Explore:** además de E1 recibe `Contexto a analizar` (RFC, descripción, etc.) y `Objetivo especial` (dirección táctica opcional).
 
-## 4. Lifecycle del Subagente
-> ⚠️ NO mates al subagente al terminar. Esto es lo que diferencia T3 de tiers inferiores.
-**Interactivo:** Running → **Idle** (espera) → Feedback → Kill (solo con aprobación humana)  
-**Auto:** Running → Kill inmediato
-Relanzar un subagente desde cero para una corrección es tirar miles de tokens a la basura. En modo interactivo, reactivarlo con `send_message` preserva todo su contexto.
+## 4. Lifecycle del Subagente (Aislamiento por Fase)
+> ⚠️ **NUEVA REGLA: UN SUBAGENTE POR FASE.**
+> Jamás reutilices el subagente de una fase (ej. Explore) para ejecutar la siguiente (ej. Propose). Hacerlo mezcla contextos, arrastra ruido (anti-patrón) y rompe la separación de responsabilidades. Lanza un subagente NUEVO e independiente para cada workflow/fase.
+
+> ⚠️ NO mates al subagente de la fase actual inmediatamente tras su primera respuesta.
+**Interactivo:** Running → **Idle** (espera) → Feedback sobre esa misma fase → Kill (al aprobar la fase y pasar a la siguiente)  
+**Auto:** Running → Kill inmediato al terminar su fase.
+El estado "Idle" existe ÚNICAMENTE para iterar correcciones de la fase actual usando `send_message` sin perder sus tokens de contexto. Una vez aprobada la fase, se lanza un subagente nuevo para la siguiente.
 
 ## 5. Fallback — Workflow no disponible
 Si el workflow (`/funky-*`) no es ejecutable: **NO lances subagentes.** Sugiere al humano cambiar a modo Handoff para ejecutar el prompt en su IDE.

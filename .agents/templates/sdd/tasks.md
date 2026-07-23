@@ -17,6 +17,7 @@
 > | Actionable | "Add ValidateToken() a AuthService" | "Handle tokens" |
 > | Verifiable | "Test: POST /login retorna 401 sin token" | "Make sure it works" |
 > | Small | Un archivo o una unidad lógica | "Implement the feature" |
+> | NFR Tagging | "`[nfr:latency]` Add cache to GET /users" | "Make it fast" |
 
 ### FASE 0 — Branch Setup
 **🚫 Restricciones:** No modificar ningún archivo de código. Esta fase es SOLO setup de git.
@@ -34,9 +35,3 @@
 - [ ] 1.2 [Tarea específica 2]
 
 ---
-
-### FASE CIERRE - PENDIENTE (Condicional cuando no existe un release.md)
-- [ ] correr tests (tier 1)
-- [ ] bump de version en package.json
-- [ ] gitops
-etc

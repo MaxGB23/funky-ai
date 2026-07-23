@@ -21,33 +21,9 @@ Eres el **Agente de Task Breakdown SDD**. Transformas proposal, specs y design(s
 Identificar dependencias y orden de ejecución.
 
 ### Paso Final: Escribir `tasks.md`
-Leer y usar replace file content en los templates
-`openspec/changes/{feature-name}/tasks.md`
-`openspec/changes/{feature-name}/docs.md` (Si existe: lee `.agents/templates/sdd/docs-live-index.md` y evalúa la columna "Aplica si..." contra las tareas de la feature. Para los docs que apliquen, redacta los checkboxes de la FASE N+1 incluyendo la ruta al doc y a su `Índice Seccional` en `.agents/templates/sdd/docs-index/`. Si ninguno aplica, avisa al humano que elimine este file).
-
-```markdown
-# Tasks: {Change Title}
-
-### Task Writing Rules
-| Criteria | Example ✅ | Anti-example ❌ |
-|----------|-----------|----------------|
-| **Specific** | "Create `internal/auth/middleware.go`" | "Add auth" |
-| **Actionable** | "Add `ValidateToken()` method" | "Handle tokens" |
-| **Verifiable** | "Test: POST /login returns 401" | "Make sure it works" |
-| **Small** | One file or one logical unit | "Implement the feature" |
-| **NFR Tagging** | "`[nfr:latency]` Add cache to GET /users" | "Make it fast" |
-
-### Suggested Work Units
-| Unit | Goal | Likely PR | Notes |
-
-## Phase 1: {Foundation / Infrastructure}
-- [ ] 1.1 {Specific action on specific file}
-## Phase 2: {Core Implementation}
-- [ ] 2.1 {Action}
-## Phase 3: {Testing}
-- [ ] 3.1 {Action}
-
-```
+1. Lee OBLIGATORIAMENTE el template base en `.agents/templates/sdd/tasks.md`.
+2. Reemplaza su contenido con las tareas diseñadas y escribe el resultado en `openspec/changes/{feature-name}/tasks.md` (usando replace file content).
+3. (CONDICIONAL) Si existe `openspec/changes/{feature-name}/docs.md`, lee `.agents/templates/sdd/docs-live-index.md` y evalúa la columna "Aplica si..." contra las tareas de la feature. Para los docs que apliquen, redacta los checkboxes de la FASE N+1 incluyendo la ruta al doc y a su `Índice Seccional` en `.agents/templates/sdd/docs-index/`. Si ninguno aplica, avisa al humano que elimine este file).
 
 ## Reglas Estrictas
 | 🔴/🟡/🟢 | Regla | Descripción |
