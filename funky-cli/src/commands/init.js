@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import * as p from '@clack/prompts';
 import { generateProjectCanvasMarkdown, generateInfraCanvasMarkdown } from '../utils/canvas.js';
+import { executeIntentions } from '../utils/fs-adapter.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,6 +21,8 @@ const __dirname = path.dirname(__filename);
  * @returns {{ created: number, skipped: number }}
  */
 export function runInit({ templatesDir, targetBase, canvasConfig, selectedProtocols = [] }) {
+  const intentions = [];
+
   const filesToCopy = [
     { src: 'ORCHESTRATOR-STATE.md', dest: 'ORCHESTRATOR-STATE.md' },
     { src: 'agents-rules-engram-protocol.md', dest: path.join('.agents', 'rules', 'engram-protocol.md') },
@@ -32,63 +35,30 @@ export function runInit({ templatesDir, targetBase, canvasConfig, selectedProtoc
     { src: path.join('..', 'README.md'), dest: 'README.md' }
   ];
 
-  let createdCount = 0;
-  let skippedCount = 0;
-
-  console.log('🚀 Inicializando Funky AI...');
-
   for (const file of filesToCopy) {
     const sourcePath = path.join(templatesDir, file.src);
     const destPath = path.join(targetBase, file.dest);
-
-    if (fs.existsSync(destPath)) {
-      console.log(`⚡ Salteando (ya existe): ${file.dest}`);
-      skippedCount++;
-    } else {
-      try {
-        fs.mkdirSync(path.dirname(destPath), { recursive: true });
-        fs.copyFileSync(sourcePath, destPath);
-        console.log(`✅ Creado: ${file.dest}`);
-        createdCount++;
-      } catch (error) {
-        throw new Error(`Permisos denegados o error en el sistema de archivos al escribir en ${destPath}: ${error.message}`);
-      }
-    }
+    intentions.push({ action: 'copy', src: sourcePath, dest: destPath });
   }
 
   // Create sharded engram directories
   const engramDirs = ['architecture', 'pattern', 'discovery', 'decision', 'bugfix'];
   for (const dir of engramDirs) {
     const dirPath = path.join(targetBase, 'docs', 'engram', dir);
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
-      console.log(`✅ Creado directorio: docs/engram/${dir}`);
-    }
+    intentions.push({ action: 'mkdir', dest: dirPath });
   }
 
   if (canvasConfig) {
-    if (canvasConfig.skipProjectCanvas) {
-      console.log(`⚡ Salteando (ya existe): PROJECT-CANVAS.md`);
-      skippedCount++;
-    } else {
+    if (!canvasConfig.skipProjectCanvas) {
       const markdown = generateProjectCanvasMarkdown(canvasConfig.projectData || {});
       const canvasPath = path.join(targetBase, 'PROJECT-CANVAS.md');
-      fs.writeFileSync(canvasPath, markdown);
-      console.log(`✅ Creado: PROJECT-CANVAS.md (Dinámico)`);
-      createdCount++;
+      intentions.push({ action: 'create', dest: canvasPath, content: markdown });
     }
 
-    if (canvasConfig.skipInfraCanvas) {
-      if (!canvasConfig.migratingLegacy) {
-        console.log(`⚡ Salteando (ya existe): INFRA-CANVAS.md`);
-      }
-      skippedCount++;
-    } else {
+    if (!canvasConfig.skipInfraCanvas) {
       const markdown = generateInfraCanvasMarkdown(canvasConfig.infraData || {});
       const canvasPath = path.join(targetBase, 'INFRA-CANVAS.md');
-      fs.writeFileSync(canvasPath, markdown);
-      console.log(`✅ Creado: INFRA-CANVAS.md (Dinámico)`);
-      createdCount++;
+      intentions.push({ action: 'create', dest: canvasPath, content: markdown });
     }
   }
 
@@ -100,30 +70,16 @@ export function runInit({ templatesDir, targetBase, canvasConfig, selectedProtoc
     for (const protocolFile of selectedProtocols) {
       const srcPath = path.join(protocolsSrcDir, protocolFile);
       const destPath = path.join(protocolsDestDir, protocolFile);
-      if (fs.existsSync(destPath)) {
-        console.log(`⚡ Salteando (ya existe): .agents/protocols/${protocolFile}`);
-        skippedCount++;
-      } else {
-        fs.mkdirSync(protocolsDestDir, { recursive: true });
-        fs.copyFileSync(srcPath, destPath);
-        console.log(`✅ Creado: .agents/protocols/${protocolFile}`);
-        createdCount++;
-      }
+      intentions.push({ action: 'copy', src: srcPath, dest: destPath });
     }
 
     // También copiar/regenerar index.md en destino listando solo los protocolos importados
     const indexDestPath = path.join(protocolsDestDir, 'index.md');
     const indexSrcPath = path.join(protocolsSrcDir, 'index.md');
-    if (!fs.existsSync(indexDestPath) && fs.existsSync(indexSrcPath)) {
-      fs.mkdirSync(protocolsDestDir, { recursive: true });
-      fs.copyFileSync(indexSrcPath, indexDestPath);
-      console.log(`✅ Creado: .agents/protocols/index.md`);
-      createdCount++;
-    }
+    intentions.push({ action: 'copy', src: indexSrcPath, dest: indexDestPath });
   }
 
-  console.log(`\n✅ Funky AI inicializado. ${createdCount} archivos creados, ${skippedCount} ya existían.`);
-  return { created: createdCount, skipped: skippedCount };
+  return intentions;
 }
 
 /**
@@ -335,7 +291,14 @@ export const initCommand = new Command('init')
         };
       }
 
-      runInit({ templatesDir, targetBase, canvasConfig, selectedProtocols });
+      const intentions = runInit({ templatesDir, targetBase, canvasConfig, selectedProtocols });
+      
+      console.log('🚀 Inicializando Funky AI...');
+      const { created, skipped, logs } = executeIntentions(intentions);
+      for (const log of logs) {
+        console.log(log);
+      }
+      console.log(`\n✅ Funky AI inicializado. ${created} archivos creados, ${skipped} ya existían.`);
     } catch (error) {
       console.error('❌ Error al inicializar Funky AI:', error.message);
       process.exit(1);

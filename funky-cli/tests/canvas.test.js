@@ -13,17 +13,18 @@ describe('generateProjectCanvasMarkdown', () => {
 
     const markdown = generateProjectCanvasMarkdown(config);
     
-    expect(markdown).toContain('# 🚀 PROJECT CANVAS');
-    expect(markdown).toContain('## 1. Framework Base\nReact + Vite');
-    expect(markdown).toContain('## 2. Patrón Arquitectónico\nClean Architecture');
+    expect(typeof markdown).toBe('string');
+    expect(markdown.length).toBeGreaterThan(0);
+    expect(markdown).toContain('React + Vite');
+    expect(markdown).toContain('Clean Architecture');
   });
 
   it('debería usar "No definido / Pendiente" para propiedades faltantes', () => {
     const config = { pattern: 'MVC' };
     const markdown = generateProjectCanvasMarkdown(config);
     
-    expect(markdown).toContain('## 2. Patrón Arquitectónico\nMVC');
-    expect(markdown).toContain('## 3. Gestión de Estado\nNo definido / Pendiente');
+    expect(markdown).toContain('MVC');
+    expect(markdown).toContain('No definido / Pendiente');
   });
 });
 
@@ -36,7 +37,12 @@ describe('generateInfraCanvasMarkdown', () => {
       deployment: 'Vercel'
     };
     const markdown = generateInfraCanvasMarkdown(config);
-    expect(markdown).toContain('# 🏗️ INFRA CANVAS');
-    expect(markdown).toContain('## 1. Base de Datos / ORM\nPrisma');
+    
+    expect(typeof markdown).toBe('string');
+    expect(markdown.length).toBeGreaterThan(0);
+    expect(markdown).toContain('Prisma');
+    expect(markdown).toContain('NextAuth');
+    expect(markdown).toContain('ESLint');
+    expect(markdown).toContain('Vercel');
   });
 });

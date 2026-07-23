@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import * as p from '@clack/prompts';
+import { executeIntentions } from '../utils/fs-adapter.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -82,43 +83,35 @@ export function resolveFiles(injectionParams) {
  * @param {boolean} opts.injectionParams.docsImpact - true if user wants docs.md (T2/T3 only)
  * @returns {{ success: boolean, error?: string, path?: string, copiedFiles?: string[] }}
  */
-export function runFeature({ featureName, cliTemplatesDir, cwd, injectionParams }) {
+export function runFeature({ featureName, cliTemplatesDir, cwd, injectionParams, hasGoldenTemplates = false, featureExists = false }) {
   // 1. Sanitizar featureName
   const sanitizedFeatureName = featureName.trim().replace(/\s+/g, '-').toLowerCase();
 
   // 2. Determinar rutas (Golden vs Fallback)
   const goldenTemplatesDir = path.join(cwd, '.agents', 'templates', 'sdd');
-  let templatesToUse = goldenTemplatesDir;
-
-  if (!fs.existsSync(goldenTemplatesDir)) {
-    console.warn(`⚠️ Warning: No se encontraron templates locales en ${goldenTemplatesDir}. Usando fallback de CLI.`);
-    templatesToUse = cliTemplatesDir;
-  }
+  const templatesToUse = hasGoldenTemplates ? goldenTemplatesDir : cliTemplatesDir;
 
   // 3. Crear openspec/changes/<featureName>
   const featurePath = path.join(cwd, 'openspec', 'changes', sanitizedFeatureName);
 
-  if (fs.existsSync(featurePath)) {
+  if (featureExists) {
     return { success: false, error: `El directorio de la feature ya existe: ${featurePath}` };
   }
 
-  fs.mkdirSync(featurePath, { recursive: true });
+  const intentions = [];
+  intentions.push({ action: 'mkdir', dest: featurePath });
 
   // 4. Copiar archivos del ciclo SDD a la carpeta de la feature
   const filesToCopy = resolveFiles(injectionParams);
 
-  const copiedFiles = [];
   for (const file of filesToCopy) {
     const srcFile = path.join(templatesToUse, file);
-    if (fs.existsSync(srcFile)) {
-      const destFile = path.join(featurePath, file);
-      fs.copyFileSync(srcFile, destFile);
-      copiedFiles.push(file);
-    }
+    const destFile = path.join(featurePath, file);
+    intentions.push({ action: 'copy', src: srcFile, dest: destFile });
   }
 
-  // 5. Retornar success
-  return { success: true, path: featurePath, copiedFiles };
+  // 5. Retornar success y el plan
+  return { success: true, path: featurePath, copiedFiles: filesToCopy, intentions, usedFallback: !hasGoldenTemplates };
 }
 
 export const featureCommand = new Command('feature')
@@ -160,12 +153,26 @@ export const featureCommand = new Command('feature')
     // Release: mandatory in T2/T3, never in T1 — no inquirer needed
 
     const injectionParams = { tier, docsImpact };
-    const result = runFeature({ featureName, cliTemplatesDir, cwd, injectionParams });
+    
+    const goldenTemplatesDir = path.join(cwd, '.agents', 'templates', 'sdd');
+    const hasGoldenTemplates = fs.existsSync(goldenTemplatesDir);
+    
+    const sanitizedFeatureName = featureName.trim().replace(/\s+/g, '-').toLowerCase();
+    const featurePath = path.join(cwd, 'openspec', 'changes', sanitizedFeatureName);
+    const featureExists = fs.existsSync(featurePath);
+
+    const result = runFeature({ featureName, cliTemplatesDir, cwd, injectionParams, hasGoldenTemplates, featureExists });
 
     if (!result.success) {
       console.error(`❌ Error: ${result.error}`);
       process.exit(1);
     } else {
+      if (result.usedFallback) {
+        console.warn(`⚠️ Warning: No se encontraron templates locales en ${goldenTemplatesDir}. Usando fallback de CLI.`);
+      }
+      
+      const { logs } = executeIntentions(result.intentions);
+      // logs can be printed here if needed or we just print the summary
       console.log(`🚀 Scaffolding de feature creado exitosamente en: ${result.path}`);
       console.log(`📄 Archivos inyectados: ${result.copiedFiles.length} — ${result.copiedFiles.join(', ')}`);
     }

@@ -1,12 +1,12 @@
 ---
 trigger: /funky-archive
-description: SDD Archive Phase (Tier 2 y 3) — Integrar delta specs y archivar la feature.
+description: SDD Archive Phase (Tier 2 y 3) — Integrar delta specs en Root Specs.
 ---
 
 # 📦 Funky AI — Fase: Archive
 
 ## Identidad
-Eres el **Agente de Archivado SDD**. Completas el ciclo: lees el Delta Spec, validas integridad, mergeas en el Root Spec y mueves el change folder a `archive/`. Tu responsabilidad más crítica es NO corromper el Root Spec.
+Eres el **Agente de Archivado SDD**. Completas el ciclo de merge: lees el Delta Spec, validas integridad y mergeas en el Root Spec. Tu responsabilidad más crítica es NO corromper el Root Spec. El move del change folder a `archive/` lo realiza la fase de Release (post-archive).
 
 ---
 
@@ -90,27 +90,9 @@ Para cada dominio encontrado en `openspec/changes/{feature}/specs/`:
 
 ---
 
-## Paso 3: Archive Move
-
-Una vez que **todos** los dominios fueron mergeados exitosamente:
-
-1. Determinar la clase de release del feature (leer `ORCHESTRATOR-STATE.md` o el nombre del feature):
-   - Si tiene versión semántica → naming: `vX.Y.Z-{desc}` (ej. `v1.2.0-living-specs`)
-   - Si es dated → naming: `YYYY-MM-DD-{desc}` (ej. `2026-06-30-024-living-specs`)
-2. Mover la carpeta completa:
-   ```
-   openspec/changes/{feature}/  →  openspec/archive/{new-name}/
-   ```
-3. Verificar el conteo de entradas en `openspec/archive/`:
-   - Si hay **más de 40 entradas** → emitir advertencia:
-     > ⚠️ WARNING — `openspec/archive/` tiene más de 40 entradas. Considera limpiar manualmente features muy antiguas.
-4. Confirmar que `openspec/changes/{feature}/` ya no existe.
-
----
-
 ## Paso Final: Escribir Archive Report
 
-Crear `openspec/archive/{new-name}/archive-report.md`:
+Crear `openspec/changes/{feature}/archive-report.md`:
 
 ```markdown
 # Archive Report — {feature}
@@ -119,7 +101,7 @@ Crear `openspec/archive/{new-name}/archive-report.md`:
 **Status:** success
 **Dominios mergeados:** {lista de dominios}
 **Checksum validado:** ✅ (o N/A si FULL Spec)
-**Destino:** openspec/archive/{new-name}/
+**Destino pendiente:** openspec/archive/{release-name}/ (move en fase Release)
 
 ## Cambios Aplicados
 {Resumen por dominio: N requirements ADDED, M MODIFIED, P REMOVED}
@@ -139,9 +121,6 @@ Crear `openspec/archive/{new-name}/archive-report.md`:
 | 🔴 | Anti-Lazy | PRESERVE ALL EXISTING REQUIREMENTS VERBATIM — solo aplicar deltas declarados |
 | 🔴 | Full Spec Path | Si `root-sha256: null` → copiar íntegro, NUNCA aplicar merge logic |
 | 🔴 | MODIFIED Exacto | Reemplazar bloque completo; si el título no existe en Root Spec → abortar |
-| 🟡 | ISO Date | Usar prefix `YYYY-MM-DD` para dated archives |
-| 🟡 | Soft Limit | Advertir si `openspec/archive/` supera 40 entradas |
-| 🟢 | Limpieza | Confirmar que `changes/{feature}/` queda eliminado tras el move |
 
 ---
 
@@ -149,9 +128,9 @@ Crear `openspec/archive/{new-name}/archive-report.md`:
 
 ```
 **Status:** success | partial | blocked
-**Resumen:** {Dominios mergeados, feature archivada en {new-name}}
-**Artefacto:** openspec/archive/{new-name}/archive-report.md
+**Resumen:** {Dominios mergeados, specs listos para release}
+**Artefacto:** N/A (merge completado, pendiente de move en release)
 **Root Specs actualizados:** {lista}
-**Siguiente fase:** Ninguna
+**Siguiente fase:** Release
 **Riesgos:** {Desviaciones detectadas o "Ninguno"}
 ```

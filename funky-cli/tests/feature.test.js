@@ -124,22 +124,13 @@ describe('runFeature()', () => {
       const featureName = 'auth-login';
       const expectedFeaturePath = path.join(fakeCwd, 'openspec', 'changes', featureName);
 
-      fs.existsSync.mockImplementation((p) => {
-        if (p === goldenTemplatesDir) return true;
-        if (p === expectedFeaturePath) return false;
-        if (typeof p === 'string' && p.startsWith(goldenTemplatesDir)) return true;
-        return false;
-      });
-      fs.mkdirSync.mockImplementation(() => {});
-      fs.copyFileSync.mockImplementation(() => {});
-
-      const result = runFeature({ featureName, cliTemplatesDir: fakeCliTemplatesDir, cwd: fakeCwd });
+      const result = runFeature({ featureName, cliTemplatesDir: fakeCliTemplatesDir, cwd: fakeCwd, hasGoldenTemplates: true });
 
       expect(result.success).toBe(true);
       expect(result.path).toBe(expectedFeaturePath);
-      expect(fs.mkdirSync).toHaveBeenCalledWith(expectedFeaturePath, { recursive: true });
-      expect(fs.copyFileSync).toHaveBeenCalledTimes(9);
       expect(result.copiedFiles).toHaveLength(9);
+      expect(result.intentions).toContainEqual({ action: 'mkdir', dest: expectedFeaturePath });
+      expect(result.intentions).toHaveLength(10); // 1 mkdir + 9 copy
       expect(console.warn).not.toHaveBeenCalled();
     });
 
@@ -147,20 +138,12 @@ describe('runFeature()', () => {
       const featureName = 'auth-login';
       const expectedFeaturePath = path.join(fakeCwd, 'openspec', 'changes', featureName);
 
-      fs.existsSync.mockImplementation((p) => {
-        if (p === goldenTemplatesDir) return false;
-        if (p === expectedFeaturePath) return false;
-        if (typeof p === 'string' && p.startsWith(fakeCliTemplatesDir)) return true;
-        return false;
-      });
-      fs.mkdirSync.mockImplementation(() => {});
-      fs.copyFileSync.mockImplementation(() => {});
-
-      const result = runFeature({ featureName, cliTemplatesDir: fakeCliTemplatesDir, cwd: fakeCwd });
+      const result = runFeature({ featureName, cliTemplatesDir: fakeCliTemplatesDir, cwd: fakeCwd, hasGoldenTemplates: false });
 
       expect(result.success).toBe(true);
-      expect(console.warn).toHaveBeenCalledWith(expect.stringContaining('Usando fallback de CLI'));
-      expect(fs.copyFileSync).toHaveBeenCalledTimes(9);
+      expect(result.usedFallback).toBe(true);
+      expect(result.copiedFiles).toHaveLength(9);
+      expect(result.intentions).toHaveLength(10);
     });
   });
 
@@ -169,20 +152,12 @@ describe('runFeature()', () => {
       const featureName = 'auth-login';
       const expectedFeaturePath = path.join(fakeCwd, 'openspec', 'changes', featureName);
 
-      fs.existsSync.mockImplementation((p) => {
-        if (p === goldenTemplatesDir) return true;
-        if (p === expectedFeaturePath) return false;
-        if (typeof p === 'string' && p.startsWith(goldenTemplatesDir)) return true;
-        return false;
-      });
-      fs.mkdirSync.mockImplementation(() => {});
-      fs.copyFileSync.mockImplementation(() => {});
-
       const result = runFeature({
         featureName,
         cliTemplatesDir: fakeCliTemplatesDir,
         cwd: fakeCwd,
         injectionParams: { tier: 'T2', docsImpact: true },
+        hasGoldenTemplates: true
       });
 
       expect(result.success).toBe(true);
@@ -195,51 +170,37 @@ describe('runFeature()', () => {
       expect(result.copiedFiles).not.toContain('apply.md');
       expect(result.copiedFiles).not.toContain('verify.md');
       expect(result.copiedFiles).not.toContain('planning-handoff.md');
+      expect(result.intentions.length).toBe(8);
     });
 
     it('T1 / No → copies 2 base files only', () => {
       const featureName = 'tweak-fix';
       const expectedFeaturePath = path.join(fakeCwd, 'openspec', 'changes', featureName);
 
-      fs.existsSync.mockImplementation((p) => {
-        if (p === goldenTemplatesDir) return true;
-        if (p === expectedFeaturePath) return false;
-        if (typeof p === 'string' && p.startsWith(goldenTemplatesDir)) return true;
-        return false;
-      });
-      fs.mkdirSync.mockImplementation(() => {});
-      fs.copyFileSync.mockImplementation(() => {});
-
       const result = runFeature({
         featureName,
         cliTemplatesDir: fakeCliTemplatesDir,
         cwd: fakeCwd,
         injectionParams: { tier: 'T1', docsImpact: false },
+        hasGoldenTemplates: true
       });
 
       expect(result.success).toBe(true);
       expect(result.copiedFiles).toHaveLength(2);
       expect(result.copiedFiles).toEqual(['tasks.md', 'report.md']);
+      expect(result.intentions.length).toBe(3);
     });
 
     it('T3 / No → copies tasks.md + release.md (release always injected)', () => {
       const featureName = 'deep-feature';
       const expectedFeaturePath = path.join(fakeCwd, 'openspec', 'changes', featureName);
 
-      fs.existsSync.mockImplementation((p) => {
-        if (p === goldenTemplatesDir) return true;
-        if (p === expectedFeaturePath) return false;
-        if (typeof p === 'string' && p.startsWith(goldenTemplatesDir)) return true;
-        return false;
-      });
-      fs.mkdirSync.mockImplementation(() => {});
-      fs.copyFileSync.mockImplementation(() => {});
-
       const result = runFeature({
         featureName,
         cliTemplatesDir: fakeCliTemplatesDir,
         cwd: fakeCwd,
         injectionParams: { tier: 'T3', docsImpact: false },
+        hasGoldenTemplates: true
       });
 
       expect(result.success).toBe(true);
@@ -256,35 +217,22 @@ describe('runFeature()', () => {
       const expectedSanitized = 'auth-login-api';
       const expectedFeaturePath = path.join(fakeCwd, 'openspec', 'changes', expectedSanitized);
 
-      fs.existsSync.mockImplementation((p) => {
-        if (p === goldenTemplatesDir) return true;
-        if (p === expectedFeaturePath) return false;
-        return false;
-      });
-
-      const result = runFeature({ featureName: rawFeatureName, cliTemplatesDir: fakeCliTemplatesDir, cwd: fakeCwd });
+      const result = runFeature({ featureName: rawFeatureName, cliTemplatesDir: fakeCliTemplatesDir, cwd: fakeCwd, hasGoldenTemplates: true });
 
       expect(result.success).toBe(true);
       expect(result.path).toBe(expectedFeaturePath);
-      expect(fs.mkdirSync).toHaveBeenCalledWith(expectedFeaturePath, { recursive: true });
+      expect(result.intentions).toContainEqual({ action: 'mkdir', dest: expectedFeaturePath });
     });
 
     it('fails if the feature directory already exists', () => {
       const featureName = 'auth-login';
       const expectedFeaturePath = path.join(fakeCwd, 'openspec', 'changes', featureName);
 
-      fs.existsSync.mockImplementation((p) => {
-        if (p === goldenTemplatesDir) return true;
-        if (p === expectedFeaturePath) return true;
-        return false;
-      });
-
-      const result = runFeature({ featureName, cliTemplatesDir: fakeCliTemplatesDir, cwd: fakeCwd });
+      const result = runFeature({ featureName, cliTemplatesDir: fakeCliTemplatesDir, cwd: fakeCwd, hasGoldenTemplates: true, featureExists: true });
 
       expect(result.success).toBe(false);
       expect(result.error).toMatch(/ya existe/i);
-      expect(fs.mkdirSync).not.toHaveBeenCalled();
-      expect(fs.copyFileSync).not.toHaveBeenCalled();
+      expect(result.intentions).toBeUndefined();
     });
   });
 });

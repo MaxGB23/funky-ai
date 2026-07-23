@@ -39,7 +39,7 @@ Se inyecta cuando el cambio afecta documentación o arquitectura:
 ## 3. Tipos de Modo
 - **Interactivo:** Pausa entre fases para revisión del humano.
 - **Auto:** Fluido, avanza entre fases sin pausas (excepto antes de ejecutar código).
-- **Handoff:** Similar a Interactivo, mismos prompts, pero genera bloques copy-paste para llevar al IDE, donde no existen subagentes nativos. 
+- **Handoff:** Similar a Interactivo, pero el Orquestador genera un bloque copy-paste para que el humano lo pegue en su IDE. **LEY DE INVARIANZA:** El bloque contiene ÚNICAMENTE el E1 (feature_name + contexto mínimo necesario) y la invocación del workflow (ej. `/funky-verify`). NUNCA reconstruyas manualmente el checklist interno del workflow — el workflow ya sabe qué hacer. Duplicar su lógica es un anti-patrón.
 
 ## 4. Cacheo de Sesión (Post-Preflight)
 Cuando el desarrollador regrese con los valores confirmados, almacénalos como constantes de sesión. **NUNCA vuelvas a preguntar Tier, Docs ni Modo durante esta sesión.**

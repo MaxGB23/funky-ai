@@ -39,6 +39,7 @@
 ## ✅ Tareas Completadas
 - [x] **v3.0.0 — Subagentes Nativos + JIT Context Loading:** Rediseño arquitectónico completo. Orquestador arranca liviano con solo invariantes globales. Routers JIT por Tier (1/2/3) cargan reglas dinámicamente. Integración de `invoke_subagent` para research sin contaminar contexto. Subagentes con estado Idle para iterar sin re-inicialización. Lanzado 2026-07-21.
 - [x] **Post-release v3.0.0:** Refactor radical de README (eliminación de clutter legacy). Prompt de handoff vs native execution agregado a reglas SDD. Wording español neutralizado.
+- [x] **Feature: refactor-cli-testing:** (Tier 3) Se abstrajo el File System a través de `fs-adapter` para pruebas puras y se integró resiliencia a templates eliminando aserciones de prosa literal. Feature archivada y root spec `cli-testing` generado.
 
 ---
 

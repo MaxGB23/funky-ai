@@ -19,7 +19,22 @@ La versión se determina DESPUÉS de funky-archive: leer `package.json` → incr
 
 ---
 
-### FASE X+1 — Git-Ops [SIEMPRE — todos los release_type]
+### FASE X+1 — Archive Move [SIEMPRE — todos los release_type]
+> ✅ **Esta fase es obligatoria sin excepción.** Mueve el change folder a archive después de que la versión fue determinada.
+
+**🚨 CHECKLIST:**
+- [ ] **Determinar archive name:** Leer versión de `package.json` → construir nombre `vX.Y.Z-{feature}` (ej. `v1.2.0-living-specs`)
+- [ ] **Mover carpeta:**
+  ```
+  openspec/changes/{feature}/  →  openspec/archive/{vX.Y.Z-{feature}}/
+  ```
+- [ ] **Verificar conteo:** Si `openspec/archive/` tiene más de 40 entradas → emitir warning
+- [ ] **Confirmar limpieza:** Verificar que `openspec/changes/{feature}/` ya no existe
+- [ ] **Sincronización:** Actualizar `ORCHESTRATOR-STATE.md`
+
+---
+
+### FASE X+2 — Git-Ops [SIEMPRE — todos los release_type]
 > ✅ **Esta fase es obligatoria sin excepción, incluyendo PATCH.**
 
 **🚨 CHECKLIST:**

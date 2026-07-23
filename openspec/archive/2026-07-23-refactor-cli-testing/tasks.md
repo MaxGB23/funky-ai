@@ -21,7 +21,7 @@
 ## Task 4: Refactor Test Suite
 - **Goal**: Remove literal prose assertions and implement structural validation in `funky-cli/tests/*.test.js`.
 - **Details**:
-  - Purge all `toContain` assertions that check for literal markdown strings.
+  - [x] Purge all `toContain` assertions that check for literal markdown strings.
   - Implement structural path validations using `fs.existsSync(expectedPath)` to verify file creation.
   - Validate idempotency skips (files are not overwritten if they exist).
   - Add structural tests for machine contracts (e.g., regex matching `<MANDATORY_RELEASE_PROTOCOL>`).

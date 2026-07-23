@@ -16,7 +16,8 @@ description: Leer obligatoriamente antes de CUALQUIER delegación a un subagente
 | 3. Spec | `/funky-spec` → requirements completos |
 | 4. Design | `/funky-design` (**obligatorio, exclusivo T3**) → `design.md` |
 | 5. Tasks | `/funky-tasks` |
-| **Checkpoint** | **PRE-APPLY OBLIGATORIO:** Mostrar resumen + preguntar nativa (CLI) o Handoff (IDE). En caso de haber Risk, leer `.agents/rules/tier3-interactive/risk-decision.md`
+| **Checkpoint** | **PRE-APPLY obligatorio:** Mostrar resumen y confirmar **Nativo (CLI)** o **Handoff (IDE)**. Si existe **Risk**, consultar `.agents/rules/tier3-interactive/risk-decision.md`. El cambio a **Handoff** sólo aplica para `Apply`; las fases siguientes permanecen en modo interactivo. |
+
 | 6. Apply | `/funky-apply` secuencial por batch |
 | 7. Verify | `/funky-verify` (build, tests, compliance, design, NFR) |
 | 8. Archive | `/funky-archive` |

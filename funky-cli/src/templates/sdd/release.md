@@ -1,4 +1,5 @@
 # Release Checklist: [Nombre de la Funcionalidad o Cambio]
+<MANDATORY_RELEASE_PROTOCOL>
 
 > Checklist de release SDD para el Orquestador. Completar antes de archivar y taggear.
 > **Nota:** Este es el checklist del *proceso* de release, NO las release notes (que se generan con `funky release`).

@@ -5,6 +5,7 @@ Directorio unificado de conocimientos, decisiones y patrones.
 ## Architecture
 
 - [[living-specs] Transición a Living Specs completada. Los deltas (ADDED/MODIFIED/REMOVED) se mergean vía workflow con validación de checksum (root-sha256). Dominios nuevos usan root-sha256: null para FULL spec.](./architecture/living-specs.md)
+- [[cli-testing] Refactor CLI Testing: IO Abstraction and Template Resiliency. Se abstrajo el filesystem en pruebas y se removió la aserción de prosa en templates.](./architecture/cli-testing.md)
 
 ## Pattern
 
