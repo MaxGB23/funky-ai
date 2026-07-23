@@ -30,7 +30,7 @@ La versión se determina DESPUÉS de funky-archive: leer `package.json` → incr
   ```
 - [ ] **Verificar conteo:** Si `openspec/archive/` tiene más de 40 entradas → emitir warning
 - [ ] **Confirmar limpieza:** Verificar que `openspec/changes/{feature}/` ya no existe
-- [ ] **Sincronización:** Actualizar `ORCHESTRATOR-STATE.md`
+- [ ] **Actualizar versión en Readme**: Actualizar la versión en `README.md`
 
 ---
 
