@@ -11,7 +11,7 @@ trigger: manual
 > 🔴 **Si falta, no delegues.**
 
 ## 2. Prompt de Delegación
-**Cómo delegar:** `self`.
+**Cómo delegar:** `self` (excepción válida — tasks requiere contexto compartido de workflow)
 **Prompt:**
 ```text
 /funky-tasks

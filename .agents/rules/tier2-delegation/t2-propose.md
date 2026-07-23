@@ -12,6 +12,9 @@ trigger: manual
 
 ## 2. Prompt de Delegación
 **Cómo delegar:** `define_subagent` (Lectura + Escritura).
+
+> 🔴 **PROHIBIDO usar `self` para esta fase.** Debes usar `define_subagent` con un prompt acotado. `self` clona todo tu contexto y rompe el patrón de ligereza del Tier 2.
+
 **Prompt estricto a inyectar al subagente:**
 
 > ## Tarea
@@ -29,4 +32,5 @@ trigger: manual
 > **Change**: [CHANGE]
 > **Summary**: [resumen]
 > **Risk Level**: [Low/Medium/High]
+> **Artefacto generado en**: docs/openspec/changes/[CHANGE]/proposal.md
 > ```

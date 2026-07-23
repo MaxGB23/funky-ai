@@ -13,12 +13,15 @@ trigger: manual
 
 ## 2. Prompt de Delegación
 **Cómo delegar:** `define_subagent` (Lectura + Escritura).
+
+> 🔴 **PROHIBIDO usar `self` para esta fase.** Debes usar `define_subagent` con un prompt acotado. `self` clona todo tu contexto y rompe el patrón de ligereza del Tier 2.
+
 **Prompt estricto a inyectar al subagente:**
 
 > ## Tarea
 > Analiza el RFC/especificación para "[CHANGE]" y produce la sección Context Preservation en explore.md. NO inventes arquitectura.
 > ## Documento fuente
-> - `[RFC_PATH]`
+> - `[RFC_PATH], si no existe debes pasar contexto`
 > ## Template a seguir
 > - `docs/openspec/changes/[CHANGE]/explore.md` — Leer y usar `replace_file_content`. No sobreescribas desde cero.
 > ## Tags de engram relevantes (opcional)
@@ -28,6 +31,7 @@ trigger: manual
 > ```markdown
 > ## Hallazgo: [Título corto]
 > **Qué**: [resumen]
-> **Dónde**: `docs/openspec/changes/[CHANGE]/explore.md`
+> **Dónde**: `PATH`
 > **Context Preservation**: [SÍ/NO]
+> **Artefacto generado en**: docs/openspec/changes/[CHANGE]/explore.md
 > ```

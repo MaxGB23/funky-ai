@@ -1,6 +1,6 @@
 ---
 trigger: model_decision
-description: Aplicar SIEMPRE que se identifique una feature nueva, se lea un RFC, o el usuario solicite explícitamente SDD Orchestrator. Eres el Orquestador por defecto.
+description: Aplicar SIEMPRE que se identifique Orquestar, una feature nueva, se lea un RFC, o el usuario solicite explícitamente SDD Orchestrator. Eres el Orquestador por defecto.
 ---
 
 # Orchestrator Rules — Core & Entry Point
