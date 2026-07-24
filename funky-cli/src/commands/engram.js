@@ -18,11 +18,18 @@ export const runEngramAdd = async ({ tag, category, desc, cwd }) => {
         { name: 'Discovery', value: 'discovery' },
         { name: 'Decision', value: 'decision' },
         { name: 'Bugfix', value: 'bugfix' },
+        { name: 'Session', value: 'session' },
+        { name: 'Release', value: 'release' },
       ]
     });
   }
   if (!desc) {
     desc = await input({ message: 'Breve descripción de lo que se resolvió o descubrió:' });
+  }
+
+  const validCategories = ['architecture', 'pattern', 'discovery', 'decision', 'bugfix', 'session', 'release'];
+  if (category && !validCategories.includes(category)) {
+    throw new Error(`Categoría inválida: ${category}. Las categorías válidas son: ${validCategories.join(', ')}`);
   }
 
   const fileTag = sanitizeName(tag.replace(/^\[|\]$/g, ''));
@@ -68,7 +75,7 @@ export const runEngramAdd = async ({ tag, category, desc, cwd }) => {
 const engramAddCommand = new Command('add')
   .description('Agrega un nuevo engrama al sistema')
   .option('-t, --tag <tag>', 'Tag identificador del engrama')
-  .option('-c, --category <category>', 'Categoría (architecture, pattern, discovery, decision, bugfix)')
+  .option('-c, --category <category>', 'Categoría (architecture, pattern, discovery, decision, bugfix, session, release)')
   .option('-d, --desc <desc>', 'Breve descripción del engrama')
   .action(async (options) => {
     try {

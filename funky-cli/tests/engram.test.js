@@ -138,4 +138,37 @@ describe('runEngramAdd() — unit (fs mocked)', () => {
 
     expect(fs.mkdirSync).not.toHaveBeenCalled();
   });
+
+  it('hace append a index.md en las nuevas secciones (session/release)', async () => {
+    const tag = '[test-release]';
+    const category = 'release';
+    const desc = 'Test de release';
+    const indexPath = path.join(fakeCwd, 'docs', 'engram', 'index.md');
+    const engramDir = path.join(fakeCwd, 'docs', 'engram', category);
+
+    const mockIndex = `# Engram Index\n\n## Session\n\n## Release\n`;
+
+    fs.existsSync.mockImplementation((p) => {
+      if (p === engramDir) return true;
+      if (p === indexPath) return true;
+      return false;
+    });
+    fs.mkdirSync.mockImplementation(() => {});
+    fs.writeFileSync.mockImplementation(() => {});
+    fs.readFileSync.mockReturnValue(mockIndex);
+
+    await runEngramAdd({ tag, category, desc, cwd: fakeCwd });
+
+    const indexWrite = fs.writeFileSync.mock.calls.find(([p]) => p === indexPath);
+    expect(indexWrite).toBeDefined();
+    const [, updatedIndex] = indexWrite;
+    expect(updatedIndex).toContain('[test-release]');
+    expect(updatedIndex).toContain('release/test-release.md');
+  });
+
+  it('lanza un error si la categoría enviada es inválida', async () => {
+    await expect(
+      runEngramAdd({ tag: '[test]', category: 'random', desc: 'test desc', cwd: fakeCwd })
+    ).rejects.toThrow('Categoría inválida: random');
+  });
 });
