@@ -1,4 +1,4 @@
-# 👻 Funky AI v3.0.0: Protocolo de Arquitectura de Agentes
+# 👻 Funky AI v3.1.0: Protocolo de Arquitectura de Agentes
 
 Bienvenido a **Funky AI**, el framework de Inteligencia Artificial diseñado para emular redes asíncronas de agentes (SDD - Spec Driven Development) integrándose de forma nativa con el IDE Antigravity.
 
