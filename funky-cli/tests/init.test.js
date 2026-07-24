@@ -15,23 +15,23 @@ describe('runInit()', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
-  it('crea el plan de intenciones base (9 archivos + 5 engram dirs)', () => {
+  it('crea el plan de intenciones base (9 archivos + 7 engram dirs + index)', () => {
     const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
 
     const mkdirIntentions = intentions.filter(i => i.action === 'mkdir');
     const copyIntentions = intentions.filter(i => i.action === 'copy');
     const createIntentions = intentions.filter(i => i.action === 'create');
 
-    expect(mkdirIntentions).toHaveLength(5);
+    expect(mkdirIntentions).toHaveLength(7);
     expect(copyIntentions).toHaveLength(9);
-    expect(createIntentions).toHaveLength(0);
+    expect(createIntentions).toHaveLength(1); // engram index.md
   });
 
   it('incluye intenciones create para PROJECT-CANVAS e INFRA-CANVAS si se provee canvasConfig', () => {
     const config = { projectData: { pattern: 'Test Pattern' }, infraData: { db: 'Test DB' } };
     const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir, canvasConfig: config });
 
-    const createIntentions = intentions.filter(i => i.action === 'create');
+    const createIntentions = intentions.filter(i => i.action === 'create' && i.dest.includes('CANVAS'));
     expect(createIntentions).toHaveLength(2);
 
     expect(createIntentions[0].dest).toContain('PROJECT-CANVAS.md');
@@ -44,7 +44,7 @@ describe('runInit()', () => {
     const config = { skipProjectCanvas: true, skipInfraCanvas: true };
     const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir, canvasConfig: config });
 
-    const createIntentions = intentions.filter(i => i.action === 'create');
+    const createIntentions = intentions.filter(i => i.action === 'create' && i.dest.includes('CANVAS'));
     expect(createIntentions).toHaveLength(0);
   });
 

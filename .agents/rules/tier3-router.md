@@ -39,6 +39,12 @@ En modo Interactivo, después del Return Envelope, leer `.agents/rules/tier3-int
 > ⚠️ **NUEVA REGLA: UN SUBAGENTE POR FASE.**
 > Jamás reutilices el subagente de una fase (ej. Explore) para ejecutar la siguiente (ej. Propose). Hacerlo mezcla contextos, arrastra ruido (anti-patrón) y rompe la separación de responsabilidades. Lanza un subagente NUEVO e independiente para cada workflow/fase.
 
+## 🔴 MANDATORY INTERACTIVE GATE 
+En modo **Interactivo**:
+1. Tras cada fase delegada, mostrar un resumen.
+2. Esperar confirmación del usuario antes de continuar.
+**Excepción:** Si la fase termina en `blocked` o `FAIL`, informar el resultado inmediatamente.
+
 > ⚠️ NO mates al subagente de la fase actual inmediatamente tras su primera respuesta.
 **Interactivo:** Running → **Idle** (espera) → Feedback sobre esa misma fase → Kill (al aprobar la fase y pasar a la siguiente)  
 **Auto:** Running → Kill inmediato al terminar su fase.

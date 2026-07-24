@@ -42,11 +42,16 @@ export function runInit({ templatesDir, targetBase, canvasConfig, selectedProtoc
   }
 
   // Create sharded engram directories
-  const engramDirs = ['architecture', 'pattern', 'discovery', 'decision', 'bugfix'];
+  const engramDirs = ['architecture', 'pattern', 'discovery', 'decision', 'bugfix', 'session', 'release'];
   for (const dir of engramDirs) {
     const dirPath = path.join(targetBase, 'docs', 'engram', dir);
     intentions.push({ action: 'mkdir', dest: dirPath });
   }
+
+  // Generar index base con todos los encabezados
+  const engramIndexDest = path.join(targetBase, 'docs', 'engram', 'index.md');
+  const engramIndexContent = '# Engram Index\n\nDirectorio unificado de conocimientos, decisiones y patrones.\n\n## Architecture\n\n## Pattern\n\n## Discovery\n\n## Decision\n\n## Bugfix\n\n## Session\n\n## Release\n';
+  intentions.push({ action: 'create', dest: engramIndexDest, content: engramIndexContent });
 
   if (canvasConfig) {
     if (!canvasConfig.skipProjectCanvas) {

@@ -33,4 +33,17 @@
 
 ---
 
+### Fase 1 — CLI y Documentación de Engram (add-engram-categories)
+- **Status:** success
+- **Summary:** Se agregaron exitosamente las categorías `session` y `release`. Modificamos las reglas del protocolo, actualizamos `engram.js` e `init.js` en el CLI para soportar los nuevos directorios/encabezados y actualizamos las pruebas para dejar todo en verde.
+- **Artifacts:**
+  - `.agents/rules/engram-protocol.md`: Registro de las nuevas categorías permitidas y ruteos.
+  - `docs/engram/index.md`: Headers base anexados.
+  - `funky-cli/src/commands/engram.js`: Opciones del CLI e Inquirer actualizadas.
+  - `funky-cli/src/commands/init.js`: Creación de index base y directorios extra de engram.
+  - `funky-cli/tests/engram.test.js` y `init.test.js`: Nuevas aserciones, corriendo limpio.
+- **Risks:** Ninguno.
+
+---
+
 > **[SISTEMA - PARA EL ORQUESTADOR]** Al finalizar, extrae el conocimiento ganado al engram usando `funky engram add --tag "[tag]" --category <categoría> --desc "..."` (categorías: `architecture`, `pattern`, `discovery`, `decision`, `bugfix`).
