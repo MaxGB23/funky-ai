@@ -44,7 +44,7 @@ funky init [--template?]
     │               ├─ Copia 12 archivos (las reglas se leen de bootstrap/ide/)
     │               └─ ⚡ Salteando: PROJECT-CANVAS.md, INFRA-CANVAS.md
     │
-    └─ NINGUNO → Modo Interactivo
+    └─ NINGUNO → Setup Inicial
                 └─ @clack/prompts: Selección de Entorno
                     ├─ select: "Seleccioná el entorno de ejecución para el Agente"
                     │   ├─ "IDE (ej. Cursor, VSCode, Cline - Retorno síncrono al disco)" → environment = 'ide'

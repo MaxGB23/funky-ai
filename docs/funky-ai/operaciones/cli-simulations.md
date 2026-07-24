@@ -9,7 +9,7 @@ A continuación se detallan los vectores de falla detectados durante la auditor�
 - **Fix aplicado:** Validación con `skipProjectCanvas` / `skipInfraCanvas` en `runInit()`. Resuelto en v1.7.0.
 
 ## Vector 2: Interrupción de UX (Ctrl+C en Prompts)
-- **Simulación:** El usuario inicia `funky init` en modo interactivo, pero se arrepiente en la mitad del prompt de framework y aprieta `Ctrl+C`.
+- **Simulación:** El usuario inicia `funky init` en setup inicial, pero se arrepiente en la mitad del prompt de framework y aprieta `Ctrl+C`.
 - **Acción:** `onCancel` dispara `process.exit(0)`.
 - **Resultado Actual:** El proceso termina de forma limpia antes de que se llame a `runInit`. No se escriben archivos a disco.
 - **Resultado Esperado (UX):** Es aceptable. Aunque podría usarse un código de salida `1` o distinto de `0` para que otros scripts sepan que la operación fue cancelada por el usuario.

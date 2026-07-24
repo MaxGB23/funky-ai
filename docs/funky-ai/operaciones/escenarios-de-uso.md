@@ -9,9 +9,9 @@
 | # | ¿En qué estado estás? | Primer comando |
 |---|----------------------|----------------|
 | [Escenario 1](#escenario-1) | No tenés claro qué construir ni con qué stack | Chat vacío → debate → `funky init --template` |
-| [Escenario 2](#escenario-2) | Sabés qué construir, empezás desde cero | `funky init` (modo interactivo) |
+| [Escenario 2](#escenario-2) | Sabés qué construir, empezás desde cero | `funky init` (setup inicial) |
 | [Escenario 3](#escenario-3) | Repo existente, querés incorporar Funky AI | `funky init --template` (modo migración) |
-| [Escenario 4](#escenario-4) | Querés registrar un hallazgo o decisión técnica | `funky engram add` (modo interactivo) |
+| [Escenario 4](#escenario-4) | Querés registrar un hallazgo o decisión técnica | `funky engram add` (setup inicial) |
 
 ---
 
@@ -107,7 +107,7 @@ funky init
 
 #### Flujo recomendado
 
-**Paso 2.1 — Creá el directorio e iniciá el modo interactivo**
+**Paso 2.1 — Creá el directorio e iniciá el setup inicial**
 
 ```bash
 mkdir mi-proyecto && cd mi-proyecto
@@ -199,7 +199,7 @@ El CLI detecta ambos Canvas y activa el modo Headless: copia toda la estructura 
 
 | Anti-patrón | Por qué es un problema |
 |-------------|------------------------|
-| Ejecutar `funky init` sin haber definido el stack | El modo interactivo obliga a decidir en tiempo real bajo presión — malas decisiones arquitectónicas |
+| Ejecutar `funky init` sin haber definido el stack | El setup inicial obliga a decidir en tiempo real bajo presión — malas decisiones arquitectónicas |
 | Saltear `funky init --template` y llenar los Canvas directamente en el editor | Sin la `canvas-planning-guide.md` como referencia, se omiten campos o se usan valores inválidos |
 | Ejecutar `funky init` dos veces sin leer el output | El modo Headless es idempotente, pero si los Canvas están vacíos, el segundo init no los completa |
 | Usar `funky assess` sin haber completado los Canvas | El motor de reglas no puede validar lo que no está definido |

@@ -22,14 +22,14 @@ pnpm link --global
 
 | Comando | Descripción | Ejemplo |
 |---------|-------------|---------|
-| `funky init` | Inicia el ecosistema Funky AI en el directorio actual. Incluye un selector interactivo de entorno (`IDE` vs `CLI`), genera el `PROJECT-CANVAS.md` interactivo, copia reglas de agente adaptadas al entorno seleccionado, `ORCHESTRATOR-STATE.md`, y una guía de planeación. | `funky init` -> "🚀 Funky Ecosystem inicializado!" |
+| `funky init` | Inicia el ecosistema Funky AI en el directorio actual. Si no existen Canvas, ejecuta un wizard de setup inicial con `@clack/prompts` para definir el stack. Si ya existen Canvas, activa modo Headless y copia la estructura completa. | `funky init` -> "🚀 Funky Ecosystem inicializado!" |
 | `funky estimate` | Calcula el costo estimado y riesgo cruzando el Canvas técnico con factores de negocio. Genera un análisis de Pricing. | `funky estimate` -> "💰 Piso Base Calculado..." |
 | `funky feature <nombre>` | Inicializa el scaffolding para una feature SDD en `openspec/changes/<nombre>`. Ejecuta 3 inquirers interactivos (Tier T1/T2/T3, docs core, tipo de release) para inyectar condicionalmente solo los templates necesarios según la matriz de inyección. `docs.md` y `release.md` se inyectan solo si corresponde. T1 nunca recibe `release.md`. | `funky feature auth` → prompts → "🚀 Scaffolding de feature creado... Archivos inyectados: 8 — tasks.md, ..." |
 | `funky gentle <nombre>` | Inicializa el scaffolding de **Tier 4 Deep SDD** en `openspec/gentle/<nombre>`. Genera los 7 templates de roles aislados (Explorer → Verifier) para tareas hipercríticas. | `funky gentle db-migration` -> "🚀 Scaffolding de Tier 4 Deep SDD creado..." |
 | `funky phase <nombre>` | Inyecta el template correspondiente a la fase SDD indicada en el directorio activo. | `funky phase explore` -> "📄 Template 'explore' inyectado!" |
 | `funky release <version>` | Genera las notas de release estandarizadas automáticamente basándose en templates. | `funky release v1.12.0` -> "🚀 Release Notes v1.12.0 creados" |
 | `funky assess` | Architecture Readiness Gate. Evalúa `docs/architecture-assessment.md` contra el motor de reglas y genera challenges para el LLM. | `funky assess` -> "✅ Arquitectura validada..." |
-| `funky engram add` | Inyecta un nuevo engrama al sistema de conocimiento persistente. Soporta modo interactivo (sin flags) y modo headless con flags para automatización de Agentes. | `funky engram add --tag "[mi-tag]" --category discovery --desc "..."` |
+| `funky engram add` | Inyecta un nuevo engrama al sistema de conocimiento persistente. Soporta setup inicial (sin flags) y modo headless con flags para automatización de Agentes. | `funky engram add --tag "[mi-tag]" --category discovery --desc "..."` |
 
 ## Fases SDD Disponibles
 
