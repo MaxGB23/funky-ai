@@ -46,5 +46,5 @@ Si resuelves un bug, tomas una decisión arquitectónica, o recibes hallazgos de
 ### 5.2. Session Close (Checklist OBLIGATORIO)
 Antes de cerrar sesión o dar una feature por "terminada", verifica:
 - [ ] ¿Quedaron hallazgos finales sin mandar al Engram? Regístralos, lee 5.1.
-- [ ] Actualiza `ORCHESTRATOR-STATE.md` detallando: estado actual, rama, versión y próximos pasos.
+- [ ] Se actualizó `ORCHESTRATOR-STATE.md` detallando: estado actual, rama, versión y próximos pasos?.
 > **REGLA DE ORO:** Orquestador que no actualiza el `ORCHESTRATOR-STATE.md` = dejar a la siguiente sesión ciega.

@@ -1,8 +1,9 @@
 # Orchestrator State
 
-**Current Status:** Feature `add-engram-categories` completed and verified.
-**Branch:** `feature/add-engram-categories`
-**Version:** N/A
-**Next Steps:** 
-- Merge PR for `feature/add-engram-categories`
-- Continue with new features using the newly implemented `session` and `release` engram categories.
+**Current Status:** ✅ RELEASED — v3.1.0 en `main`.
+**Branch:** `main`
+**Version:** 3.1.0
+**Last Feature:** `add-engram-categories` — Categorías `session` y `release` añadidas al CLI y al Engram.
+**Next Steps:**
+- Limpiar `openspec/archive/` (42 entradas, límite 40 — ⚠️ WARNING).
+- Iniciar próxima feature.

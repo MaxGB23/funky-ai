@@ -2,7 +2,7 @@
 
 Bienvenido a **Funky AI**, el framework de Inteligencia Artificial diseñado para emular redes asíncronas de agentes (SDD - Software Design Document) integrándose de forma nativa con el IDE Antigravity.
 
-> **🚀 Estado del Arte (v3.0.0): Subagentes Nativos y Carga JIT**
+> **🚀 Estado del Arte (v3.1.0): Subagentes Nativos y Carga JIT**
 > El framework utiliza carga JIT (Just-In-Time) para aislar reglas por Tier y minimizar el ruido de contexto. El Orquestador delega exploraciones pesadas a subagentes nativos (sabuesos), iterando sobre ellos sin destruirlos. ¡Ahorramos tokens y mantenemos la memoria inmaculada!
 >
 > **🛡️ CI Status:** ![CI](https://github.com/MaxGB23/funky-ai/actions/workflows/ci.yml/badge.svg)

@@ -15,7 +15,6 @@ La versión se determina DESPUÉS de funky-archive: leer `package.json` → incr
 
 **🚨 CHECKLIST:**
 - [ ] **Release Notes:** Generar `docs/funky-ai/releases/vX.Y.Z-release.md` Leer template .agents/templates/release-notes.md. 
-- [ ] **Sincronización:** Actualizar `ORCHESTRATOR-STATE.md`
 
 ---
 
@@ -43,6 +42,7 @@ La versión se determina DESPUÉS de funky-archive: leer `package.json` → incr
 - [ ] `git add -A && git commit -m "{mensaje}"`
 - [ ] `git checkout main && git merge --no-ff {branch}`
 - [ ] `git tag -a {version} -m "{mensaje}"`
+- [ ] **Sincronización:** Actualizar `ORCHESTRATOR-STATE.md`
 - [ ] `git push origin main --tags`
 - [ ] `git branch -d {branch}`
 
