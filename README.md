@@ -1,6 +1,6 @@
 # 👻 Funky AI v3.0.0: Protocolo de Arquitectura de Agentes
 
-Bienvenido a **Funky AI**, el framework de Inteligencia Artificial diseñado para emular redes asíncronas de agentes (SDD - Software Design Document) integrándose de forma nativa con el IDE Antigravity.
+Bienvenido a **Funky AI**, el framework de Inteligencia Artificial diseñado para emular redes asíncronas de agentes (SDD - Spec Driven Development) integrándose de forma nativa con el IDE Antigravity.
 
 > **🚀 Estado del Arte (v3.1.0): Subagentes Nativos y Carga JIT**
 > El framework utiliza carga JIT (Just-In-Time) para aislar reglas por Tier y minimizar el ruido de contexto. El Orquestador delega exploraciones pesadas a subagentes nativos (sabuesos), iterando sobre ellos sin destruirlos. ¡Ahorramos tokens y mantenemos la memoria inmaculada!
