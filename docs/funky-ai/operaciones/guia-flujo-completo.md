@@ -73,7 +73,7 @@ git init
 
 ### Paso 2.2 — Inicializar el ecosistema Funky AI
 
-> 💡 **¿No tenés claro el stack todavía?** Ejecutá `funky init --template` primero. Te genera los Canvas vacíos y la guía de llenado. Completá los Canvas, después continuá con el paso siguiente. Ver [Escenario 1 en escenarios-de-uso.md](./escenarios-de-uso.md).
+> 💡 **¿No tenes claro el stack todavia?** Ejecuta `funky init` primero para generar los canvases vacios. Te genera los Canvas vacíos y la guía de llenado. Completá los Canvas, después continuá con el paso siguiente. Ver [Escenario 1 en escenarios-de-uso.md](./escenarios-de-uso.md).
 
 ```bash
 funky init

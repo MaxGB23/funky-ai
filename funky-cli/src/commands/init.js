@@ -91,8 +91,8 @@ export function runInit({ templatesDir, targetBase, canvasConfig, selectedProtoc
 }
 
 export const initCommand = new Command('init')
-  .description('Inicializa el repositorio creando la estructura base del ecosistema Funky AI')
-  .option('-t, --template', 'Genera templates vacíos de PROJECT-CANVAS.md e INFRA-CANVAS.md para inicialización Headless')
+  .description('Genera PROJECT-CANVAS.md e INFRA-CANVAS.md para iniciar la planificacion del proyecto. Usa --bootstrap para copiar toda la estructura del ecosistema Funky AI.')
+  .option('-b, --bootstrap', 'Copia toda la estructura base del ecosistema Funky AI (reglas de agentes, ORCHESTRATOR-STATE, plantillas, directorios engram)')
   .action(async (options) => {
     const templatesDir = path.join(__dirname, '../templates/bootstrap');
     const targetBase = process.cwd();
@@ -103,7 +103,39 @@ export const initCommand = new Command('init')
     const hasProjectCanvas = fs.existsSync(projectCanvasPath);
     const hasInfraCanvas = fs.existsSync(infraCanvasPath);
 
-    if (options.template) {
+    if (options.bootstrap) {
+      let canvasConfig = null;
+      let selectedProtocols = [];
+      let environment = 'ide';
+
+      try {
+        if (hasProjectCanvas && hasInfraCanvas) {
+          console.log('📄 Inicializando estructura completa del ecosistema...');
+          canvasConfig = { skipProjectCanvas: true, skipInfraCanvas: true, projectData: {}, infraData: {} };
+        } else if (hasProjectCanvas && !hasInfraCanvas) {
+          console.log('📄 PROJECT-CANVAS.md detectado, pero falta INFRA-CANVAS.md.');
+          console.log('⚠️ MIGRACION PENDIENTE: Generando INFRA-CANVAS.md con warning para v1.7.0 Legacy.');
+          fs.writeFileSync(infraCanvasPath, `> ⚠️ **MIGRACION PENDIENTE**\n\n${generateInfraCanvasMarkdown({})}`);
+          canvasConfig = { skipProjectCanvas: true, skipInfraCanvas: true, projectData: {}, infraData: {}, migratingLegacy: true };
+        } else {
+          console.error('❌ No se encontraron PROJECT-CANVAS.md ni INFRA-CANVAS.md.');
+          console.error('Ejecuta `funky init` primero para generarlos.');
+          process.exit(1);
+        }
+
+        const intentions = runInit({ templatesDir, targetBase, canvasConfig, selectedProtocols });
+        
+        console.log('🚀 Inicializando Funky AI...');
+        const { created, skipped, logs } = executeIntentions(intentions);
+        for (const log of logs) {
+          console.log(log);
+        }
+        console.log(`\n✅ Funky AI inicializado. ${created} archivos creados, ${skipped} ya existian.`);
+      } catch (error) {
+        console.error('❌ Error al inicializar Funky AI:', error.message);
+        process.exit(1);
+      }
+    } else {
       try {
         if (hasProjectCanvas || hasInfraCanvas) {
           console.error('❌ Error: Ya existe PROJECT-CANVAS.md o INFRA-CANVAS.md en el directorio.');
@@ -115,45 +147,13 @@ export const initCommand = new Command('init')
         const guideDest = path.join(targetBase, 'canvas-planning-guide.md');
         if (!fs.existsSync(guideDest)) {
           fs.copyFileSync(guideSrc, guideDest);
-          console.log('✅ canvas-planning-guide.md copiado. Úsala como referencia para llenar los Canvas.');
+          console.log('✅ canvas-planning-guide.md copiado. Usala como referencia para llenar los Canvas.');
         }
-        console.log('✅ Templates generados. Llénalos y vuelve a ejecutar `funky init`.');
+        console.log('✅ PROJECT-CANVAS.md e INFRA-CANVAS.md generados. Llenalos con tu equipo y ejecuta `funky init --bootstrap` para inicializar el ecosistema.');
         process.exit(0);
       } catch (error) {
-        console.error('❌ Error al generar los templates:', error.message);
+        console.error('❌ Error al generar los canvases:', error.message);
         process.exit(1);
       }
-    }
-
-    let canvasConfig = null;
-    let selectedProtocols = [];
-    let environment = 'ide';
-
-    try {
-      if (hasProjectCanvas && hasInfraCanvas) {
-        console.log('📄 Ambos Canvas detectados, inicializando en modo Headless...');
-        canvasConfig = { skipProjectCanvas: true, skipInfraCanvas: true, projectData: {}, infraData: {} };
-      } else if (hasProjectCanvas && !hasInfraCanvas) {
-        console.log('📄 PROJECT-CANVAS.md detectado, pero falta INFRA-CANVAS.md.');
-        console.log('⚠️ MIGRACIÓN PENDIENTE: Generando INFRA-CANVAS.md con warning para v1.7.0 Legacy.');
-        fs.writeFileSync(infraCanvasPath, `> ⚠️ **MIGRACIÓN PENDIENTE**\n\n${generateInfraCanvasMarkdown({})}`);
-        canvasConfig = { skipProjectCanvas: true, skipInfraCanvas: true, projectData: {}, infraData: {}, migratingLegacy: true };
-      } else {
-        console.error('❌ No se encontraron PROJECT-CANVAS.md ni INFRA-CANVAS.md.');
-        console.error('Ejecuta `funky init --template` para generarlos.');
-        process.exit(1);
-      }
-
-      const intentions = runInit({ templatesDir, targetBase, canvasConfig, selectedProtocols });
-      
-      console.log('🚀 Inicializando Funky AI...');
-      const { created, skipped, logs } = executeIntentions(intentions);
-      for (const log of logs) {
-        console.log(log);
-      }
-      console.log(`\n✅ Funky AI inicializado. ${created} archivos creados, ${skipped} ya existían.`);
-    } catch (error) {
-      console.error('❌ Error al inicializar Funky AI:', error.message);
-      process.exit(1);
     }
   });
