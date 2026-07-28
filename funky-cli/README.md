@@ -22,7 +22,7 @@ pnpm link --global
 
 | Comando | Descripción | Ejemplo |
 |---------|-------------|---------|
-| `funky init` | Inicia el ecosistema Funky AI en el directorio actual. Si no existen Canvas, ejecuta un wizard de setup inicial con `@clack/prompts` para definir el stack. Si ya existen Canvas, activa modo Headless y copia la estructura completa. | `funky init` -> "🚀 Funky Ecosystem inicializado!" |
+| `funky init` | Inicializa el ecosistema Funky AI en el directorio actual. Si no existen Canvas, muestra un mensaje indicando usar `funky init --template`. Si ya existen Canvas, activa modo Headless y copia la estructura completa. | `funky init --template` -> genera canvases vacíos |
 | `funky estimate` | Calcula el costo estimado y riesgo cruzando el Canvas técnico con factores de negocio. Genera un análisis de Pricing. | `funky estimate` -> "💰 Piso Base Calculado..." |
 | `funky feature <nombre>` | Inicializa el scaffolding para una feature SDD en `openspec/changes/<nombre>`. Ejecuta 3 inquirers interactivos (Tier T1/T2/T3, docs core, tipo de release) para inyectar condicionalmente solo los templates necesarios según la matriz de inyección. `docs.md` y `release.md` se inyectan solo si corresponde. T1 nunca recibe `release.md`. | `funky feature auth` → prompts → "🚀 Scaffolding de feature creado... Archivos inyectados: 8 — tasks.md, ..." |
 | `funky gentle <nombre>` | Inicializa el scaffolding de **Tier 4 Deep SDD** en `openspec/gentle/<nombre>`. Genera los 7 templates de roles aislados (Explorer → Verifier) para tareas hipercríticas. | `funky gentle db-migration` -> "🚀 Scaffolding de Tier 4 Deep SDD creado..." |

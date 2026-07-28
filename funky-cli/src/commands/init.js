@@ -2,7 +2,6 @@ import { Command } from 'commander';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import * as p from '@clack/prompts';
 import { generateProjectCanvasMarkdown, generateInfraCanvasMarkdown } from '../utils/canvas.js';
 import { executeIntentions } from '../utils/fs-adapter.js';
 
@@ -32,7 +31,11 @@ export function runInit({ templatesDir, targetBase, canvasConfig, selectedProtoc
     { src: path.join('..', 'sdd', 'architecture-assessment.md'), dest: path.join('docs', 'architecture-assessment.md') },
     { src: path.join('..', 'sdd', 'rfc-template.md'), dest: path.join('openspec', 'rfcs', '000-TEMPLATE.md') },
     { src: 'TEMPLATE_GUIDE.md', dest: 'TEMPLATE_GUIDE.md' },
-    { src: path.join('..', 'README.md'), dest: 'README.md' }
+    { src: path.join('..', 'README.md'), dest: 'README.md' },
+    { src: 'engram-discoveries.md', dest: path.join('docs', 'engram', 'discoveries.md') },
+    { src: 'engram-bugfixes.md', dest: path.join('docs', 'engram', 'bugfix', 'bugfixes.md') },
+    { src: 'architecture-assessment-guide.md', dest: path.join('docs', 'architecture-assessment-guide.md') },
+    { src: 'agents-rules-secops-setup.md', dest: path.join('.agents', 'rules', 'secops-setup.md') },
   ];
 
   for (const file of filesToCopy) {
@@ -87,19 +90,6 @@ export function runInit({ templatesDir, targetBase, canvasConfig, selectedProtoc
   return intentions;
 }
 
-/**
- * Lee los templates de protocolos disponibles en el CLI y genera opciones para el prompt.
- * @returns {{ value: string, label: string }[]}
- */
-function getProtocolOptions() {
-  const protocolsDir = path.join(__dirname, '../templates/protocols');
-  if (!fs.existsSync(protocolsDir)) return [];
-  return fs
-    .readdirSync(protocolsDir)
-    .filter(f => f.endsWith('.md') && f !== 'index.md')
-    .map(f => ({ value: f, label: f.replace('.md', '') }));
-}
-
 export const initCommand = new Command('init')
   .description('Inicializa el repositorio creando la estructura base del ecosistema Funky AI')
   .option('-t, --template', 'Genera templates vacíos de PROJECT-CANVAS.md e INFRA-CANVAS.md para inicialización Headless')
@@ -149,151 +139,9 @@ export const initCommand = new Command('init')
         fs.writeFileSync(infraCanvasPath, `> ⚠️ **MIGRACIÓN PENDIENTE**\n\n${generateInfraCanvasMarkdown({})}`);
         canvasConfig = { skipProjectCanvas: true, skipInfraCanvas: true, projectData: {}, infraData: {}, migratingLegacy: true };
       } else {
-        console.clear();
-        p.intro('🚀 Bienvenido a Funky AI CLI');
-
-        const coreGroup = await p.group(
-          {
-            framework: () =>
-              p.select({
-                message: 'Framework Base:',
-                options: [
-                  { value: 'Next.js (App Router)', label: 'Next.js (App Router)' },
-                  { value: 'React + Vite', label: 'React + Vite' },
-                  { value: 'Astro', label: 'Astro' },
-                ],
-              }),
-            pattern: () =>
-              p.select({
-                message: 'Patrón Arquitectónico Base:',
-                options: [
-                  { value: 'Clean Architecture', label: 'Clean Architecture' },
-                  { value: 'Hexagonal', label: 'Hexagonal' },
-                  { value: 'Modular', label: 'Modular' },
-                ],
-              }),
-            styling: () =>
-              p.select({
-                message: 'Estrategia UI:',
-                options: [
-                  { value: 'Tailwind CSS', label: 'Tailwind CSS' },
-                  { value: 'CSS Modules', label: 'CSS Modules' },
-                  { value: 'Design System', label: 'Design System' },
-                ],
-              }),
-            state: () =>
-              p.select({
-                message: 'Gestión de Estado:',
-                options: [
-                  { value: 'Zustand', label: 'Zustand' },
-                  { value: 'Redux', label: 'Redux' },
-                  { value: 'React Query', label: 'React Query' },
-                  { value: 'Signals', label: 'Signals' },
-                ],
-              }),
-            testing: () =>
-              p.select({
-                message: 'Estrategia de Testing:',
-                options: [
-                  { value: 'Sí, TDD (Test-Driven Development)', label: 'Sí, TDD' },
-                  { value: 'Sí, BDD (Behavior-Driven Development)', label: 'Sí, BDD' },
-                  { value: 'No definido / Decidir luego', label: 'No definido / Decidir luego' },
-                ],
-              }),
-          },
-          {
-            onCancel: () => {
-              p.cancel('Operación cancelada.');
-              process.exit(1);
-            },
-          }
-        );
-
-        const infraGroup = await p.group(
-          {
-            database: () =>
-              p.select({
-                message: 'Base de Datos / ORM:',
-                options: [
-                  { value: 'Prisma', label: 'Prisma' },
-                  { value: 'Drizzle', label: 'Drizzle' },
-                  { value: 'Mongoose', label: 'Mongoose' },
-                  { value: 'Supabase', label: 'Supabase' },
-                  { value: 'No definido / Decidir luego', label: 'No definido / Decidir luego' },
-                ],
-              }),
-            auth: () =>
-              p.select({
-                message: 'Autenticación:',
-                options: [
-                  { value: 'NextAuth', label: 'NextAuth' },
-                  { value: 'Clerk', label: 'Clerk' },
-                  { value: 'Firebase', label: 'Firebase' },
-                  { value: 'Custom JWT', label: 'Custom JWT' },
-                  { value: 'No definido / Decidir luego', label: 'No definido / Decidir luego' },
-                ],
-              }),
-            linter: () =>
-              p.select({
-                message: 'Linter / Formatter:',
-                options: [
-                  { value: 'ESLint + Prettier Estricto', label: 'ESLint + Prettier Estricto' },
-                  { value: 'Biome', label: 'Biome' },
-                  { value: 'Standard', label: 'Standard' },
-                  { value: 'No definido / Decidir luego', label: 'No definido / Decidir luego' },
-                ],
-              }),
-            deployment: () =>
-              p.select({
-                message: 'Deployment & CI/CD:',
-                options: [
-                  { value: 'Vercel', label: 'Vercel' },
-                  { value: 'AWS / Docker', label: 'AWS / Docker' },
-                  { value: 'GitHub Actions', label: 'GitHub Actions' },
-                  { value: 'GitLab CI', label: 'GitLab CI' },
-                  { value: 'No definido / Decidir luego', label: 'No definido / Decidir luego' },
-                ],
-              }),
-          },
-          {
-            onCancel: () => {
-              p.cancel('Operación cancelada.');
-              process.exit(1);
-            },
-          }
-        );
-
-        const protocolOptions = getProtocolOptions();
-
-        if (protocolOptions.length > 0) {
-          const protocolsAnswer = await p.multiselect({
-            message: '¿Qué protocolos on-demand querés importar? (Opcional)',
-            options: protocolOptions,
-            required: false,
-          });
-          if (!p.isCancel(protocolsAnswer)) {
-            selectedProtocols = protocolsAnswer;
-          }
-        }
-
-        p.outro('📝 Generando Canvas...');
-        canvasConfig = {
-          skipProjectCanvas: false,
-          skipInfraCanvas: false,
-          projectData: {
-            framework: coreGroup.framework,
-            pattern: coreGroup.pattern,
-            styling: coreGroup.styling,
-            state: coreGroup.state,
-            testing: coreGroup.testing,
-          },
-          infraData: {
-            database: infraGroup.database,
-            auth: infraGroup.auth,
-            linter: infraGroup.linter,
-            deployment: infraGroup.deployment,
-          },
-        };
+        console.error('❌ No se encontraron PROJECT-CANVAS.md ni INFRA-CANVAS.md.');
+        console.error('Ejecuta `funky init --template` para generarlos.');
+        process.exit(1);
       }
 
       const intentions = runInit({ templatesDir, targetBase, canvasConfig, selectedProtocols });

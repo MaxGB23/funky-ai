@@ -4,6 +4,50 @@
 
 ---
 
+## Estrategia de branches por fase
+
+Cada fase se desarrolla en su **propia branch** a partir de la branch de la fase anterior. El merge se hace secuencial para que GitHub muestre solo el diff de cada fase.
+
+### Flujo
+
+```
+feat/fase-1-templates  ←── commit Phase 1
+         ↓
+feat/fase-2-assess     ←── creada desde feat/fase-1-templates (contiene cambios de F1)
+         ↓                          (se trabaja F2 sin esperar)
+feat/fase-3-estimate   ←── creada desde feat/fase-2-assess (contiene cambios de F1 + F2)
+         ↓
+feat/fase-4-integracion ←── creada desde feat/fase-3-estimate (contiene cambios de F1 + F2 + F3)
+```
+
+### Cómo crear la branch de la fase siguiente
+
+```bash
+# Asegurate de tener la branch anterior local
+git checkout feat/fase-N-anterior
+git pull origin feat/fase-N-anterior
+
+# Crear la nueva branch desde esa base
+git checkout -b feat/fase-N+1-nombre
+git push origin feat/fase-N+1-nombre
+```
+
+### Cómo hacer el PR final de cada fase
+
+1. Cada fase tiene **un solo PR** contra `main`.
+2. El PR se abre desde la branch de la fase (`feat/fase-N-nombre`) hacia `main`.
+3. **No importa si las fases anteriores no se mergearon aún.** GitHub compara contra `main` y muestra todo el diff acumulado. Cuando se mergea la fase anterior, el PR de la fase actual se actualiza solo y muestra **únicamente sus propios cambios**.
+4. No se necesita rebase, no se necesita force push, no se necesita nada raro.
+
+### Reglas
+
+- **Nunca** trabajar dos fases en la misma branch.
+- **Nunca** pushear directo a `main`.
+- **Siempre** crear la branch de la fase siguiente desde la branch de la fase anterior (no desde `main`).
+- El PR de cada fase se revisa y mergea de forma independiente.
+
+---
+
 ## Cadena de dependencias
 
 ```
@@ -76,6 +120,7 @@ funky estimate         →  inyecta guía de pricing
 4. **Pull not push** — marcar secciones avanzadas como "si aplica" en vez de obligar
 5. **Fix orphaned files** — los 4 archivos en `bootstrap/` que se empaquetan pero nunca se copian
 6. **Fix sync-templates.js** — referencia `worker-handoff.md` que no existe
+7. **Deprecar el modo setup inicial** — eliminar los prompts interactivos, la lógica asociada y la documentación del modo «setup inicial» (antes llamado «interactivo»). El CLI solo ofrecerá `--template` (headless) .
 
 **Dependencias:** Ninguna — es la fase inicial.
 
@@ -86,13 +131,14 @@ funky estimate         →  inyecta guía de pricing
 - [ ] Secciones avanzadas marcadas como condicionales
 - [ ] Archivos orphaned resueltos
 - [ ] `sync-templates.js` no referencia archivos inexistentes
+- [ ] Modo setup inicial eliminado del CLI y la documentación
 
 **Doc de resumen:** [fase-1-resumen.md](./fase-1-resumen.md)
 
 ---
 
 ## Fase 2 — Assess (discusión arquitectónica humano + IA)
-
+CREAR BRANCH
 **Objetivo:** Assess como facilitador de discusión, no como calculadora de reglas estáticas.
 
 **Filosofía:** El humano o team discuten sus decisiones arquitectónicas y la IA participa como un peer informado — Devil's Advocate que detecta riesgos, propone alternativas y ayuda a llegar a mejores decisiones juntos. Las mejores soluciones salen de discutir entre varias cabezas.
@@ -135,7 +181,7 @@ funky estimate         →  inyecta guía de pricing
 ---
 
 ## Fase 3 — Estimate (pricea las decisiones del assess)
-
+CREAR BRANCH
 **Objetivo:** Que estimate produzca pricing con contexto real, basado en las decisiones documentadas de la sesión de assess.
 
 **Problemas que resuelve:**
@@ -176,7 +222,7 @@ funky estimate         →  inyecta guía de pricing
 ---
 
 ## Fase 4 — Integración (une todo en pipeline)
-
+CREAR BRANCH
 **Objetivo:** `init → assess (sesión) → estimate` como flujo continuo y coherente.
 
 **Problemas que resuelve:**
