@@ -1,22 +1,35 @@
-# Challenge Pack de Arquitectura
+# 🗣️ Guía de Discusión Arquitectónica
 
-El comando `funky assess` ha ejecutado la evaluación de la arquitectura propuesta. Como Agente Orquestador, tu objetivo es actuar como un Arquitecto de Software Senior y "Devil's Advocate" para desafiar rigurosamente las decisiones y los requerimientos no funcionales (NFRs).
+> Generado por `funky assess`. Usá este documento como estructura para tu sesión de discusión.
 
-## Contexto del Proyecto (NFRs Extraídos)
-- **Compliance & Data Residency:** {{NFR_COMPLIANCE}}
-- **Expected Peak Concurrency:** {{NFR_CONCURRENCY}}
-- **Team Seniority / Capabilities:** {{NFR_SENIORITY}}
-- **Hosting Budget:** {{NFR_BUDGET}}
-- **SLA & Redundancy:** {{NFR_SLA}}
+## Contexto del Proyecto
 
-## Challenges Detectados por el CLI
-{{CHALLENGES}}
+### PROJECT-CANVAS
+{{PROJECT_CANVAS_CONTENT}}
 
-## Tono y Comportamiento Esperado
-1. **Devil's Advocate:** Cruzá los NFRs en busca de inconsistencias invisibles. Por ejemplo, si el SLA es 99.99% pero el budget es $5 o el equipo es junior, ESTO ES IRREALIZABLE. Destrozá la propuesta con argumentos técnicos si es necesario, pero desde un lugar de mentoría severa.
-2. **Curiosidad sobre Juicio:** Preguntá *por qué* tomaron esa decisión. A veces hay un contexto oculto.
-3. **Enfoque en Trade-offs:** Explicá las consecuencias de la decisión actual y proponé alternativas con sus respectivos pros y contras.
-4. **Pragmatismo sobre Purismo:** Entendé el contexto del proyecto (ej. si el budget es muy bajo, quizás una arquitectura subóptima es la única opción, pero hay que mitigar los riesgos).
+### INFRA-CANVAS
+{{INFRA_CANVAS_CONTENT}}
 
-## Instrucciones para el Agente
-Por favor, iniciá la conversación presentando tu análisis holístico. Si el CLI detectó challenges, explicalos. Si no detectó ninguno, evaluá críticamente la combinación de NFRs. Pedile al desarrollador que justifique las decisiones y ofreceles alternativas que mitiguen los riesgos manteniendo los objetivos del proyecto. No des el tema por cerrado hasta llegar a un acuerdo o documentar el riesgo aceptado en el `ORCHESTRATOR-STATE.md`.
+## Fases de la Discusión
+
+### Fase 1: Contexto (5 min)
+Confirmar stack elegido y NFRs. Leer los canvases embebidos arriba. La IA descubre los NFRs preguntando al equipo.
+
+### Fase 2: Preocupaciones del Equipo (10 min)
+¿Qué les preocupa de la arquitectura actual? ¿Dónde ven riesgos? ¿Hay algo que no esté claro?
+
+### Fase 3: Preguntas Guía (15 min)
+- **Budget e Infraestructura**: ¿El presupuesto mensual alcanza para la infraestructura elegida? Considerá costos de hosting, servicios y herramientas.
+- **Concurrencia y Base de Datos**: ¿La base de datos soporta la concurrencia esperada? Revisá límites de conexiones y estrategias de escalado.
+- **SLA y Redundancia**: ¿La arquitectura elegida puede cumplir el SLA requerido? Un solo nodo implica downtime en deploys y fallos de hardware.
+
+{{DYNAMIC_QUESTIONS}}
+
+### Fase 4: Riesgos Detectados (15 min)
+La IA analiza el stack completo buscando incompatibilidades conocidas, trade-offs no documentados y riesgos operacionales.
+
+### Fase 5: Alternativas (10 min)
+Para cada riesgo identificado, proponé al menos una alternativa con pros/cons concretos.
+
+### Fase 6: Acuerdos (5 min)
+Documentar las decisiones finales en docs/architecture-decisions.md. Incluir rationale, alternativas descartadas y riesgos aceptados.
