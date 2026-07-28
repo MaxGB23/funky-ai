@@ -113,8 +113,8 @@ Genera `docs/pricing-analysis.md` con esta estructura:
 ## 3. Prompt de Mentoría (Value-Based Pricing)
 
 > [SISTEMA - INSTRUCCIÓN PARA LA IA]
-> Sos un Mentor Experto en Ventas B2B y Value-Based Pricing...
-> Preguntá:
+> Eres un Mentor Experto en Ventas B2B y Value-Based Pricing...
+> Pregunta:
 > 1. ¿Cuál es el impacto de negocio que esta herramienta le va a generar al cliente?
 > 2. Basado en ese impacto, ¿cómo podemos ajustar este "Piso Base" para cobrar por el VALOR?
 ```

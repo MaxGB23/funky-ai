@@ -22,9 +22,9 @@ USUARIO
    ├─ FASE 0: SETUP (si no existe el assessment)
    │   ├─ ¿Existe docs/architecture-assessment.md?
    │   │   ├─ NO → Copia el template desde src/templates/sdd/
-   │   │   │       Mensaje: "Completalo y volvé a ejecutar funky assess"
-   │   │   │       process.exit(0)
-   │   │   │
+   │   │       Mensaje: "Completa el archivo y vuelve a ejecutar funky assess"
+   │   │       process.exit(0)
+   │   │
    │   │   └─ SÍ ↓
    │
    ├─ FASE 1: PARSING
@@ -43,7 +43,7 @@ USUARIO
    │   ├─ Interpola: {{CHALLENGES}}, {{NFR_COMPLIANCE}}, {{NFR_CONCURRENCY}},
    │   │            {{NFR_SENIORITY}}, {{NFR_BUDGET}}, {{NFR_SLA}}
    │   ├─ Crea .agents/prompts/architecture-review.md
-   │   └─ Output: "Levantá un agente y apuntalo a .agents/prompts/architecture-review.md"
+   │   └─ Output: "Levanta un agente y apúntalo a .agents/prompts/architecture-review.md"
    │
    └─ EXIT CODE
        ├─ challenges > 0 → exit(1)
@@ -95,7 +95,7 @@ team_seniority: "Junior"  # Junior / Semi-Senior / Senior / DevOps Dedicado
 
 | # | Regla | Condición | Challenge generado |
 |---|---|---|---|
-| 1 | **Budget vs Infra (Overengineering)** | `budget < 50` AND (`infra_tech` incluye "k8s" o "kubernetes") | "Justificá cómo planean costear y mantener un clúster con ese presupuesto" |
+| 1 | **Budget vs Infra (Overengineering)** | `budget < 50` AND (`infra_tech` incluye "k8s" o "kubernetes") | "Justifica cómo planean costear y mantener un clúster con ese presupuesto" |
 | 2 | **RPS vs DB (Cuello de Botella)** | `rps > 1000` AND `db_tech` incluye "sqlite" AND NO menciona sharding/réplica | "Los RPS esperados son muy altos para SQLite sin estrategia de sharding" |
 | 3 | **SLA vs Redundancia (Underengineering)** | `sla >= 99.9` AND `redundancy` es "single node" | "Cualquier downtime o deploy invalida este SLA" |
 
@@ -120,10 +120,10 @@ Genera `.agents/prompts/architecture-review.md` — un prompt para agente de IA 
   la redundancia es 'Single Node'. Cualquier downtime o deploy invalida este SLA.
 
 ## Tono y Comportamiento Esperado
-1. Devil's Advocate: Cruzá los NFRs en busca de inconsistencias invisibles
-2. Curiosidad sobre Juicio: Preguntá POR QUÉ tomaron esa decisión
-3. Enfoque en Trade-offs: Proponé alternativas con pros/contras
-4. Pragmatismo sobre Purismo: Entendé el contexto del proyecto
+1. Devil's Advocate: Cruza los NFRs en busca de inconsistencias invisibles
+2. Curiosidad sobre Juicio: Pregunta POR QUÉ tomaron esa decisión
+3. Enfoque en Trade-offs: Propón alternativas con pros/contras
+4. Pragmatismo sobre Purismo: Entiende el contexto del proyecto
 ```
 
 El agente debe llegar a un acuerdo o documentar el riesgo aceptado en `ORCHESTRATOR-STATE.md`.

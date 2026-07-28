@@ -19,7 +19,7 @@ El estimate **no sabe** qué encontró el assess. El assess **no sabe** cuánto 
 
 ## La relación real
 
-**Para cobrar un proyecto, necesitás entender:**
+**Para cobrar un proyecto, necesitas entender:**
 
 1. **Qué se está construyendo** → canvases (PROJECT-CANVAS + INFRA-CANVAS)
 2. **Qué tan complejo es realmente** → assess (challenges, incompatibilidades, NFRs)
@@ -140,7 +140,7 @@ Estos son los que conocemos hoy. Iremos descubriendo más con el uso:
 
 - El estimate lee el assessment y factoriza los challenges en el cálculo
 - Sin implementar reglas complejas — el prompt de mentoría ya puede preguntar sobre los challenges
-
+            
 ### Fase 2 (futuro): estimate consume challenges automáticamente
 
 - Cada challenge del assess tiene un "costo estimado" asociado

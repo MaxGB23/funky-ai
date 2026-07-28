@@ -13,7 +13,7 @@
 
 Los canvases deben permanecer ligeros (MVPs, juniors, freelancers). Los constraints operacionales van en una **capa separada** que se activa cuando el proyecto lo requiere. No convertir la inicialización en burocracia enterprise.
 
-> **"Diseñá para tu realidad operacional actual + 30%, no para Google-scale todavía."**
+> **"Diseña para tu realidad operacional actual + 30%, no para Google-scale todavía."**
 > — `recomendaciones.md`
 
 ---
@@ -35,7 +35,7 @@ Esto no es un canvas de arquitectura. Es un **checklist de una columna**. Un sen
 |---|---|---|---|
 | 1 | **No hay campo de "por qué"** | Elegí Next.js porque necesito SSR + SEO, o porque me obliga el team? Son decisiones completamente distintas. Sin el "por qué", el canvas es inútil para un agente de IA que necesita contexto | Parcialmente — `1.13.1` separa "¿qué construimos?" de "¿qué riesgos hay?" pero no resuelve el "por qué" dentro del canvas |
 | 2 | **No hay campo de "alternativas descartadas"** | Si descarté Astro por X razón, el agente necesita saberlo para no proponerlo de vuelta | No |
-| 3 | **No hay restricciones** | Presupuesto, timeline, tamaño del team, seniority. Un proyecto de 1 persona con 2 semanas no es lo mismo que un equipo de 8 con 6 meses | **Sí** — `1.13.1` propone ARCHITECTURE-CONSTRAINTS.md como capa separada |
+| 3 | **No hay restricciones** | Presupuesto(del cliente tanto para pago del proyecto como pago de hosting, etc), timeline, tamaño del team, ciudad del cliente y seniority. Un proyecto de 1 persona con 2 semanas no es lo mismo que un equipo de 8 con 6 meses | **Sí** — `1.13.1` propone ARCHITECTURE-CONSTRAINTS.md como capa separada |
 | 4 | **No hay NFRs** | Performance targets, accessibility (WCAG level), i18n, offline support. Estas son decisiones que condicionan TODO lo demás | Parcialmente — `001` explica NFRs en la guía de assess, pero no en los canvases |
 | 5 | **El placeholder "No definido / Pendiente" no guía** | No dice qué debería ir ahí. Un junior pone "React" y se siente bien, sin haber considerado si Astro sería mejor | **Sí** — `recomendaciones.md` propone "mejores preguntas, no más campos" y "Architect Notes" |
 | 6 | **Falta sección de "contexto del proyecto"** | ¿Es un side project? ¿Un MVP? ¿Producción desde día 1? ¿Legacy que hay que migrar? El contexto cambia todas las decisiones | No directamente, pero `001` habla de `team_seniority` como proxy |
