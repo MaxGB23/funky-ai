@@ -1,35 +1,39 @@
-export function evaluateAssessment(metadata) {
-  const challenges = [];
+export function generateGuideQuestions(canvasData) {
+  const { projectCanvas = '', infraCanvas = '' } = canvasData || {};
+  const combined = (projectCanvas + ' ' + infraCanvas).toLowerCase();
+  const dynamic = [];
 
-  const budget = parseFloat(metadata.budget);
-  const rps = parseInt(metadata.rps, 10);
-  const sla = parseFloat(metadata.sla);
-  const redundancy = (metadata.redundancy || '').toLowerCase();
-  const dbTech = (metadata.db_tech || '').toLowerCase();
-  const infraTech = (metadata.infra_tech || '').toLowerCase();
-
-  // 1. Budget vs Infra (Overengineering)
-  if (budget < 50 && (infraTech.includes('k8s') || infraTech.includes('kubernetes'))) {
-    challenges.push(
-      "**Budget vs Infra (Overengineering)**: El presupuesto mensual es menor a $50 USD pero se eligió K8s/Kubernetes. Justificá cómo planean costear y mantener un clúster con ese presupuesto."
-    );
+  // Pattern: K8s/Kubernetes
+  if (/k8s|kubernetes/i.test(infraCanvas)) {
+    dynamic.push({
+      category: 'K8s',
+      question: 'Elegiste Kubernetes. ¿Ya evaluaron los costos operativos de un clúster? En proyectos pequeños puede ser más caro que usar un PaaS.'
+    });
   }
 
-  // 2. RPS vs DB (Cuello de Botella)
-  const isSQLite = dbTech.includes('sqlite');
-  const mentionsSharding = dbTech.includes('sharding') || dbTech.includes('replica') || dbTech.includes('réplica');
-  if (rps > 1000 && isSQLite && !mentionsSharding) {
-    challenges.push(
-      "**RPS vs DB (Cuello de Botella)**: Los RPS esperados (>1000) son muy altos para SQLite sin una estrategia explícita de sharding o réplicas de lectura. Posibles lockeos en la base de datos."
-    );
+  // Pattern: SQLite
+  if (/sqlite/i.test(infraCanvas)) {
+    dynamic.push({
+      category: 'SQLite',
+      question: 'SQLite es liviano pero tiene límites de concurrencia. Si el proyecto escala, ¿tienen pensado migrar a PostgreSQL u otro motor?'
+    });
   }
 
-  // 3. SLA vs Redundancia (Underengineering)
-  if (sla >= 99.9 && redundancy === 'single node') {
-    challenges.push(
-      "**SLA vs Redundancia (Underengineering)**: El SLA esperado es >= 99.9% pero la redundancia es 'Single Node'. Cualquier downtime o deploy invalida este SLA."
-    );
+  // Pattern: Single Node
+  if (/single\s*nodo?|single\s*node/i.test(infraCanvas)) {
+    dynamic.push({
+      category: 'SingleNode',
+      question: 'Con un solo nodo, cualquier deploy o fallo de hardware causa downtime. ¿Tienen ventanas de mantenimiento o toleran cierto downtime?'
+    });
   }
 
-  return challenges;
+  // Pattern: Junior + Complex Infra
+  if (/junior/i.test(combined) && /k8s|kubernetes/i.test(infraCanvas)) {
+    dynamic.push({
+      category: 'Junior',
+      question: 'El equipo es principalmente Junior y eligieron una infraestructura compleja. ¿Tienen DevOps dedicado o planean usar un PaaS que abstraiga la complejidad?'
+    });
+  }
+
+  return { dynamic };
 }

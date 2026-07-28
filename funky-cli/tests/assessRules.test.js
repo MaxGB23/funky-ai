@@ -1,85 +1,120 @@
 import { describe, it, expect } from 'vitest';
-import { evaluateAssessment } from '../src/utils/assessRules.js';
+import { generateGuideQuestions } from '../src/utils/assessRules.js';
 
-describe('evaluateAssessment', () => {
-  it('should return empty array when no rules are violated', () => {
-    const metadata = {
-      budget: '100',
-      rps: '500',
-      sla: '99.9',
-      redundancy: 'Multi-AZ',
-      db_tech: 'PostgreSQL',
-      infra_tech: 'VPS'
-    };
-    const result = evaluateAssessment(metadata);
-    expect(result).toHaveLength(0);
+describe('generateGuideQuestions', () => {
+  it('is a function', () => {
+    expect(typeof generateGuideQuestions).toBe('function');
   });
 
-  it('should trigger rule 1 (Overengineering) when budget < 50 and infra is K8s', () => {
-    const metadata = {
-      budget: '40',
-      rps: '50',
-      sla: '99.0',
-      redundancy: 'Single Node',
-      db_tech: 'SQLite',
-      infra_tech: 'K8s cluster'
-    };
-    const result = evaluateAssessment(metadata);
-    expect(result).toHaveLength(1);
-    expect(result[0]).toContain('Budget vs Infra (Overengineering)');
+  it('returns { dynamic: [] } for empty canvas strings', () => {
+    const result = generateGuideQuestions({ projectCanvas: '', infraCanvas: '' });
+    expect(result).toEqual({ dynamic: [] });
   });
 
-  it('should trigger rule 2 (Cuello de Botella) when rps > 1000 and db is SQLite without sharding', () => {
-    const metadata = {
-      budget: '100',
-      rps: '2000',
-      sla: '99.0',
-      redundancy: 'Single Node',
-      db_tech: 'SQLite',
-      infra_tech: 'VPS'
-    };
-    const result = evaluateAssessment(metadata);
-    expect(result).toHaveLength(1);
-    expect(result[0]).toContain('RPS vs DB (Cuello de Botella)');
+  it('returns { dynamic: [] } when no canvasData is provided', () => {
+    const result = generateGuideQuestions();
+    expect(result).toEqual({ dynamic: [] });
   });
 
-  it('should NOT trigger rule 2 if SQLite uses sharding/replicas', () => {
-    const metadata = {
-      budget: '100',
-      rps: '2000',
-      sla: '99.0',
-      redundancy: 'Single Node',
-      db_tech: 'SQLite with sharding',
-      infra_tech: 'VPS'
-    };
-    const result = evaluateAssessment(metadata);
-    expect(result).toHaveLength(0);
+  it('returns { dynamic: [] } for clean content with no patterns', () => {
+    const result = generateGuideQuestions({
+      projectCanvas: 'Equipo Senior usando React y Node.js',
+      infraCanvas: 'AWS EC2 con PostgreSQL y Redis'
+    });
+    expect(result).toEqual({ dynamic: [] });
   });
 
-  it('should trigger rule 3 (Underengineering) when sla >= 99.9 and redundancy is Single Node', () => {
-    const metadata = {
-      budget: '100',
-      rps: '500',
-      sla: '99.9',
-      redundancy: 'Single Node',
-      db_tech: 'PostgreSQL',
-      infra_tech: 'VPS'
-    };
-    const result = evaluateAssessment(metadata);
-    expect(result).toHaveLength(1);
-    expect(result[0]).toContain('SLA vs Redundancia (Underengineering)');
+  it('triggers K8s question when infra mentions "K8s"', () => {
+    const result = generateGuideQuestions({
+      projectCanvas: 'React frontend',
+      infraCanvas: 'Deploy en K8s cluster'
+    });
+    expect(result.dynamic).toHaveLength(1);
+    expect(result.dynamic[0].category).toBe('K8s');
+    expect(result.dynamic[0].question).toContain('Kubernetes');
   });
 
-  it('should trigger multiple rules if multiple violations exist', () => {
-    const metadata = {
-      budget: '30',
-      rps: '1500',
-      sla: '99.99',
-      redundancy: 'Single Node',
-      db_tech: 'SQLite',
-      infra_tech: 'kubernetes'
-    };
-    const result = evaluateAssessment(metadata);
-    expect(result).toHaveLength(3);
+  it('triggers K8s question when infra mentions "kubernetes" (lowercase)', () => {
+    const result = generateGuideQuestions({
+      projectCanvas: 'React frontend',
+      infraCanvas: 'Deploy en kubernetes cluster'
+    });
+    expect(result.dynamic).toHaveLength(1);
+    expect(result.dynamic[0].category).toBe('K8s');
+  });
+
+  it('triggers SQLite question when infra mentions "SQLite"', () => {
+    const result = generateGuideQuestions({
+      projectCanvas: 'React frontend',
+      infraCanvas: 'SQLite como base de datos'
+    });
+    expect(result.dynamic).toHaveLength(1);
+    expect(result.dynamic[0].category).toBe('SQLite');
+    expect(result.dynamic[0].question).toContain('PostgreSQL');
+  });
+
+  it('triggers SingleNode question when infra mentions "single node"', () => {
+    const result = generateGuideQuestions({
+      projectCanvas: 'React frontend',
+      infraCanvas: 'single node deployment'
+    });
+    expect(result.dynamic).toHaveLength(1);
+    expect(result.dynamic[0].category).toBe('SingleNode');
+    expect(result.dynamic[0].question).toContain('downtime');
+  });
+
+  it('triggers SingleNode question when infra mentions "single nodo" (Spanish)', () => {
+    const result = generateGuideQuestions({
+      projectCanvas: 'React frontend',
+      infraCanvas: 'single nodo en VPS'
+    });
+    expect(result.dynamic).toHaveLength(1);
+    expect(result.dynamic[0].category).toBe('SingleNode');
+  });
+
+  it('triggers Junior question when project mentions "junior" AND infra has K8s', () => {
+    const result = generateGuideQuestions({
+      projectCanvas: 'Equipo junior con React',
+      infraCanvas: 'K8s en producción'
+    });
+    expect(result.dynamic.map(q => q.category)).toContain('Junior');
+  });
+
+  it('does NOT trigger Junior when junior mentioned without K8s', () => {
+    const result = generateGuideQuestions({
+      projectCanvas: 'Equipo junior con React',
+      infraCanvas: 'VPS con MongoDB y Docker'
+    });
+    const categories = result.dynamic.map(q => q.category);
+    expect(categories).not.toContain('Junior');
+  });
+
+  it('triggers multiple patterns when infra matches several conditions', () => {
+    const result = generateGuideQuestions({
+      projectCanvas: 'React frontend',
+      infraCanvas: 'K8s cluster con SQLite en single node'
+    });
+    const categories = result.dynamic.map(q => q.category);
+    expect(categories).toContain('K8s');
+    expect(categories).toContain('SQLite');
+    expect(categories).toContain('SingleNode');
+  });
+
+  it('matches case-insensitively: "K8S" and "Sqlite"', () => {
+    const result = generateGuideQuestions({
+      projectCanvas: 'React frontend',
+      infraCanvas: 'K8S cluster con Sqlite'
+    });
+    const categories = result.dynamic.map(q => q.category);
+    expect(categories).toContain('K8s');
+    expect(categories).toContain('SQLite');
+  });
+
+  it('matches partial words: "sqlite" in "sqlite3"', () => {
+    const result = generateGuideQuestions({
+      projectCanvas: 'React frontend',
+      infraCanvas: 'sqlite3 como motor local'
+    });
+    expect(result.dynamic[0].category).toBe('SQLite');
   });
 });
