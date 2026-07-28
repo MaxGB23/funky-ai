@@ -21,7 +21,7 @@ vi.mock('fs', () => {
   };
 });
 
-import { loadDecisions, findCanvases, generatePricingGuide, generateDecisionsTemplate, generateIAPrompt } from '../src/utils/estimateDomain.js';
+import { loadDecisions, findCanvases, generatePricingGuide, generateDecisionsTemplate, generateIAPrompt, generateIAPromptBanner, generateIAPromptFooter } from '../src/utils/estimateDomain.js';
 import { estimateCommand } from '../src/commands/estimate.js';
 
 const __testDir = path.dirname(fileURLToPath(import.meta.url));
@@ -312,21 +312,40 @@ describe('generateIAPrompt', () => {
   });
 });
 
+describe('generateIAPromptBanner', () => {
+  it('returns the banner text', () => {
+    const result = generateIAPromptBanner();
+    expect(result).toContain('PROMPT');
+    expect(result).toContain('SESIÓN DE PRICING');
+  });
+});
+
+describe('generateIAPromptFooter', () => {
+  it('returns the footer text', () => {
+    const result = generateIAPromptFooter();
+    expect(result).toContain('====');
+  });
+});
+
 // ═══════════════════════════════════════════════════
 // Fase 3.6: Integration — full command flow
 // ═══════════════════════════════════════════════════
 
 describe('estimateCommand — integration', () => {
   let exitSpy;
+  let stderrSpy;
 
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(fs.writeFileSync).mockReset();
     exitSpy = vi.spyOn(process, 'exit').mockImplementation((c) => c);
+    // Silence Commander.js stderr noise ("too many arguments")
+    stderrSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
   });
 
   afterEach(() => {
     exitSpy.mockRestore();
+    stderrSpy.mockRestore();
   });
 
   it('exits 0 with full flow (decisions + canvases in root)', () => {

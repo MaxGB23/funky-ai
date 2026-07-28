@@ -2,7 +2,7 @@ import { Command } from 'commander';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { loadDecisions, findCanvases, generatePricingGuide, generateDecisionsTemplate, generateIAPrompt } from '../utils/estimateDomain.js';
+import { loadDecisions, findCanvases, generatePricingGuide, generateDecisionsTemplate, generateIAPrompt, generateIAPromptBanner, generateIAPromptFooter } from '../utils/estimateDomain.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -72,6 +72,8 @@ export const estimateCommand = new Command('estimate')
 
       // ── 5. Generate IA Prompt ──
       const iaPrompt = generateIAPrompt(decisions, canvases.projectCanvas, canvases.infraCanvas);
+      const iaBanner = generateIAPromptBanner();
+      const iaFooter = generateIAPromptFooter();
 
       // ── 6. Summary ──
       console.log('\n✅ Material de pricing generado exitosamente.');
@@ -82,7 +84,11 @@ export const estimateCommand = new Command('estimate')
       console.log('   2. La IA guiará la discusión de pricing basada en los materiales generados.');
       console.log('   3. Documente los acuerdos en el template de decisiones durante la discusión.\n');
 
+      console.log(iaBanner);
+      console.log('');
       console.log(iaPrompt);
+      console.log('');
+      console.log(iaFooter);
 
       process.exit(0);
     } catch (err) {

@@ -111,7 +111,16 @@ export function generateDecisionsTemplate() {
 }
 
 /**
+ * Genera el banner decorativo para el prompt de IA.
+ * Separa la presentación del contenido del prompt para permitir reutilización.
+ */
+export function generateIAPromptBanner() {
+  return '===== PROMPT PARA INICIAR SESIÓN DE PRICING =====';
+}
+
+/**
  * Genera prompt en español neutro para iniciar sesión de pricing colaborativa.
+ * Retorna solo el cuerpo del prompt (sin banner decorativo).
  */
 export function generateIAPrompt(decisions, projectCanvas, infraCanvas) {
   const decisionsSection = decisions
@@ -121,9 +130,7 @@ export function generateIAPrompt(decisions, projectCanvas, infraCanvas) {
   const projectSection = projectCanvas || 'No disponible.';
   const infraSection = infraCanvas || 'No disponible.';
 
-  return `===== PROMPT PARA INICIAR SESIÓN DE PRICING =====
-
-Eres un asistente experto en pricing de proyectos de software. Vamos a realizar una sesión de pricing colaborativa para definir el presupuesto de un proyecto.
+  return `Eres un asistente experto en pricing de proyectos de software. Vamos a realizar una sesión de pricing colaborativa para definir el presupuesto de un proyecto.
 
 Contexto del proyecto basado en los canvases:
 
@@ -142,7 +149,12 @@ Por favor, guía la sesión de pricing con esta estructura:
 2. Discutir factores de costo (infraestructura, complejidad técnica, equipo, timeline)
 3. Definir acuerdos de pricing
 
-Comienza preguntando al equipo si tienen algún presupuesto o rango de precio en mente.
+Comienza preguntando al equipo si tienen algún presupuesto o rango de precio en mente.`;
+}
 
-============================================`;
+/**
+ * Genera el footer decorativo para el prompt de IA.
+ */
+export function generateIAPromptFooter() {
+  return '============================================';
 }
