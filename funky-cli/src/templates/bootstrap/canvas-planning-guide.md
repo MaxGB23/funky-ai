@@ -1,6 +1,6 @@
 # 🗺️ Guía de Planeación y Llenado de Canvas
 
-> **Propósito:** Usá este documento como un "menú a la carta" cuando inicialices un proyecto en modo headless (`funky init --template`) o cuando debatas la arquitectura con el Orquestador. Te asegura no dejar ningún punto ciego.
+> **Propósito:** Usa este documento como un "menu a la carta" cuando inicialices un proyecto con `funky init` o cuando debatas la arquitectura con el Orquestador. Te asegura no dejar ningun punto ciego.
 
 ---
 

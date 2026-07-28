@@ -1,73 +1,55 @@
 # 📘 Flujo Interno: `funky init`
 
-> **Versión documentada:** v2.5.0+  
-> **Última actualización:** 2026-05-31  
+> **Versión documentada:** v3.2.0+  
+> **Ultima actualizacion:** 2026-07-28  
 > **Estado:** ✅ Estable
 
 ---
 
-## 1. Visión General
+## 1. Vision General
 
-El comando `funky init` es el punto de entrada al ecosistema Funky AI. Su responsabilidad es generar la estructura base de un proyecto: reglas de agente, memoria persistente (engram), templates SDD y el canvas del proyecto.
+El comando `funky init` genera PROJECT-CANVAS.md, INFRA-CANVAS.md y la guia de planeacion. El flujo es de 2 pasos:
 
-Tiene **dos modos de ejecución** que se activan automáticamente según el estado del directorio:
+1. **Inicializacion** (`funky init`): Genera canvases vacios + guia en el directorio actual.
+2. **Bootstrap** (`funky init --bootstrap`): Cuando los canvases ya existen, copia toda la estructura base del ecosistema Funky AI (reglas de agentes, ORCHESTRATOR-STATE, directorios engram, plantillas).
 
-| Modo | Condición | Comportamiento |
-|---|---|---|
-| **Interactivo**| No existe `PROJECT-CANVAS.md` | Lanza prompts con `@clack/prompts`, pregunta por el entorno (IDE / CLI) y genera canvas con los valores elegidos |
-| **Headless** | Existe `PROJECT-CANVAS.md` | Omite prompts, asume entorno `'ide'` por defecto para retrocompatibilidad, preserva el canvas tal cual y solo copia archivos faltantes |
-
-Además existe el flag `--template` (`-t`) para generar un canvas vacío sin ejecutar el scaffolding completo.
+No existen modos interactivos ni prompts. El CLI genera los archivos y termina. El equipo discute las decisiones en chat con IA, no en la terminal.
 
 ---
 
-## 2. Árbol de Decisión (Flujo Completo)
+## 2. Arbol de Decision (Flujo Completo)
 
 ```
-funky init [--template?]
+funky init [--bootstrap?]
 │
-├─ ¿flag --template?
-│   └─ SÍ
+├─ ¿flag --bootstrap?
+│   └─ NO  (default)
 │       ├─ ¿existe PROJECT-CANVAS.md o INFRA-CANVAS.md?
-│       │   ├─ SÍ  → ❌ Error: "ya existe" → process.exit(1)
+│       │   ├─ SI  → Error: "ya existe" → process.exit(1)
 │       │   └─ NO  → generateProjectCanvasMarkdown({}) → PROJECT-CANVAS.md
 │       │           → generateInfraCanvasMarkdown({})   → INFRA-CANVAS.md
-│       │           → copyFileSync(canvas-planning-guide.md) → raíz del proyecto
-│       │           → process.exit(0)  ← fin, NO continúa al scaffolding
+│       │           → copyFileSync(canvas-planning-guide.md) → raiz del proyecto
+│       │           → "Ejecuta funky init --bootstrap para inicializar el ecosistema"
+│       │           → process.exit(0)
 │       └─ (fin)
 │
-└─ ¿existen PROJECT-CANVAS.md E INFRA-CANVAS.md en cwd?
-    │
-    ├─ AMBOS (o SOLO PROJECT-CANVAS en Migración) → Modo Headless / Migración
-    │           canvasConfig = { skipProjectCanvas: true, skipInfraCanvas: true }
-    │           └─ runInit({ environment: 'ide' })  ← Forzado por retrocompatibilidad
-    │               ├─ Copia 12 archivos (las reglas se leen de bootstrap/ide/)
-    │               └─ ⚡ Salteando: PROJECT-CANVAS.md, INFRA-CANVAS.md
-    │
-    └─ NINGUNO → Setup Inicial
-                └─ @clack/prompts: Selección de Entorno
-                    ├─ select: "Seleccioná el entorno de ejecución para el Agente"
-                    │   ├─ "IDE (ej. Cursor, VSCode, Cline - Retorno síncrono al disco)" → environment = 'ide'
-                    │   └─ "CLI / Subagente (Ejecución asíncrona / background / IPC)"   → environment = 'cli'
-                │
-                └─ @clack/prompts group 1 (Core):
-                    ├─ select: Framework Base
-                    ├─ select: Patrón Arquitectónico
-                    ├─ select: Estrategia UI
-                    ├─ select: Gestión de Estado
-                    └─ select: Testing
-                └─ @clack/prompts group 2 (Infra):
-                    ├─ select: Base de Datos / ORM
-                    ├─ select: Autenticación
-                    ├─ select: Linter / Formatter
-                    └─ select: Deployment & CI/CD
-                │
-                canvasConfig = { projectData: {...}, infraData: {...} }
-                │
-                └─ runInit({ environment })
-                    ├─ Copia 12 archivos (reglas resueltas dinámicamente desde bootstrap/ide/ o bootstrap/cli/)
-                    ├─ generateProjectCanvasMarkdown(projectData) → PROJECT-CANVAS.md
-                    └─ generateInfraCanvasMarkdown(infraData)     → INFRA-CANVAS.md
+└─ ¿flag --bootstrap?
+    └─ SI
+        ├─ ¿existen PROJECT-CANVAS.md E INFRA-CANVAS.md en cwd?
+        │   ├─ SI → Bootstrap completo:
+        │   │       canvasConfig = { skipProjectCanvas: true, skipInfraCanvas: true }
+        │   │       └─ runInit({})
+        │   │           ├─ Copia archivos bootstrap
+        │   │           ├─ Crea directorios engram
+        │   │           └─ Saltea: PROJECT-CANVAS.md, INFRA-CANVAS.md
+        │   │
+        │   ├─ SOLO PROJECT-CANVAS → Migracion
+        │   │       ├─ Genera INFRA-CANVAS.md con warning legacy
+        │   │       └─ Continua con bootstrap
+        │   │
+        │   └─ NINGUNO
+        │       └─ Error: "Ejecuta funky init primero" → process.exit(1)
+        └─ (fin)
 ```
 
 ---
@@ -78,8 +60,8 @@ funky init [--template?]
 
 | Archivo | Rol |
 |---|---|
-| `src/commands/init.js` | Orquestador del comando: detecta modo, lanza prompts interactivos (incluyendo selector de entorno), llama a `runInit()` |
-| `src/utils/canvas.js` | Función `generateCanvasMarkdown(config)`: interpola el canvas como string Markdown |
+| `src/commands/init.js` | Orquestador del comando: detecta --bootstrap, genera canvases por defecto, llama a `runInit()` |
+| `src/utils/canvas.js` | Funcion `generateCanvasMarkdown(config)`: interpola el canvas como string Markdown |
 
 ### 3.2 Templates estáticos (copiados tal cual)
 
@@ -105,8 +87,8 @@ Ubicación base: `src/templates/bootstrap/`
 
 | Archivo | Generado por | Con datos de |
 |---|---|---|
-| `PROJECT-CANVAS.md` | `generateProjectCanvasMarkdown(config)` | Respuestas del grupo 1 de prompts (framework, patrón, UI, estado, testing) o vacío `{}` (modo `--template`) |
-| `INFRA-CANVAS.md` | `generateInfraCanvasMarkdown(config)` | Respuestas del grupo 2 de prompts (DB, auth, linter, deployment) o vacío `{}` (modo `--template`) |
+| `PROJECT-CANVAS.md` | `generateProjectCanvasMarkdown(config)` | `projectData` del canvasConfig. Por defecto vacio `{}` con placeholders guia |
+| `INFRA-CANVAS.md` | `generateInfraCanvasMarkdown(config)` | `infraData` del canvasConfig. Por defecto vacio `{}` con placeholders guia |
 
 ---
 
@@ -136,21 +118,19 @@ El `ORCHESTRATOR-STATE.md`, las reglas de agente y los demás archivos de bootst
 
 ---
 
-### DT-02 — Modo Headless no parsea el canvas existente
+### DT-02 — Bootstrap no parsea el canvas existente
 
-Cuando se detecta un `PROJECT-CANVAS.md`, el CLI lo respeta (no lo sobreescribe) pero tampoco lo lee. El `canvasConfig` en modo headless es `{ fromHeadless: true }` — un flag vacío.
+Cuando se ejecuta `funky init --bootstrap`, el CLI respeta los canvases existentes (no los sobreescribe) pero tampoco los lee. El `canvasConfig` tiene todos los skips en `true`.
 
-**Impacto:** En una re-inicialización headless, no es posible poblar los archivos estáticos con los datos que ya estaban definidos en el canvas.
+**Impacto:** Los archivos estaticos copiados no contienen datos del canvas. El ORCHESTRATOR-STATE.md, por ejemplo, no sabe que stack usa el proyecto.
 
-**Dirección de solución:** Implementar un parser de Markdown que extraiga las secciones del canvas y reconstruya el `canvasConfig`, para que el headless pueda usarlo igual que el interactivo.
+**Direccion de solucion:** Implementar un parser de Markdown que extraiga las secciones del canvas y reconstruya el `canvasConfig` para poblar los templates copiados.
 
 ---
 
-### DT-03 — Preguntas del CLI insuficientes para proyectos de escala real
+### DT-03 — Preguntas del CLI insuficientes para proyectos de escala real (OBSOLETO)
 
-Los prompts actuales cubren solo 3 dimensiones (patrón, UI y TDD). No capturan información sobre framework base, runner de testing, gestión de estado ni estrategia de deployment, que son decisiones arquitectónicas fundamentales que deberían quedar registradas en el canvas desde el inicio.
-
-Ver observación completa: `testeo-de-features/v1.7/interactive/observaciones-interactive.md` → OBS-03.
+> **Nota:** Este DT-03 corresponde al antiguo modo interactivo eliminado. El CLI ya no pregunta nada — genera canvases con placeholders guia y el equipo discute en chat con IA. La observacion `observaciones-interactive.md` es historica.
 
 ---
 
@@ -161,7 +141,7 @@ Ver observación completa: `testeo-de-features/v1.7/interactive/observaciones-in
 - Cada archivo de la lista estática se verifica con `fs.existsSync()` antes de copiarse
 - Si existe → `⚡ Salteando (ya existe): <archivo>`
 - Si no existe → `✅ Creado: <archivo>`
-- El `PROJECT-CANVAS.md` nunca se sobreescribe en modo headless
+- El `PROJECT-CANVAS.md` nunca se sobreescribe en bootstrap
 
 ---
 
@@ -198,4 +178,4 @@ proyecto/
 └── README.md
 ```
 
-> ⚠️ En modo `--template`, solo se generan `PROJECT-CANVAS.md`, `INFRA-CANVAS.md` y `canvas-planning-guide.md` en la raíz. El resto de la estructura se crea al ejecutar `funky init` (sin flag) con los Canvas ya llenos.
+> ⚠️ Por defecto (`funky init` sin flags), solo se generan `PROJECT-CANVAS.md`, `INFRA-CANVAS.md` y `canvas-planning-guide.md` en la raiz. El resto de la estructura se crea al ejecutar `funky init --bootstrap` con los Canvas ya llenos.

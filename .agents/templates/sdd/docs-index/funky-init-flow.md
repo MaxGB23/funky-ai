@@ -1,9 +1,9 @@
-# Índice de Secciones: `docs/funky-ai/operaciones/funky-init-flow.md`
+# Indice de Secciones: `docs/funky-ai/operaciones/funky-init-flow.md`
 
-- **1. Visión General:** Modos de ejecución (Interactivo vs Headless) y flag `--template`.
-- **2. Árbol de Decisión:** Flujo completo de `funky init`, ruteo por canvas y preguntas interactivas.
-- **3. Archivos Involucrados:** Código fuente (`init.js`, `canvas.js`), templates estáticos copiados y canvas dinámicos.
-- **4. Bugs Históricos:** Registro de correcciones en claves del canvas y tipos de datos.
-- **5. Deuda Técnica Identificada:** DTs sobre desacoplamiento de templates, modo headless y escala de prompts.
-- **6. Idempotencia:** Criterios de verificación y comportamiento ante re-ejecución.
-- **7. Estructura Resultante:** Árbol completo de archivos y carpetas creados por el bootstrap.
+- **1. Vision General:** Flujo en 2 pasos (`funky init` → `funky init --bootstrap`).
+- **2. Arbol de Decision:** Flujo completo de `funky init`, ruteo por `--bootstrap` y canvas existentes.
+- **3. Archivos Involucrados:** Codigo fuente (`init.js`, `canvas.js`), templates estaticos copiados y canvas dinamicos.
+- **4. Bugs Historicos:** Registro de correcciones en claves del canvas y tipos de datos.
+- **5. Deuda Tecnica Identificada:** DTs sobre desacoplamiento de templates, bootstrap y escala de prompts.
+- **6. Idempotencia:** Criterios de verificacion y comportamiento ante re-ejecucion.
+- **7. Estructura Resultante:** Arbol completo de archivos y carpetas creados por el bootstrap.

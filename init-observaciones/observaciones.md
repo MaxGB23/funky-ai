@@ -1,17 +1,17 @@
-# Observaciones: `funky init --template`
+# Observaciones: `funky init`
 
-## 1. Propósito del sistema
+## 1. Proposito del sistema
 
-`funky init --template` es el punto de entrada para planificar un proyecto **antes** de inyectar la configuración de funky-ai. El flujo es deliberadamente de 2 pasos:
+`funky init` genera PROJECT-CANVAS.md, INFRA-CANVAS.md y la guia de planeacion. El flujo es deliberadamente de 2 pasos:
 
-1. **Planeación** (`funky init --template`): Genera canvases vacíos + guía. El developerm平面 llena las decisiones arquitectónicas.
-2. **Ejecución** (`funky init`): Detecta los canvases existentes → inyecta la configuración base de funky-ai alrededor de ellos.
+1. **Planeacion** (`funky init`): Genera canvases vacios + guia. El developer llena las decisiones arquitectonicas.
+2. **Bootstrap** (`funky init --bootstrap`): Cuando los canvases ya existen, inyecta toda la configuracion base de Funky AI alrededor de ellos (reglas de agentes, ORCHESTRATOR-STATE, directorios engram).
 
 > Los canvases son para **conversación dev+IA**, no para scaffolding automático. El desarrollador puede tener mini variaciones de proyecto a proyecto aunque sean del mismo stack (ej. dos proyectos Clean Architecture con carpetas distintas). El scaffolding lo hacen ellos.
 
 ---
 
-## 2. Los 3 archivos que inyecta `--template`
+## 2. Los 3 archivos que inyecta `funky init`
 
 ### 2a. PROJECT-CANVAS.md (generado en runtime)
 
@@ -68,27 +68,26 @@ Archivo estático de 73 líneas (`funky-cli/src/templates/bootstrap/canvas-plann
 
 ---
 
-## 3. Proceso post-llenado: Headless Mode
+## 3. Proceso post-llenado: Bootstrap
 
-El headless mode se activa automáticamente cuando `funky init` detecta que **ambos canvases ya existen**. Es el flujo más atractivo para el workflow de funky-ai.
+Cuando los canvases ya estan llenos, `funky init --bootstrap` copia toda la estructura base del ecosistema Funky AI.
 
 ### Flujo completo
 
 ```
 USUARIO                          CLI
    │                               │
-   ├─ funky init --template        │
+   ├─ funky init                   │
    │  → Crea PROJECT-CANVAS.md     │
    │  → Crea INFRA-CANVAS.md       │
-   │  → Copia guía a la raíz       │
+   │  → Copia guia a la raiz       │
    │  → process.exit(0)            │
    │                               │
    ├─ [llena canvases con IA]      │
    │                               │
-   ├─ funky init (sin --template)  │
+   ├─ funky init --bootstrap       │
    │  → Detecta ambos canvases ────┤
-   │                               ├─ Headless mode activado
-   │                               ├─ Salta prompts interactivos
+   │                               ├─ Bootstrap activado
    │                               ├─ Ejecuta runInit()
    │                               │   ├─ 9 archivos bootstrap → copiados
    │                               │   ├─ 7 directorios engram → creados
@@ -126,7 +125,7 @@ USUARIO                          CLI
 - **Soporta `dryRun: true`** internamente (pero no se expone al CLI como flag)
 - **No valida contenido** de los archivos que copia
 
-### Lo que el headless mode NO hace
+### Lo que el bootstrap NO hace
 
 - **No lee el contenido de los canvases** — `canvasConfig` se construye con `projectData: {}` y `infraData: {}` (objetos vacíos)
 - **No valida completitud** — un canvas con todo en "No definido" pasa silenciosamente
@@ -138,14 +137,13 @@ USUARIO                          CLI
 
 ## 4. Modos del init (resumen)
 
-| Modo | Trigger | Qué hace |
+| Modo | Trigger | Que hace |
 |---|---|---|
-| `--template` | Flag explícito | Crea canvases vacíos + guía, se detiene |
-| Headless | Ambos canvases existen | Salta prompts, inyecta config base |
-| Setup inicial | No existen canvases | Muestra prompts, genera canvases, inyecta config |
+| `funky init` | Default | Crea canvases vacios + guia, se detiene |
+| `funky init --bootstrap` | Ambos canvases existen | Inyecta config base completa |
 | Migration | Solo existe PROJECT-CANVAS | Auto-genera INFRA-CANVAS con warning |
 
-El modo setup inicial **no se documenta aquí** en detalle porque es un path automático que se activa cuando no existen canvases. El headless es el flujo principal para el workflow de funky-ai.
+El modo por defecto genera los canvases vacios. Cuando ya existen, `--bootstrap` inyecta toda la estructura Funky AI.
 
 ---
 

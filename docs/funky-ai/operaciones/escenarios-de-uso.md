@@ -6,12 +6,12 @@
 
 ## Tabla de Referencia Rápida
 
-| # | ¿En qué estado estás? | Primer comando |
-|---|----------------------|----------------|
-| [Escenario 1](#escenario-1) | No tenés claro qué construir ni con qué stack | Chat vacío → debate → `funky init --template` |
-| [Escenario 2](#escenario-2) | Sabés qué construir, empezás desde cero | `funky init` (setup inicial) |
-| [Escenario 3](#escenario-3) | Repo existente, querés incorporar Funky AI | `funky init --template` (modo migración) |
-| [Escenario 4](#escenario-4) | Querés registrar un hallazgo o decisión técnica | `funky engram add` (setup inicial) |
+| # | ¿En que estado estas? | Primer comando |
+|---|---|---|
+| [Escenario 1](#escenario-1) | No tenes claro que construir ni con que stack | Chat vacio → debate → `funky init` |
+| [Escenario 2](#escenario-2) | Sabes que construir, empezas desde cero | `funky init` |
+| [Escenario 3](#escenario-3) | Repo existente, queres incorporar Funky AI | `funky init` (genera canvases) |
+| [Escenario 4](#escenario-4) | Queres registrar un hallazgo o decision tecnica | `funky engram add` |
 
 ---
 
@@ -38,12 +38,12 @@ El agente actúa como Senior Architect. Explorá, cuestioná, no te comprometas 
 
 ---
 
-**Paso 1.2 — Creá el directorio y generá los Canvas vacíos**
+**Paso 1.2 — Crea el directorio y genera los Canvas vacios**
 
 ```bash
 mkdir mi-proyecto && cd mi-proyecto
 git init
-funky init --template
+funky init
 ```
 
 **Output esperado:**
@@ -78,20 +78,20 @@ El comando evalúa `docs/architecture-assessment.md` contra el motor de reglas y
 
 ---
 
-**Paso 1.5 — Inicializá el ecosistema completo**
+**Paso 1.5 — Inicializa el ecosistema completo**
 
-Con los Canvas llenos, el CLI detecta el modo Headless automáticamente (y asume de forma retrocompatible `'ide'` para no pausar terminales no interactivas):
+Con los Canvas llenos, ejecuta `--bootstrap` para copiar toda la estructura del ecosistema Funky AI:
 
 ```bash
-funky init
+funky init --bootstrap
 ```
 
 **Output esperado:**
 ```
-📄 Ambos Canvas detectados, inicializando en modo Headless...
+📄 Inicializando estructura completa del ecosistema...
 ✅ Creado: .agents/rules/engram-protocol.md
 ✅ Creado: .agents/rules/secops.md
-... (resto de la estructura, leyéndose desde bootstrap/ide/)
+... (resto de la estructura)
 ✅ Funky AI inicializado.
 ```
 
@@ -107,7 +107,7 @@ funky init
 
 #### Flujo recomendado
 
-**Paso 2.1 — Creá el directorio e iniciá el setup inicial**
+**Paso 2.1 — Crea el directorio y genera los Canvas vacios**
 
 ```bash
 mkdir mi-proyecto && cd mi-proyecto
@@ -115,24 +115,9 @@ git init
 funky init
 ```
 
-El CLI arranca un wizard interactivo con `@clack/prompts`:
+El CLI genera `PROJECT-CANVAS.md` e `INFRA-CANVAS.md` con placeholders guia, mas `canvas-planning-guide.md` como referencia.
 
-```
-Selección de Entorno:     → [seleccionar: IDE o CLI]
-Framework Base:          → [seleccionar]
-Patrón Arquitectónico:   → [seleccionar]
-Gestión de Estado:       → [seleccionar]
-Estrategia UI:           → [seleccionar]
-Estrategia de Testing:   → [seleccionar]
-Base de Datos / ORM:     → [seleccionar]
-Autenticación:           → [seleccionar]
-Linter / Formatter:      → [seleccionar]
-Deployment & CI/CD:      → [seleccionar]
-```
-
-> 💡 **Nota sobre el entorno:** Si seleccionás `IDE`, se inyectarán reglas enfocadas a entornos de edición locales síncronos (Cursor, Cline). Si seleccionás `CLI`, se inyectarán reglas preparadas para dispatch asíncrono y comunicación asíncrona de subagentes.
-
-El CLI genera `PROJECT-CANVAS.md` e `INFRA-CANVAS.md` con las respuestas y copia toda la estructura de Funky AI.
+> 💡 **Nota:** No hay prompts interactivos. `funky init` genera los canvases vacios para que el equipo los llene discutiendo con IA. Cuando esten listos, ejecuta `funky init --bootstrap` para copiar toda la estructura Funky AI.
 
 **✅ Criterio de salida:** Tenés el ecosistema completo + Canvas pre-poblados. Primer commit y al flujo SDD.
 
@@ -157,11 +142,11 @@ funky phase explore    # → genera sdd-explore.md
 
 #### Flujo recomendado
 
-**Paso 3.1 — Generá los Canvas sin tocar el código existente**
+**Paso 3.1 — Genera los Canvas sin tocar el codigo existente**
 
 ```bash
 cd mi-repo-existente
-funky init --template
+funky init
 ```
 
 **Output esperado:**
@@ -171,7 +156,7 @@ funky init --template
 ✅ canvas-planning-guide.md copiado.
 ```
 
-> ✅ El flag `--template` solo escribe los Canvas y la guía. No toca ningún archivo existente del proyecto.
+> ✅ `funky init` solo escribe los Canvas y la guia. No toca ningun archivo existente del proyecto.
 
 ---
 
@@ -197,11 +182,11 @@ El CLI detecta ambos Canvas y activa el modo Headless: copia toda la estructura 
 
 ## ❌ Anti-patrones a evitar
 
-| Anti-patrón | Por qué es un problema |
-|-------------|------------------------|
-| Ejecutar `funky init` sin haber definido el stack | El setup inicial obliga a decidir en tiempo real bajo presión — malas decisiones arquitectónicas |
-| Saltear `funky init --template` y llenar los Canvas directamente en el editor | Sin la `canvas-planning-guide.md` como referencia, se omiten campos o se usan valores inválidos |
-| Ejecutar `funky init` dos veces sin leer el output | El modo Headless es idempotente, pero si los Canvas están vacíos, el segundo init no los completa |
+| Anti-patron | Por que es un problema |
+|---|---|
+| Ejecutar `funky init --bootstrap` sin haber llenado los Canvas | El ecosistema se copia pero sin datos reales de stack en los archivos generados |
+| Saltear `funky init` y llenar los Canvas directamente en el editor | Sin la `canvas-planning-guide.md` como referencia, se omiten campos o se usan valores invalidos |
+| Ejecutar `funky init --bootstrap` dos veces sin cambios | Es idempotente, no causa dano pero tampoco avanza |
 | Usar `funky assess` sin haber completado los Canvas | El motor de reglas no puede validar lo que no está definido |
 
 ---

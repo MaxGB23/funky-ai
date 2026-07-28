@@ -1,4 +1,4 @@
-# Roadmap: Mejoras a `funky init --template` y comandos relacionados
+# Roadmap: Mejoras a `funky init` y comandos relacionados
 
 > Documento de referencia para iniciar nuevas fases. Cada fase tiene un objetivo claro, dependencias, y criterios de completado.
 
@@ -88,7 +88,7 @@ Inyecta templates/guías   →    Discuten la fase
 ### Flujo visual
 
 ```
-funky init --template  →  inyecta canvases + guide
+funky init             →  inyecta canvases + guide
         ↓
    Dev team abre chat  →  "Llenemos los canvases"
         ↓                    La IA pregunta "¿por qué X y no Y?"
@@ -126,7 +126,7 @@ funky estimate         →  inyecta guía de pricing
 4. **Pull not push** — marcar secciones avanzadas como "si aplica" en vez de obligar
 5. **Fix orphaned files** — los 4 archivos en `bootstrap/` que se empaquetan pero nunca se copian
 6. **Fix sync-templates.js** — referencia `worker-handoff.md` que no existe
-7. **Deprecar el modo setup inicial** — eliminar los prompts interactivos, la lógica asociada y la documentación del modo «setup inicial» (antes llamado «interactivo»). El CLI solo ofrecerá `--template` (headless) .
+7. **Deprecar el modo setup inicial** — eliminar los prompts interactivos, la lógica asociada y la documentación del modo «setup inicial» (antes llamado «interactivo»). `funky init` por defecto genera los canvases. Usar `--bootstrap` para inyectar la estructura completa.
 
 **Dependencias:** Ninguna — es la fase inicial.
 
@@ -272,7 +272,7 @@ Estos se pueden hacer en cualquier momento, no dependen de un orden específico:
 | 3 | Análisis LLM-driven de compatibilidades | Bajo | `008` (revisado) |
 | 4 | Fix 4 archivos orphaned en bootstrap/ | Bajo | `observaciones.md` |
 | 5 | Fix sync-templates.js → worker-handoff.md | Bajo | `observaciones.md` |
-| 6 | Tests para path `--template` | Medio | `observaciones.md` |
+| 6 | Tests para path `funky init` | Medio | `observaciones.md` |
 
 > **Estrategia:** Los quick wins #1-3 ya están incluidos en Fase 1. Los #4-5 también. El #6 (tests) puede hacerse paralelamente a cualquier fase.
 
