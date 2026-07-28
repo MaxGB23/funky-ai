@@ -38,6 +38,12 @@ git push origin feat/fase-N+1-nombre
 2. El PR se abre desde la branch de la fase (`feat/fase-N-nombre`) hacia `main`.
 3. **No importa si las fases anteriores no se mergearon aún.** GitHub compara contra `main` y muestra todo el diff acumulado. Cuando se mergea la fase anterior, el PR de la fase actual se actualiza solo y muestra **únicamente sus propios cambios**.
 4. No se necesita rebase, no se necesita force push, no se necesita nada raro.
+5. **No tenemos `gh` CLI instalado.** Para crear el PR, usar el link que GitHub devuelve al pushear la branch:
+   ```
+   git push origin feat/fase-N-nombre
+   # → remote: Create a pull request ... at https://github.com/MaxGB23/funky-ai/pull/new/feat/fase-N-nombre
+   ```
+   O abrir ese link manualmente desde la web de GitHub.
 
 ### Reglas
 
