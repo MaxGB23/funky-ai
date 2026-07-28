@@ -23,7 +23,7 @@ describe('runInit()', () => {
     const createIntentions = intentions.filter(i => i.action === 'create');
 
     expect(mkdirIntentions).toHaveLength(7);
-    expect(copyIntentions).toHaveLength(9);
+    expect(copyIntentions).toHaveLength(13);
     expect(createIntentions).toHaveLength(1); // engram index.md
   });
 
@@ -61,6 +61,34 @@ describe('runInit()', () => {
       action: 'copy',
       src: path.join(fakeTemplatesDir, 'agents-rules-engram-protocol.md'),
       dest: path.join(fakeTargetDir, '.agents', 'rules', 'engram-protocol.md')
+    });
+  });
+
+  it('incluye los 4 archivos orphaned en las intenciones de copia', () => {
+    const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
+
+    expect(intentions).toContainEqual({
+      action: 'copy',
+      src: path.join(fakeTemplatesDir, 'engram-discoveries.md'),
+      dest: path.join(fakeTargetDir, 'docs', 'engram', 'discoveries.md')
+    });
+
+    expect(intentions).toContainEqual({
+      action: 'copy',
+      src: path.join(fakeTemplatesDir, 'engram-bugfixes.md'),
+      dest: path.join(fakeTargetDir, 'docs', 'engram', 'bugfix', 'bugfixes.md')
+    });
+
+    expect(intentions).toContainEqual({
+      action: 'copy',
+      src: path.join(fakeTemplatesDir, 'architecture-assessment-guide.md'),
+      dest: path.join(fakeTargetDir, 'docs', 'architecture-assessment-guide.md')
+    });
+
+    expect(intentions).toContainEqual({
+      action: 'copy',
+      src: path.join(fakeTemplatesDir, 'agents-rules-secops-setup.md'),
+      dest: path.join(fakeTargetDir, '.agents', 'rules', 'secops-setup.md')
     });
   });
 });

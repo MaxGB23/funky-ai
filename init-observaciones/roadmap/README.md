@@ -76,6 +76,7 @@ funky estimate         →  inyecta guía de pricing
 4. **Pull not push** — marcar secciones avanzadas como "si aplica" en vez de obligar
 5. **Fix orphaned files** — los 4 archivos en `bootstrap/` que se empaquetan pero nunca se copian
 6. **Fix sync-templates.js** — referencia `worker-handoff.md` que no existe
+7. **Deprecar el modo setup inicial** — eliminar los prompts interactivos, la lógica asociada y la documentación del modo «setup inicial» (antes llamado «interactivo»). El CLI solo ofrecerá `--template` (headless) .
 
 **Dependencias:** Ninguna — es la fase inicial.
 
@@ -86,6 +87,7 @@ funky estimate         →  inyecta guía de pricing
 - [ ] Secciones avanzadas marcadas como condicionales
 - [ ] Archivos orphaned resueltos
 - [ ] `sync-templates.js` no referencia archivos inexistentes
+- [ ] Modo setup inicial eliminado del CLI y la documentación
 
 **Doc de resumen:** [fase-1-resumen.md](./fase-1-resumen.md)
 

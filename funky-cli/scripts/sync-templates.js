@@ -12,7 +12,6 @@ const filesToSync = [
   { src: '.agents/rules/engram-protocol.md', dest: 'agents-rules-engram-protocol.md' },
   { src: '.agents/rules/secops.md', dest: 'agents-rules-secops.md' },
   { src: '.agents/rules/sdd-orchestrator.md', dest: 'agents-rules-sdd-orchestrator.md' },
-  { src: 'funky-cli/src/templates/sdd/worker-handoff.md', dest: 'plantilla-worker-handoff.md' },
   { src: 'docs/funky-ai/cli/canvas-planning-guide.md', dest: 'canvas-planning-guide.md' }
 ];
 
