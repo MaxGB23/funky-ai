@@ -68,12 +68,18 @@ Create release notes following the project's format. Use this template:
 
 Save to `docs/releases/vX.Y.Z-release.md` (or project's release notes location).
 
-### 3. Update version
+### 3. Update version and root README
 
 - Bump version in `package.json`
-- Update any version references in README or docs if applicable
+- Update version references in the root `README.md`
+- Update any other version references in docs if applicable
 
-### 4. Git operations
+### 4. Update ORCHESTRATOR-STATE.md
+
+- Update the version entry and release status in `ORCHESTRATOR-STATE.md`
+- Mark the release as completed with the new version and date
+
+### 5. Git operations
 
 ```bash
 git status                          # Confirm clean
@@ -83,9 +89,11 @@ git tag -a vX.Y.Z -m "Release vX.Y.Z"
 git push origin main --tags
 ```
 
-### 5. Verify
+### 6. Verify
 
 - [ ] Version bumped in package.json
+- [ ] Root README.md updated with new version
+- [ ] ORCHESTRATOR-STATE.md updated
 - [ ] Release notes created
 - [ ] Git tag created and pushed
 - [ ] No uncommitted changes
