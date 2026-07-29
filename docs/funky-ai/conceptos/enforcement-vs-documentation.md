@@ -6,7 +6,7 @@
 
 ## El Patrón que se Repite
 
-Mirá el historial de releases de Funky AI con distancia:
+Mira el historial de releases de Funky AI con distancia:
 
 | Release | Síntoma que fixeó |
 |---|---|
@@ -60,13 +60,13 @@ En ingeniería de software tenemos una distinción fundamental que aplicamos al 
 
 | Documentación | Enforcement |
 |---|---|
-| Un comentario que dice "no usar `null` acá" | El compilador de TypeScript que te bloquea si usás `null` |
+| Un comentario que dice "no usar `null` acá" | El compilador de TypeScript que te bloquea si usas `null` |
 | Una guía que dice "escribí tests antes del código" | Un pipeline de CI que no permite merge sin coverage |
 | Un anti-patrón que dice "no omitir el Tier" | Un template con `Tier: [COMPLETAR T1/T2/T3]` que visualmente rompe el flujo si no se llena |
 
 **La documentación informa. El enforcement garantiza.**
 
-Si querés que algo sea imposible de olvidar, no lo documentás — hacés que **omitirlo sea estructuralmente imposible o inmediatamente visible**.
+Si quieres que algo sea imposible de olvidar, no lo documentas — haces que **omitirlo sea estructuralmente imposible o inmediatamente visible**.
 
 ---
 
@@ -93,7 +93,7 @@ El Tier fue omitido porque nadie auditó qué pasaba cuando **el Orquestador gen
 
 ## Cómo Plantear Correctamente un Fix
 
-Antes de cada fix, hacete estas preguntas en orden:
+Antes de cada fix, hazte estas preguntas en orden:
 
 ### 1. ¿Cuál es el mecanismo que hace posible este error?
 No el error en sí — el **mecanismo subyacente**. Si el Tier fue omitido, el error no es "el agente olvidó el Tier". El mecanismo es: *"El Orquestador genera handoffs desde cero en lugar de usar el template canónico, y ninguna rule lo fuerza a hacer lo contrario."*
@@ -108,7 +108,7 @@ Si la respuesta es "documenta", preguntate: *¿existe un mecanismo de enforcemen
 ¿Cómo experimenta este fix el Humano Router? ¿El Orquestador? ¿El Worker? Un fix que solo considera uno de los tres es incompleto.
 
 ### 5. ¿Cómo testeo que el fix funciona?
-Para el CLI: tests unitarios y de integración. Para el protocolo: simulá un Orquestador en chat virgen. ¿Genera el handoff correcto sin haber leído las guías? Si no podés verificar esto, no sabés si tu fix funciona.
+Para el CLI: tests unitarios y de integración. Para el protocolo: simula un Orquestador en chat virgen. ¿Genera el handoff correcto sin haber leído las guías? Si no puedes verificar esto, no sabes si tu fix funciona.
 
 ---
 
@@ -154,7 +154,7 @@ ENTONCES:
   - No ejecuta código de negocio inline ✓
 ```
 
-Si no podés responder si eso se cumple sistemáticamente, el protocolo no está validado. Lo cual significa que cualquier "fix" al protocolo es fe, no ingeniería.
+Si no puedes responder si eso se cumple sistemáticamente, el protocolo no está validado. Lo cual significa que cualquier "fix" al protocolo es fe, no ingeniería.
 
 ---
 

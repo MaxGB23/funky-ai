@@ -12,7 +12,7 @@ El CLI oficial de Funky AI es la herramienta encargada de hacer andamiaje (scaff
 Para instalar el CLI de manera local y linkearlo globalmente:
 
 ```bash
-git clone <url-del-repositorio> # o usar el repo local si ya lo tenés
+git clone <url-del-repositorio> # o usar el repo local si ya lo tienes
 cd funky-cli
 pnpm install
 pnpm link --global

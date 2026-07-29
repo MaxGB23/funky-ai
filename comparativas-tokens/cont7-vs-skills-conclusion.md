@@ -12,16 +12,16 @@ Skills y Context7 **no compiten**. Se complementan. Usar solo uno es perder la m
 
 | ✅ Ventajas | ❌ Desventajas |
 |---|---|
-| Costo **0 tokens** — ya están en contexto | Se **desactualizan** — Next.js 16 deprecó `unstable_cache` y la skill sigue diciendo que es la posta |
+| Costo **0 tokens** — ya están en contexto | Se **desactualizan** — Next.js 16 deprecó `unstable_cache` y la skill sigue diciendo que es lo correcto |
 | **Cero latencia** — sin llamada externa | **Mantenimiento** — alguien tiene que actualizarlas o quedan obsoletas |
 | Adaptadas al proyecto — convenciones, paths, patrones locales | **Crearlas lleva tiempo** — no sale gratis |
-| **Siempre disponibles** — incluso offline | **Copan contexto** — skills que no se usan ocupan espacio al pedo |
+| **Siempre disponibles** — incluso offline | **Copan contexto** — skills que no se usan ocupan espacio en vano |
 
 ## Context7
 
 | ✅ Ventajas | ❌ Desventajas |
 |---|---|
-| **Siempre actualizado** — trae la posta del repo oficial | **Cuesta tokens** — ~2,500 por consulta enfocada (verify: context7-consumo.md) |
+| **Siempre actualizado** — trae la información actualizada del repo oficial | **Cuesta tokens** — ~2,500 por consulta enfocada (verify: context7-consumo.md) |
 | **Ejemplos de código reales** del código fuente oficial | **Latencia** — llamada HTTP |
 | **Cubre todo el ecosistema** — no solo lo que alguien documentó | **Dependencia externa** — necesita conexión |
 | **Cero mantenimiento** — siempre la última versión | |
@@ -60,6 +60,6 @@ Eso te da:
 
 Si hubiera tenido una skill de Next.js estática, habría seguido implementando con `unstable_cache` como si fuera 2024. Context7 nos avisó que está deprecado.
 
-Si hubiera usado Context7 para cada consulta boluda (estructura de carpetas, cómo correr tests), habría quemado tokens al pedo.
+Si hubiera usado Context7 para cada consulta trivial (estructura de carpetas, cómo correr tests), habría quemado tokens en vano.
 
-**Ahí está la posta: cada uno en su lugar.**
+**Ahí está la clave: cada uno en su lugar.**

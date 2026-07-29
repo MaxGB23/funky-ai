@@ -43,7 +43,7 @@ Deep SDD. Se usa para tareas de altísimo riesgo. Crea `openspec/gentle/{name}/`
 
 | Archivo(s) Inyectado(s) | Función | Cómo se complementan |
 |-------------------------|---------|----------------------|
-| `1-explore.md` a `7-verify.md` | Pipeline secuencial de 7 pasos. Cada archivo contiene un `<system_prompt>` estricto y aislado (ej. "Sos el Crítico", "Sos el Implementador"). | **Aislamiento de Rol.** En vez de que un solo Orquestador piense todo, forzás a 7 agentes distintos a pasarse la posta. El output de la Fase 1 es el input inmutable de la Fase 2, anulando por completo las alucinaciones por sobrecarga. |
+| `1-explore.md` a `7-verify.md` | Pipeline secuencial de 7 pasos. Cada archivo contiene un `<system_prompt>` estricto y aislado (ej. "Eres el Crítico", "Eres el Implementador"). | **Aislamiento de Rol.** En vez de que un solo Orquestador piense todo, fuerzas a 7 agentes distintos a pasarse el testigo. El output de la Fase 1 es el input inmutable de la Fase 2, anulando por completo las alucinaciones por sobrecarga. |
 
 ---
 

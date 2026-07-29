@@ -30,29 +30,29 @@
 
 **Objetivo:** Llegar a una decisión técnica concreta sobre qué construir.
 
-### Paso 1.1 — Abrí un chat nuevo en blanco
+### Paso 1.1 — Abre un chat nuevo en blanco
 
-No tagees ningún archivo. Este es el chat del **Orquestador**. No hay reglas activas todavía.
+No etiquetes ningún archivo. Este es el chat del **Orquestador**. No hay reglas activas todavía.
 
-### Paso 1.2 — Describí el problema en lenguaje natural
+### Paso 1.2 — Describe el problema en lenguaje natural
 
 ```
 "Quiero construir algo para [problema]. No sé si es una API, una CLI, 
-una web app. Ayudame a pensar qué hacer."
+una web app. Ayúdame a pensar qué hacer."
 ```
 
-El modelo actúa como Senior Architect. Explorá sin comprometerte todavía.
+El modelo actúa como Senior Architect. Explora sin comprometerte todavía.
 
-### Paso 1.3 — Cerrá la exploración con una decisión
+### Paso 1.3 — Cierra la exploración con una decisión
 
-Cuando tengas claridad, pedí:
+Cuando tengas claridad, pide:
 
 ```
 "Ok, decidimos: [descripción de la solución]. 
 ¿Qué stack, qué arquitectura y cuáles son los riesgos principales?"
 ```
 
-✅ **Criterio de salida:** Sabés qué construir, con qué tecnología y por qué.
+✅ **Criterio de salida:** Sabes qué construir, con qué tecnología y por qué.
 
 ---
 
@@ -76,9 +76,9 @@ funky assess
 📄 Template de decisiones → docs/architecture-decisions.md (si no existía)
 ```
 
-### Paso 1.5.2 — Discutí la arquitectura con IA
+### Paso 1.5.2 — Discute la arquitectura con IA
 
-Abrí un chat, copiá el contenido de `docs/architecture-review.md` y discutí:
+Abre un chat, copia el contenido de `docs/architecture-review.md` y discute:
 
 - ¿El stack elegido es el correcto?
 - ¿Hay riesgos ocultos (escalabilidad, costos, seguridad)?
@@ -92,7 +92,7 @@ Abrí un chat, copiá el contenido de `docs/architecture-review.md` y discutí:
 
 **Objetivo:** Discutir valor real, costos y trade-offs de pricing en una sesión humano+IA, basada en decisiones arquitectónicas documentadas.
 
-> 💡 **Prerrequisito:** Si querés que estimate incorpore las decisiones del assess, corré `funky assess` primero (ETAPA 1.5).
+> 💡 **Prerrequisito:** Si quieres que estimate incorpore las decisiones del assess, corre `funky assess` primero (ETAPA 1.5).
 
 ### Paso 1.6.1 — Ejecutar el facilitador de pricing
 
@@ -113,16 +113,16 @@ funky estimate
 🤖 Prompt IA listo para copiar al chat
 ```
 
-### Paso 1.6.2 — Abrí el chat con el prompt IA
+### Paso 1.6.2 — Abre el chat con el prompt IA
 
-Copiá el prompt que `funky estimate` imprime en consola, pegálo en un chat con la IA y discutí:
+Copia el prompt que `funky estimate` imprime en consola, pégalo en un chat con la IA y discute:
 
 - Costo real de las decisiones arquitectónicas
 - Alternativas más económicas (si las hay)
 - Trade-offs entre precio y performance
 - Value-Based Pricing final
 
-✅ **Criterio de salida:** Tenés `docs/pricing-decisions.md` con los acuerdos documentados.
+✅ **Criterio de salida:** Tienes `docs/pricing-decisions.md` con los acuerdos documentados.
 
 **Objetivo:** Tener una sesión de discusión arquitectónica donde la IA actúa como peer informado, detecta riesgos, propone alternativas y ayuda a documentar decisiones.
 
@@ -142,9 +142,9 @@ funky assess
 📄 Template de decisiones → docs/architecture-decisions.md (si no existía)
 ```
 
-### Paso 1.6.2 — Discutí la arquitectura con IA
+### Paso 1.6.2 — Discute la arquitectura con IA
 
-Abrí un chat, copiá el contenido de `docs/architecture-review.md` y discutí:
+Abre un chat, copia el contenido de `docs/architecture-review.md` y discute:
 
 - ¿El stack elegido es el correcto?
 - ¿Hay riesgos ocultos (escalabilidad, costos, seguridad)?
@@ -168,7 +168,7 @@ git init
 
 ### Paso 2.2 — Generar los canvases
 
-> 💡 **¿No tenés claro el stack todavía?** Primero pasá por la ETAPA 1 de exploración para definir qué construir.
+> 💡 **¿No tienes claro el stack todavía?** Primero pasa por la ETAPA 1 de exploración para definir qué construir.
 
 ```bash
 funky init
@@ -188,13 +188,13 @@ funky init
 
 ### Paso 2.3 — Llenar los canvases (discusión con IA)
 
-Usá `canvas-planning-guide.md` como referencia y completá PROJECT-CANVAS.md e INFRA-CANVAS.md. La mejor forma es discutir cada sección con la IA en el chat, aprovechando las preguntas guía y Architect Notes incorporadas en los templates.
+Usa `canvas-planning-guide.md` como referencia y completa PROJECT-CANVAS.md e INFRA-CANVAS.md. La mejor forma es discutir cada sección con la IA en el chat, aprovechando las preguntas guía y Architect Notes incorporadas en los templates.
 
 ✅ **Criterio de salida:** Ambos canvases tienen valores concretos en todos los campos (sin `[Responde aquí]`).
 
 ### Paso 2.4 — Inicializar el ecosistema completo
 
-Con los canvases llenos, ejecutá `--bootstrap` para copiar toda la estructura del ecosistema Funky AI:
+Con los canvases llenos, ejecuta `--bootstrap` para copiar toda la estructura del ecosistema Funky AI:
 
 ```bash
 funky init --bootstrap
@@ -288,7 +288,7 @@ Dentro del directorio del proyecto:
 funky phase explore
 ```
 
-Esto crea `sdd-explore.md` en el directorio actual. Completá el archivo con el contexto de la exploración de la Etapa 1.
+Esto crea `sdd-explore.md` en el directorio actual. Completa el archivo con el contexto de la exploración de la Etapa 1.
 
 ### Paso 3.2 — Inyectar el template de propuesta
 
@@ -296,7 +296,7 @@ Esto crea `sdd-explore.md` en el directorio actual. Completá el archivo con el 
 funky phase proposal
 ```
 
-Esto crea `sdd-proposal.md`. Completá: Contexto, Decisiones Técnicas, Stack, Riesgos.
+Esto crea `sdd-proposal.md`. Completa: Contexto, Decisiones Técnicas, Stack, Riesgos.
 
 ### Paso 3.3 — Inyectar el template de tareas
 
@@ -304,7 +304,7 @@ Esto crea `sdd-proposal.md`. Completá: Contexto, Decisiones Técnicas, Stack, R
 funky phase tasks
 ```
 
-Esto crea `sdd-tasks.md`. Dividí el trabajo en Fases ejecutables por Workers.
+Esto crea `sdd-tasks.md`. Divide el trabajo en Fases ejecutables por Workers.
 
 ### Paso 3.4 — Crear el Worker Handoff para la primera Fase
 
@@ -312,9 +312,9 @@ Esto crea `sdd-tasks.md`. Dividí el trabajo en Fases ejecutables por Workers.
 funky phase worker-handoff
 ```
 
-Esto crea `sdd-worker-handoff.md`. Completá la sección **La Misión** con las acciones quirúrgicas exactas de la Fase 1.
+Esto crea `sdd-worker-handoff.md`. Completa la sección **La Misión** con las acciones quirúrgicas exactas de la Fase 1.
 
-✅ **Criterio de salida:** Tenés 4 archivos físicos con el plan completo en disco.
+✅ **Criterio de salida:** Tienes 4 archivos físicos con el plan completo en disco.
 
 ---
 
@@ -328,21 +328,21 @@ Esto crea `sdd-worker-handoff.md`. Completá la sección **La Misión** con las 
 
 ### Paso 4.2 — Inyectar el contexto al Worker
 
-En el nuevo chat, llamá al workflow de Antigravity tageando el handoff:
+En el nuevo chat, llama al workflow de Antigravity etiquetando el handoff:
 
 ```
-/funky-worker @sdd-worker-handoff.md Ejecutá la Fase N
+/funky-worker @sdd-worker-handoff.md Ejecuta la Fase N
 ```
 
 ### Paso 4.3 — El Worker ejecuta y escribe el reporte
 
 El Worker debe crear o actualizar `sdd-report.md` al terminar. No debe responderte en el chat — todo va al disco.
 
-### Paso 4.4 — Volvé al chat del Orquestador
+### Paso 4.4 — Vuelve al chat del Orquestador
 
-Revisá el `sdd-report.md`. Si hay hallazgos o bugs documentados → registralos en el Engram usando `funky engram add --tag "[tag]" --category <categoría> --desc "..."` (categorías: `architecture`, `pattern`, `discovery`, `decision`, `bugfix`).
+Revisa el `sdd-report.md`. Si hay hallazgos o bugs documentados → regístralos en el Engram usando `funky engram add --tag "[tag]" --category <categoría> --desc "..."` (categorías: `architecture`, `pattern`, `discovery`, `decision`, `bugfix`).
 
-Repetí los pasos 3.4 → 4.4 para cada Fase del `sdd-tasks.md`.
+Repite los pasos 3.4 → 4.4 para cada Fase del `sdd-tasks.md`.
 
 ---
 
@@ -362,7 +362,7 @@ git tag -a vX.Y.Z -m "release: vX.Y.Z"
 
 ### Paso 5.2 — Actualizar ORCHESTRATOR-STATE.md
 
-Actualizá la versión, las tareas completadas y el historial de versiones.
+Actualiza la versión, las tareas completadas y el historial de versiones.
 
 ### Paso 5.3 — Limpiar el openspec (opcional pero recomendado)
 
@@ -397,5 +397,5 @@ Eliminá los archivos `sdd-*.md` del directorio raíz una vez mergeado. Son arte
 | Planificar en `main` sin rama | Contamina el historial y rompe Git-Ops |
 | Usar el mismo chat para Orquestador y Worker | El Worker hereda contexto que interfiere con su ejecución |
 | Pedirle al Worker que "te devuelva" el reporte | Lo imprime en el chat, no lo persiste en disco |
-| Saltear el `funky init` y crear archivos a mano | Rompe la consistencia de versiones entre proyectos |
+| Saltar el `funky init` y crear archivos a mano | Rompe la consistencia de versiones entre proyectos |
 | Omitir el Tier en el Worker Handoff | El modelo puede sobre-arquitectar en lugar de ejecutar |

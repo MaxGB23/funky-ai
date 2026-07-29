@@ -15,7 +15,7 @@
 > 2. Guardar el archivo al disco antes de continuar al siguiente ítem.
 > Un `tasks.md` desactualizado = próxima sesión ciega. Sin excusas.
 
-> **[SISTEMA — PARA EL ORQUESTADOR]** Si detectás que una fase tiene lógica de negocio compleja o decisiones de diseño críticas, limitate a etiquetar su título con `[⚠️ RIESGO ALTO]`. El humano decidirá si ejecutar el protocol "micro-planning", nunca lo asumas.
+> **[SISTEMA — PARA EL ORQUESTADOR]** Si detectas que una fase tiene lógica de negocio compleja o decisiones de diseño críticas, limítate a etiquetar su título con `[⚠️ RIESGO ALTO]`. El humano decidirá si ejecutar el protocolo "micro-planning", nunca lo asumas.
 
 > **GUARDRAIL DE TAREAS (Budget: ≤ 530 palabras):**
 > Cada tarea DEBE cumplir estos criterios:
@@ -48,7 +48,7 @@
 
 > **[SISTEMA — ORQUESTADOR — DECISIÓN REQUERIDA]**
 > Analiza los cambios de esta feature contra el índice de abajo. Si algún doc cubre exactamente lo que cambió → Añade esta fase con tareas concretas. Si ninguno aplica → **elimina este bloque completo del archivo para que no gaste tokens de más.**
-> **Regla de contexto:** NO abras ningún doc del índice todavía. La columna "Aplica si..." es suficiente para decidir. Solo abrís el archivo en el momento exacto de editarlo.
+> **Regla de contexto:** NO abras ningún doc del índice todavía. La columna "Aplica si..." es suficiente para decidir. Solo abre el archivo en el momento exacto de editarlo.
 
 ## 📚 Índice de Docs Vivos
 | # | Doc | Cubre | Aplica si... |
@@ -126,4 +126,4 @@ Al finalizar cada fase, actualizar `report.md` con:
 > Antes de escribir cualquier instrucción al humano, verificar **en este orden**:
 > 1. ¿`worker-handoff.md` generado en `openspec/changes/{feature}/`? Si **NO** → generarlo AHORA. No se delega ninguna fase sin handoff.
 > 2. ¿Revisaste el Orchestration Checklist (items 0–4) en `.agents/rules/sdd-orchestrator.md`? Si **NO** → leerlo antes de continuar.
-> 3. Solo después de confirmar los dos puntos anteriores, instruir al humano: *"Cerrá este chat, abrí uno nuevo y decíme: `@openspec/changes/{feature}/worker-handoff.md Ejecutá la Fase N`"*
+> 3. Solo después de confirmar los dos puntos anteriores, instruir al humano: *"Cierra este chat, abre uno nuevo y dime: `@openspec/changes/{feature}/worker-handoff.md Ejecuta la Fase N`"*

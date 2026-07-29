@@ -13,7 +13,7 @@ No todos los tests son iguales. Generalmente los dividimos en una "pirámide" do
 
 ### B. Pruebas de Integración (Integration Tests)
 - **¿Qué son?** Prueban cómo dos o más unidades de código trabajan juntas. 
-- **Características:** Son más lentas que las unitarias. Acá SÍ podés tocar la base de datos (generalmente una base de datos de prueba) o el disco duro.
+- **Características:** Son más lentas que las unitarias. Aquí SÍ puedes tocar la base de datos (generalmente una base de datos de prueba) o el disco duro.
 - **Ejemplo:** Probar que la función `guardarUsuario()` realmente escriba en la base de datos y la función `leerUsuario()` pueda recuperarlo.
 
 ### C. Pruebas End-to-End (E2E)
@@ -32,17 +32,17 @@ No todos los tests son iguales. Generalmente los dividimos en una "pirámide" do
 El TDD no es un *tipo de test*, es una **metodología de trabajo**.
 
 - **TDD (Test-Driven Development):** 
-  1. Escribís un test que falla porque el código no existe (Red).
-  2. Escribís el código mínimo para que pase (Green).
-  3. Mejorás el código (Refactor).
+  1. Escribes un test que falla porque el código no existe (Red).
+  2. Escribes el código mínimo para que pase (Green).
+  3. Mejoras el código (Refactor).
   *Ventaja:* El código nace testeable y con buen diseño.
   
 - **BDD (Behavior-Driven Development):**
   Es una variante del TDD donde los tests se escriben en un lenguaje muy cercano al humano (inglés plano), enfocado en el comportamiento de negocio en vez de en los detalles técnicos (ej. "Dado un usuario logueado, Cuando hace clic, Entonces ve el panel").
 
 - **Test-After (Desarrollo Tradicional):**
-  Escribís el código primero y, cuando terminás o antes de mandar a producción, le escribís tests para asegurarte de que no se rompa en el futuro.
-  *Desventaja:* A veces escribís código tan complejo que después es imposible de testear ("spaghetti code").
+  Escribes el código primero y, cuando terminas o antes de mandar a producción, le escribes tests para asegurarte de que no se rompa en el futuro.
+  *Desventaja:* A veces escribes código tan complejo que después es imposible de testear ("spaghetti code").
 
 ---
 
@@ -56,7 +56,7 @@ El ecosistema cambia, pero hoy en día estas son las herramientas principales:
 |-------------|-------------------|-------------|
 | **Vitest** | Proyectos modernos (Vite, Vue, React moderno, TS) | Es rapidísimo, soporta TypeScript nativamente, y tiene una API casi idéntica a Jest. Es la evolución lógica. **(Nuestra elección en Funky CLI)**. |
 | **Jest** | Proyectos Legacy o Enterprise | Fue el rey durante años (creado por Facebook). Súper completo, pero configurarlo hoy para usar TypeScript puro o ESM (módulos modernos) es doloroso y lento. |
-| **node:test** | Scripts rápidos o librerías puras Node | Viene integrado en Node.js (v18+). No tenés que instalar *nada*. Es genial para cosas chicas, pero le faltan utilidades gráficas y de aserción maduras. |
+| **node:test** | Scripts rápidos o librerías puras Node | Viene integrado en Node.js (v18+). No tienes que instalar *nada*. Es genial para cosas pequeñas, pero le faltan utilidades gráficas y de aserción maduras. |
 | **Mocha/Chai** | Proyectos muy viejos | Fue el estándar antes de Jest. Hoy en día no se recomienda para proyectos nuevos, pero lo vas a ver en código antiguo. |
 
 ### Para E2E (Simuladores de Navegador)
@@ -68,4 +68,4 @@ El ecosistema cambia, pero hoy en día estas son las herramientas principales:
 | **Selenium** | Entornos Enterprise legacy | El abuelo de todos. Lento, inestable, pero soporta navegadores viejísimos. Evitar si es posible. |
 
 ---
-**Conclusión Arquitectónica:** No te cases con una herramienta. Elegí la que menor fricción te dé según tu stack. Si usás Vite/Next moderno, andá por **Vitest + Playwright**. Si hacés una lib tonta en Node, **node:test** sobra. Para Funky AI, Vitest nos da el balance perfecto de velocidad y potencia.
+**Conclusión Arquitectónica:** No te cases con una herramienta. Elige la que menor fricción te dé según tu stack. Si usas Vite/Next moderno, ve por **Vitest + Playwright**. Si haces una biblioteca simple en Node, **node:test** sobra. Para Funky AI, Vitest nos da el balance perfecto de velocidad y potencia.

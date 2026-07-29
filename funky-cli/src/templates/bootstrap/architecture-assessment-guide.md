@@ -1,6 +1,6 @@
 # 🏛️ Guía de Llenado: Architecture Assessment
 
-> **Propósito:** Usá esta guía para entender qué significa cada campo del `architecture-assessment.md`. El objetivo es evitar números mágicos y obligarte a pensar en los Trade-offs reales del proyecto.
+> **Propósito:** Usa esta guía para entender qué significa cada campo del `architecture-assessment.md`. El objetivo es evitar números mágicos y obligarte a pensar en los Trade-offs reales del proyecto.
 
 ---
 
@@ -13,11 +13,11 @@ Esta sección es el corazón financiero y técnico de tu proyecto.
 - **$0 - $20:** VPS chico (DigitalOcean, Hetzner, Linode) o capas gratuitas (Vercel Hobby, Render). Arquitecturas monolíticas o serverless simple.
 - **$50 - $200:** PaaS Profesional (Vercel Pro, Heroku, Railway). Ideal para startups o PyMEs.
 - **$500+:** Clusters (Kubernetes, AWS ECS) o bases de datos administradas pesadas.
-> **⚠️ Importante:** Los clientes pequeños muchas veces tienen un "techo duro" (ej. "no pago más de $50 al mes bajo ningún concepto"). Esto **dicta** la tecnología. Si el límite es bajo, olvidate de K8s.
+> **⚠️ Importante:** Los clientes pequeños muchas veces tienen un "techo duro" (ej. "no pago más de $50 al mes bajo ningún concepto"). Esto **dicta** la tecnología. Si el límite es bajo, olvídate de K8s.
 
 ### `rps` (Requests per Second)
 La carga máxima concurrente en el peor escenario.
-> **⚠️ Cuidado con la fantasía:** Si esperás 10,000 usuarios al mes, el promedio es ~0.003 RPS. Aún concentrado en ciertas horas, rara vez pasa de 5 RPS. **No pongas 1000 RPS** a menos que estés construyendo Ticketek, un exchange de cripto o un sistema de votación masiva. Un RPS inflado te obligará a pagar infraestructura redundante que nunca vas a usar.
+> **⚠️ Cuidado con la fantasía:** Si esperas 10,000 usuarios al mes, el promedio es ~0.003 RPS. Aún concentrado en ciertas horas, rara vez pasa de 5 RPS. **No pongas 1000 RPS** a menos que estés construyendo Ticketek, un exchange de cripto o un sistema de votación masiva. Un RPS inflado te obligará a pagar infraestructura redundante que nunca vas a usar.
 
 ### `sla` (Service Level Agreement)
 La expectativa de uptime prometida al cliente. La "Regla de los Nueve":
@@ -67,4 +67,4 @@ Detallá los bloques pesados:
 - *"Se asume que el tráfico no crecerá más de un 10% anual."*
 
 ---
-*Fin de la guía. Usá estos conceptos para llenar tu `architecture-assessment.md` y debatir con propiedad.*
+*Fin de la guía. Usa estos conceptos para llenar tu `architecture-assessment.md` y debatir con propiedad.*

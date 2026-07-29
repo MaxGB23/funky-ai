@@ -138,14 +138,14 @@ El MCP Engram gana en **riqueza de información**: `mem_context` te dice QUÉ se
 | Sistema | Pasos | Total (tok) |
 |---------|-------|-------------|
 | **MCP Engram** | 0 — el sub-agente ya tiene las tools MCP | **~0** |
-| **Shardeado** | Instrucciones en el prompt de delegación: "usá `grep -ril` en `docs/engram/descubrimientos/`" | **~200-400** |
+| **Shardeado** | Instrucciones en el prompt de delegación: "usa `grep -ril` en `docs/engram/descubrimientos/`" | **~200-400** |
 | **Monolítico** | Instrucciones + advertencia de no leer discoveries.md entero | **~200-400** |
 
 **Ganador:** MCP Engram. Cada sub-agente que delegás paga 0 tokens extra porque las tools MCP ya están disponibles globalmente.
 
 **Costo anualizado:** Si delegás 50 tareas/día hábil = ~250 delegaciones/semana × ~300 tok = **~75.000 tokens/semana** que el shardeado paga y el MCP no.
 
-> **Mitigación para shardeado:** Poner las instrucciones de grep en el `worker-handoff.md` template (costo único, no por delegación). El orquestador solo pasa "usá el engram estándar" en vez de repetir las instrucciones cada vez.
+> **Mitigación para shardeado:** Poner las instrucciones de grep en el `worker-handoff.md` template (costo único, no por delegación). El orquestador solo pasa "usa el engram estándar" en vez de repetir las instrucciones cada vez.
 
 ---
 
@@ -280,7 +280,7 @@ Donde el MCP Engram realmente supera al shardeado NO es en tokens:
 
 ### TL;DR
 
-Si tu IDE soporta MCP y no tenés problemas de conectividad → **usá el MCP Engram**. La diferencia de tokens es insignificante (~200-400 tok por operación) y ganás FTS5, deduplicación, y cero boilerplate en delegaciones.
+Si tu IDE soporta MCP y no tienes problemas de conectividad → **usa el MCP Engram**. La diferencia de tokens es insignificante (~200-400 tok por operación) y ganas FTS5, deduplicación, y cero boilerplate en delegaciones.
 
 Si tu IDE no soporta MCP o está inestable (como tu caso actual) → **el falso engram shardeado es perfectamente viable**. Estás perdiendo features de búsqueda, no eficiencia de tokens. De hecho, en operaciones de listar y buscar con grep, el shardeado es **más barato**.
 

@@ -1,6 +1,6 @@
 # 🗺️ Escenarios de Uso — Funky AI CLI
 
-> **Propósito:** Guía de referencia rápida. Según el estado en el que llegás al proyecto, este doc te dice cuál es tu flujo de comandos recomendado y cuándo estás listo para el siguiente paso.
+> **Propósito:** Guía de referencia rápida. Según el estado en el que llegas al proyecto, este doc te dice cuál es tu flujo de comandos recomendado y cuándo estás listo para el siguiente paso.
 
 ---
 
@@ -8,11 +8,11 @@
 
 | # | ¿En qué estado estás? | Primer comando |
 |---|---|---|
-| [Escenario 1](#escenario-1) | No tenés claro qué construir ni con qué stack | Chat vacío → debate → `funky init` |
-| [Escenario 2](#escenario-2) | Sabés qué construir, empezás desde cero | `funky init` |
-| [Escenario 3](#escenario-3) | Repo existente, querés incorporar Funky AI | `funky init` (genera canvases) |
-| [Escenario 4](#escenario-4) | Querés discutir arquitectura o pricing | `funky assess` / `funky estimate` / `funky pipeline all` |
-| [Escenario 5](#escenario-5) | Querés registrar un hallazgo o decisión técnica | `funky engram add` |
+| [Escenario 1](#escenario-1) | No tienes claro qué construir ni con qué stack | Chat vacío → debate → `funky init` |
+| [Escenario 2](#escenario-2) | Sabes qué construir, empiezas desde cero | `funky init` |
+| [Escenario 3](#escenario-3) | Repo existente, quieres incorporar Funky AI | `funky init` (genera canvases) |
+| [Escenario 4](#escenario-4) | Quieres discutir arquitectura o pricing | `funky assess` / `funky estimate` / `funky pipeline all` |
+| [Escenario 5](#escenario-5) | Quieres registrar un hallazgo o decisión técnica | `funky engram add` |
 
 ---
 
@@ -24,18 +24,18 @@
 
 #### Flujo recomendado
 
-**Paso 1.1 — Abrí un chat vacío y debatí**
+**Paso 1.1 — Abre un chat vacío y debate**
 
-No tags de archivos. Describí el problema en lenguaje natural:
+No tags de archivos. Describe el problema en lenguaje natural:
 
 ```
 "Quiero construir algo para [problema]. No sé si es una API, una CLI,
-una web app. Ayudame a pensar qué construir y con qué stack."
+una web app. Ayúdame a pensar qué construir y con qué stack."
 ```
 
-El agente actúa como Senior Architect. Explorá, cuestioná, no te comprometas todavía.
+El agente actúa como Senior Architect. Explora, cuestiona, no te comprometas todavía.
 
-**✅ Criterio de salida del Paso 1.1:** Tenés una decisión técnica concreta — qué construir, con qué stack y por qué.
+**✅ Criterio de salida del Paso 1.1:** Tienes una decisión técnica concreta — qué construir, con qué stack y por qué.
 
 ---
 
@@ -59,9 +59,9 @@ funky init
 
 ---
 
-**Paso 1.3 — Llenás los Canvas**
+**Paso 1.3 — Llenas los Canvas**
 
-Abrí `canvas-planning-guide.md` como referencia. Completá `PROJECT-CANVAS.md` e `INFRA-CANVAS.md` con las decisiones del debate anterior.
+Abre `canvas-planning-guide.md` como referencia. Completa `PROJECT-CANVAS.md` e `INFRA-CANVAS.md` con las decisiones del debate anterior.
 
 **✅ Criterio de salida:** Ambos Canvas tienen valores concretos en todos los campos (sin `[Responde aquí]`).
 
@@ -83,7 +83,7 @@ funky assess
 📄 Template de decisiones → docs/architecture-decisions.md (si no existía)
 ```
 
-> 💡 Copiá `docs/architecture-review.md` en un chat con IA y discutí: riesgos, alternativas, trade-offs. Documentá los acuerdos en `docs/architecture-decisions.md`.
+> 💡 Copia `docs/architecture-review.md` en un chat con IA y discute: riesgos, alternativas, trade-offs. Documenta los acuerdos en `docs/architecture-decisions.md`.
 
 ---
 
@@ -106,25 +106,25 @@ funky init --bootstrap
 ✅ Funky AI inicializado.
 ```
 
-**✅ Criterio de salida:** Tenés el ecosistema completo.
+**✅ Criterio de salida:** Tienes el ecosistema completo.
 
 ---
 
 **Paso 1.6 — (Opcional) Sesión de pricing con `funky estimate`**
 
-Si querés discutir costos y trade-offs de pricing basados en las decisiones arquitectónicas:
+Si quieres discutir costos y trade-offs de pricing basados en las decisiones arquitectónicas:
 
 ```bash
 funky estimate
 ```
 
-O si preferís orquestar assess + estimate en secuencia:
+O si prefieres orquestar assess + estimate en secuencia:
 
 ```bash
 funky pipeline all
 ```
 
-✅ **Criterio de salida:** Podés hacer el primer commit y arrancar con `funky phase explore`.
+✅ **Criterio de salida:** Puedes hacer el primer commit y arrancar con `funky phase explore`.
 
 ---
 
@@ -132,11 +132,11 @@ funky pipeline all
 
 ### "Sé qué quiero construir, arranco desde cero"
 
-**Condición de entrada:** Tenés el stack definido mentalmente. No existe el directorio del proyecto todavía.
+**Condición de entrada:** Tienes el stack definido mentalmente. No existe el directorio del proyecto todavía.
 
 #### Flujo recomendado
 
-**Paso 2.1 — Crea el directorio y genera los Canvas vacios**
+**Paso 2.1 — Crea el directorio y genera los Canvas vacíos**
 
 ```bash
 mkdir mi-proyecto && cd mi-proyecto
@@ -144,11 +144,11 @@ git init
 funky init
 ```
 
-El CLI genera `PROJECT-CANVAS.md` e `INFRA-CANVAS.md` con placeholders guia, mas `canvas-planning-guide.md` como referencia.
+El CLI genera `PROJECT-CANVAS.md` e `INFRA-CANVAS.md` con placeholders guía, más `canvas-planning-guide.md` como referencia.
 
-> 💡 **Nota:** No hay prompts interactivos. `funky init` genera los canvases vacíos. Cuando estén llenos, ejecutá `funky init --bootstrap` para copiar toda la estructura Funky AI.
+> 💡 **Nota:** No hay prompts interactivos. `funky init` genera los canvases vacíos. Cuando estén llenos, ejecuta `funky init --bootstrap` para copiar toda la estructura Funky AI.
 
-**✅ Criterio de salida:** Tenés los canvases llenos. Ejecutá `funky init --bootstrap` para el ecosistema completo, luego primer commit y al flujo SDD.
+**✅ Criterio de salida:** Tienes los canvases llenos. Ejecuta `funky init --bootstrap` para el ecosistema completo, luego primer commit y al flujo SDD.
 
 ---
 
@@ -189,23 +189,23 @@ funky init
 
 ---
 
-**Paso 3.2 — Llenás los Canvas con el stack actual del proyecto**
+**Paso 3.2 — Llenas los Canvas con el stack actual del proyecto**
 
 No estás decidiendo — estás documentando lo que ya existe. Cada campo del Canvas debe reflejar la realidad actual, no lo ideal.
 
 ---
 
-**Paso 3.3 — Inicializá el ecosistema completo**
+**Paso 3.3 — Inicializa el ecosistema completo**
 
-Con los canvases llenos, ejecutá `--bootstrap` para copiar la estructura Funky AI sin sobreescribir archivos existentes:
+Con los canvases llenos, ejecuta `--bootstrap` para copiar la estructura Funky AI sin sobrescribir archivos existentes:
 
 ```bash
 funky init --bootstrap
 ```
 
-> ⚠️ **Migración Legacy:** Si solo existe `PROJECT-CANVAS.md` pero no `INFRA-CANVAS.md` (proyecto pre-v1.7), el CLI genera automáticamente `INFRA-CANVAS.md` con una advertencia de migración en el encabezado. Completá los campos de infra antes de continuar.
+> ⚠️ **Migración Legacy:** Si solo existe `PROJECT-CANVAS.md` pero no `INFRA-CANVAS.md` (proyecto pre-v1.7), el CLI genera automáticamente `INFRA-CANVAS.md` con una advertencia de migración en el encabezado. Completa los campos de infra antes de continuar.
 
-**✅ Criterio de salida:** El ecosistema Funky AI está activo sobre tu repo existente. Podés empezar a usar `funky phase` para planificar la próxima feature.
+**✅ Criterio de salida:** El ecosistema Funky AI está activo sobre tu repo existente. Puedes empezar a usar `funky phase` para planificar la próxima feature.
 
 ---
 
@@ -225,17 +225,17 @@ funky init --bootstrap
 
 ### "Quiero discutir la arquitectura o pricing de mi proyecto"
 
-**Condición de entrada:** Ya tenés los canvases llenos (PROJECT-CANVAS.md e INFRA-CANVAS.md) y querés una sesión de discusión con IA.
+**Condición de entrada:** Ya tienes los canvases llenos (PROJECT-CANVAS.md e INFRA-CANVAS.md) y quieres una sesión de discusión con IA.
 
 #### Flujo recomendado
 
-**Paso 4.1 — Discutí la arquitectura**
+**Paso 4.1 — Discute la arquitectura**
 
 ```bash
 funky assess
 ```
 
-Genera `docs/architecture-review.md` (guía de discusión de 6 fases) y `docs/architecture-decisions.md` (template de decisiones). Copiá la guía en un chat con IA y discutí riesgos, alternativas y trade-offs.
+Genera `docs/architecture-review.md` (guía de discusión de 6 fases) y `docs/architecture-decisions.md` (template de decisiones). Copia la guía en un chat con IA y discute riesgos, alternativas y trade-offs.
 
 **Paso 4.2 — Sesión de pricing**
 
@@ -243,7 +243,7 @@ Genera `docs/architecture-review.md` (guía de discusión de 6 fases) y `docs/ar
 funky estimate
 ```
 
-Inyecta guía de pricing + prompt IA. Copiá el prompt en un chat y discutí costos, alternativas más económicas y value-based pricing.
+Inyecta guía de pricing + prompt IA. Copia el prompt en un chat y discute costos, alternativas más económicas y value-based pricing.
 
 **Paso 4.3 — O todo en uno con pipeline**
 
@@ -251,9 +251,9 @@ Inyecta guía de pricing + prompt IA. Copiá el prompt en un chat y discutí cos
 funky pipeline all
 ```
 
-Orquesta assess → estimate en secuencia con estado compartido via `context.json`. No tenés que ejecutar los comandos manualmente.
+Orquesta assess → estimate en secuencia con estado compartido vía `context.json`. No tienes que ejecutar los comandos manualmente.
 
-✅ **Criterio de salida:** Tenés `docs/architecture-decisions.md` y `docs/pricing-decisions.md` documentados.
+✅ **Criterio de salida:** Tienes `docs/architecture-decisions.md` y `docs/pricing-decisions.md` documentados.
 
 ---
 
@@ -277,6 +277,6 @@ El CLI arrancará un wizard interactivo con `@inquirer/prompts` que te guiará p
 - Un resumen de una línea para el índice
 - Los bloques detallados (`What`, `Why`, `Where`, `Learned`) usando tu editor de sistema.
 
-> 💡 **Tip para agentes:** Si un Worker necesita documentar esto de forma automatizada, puede saltearse el menú interactivo pasando los flags correspondientes (`--tag`, `--category`, `--desc`, etc.).
+> 💡 **Tip para agentes:** Si un Worker necesita documentar esto de forma automatizada, puede saltarse el menú interactivo pasando los flags correspondientes (`--tag`, `--category`, `--desc`, etc.).
 
 **✅ Criterio de salida:** El engrama está fragmentado en disco en su directorio correspondiente y el `index.md` ha sido actualizado atómicamente. Los agentes ya pueden acceder a él mediante `grep_search`.

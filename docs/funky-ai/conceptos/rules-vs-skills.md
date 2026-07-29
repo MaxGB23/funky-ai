@@ -13,7 +13,7 @@ Las Rules (`.agents/rules/*.md`) son **Guardarraíles Invisibles**. Son inyeccio
 ### Cuándo crear una Rule:
 Utiliza una Rule cuando necesites establecer las *Leyes inquebrantables* del Universo para tu código.
 - **Se usa para:** Políticas de seguridad, convenciones de nombres obligatorias estáticas, disparadores de auditoría pasivos.
-- **Característica:** **No contienen pasos de acción**. Son aserciones de estado ("Siempre usá `pnpm`", "Nunca le pongas tu nombre a los Commits").
+- **Característica:** **No contienen pasos de acción**. Son aserciones de estado ("Siempre usa `pnpm`", "Nunca le pongas tu nombre a los Commits").
 - **Ejemplo en Funky AI:** 
   - `secops.md`: Bloquea estrictamente la ejecución de herramientas ajenas a la política de seguridad.
   - `engram-protocol.md`: Instruye que al estar en `docs/`, el bot asume el formato de datos MCP (What/Why/Where). No le dice "ejecutá 10 comandos", le dice "si escribís acá, escribí así".
@@ -38,6 +38,6 @@ Utiliza un Skill cuando tengas un Flujo de Trabajo (Workflow) que implique pasos
 
 ## ⚖️ El Dictamen del Arquitecto
 
-Si te hacés la siguiente pregunta antes de guardar tu documento de Agente, nunca vas a fallar:
+Si te haces la siguiente pregunta antes de guardar tu documento de Agente, nunca vas a fallar:
 
 > *"¿Quiero que el Agente me aplique esta lógica TODO EL TIEMPO mientras hablamos relajados del código (Rule), o quiero LLAMAR explícitamente a esta lógica para que el Agente se ponga a trabajar y resuelva una tarea de inicio a fin (Skill)?"*

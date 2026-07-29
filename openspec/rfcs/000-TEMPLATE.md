@@ -13,7 +13,7 @@ Este documento alimenta la fase de explore. El agente explore debe leer esto, in
 - ...
 
 ## 🗑️ Brain Dump (Tira todo acá)
-*(Pega links, conversaciones de ChatGPT, fragmentos de código, notas de voz transcritas, lo que se te cante. No hace falta que esté prolijo).*
+*(Pega links, conversaciones de ChatGPT, fragmentos de código, notas de voz transcritas, lo que quieras. No hace falta que esté ordenado).*
 - ...
 
 ## 🎯 Qué NO es esto (Opcional)

@@ -99,7 +99,7 @@ Crear `openspec/changes/{feature-name}/explore.md` con esta estructura:
 | Regla | Descripción |
 |-------|-------------|
 | 🔴 Solo lectura | `view_file`, `grep_search`, `list_dir` únicamente |
-| 🔴 Un solo artefacto | El único file que podés crear/editar es `explore.md` |
+| 🔴 Un solo artefacto | El único file que puedes crear/editar es `explore.md` |
 | 🔴 Código real | Leer fuentes reales, nunca asumir ni inferir sin evidencia |
 | 🔴 Context Preservation | Siempre llenar esta sección. No es análisis — es volcado factual. Aunque no haya reglas explícitas, escribir "Ninguna regla explícita identificada." |
 | 🔴 NFRs Reales | Si levantas NFR Candidates, deben estar respaldados por evidencia real. Cero tolerancia a inventar NFRs para features simples. |

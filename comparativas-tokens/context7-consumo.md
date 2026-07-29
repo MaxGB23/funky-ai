@@ -95,7 +95,7 @@ La feature que pediste (**Cache Components**) ya no se implementa con `unstable_
 
 ## Principio: Especificidad de Query = Token Savings
 
-Este es el patrón más importante para usar Context7 sin quemar tokens al pedo.
+Este es el patrón más importante para usar Context7 sin quemar tokens en vano.
 
 ### El problema
 
@@ -133,7 +133,7 @@ En la práctica:
 
 ### TL;DR
 
-> Cada palabra extra que aclara QUÉ querés = tokens que NO gastás en lo que NO querés.
+> Cada palabra extra que aclara QUÉ quieres = tokens que NO gastas en lo que NO quieres.
 
 La query de Cache Components funcionó porque en una sola frase aclaré:
 - **Qué**: cache components
