@@ -1,39 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import path from 'path';
 
-import { runInit, collectDirFiles } from '../src/commands/init.js';
-
-describe('collectDirFiles()', () => {
-  it('devuelve array vacío si el directorio no existe', () => {
-    const files = collectDirFiles('/ruta/que/no/existe');
-    expect(files).toEqual([]);
-  });
-
-  it('escanea archivos recursivamente desde un directorio real', () => {
-    // Usamos el directorio real de funky-ai-rules para un test de integración
-    const testDir = path.resolve(__dirname, '../src/templates/bootstrap/funky-ai-rules');
-    const files = collectDirFiles(testDir);
-
-    expect(files.length).toBeGreaterThan(0);
-
-    // Debe incluir archivos de subdirectorios
-    const tier2Files = files.filter(f => f.relativePath.startsWith('tier2-delegation/'));
-    expect(tier2Files.length).toBe(6);
-
-    const tier3Files = files.filter(f => f.relativePath.startsWith('tier3-interactive/'));
-    expect(tier3Files.length).toBe(9);
-
-    // Debe incluir archivos raíz
-    const rootFiles = files.filter(f => !f.relativePath.includes('/'));
-    expect(rootFiles.length).toBeGreaterThanOrEqual(8);
-
-    // Cada entry debe tener relativePath y fullPath absoluto
-    for (const file of files) {
-      expect(file.relativePath).toBeTruthy();
-      expect(file.fullPath).toBe(path.resolve(testDir, file.relativePath));
-    }
-  });
-});
+import { runInit } from '../src/commands/init.js';
 
 describe('runInit()', () => {
   const fakeTemplatesDir = '/fake/templates';
@@ -45,7 +13,7 @@ describe('runInit()', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
-  it('crea el plan base: 3 root files + 7 engram dirs + docs-live-index', () => {
+  it('crea el plan completo: 35 copy + 1 create + 7 mkdir', () => {
     const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
 
     const mkdirIntentions = intentions.filter(i => i.action === 'mkdir');
@@ -53,7 +21,7 @@ describe('runInit()', () => {
     const createIntentions = intentions.filter(i => i.action === 'create');
 
     expect(mkdirIntentions).toHaveLength(7);
-    expect(copyIntentions).toHaveLength(3);
+    expect(copyIntentions).toHaveLength(35);
     expect(createIntentions).toHaveLength(1);
   });
 
@@ -79,67 +47,50 @@ describe('runInit()', () => {
     });
   });
 
-  it('copia rulesFiles a .agents/rules/ preservando relativePath', () => {
-    const rulesFiles = [
-      { relativePath: 'engram-protocol.md', fullPath: '/real/rules/engram-protocol.md' },
-      { relativePath: 'tier2-delegation/t2-explore.md', fullPath: '/real/rules/tier2-delegation/t2-explore.md' },
-    ];
-    const intentions = runInit({
-      templatesDir: fakeTemplatesDir,
-      targetBase: fakeTargetDir,
-      rulesFiles,
-    });
+  it('copia funky-ai-rules/ a .agents/rules/ con rutas correctas', () => {
+    const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
 
     expect(intentions).toContainEqual({
       action: 'copy',
-      src: '/real/rules/engram-protocol.md',
+      src: path.join(fakeTemplatesDir, 'funky-ai-rules/engram-protocol.md'),
       dest: path.join(fakeTargetDir, '.agents', 'rules', 'engram-protocol.md'),
     });
 
     expect(intentions).toContainEqual({
       action: 'copy',
-      src: '/real/rules/tier2-delegation/t2-explore.md',
+      src: path.join(fakeTemplatesDir, 'funky-ai-rules/tier2-delegation/t2-explore.md'),
       dest: path.join(fakeTargetDir, '.agents', 'rules', 'tier2-delegation', 't2-explore.md'),
-    });
-  });
-
-  it('copia sddFiles a .agents/templates/sdd/ (excepto rfc)', () => {
-    const sddFiles = [
-      { relativePath: 'explore.md', fullPath: '/real/sdd/explore.md' },
-      { relativePath: 'release-notes.md', fullPath: '/real/sdd/release-notes.md' },
-    ];
-    const intentions = runInit({
-      templatesDir: fakeTemplatesDir,
-      targetBase: fakeTargetDir,
-      sddFiles,
     });
 
     expect(intentions).toContainEqual({
       action: 'copy',
-      src: '/real/sdd/explore.md',
+      src: path.join(fakeTemplatesDir, 'funky-ai-rules/tier3-interactive/risk-decision.md'),
+      dest: path.join(fakeTargetDir, '.agents', 'rules', 'tier3-interactive', 'risk-decision.md'),
+    });
+  });
+
+  it('copia sdd/ a .agents/templates/sdd/', () => {
+    const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
+
+    expect(intentions).toContainEqual({
+      action: 'copy',
+      src: path.join(fakeTemplatesDir, 'sdd/explore.md'),
       dest: path.join(fakeTargetDir, '.agents', 'templates', 'sdd', 'explore.md'),
     });
 
     expect(intentions).toContainEqual({
       action: 'copy',
-      src: '/real/sdd/release-notes.md',
+      src: path.join(fakeTemplatesDir, 'sdd/release-notes.md'),
       dest: path.join(fakeTargetDir, '.agents', 'templates', 'sdd', 'release-notes.md'),
     });
   });
 
   it('inyecta 000-rfc-template.md a openspec/rfcs/ como excepción', () => {
-    const sddFiles = [
-      { relativePath: '000-rfc-template.md', fullPath: '/real/sdd/000-rfc-template.md' },
-    ];
-    const intentions = runInit({
-      templatesDir: fakeTemplatesDir,
-      targetBase: fakeTargetDir,
-      sddFiles,
-    });
+    const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
 
     expect(intentions).toContainEqual({
       action: 'copy',
-      src: '/real/sdd/000-rfc-template.md',
+      src: path.join(fakeTemplatesDir, 'sdd/000-rfc-template.md'),
       dest: path.join(fakeTargetDir, 'openspec', 'rfcs', '000-rfc-template.md'),
     });
   });
