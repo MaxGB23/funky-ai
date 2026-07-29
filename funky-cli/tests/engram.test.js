@@ -8,6 +8,7 @@ import fs from 'fs';
 import { runEngramAdd } from '../src/commands/engram.js';
 
 const fakeCwd = path.join('C:', 'fake', 'project');
+const defaultIndex = `# Engram Index\n\n## Architecture\n\n## Pattern\n\n## Discovery\n\n## Decision\n\n## Bugfix\n\n## Session\n\n## Release\n`;
 
 describe('runEngramAdd() — unit (fs mocked)', () => {
   beforeEach(() => {
@@ -22,10 +23,15 @@ describe('runEngramAdd() — unit (fs mocked)', () => {
     const desc = 'Descubrimiento de prueba';
     const expectedDir = path.join(fakeCwd, 'docs', 'engram', category);
     const expectedFile = path.join(expectedDir, 'test-tag.md');
+    const indexPath = path.join(fakeCwd, 'docs', 'engram', 'index.md');
 
-    fs.existsSync.mockImplementation(() => false);
+    fs.existsSync.mockImplementation((p) => {
+      if (p === indexPath) return true;
+      return false;
+    });
     fs.mkdirSync.mockImplementation(() => {});
     fs.writeFileSync.mockImplementation(() => {});
+    fs.readFileSync.mockReturnValue(defaultIndex);
 
     const result = await runEngramAdd({ tag, category, desc, cwd: fakeCwd });
 
@@ -39,15 +45,20 @@ describe('runEngramAdd() — unit (fs mocked)', () => {
     );
   });
 
-  it('el contenido del archivo incluye el tag, la descripción y la fecha', async () => {
+  it('el contenido del archivo incluye el tag, la descripción y el tipo', async () => {
     const tag = '[nuevo-patron]';
     const category = 'pattern';
     const desc = 'Nuevo patrón detectado';
     const today = new Date().toISOString().split('T')[0];
+    const indexPath = path.join(fakeCwd, 'docs', 'engram', 'index.md');
 
-    fs.existsSync.mockImplementation(() => false);
+    fs.existsSync.mockImplementation((p) => {
+      if (p === indexPath) return true;
+      return false;
+    });
     fs.mkdirSync.mockImplementation(() => {});
     fs.writeFileSync.mockImplementation(() => {});
+    fs.readFileSync.mockReturnValue(defaultIndex);
 
     await runEngramAdd({ tag, category, desc, cwd: fakeCwd });
 
@@ -55,6 +66,7 @@ describe('runEngramAdd() — unit (fs mocked)', () => {
     expect(writtenContent).toContain('[nuevo-patron]');
     expect(writtenContent).toContain(desc);
     expect(writtenContent).toContain(today);
+    expect(writtenContent).toContain('[PATTERN]');
   });
 
   it('sanitiza el tag: strips brackets, lowercase, spaces → guiones', async () => {
@@ -63,10 +75,15 @@ describe('runEngramAdd() — unit (fs mocked)', () => {
     const desc = 'Fix crítico';
     const expectedDir = path.join(fakeCwd, 'docs', 'engram', category);
     const expectedFile = path.join(expectedDir, 'fix-auth-bug.md');
+    const indexPath = path.join(fakeCwd, 'docs', 'engram', 'index.md');
 
-    fs.existsSync.mockImplementation(() => false);
+    fs.existsSync.mockImplementation((p) => {
+      if (p === indexPath) return true;
+      return false;
+    });
     fs.mkdirSync.mockImplementation(() => {});
     fs.writeFileSync.mockImplementation(() => {});
+    fs.readFileSync.mockReturnValue(defaultIndex);
 
     const result = await runEngramAdd({ tag, category, desc, cwd: fakeCwd });
 
@@ -94,7 +111,6 @@ describe('runEngramAdd() — unit (fs mocked)', () => {
 
     await runEngramAdd({ tag, category, desc, cwd: fakeCwd });
 
-    // writeFileSync se llama dos veces: el archivo del engrama y el index.md
     const indexWrite = fs.writeFileSync.mock.calls.find(([p]) => p === indexPath);
     expect(indexWrite).toBeDefined();
     const [, updatedIndex] = indexWrite;
@@ -102,23 +118,30 @@ describe('runEngramAdd() — unit (fs mocked)', () => {
     expect(updatedIndex).toContain('decision/index-append.md');
   });
 
-  it('no actualiza index.md si el archivo no existe', async () => {
+  it('crea index.md si no existe y agrega la entrada', async () => {
     const tag = '[sin-index]';
     const category = 'architecture';
     const desc = 'Sin index presente';
     const indexPath = path.join(fakeCwd, 'docs', 'engram', 'index.md');
 
-    fs.existsSync.mockImplementation((p) => {
-      if (p === indexPath) return false;
-      return false;
-    });
+    fs.existsSync.mockImplementation(() => false);
     fs.mkdirSync.mockImplementation(() => {});
     fs.writeFileSync.mockImplementation(() => {});
+    fs.readFileSync.mockReturnValue(defaultIndex);
 
     await runEngramAdd({ tag, category, desc, cwd: fakeCwd });
 
-    const indexWrite = fs.writeFileSync.mock.calls.find(([p]) => p === indexPath);
-    expect(indexWrite).toBeUndefined();
+    // writeFileSync se llama 3 veces: entry file, crear index (headers), actualizar index (con entry)
+    // Buscar el último write al indexPath que tiene el entry appendado
+    const indexWrites = fs.writeFileSync.mock.calls.filter(([p]) => p === indexPath);
+    expect(indexWrites.length).toBe(2);
+    const [, createdIndex] = indexWrites[0];
+    expect(createdIndex).toContain('## Architecture');
+    expect(createdIndex).not.toContain('[sin-index]');
+
+    const [, updatedIndex] = indexWrites[1];
+    expect(updatedIndex).toContain('[sin-index]');
+    expect(updatedIndex).toContain('architecture/sin-index.md');
   });
 
   it('no llama a mkdirSync si el directorio ya existe', async () => {
@@ -126,13 +149,16 @@ describe('runEngramAdd() — unit (fs mocked)', () => {
     const category = 'pattern';
     const desc = 'Dir ya existe';
     const engramDir = path.join(fakeCwd, 'docs', 'engram', category);
+    const indexPath = path.join(fakeCwd, 'docs', 'engram', 'index.md');
 
     fs.existsSync.mockImplementation((p) => {
       if (p === engramDir) return true;
+      if (p === indexPath) return true;
       return false;
     });
     fs.mkdirSync.mockImplementation(() => {});
     fs.writeFileSync.mockImplementation(() => {});
+    fs.readFileSync.mockReturnValue(defaultIndex);
 
     await runEngramAdd({ tag, category, desc, cwd: fakeCwd });
 

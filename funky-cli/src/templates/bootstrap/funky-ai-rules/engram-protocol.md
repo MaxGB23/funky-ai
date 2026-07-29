@@ -16,6 +16,7 @@ Antes de cualquier cambio estructural:
 
 ```markdown
 ### [{type}][{topic_key}] {title}
+**Date:** {YYYY-MM-DD}
 **What:** [Cambio técnico concreto]
 **Why:** [Causa/Justificación]
 **Where:** [Archivos afectados]

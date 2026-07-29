@@ -9,6 +9,36 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 /**
+ * Escanea un directorio recursivamente y devuelve todos los archivos
+ * con su ruta relativa y absoluta.
+ * Si el directorio no existe, devuelve array vacío (sin errores).
+ *
+ * @param {string} dirPath - Ruta absoluta del directorio a escanear
+ * @returns {Array<{ relativePath: string, fullPath: string }>}
+ */
+export function collectDirFiles(dirPath) {
+  try {
+    const files = [];
+    const walk = (currentDir, prefix) => {
+      const entries = fs.readdirSync(currentDir, { withFileTypes: true });
+      for (const entry of entries) {
+        const relPath = prefix ? `${prefix}/${entry.name}` : entry.name;
+        const fullPath = path.join(currentDir, entry.name);
+        if (entry.isDirectory()) {
+          walk(fullPath, relPath);
+        } else {
+          files.push({ relativePath: relPath, fullPath: fullPath });
+        }
+      }
+    };
+    walk(dirPath, '');
+    return files;
+  } catch {
+    return [];
+  }
+}
+
+/**
  * Lógica pura del comando `funky init`.
  * Separada del Command de Commander para ser 100% testeable de forma unitaria.
  *
@@ -16,46 +46,73 @@ const __dirname = path.dirname(__filename);
  * @param {string} opts.templatesDir - Directorio absoluto de templates de bootstrap.
  * @param {string} opts.targetBase   - Directorio destino (normalmente process.cwd()).
  * @param {object} opts.canvasConfig - Opcional. Configuración para generar PROJECT-CANVAS.md dinámico.
- * @param {string[]} [opts.selectedProtocols] - Array de nombres de archivo de protocolo a copiar.
- * @returns {{ created: number, skipped: number }}
+ * @param {Array<{ relativePath: string, fullPath: string }>} [opts.rulesFiles] - Archivos pre-escaneados de funky-ai-rules/.
+ * @param {Array<{ relativePath: string, fullPath: string }>} [opts.sddFiles] - Archivos pre-escaneados de bootstrap/sdd/.
+ * @returns {Array<{ action: string, src?: string, dest: string, content?: string }>}
  */
-export function runInit({ templatesDir, targetBase, canvasConfig, selectedProtocols = [] }) {
+export function runInit({ templatesDir, targetBase, canvasConfig, rulesFiles = [], sddFiles = [] }) {
   const intentions = [];
 
-  const filesToCopy = [
-    { src: 'ORCHESTRATOR-STATE.md', dest: 'ORCHESTRATOR-STATE.md' },
-    { src: 'agents-rules-engram-protocol.md', dest: path.join('.agents', 'rules', 'engram-protocol.md') },
-    { src: 'agents-rules-secops.md', dest: path.join('.agents', 'rules', 'secops.md') },
-    { src: 'agents-rules-sdd-orchestrator.md', dest: path.join('.agents', 'rules', 'sdd-orchestrator.md') },
-    { src: path.join('..', 'sdd', 'architecture-assessment.md'), dest: path.join('docs', 'architecture-assessment.md') },
-    { src: path.join('..', 'sdd', 'rfc-template.md'), dest: path.join('openspec', 'rfcs', '000-TEMPLATE.md') },
-    { src: 'TEMPLATE_GUIDE.md', dest: 'TEMPLATE_GUIDE.md' },
-    { src: path.join('..', 'README.md'), dest: 'README.md' },
-    { src: 'engram-discoveries.md', dest: path.join('docs', 'engram', 'discoveries.md') },
-    { src: 'engram-bugfixes.md', dest: path.join('docs', 'engram', 'bugfix', 'bugfixes.md') },
-    { src: 'architecture-assessment-guide.md', dest: path.join('docs', 'architecture-assessment-guide.md') },
-    { src: 'agents-rules-secops-setup.md', dest: path.join('.agents', 'rules', 'secops-setup.md') },
-    { src: 'release.md', dest: 'release-template.md' },
-  ];
+  /** @type {(src: string, dest: string) => void} */
+  const addCopy = (src, dest) => {
+    intentions.push({
+      action: 'copy',
+      src: path.join(templatesDir, src),
+      dest: path.join(targetBase, dest),
+    });
+  };
 
-  for (const file of filesToCopy) {
-    const sourcePath = path.join(templatesDir, file.src);
-    const destPath = path.join(targetBase, file.dest);
-    intentions.push({ action: 'copy', src: sourcePath, dest: destPath });
+  // ── Root files (siempre se copian) ──
+  addCopy('ORCHESTRATOR-STATE.md', 'ORCHESTRATOR-STATE.md');
+  addCopy('README.md', 'README.md');
+  addCopy('TEMPLATE_GUIDE.md', 'TEMPLATE_GUIDE.md');
+
+  // ── funky-ai-rules/ → .agents/rules/ ──
+  for (const file of rulesFiles) {
+    intentions.push({
+      action: 'copy',
+      src: file.fullPath,
+      dest: path.join(targetBase, '.agents', 'rules', file.relativePath),
+    });
   }
 
-  // Create sharded engram directories
+  // ── bootstrap/sdd/ → .agents/templates/sdd/ ──
+  for (const file of sddFiles) {
+    // Exception: 000-rfc-template.md va a openspec/rfcs/
+    if (file.relativePath === '000-rfc-template.md') {
+      intentions.push({
+        action: 'copy',
+        src: file.fullPath,
+        dest: path.join(targetBase, 'openspec', 'rfcs', '000-rfc-template.md'),
+      });
+    } else {
+      intentions.push({
+        action: 'copy',
+        src: file.fullPath,
+        dest: path.join(targetBase, '.agents', 'templates', 'sdd', file.relativePath),
+      });
+    }
+  }
+
+  // ── Generar docs-live-index.md en .agents/templates/sdd/ ──
+  intentions.push({
+    action: 'create',
+    dest: path.join(targetBase, '.agents', 'templates', 'sdd', 'docs-live-index.md'),
+    content: `# 📚 Índice de Docs Vivos (SSOT)
+
+| # | Doc | Cubre / Propósito | Índice Seccional | Aplica si... |
+|---|-----|-------------------|------------------|--------------|
+`,
+  });
+
+  // ── Crear directorios sharded de engram ──
   const engramDirs = ['architecture', 'pattern', 'discovery', 'decision', 'bugfix', 'session', 'release'];
   for (const dir of engramDirs) {
     const dirPath = path.join(targetBase, 'docs', 'engram', dir);
     intentions.push({ action: 'mkdir', dest: dirPath });
   }
 
-  // Generar index base con todos los encabezados
-  const engramIndexDest = path.join(targetBase, 'docs', 'engram', 'index.md');
-  const engramIndexContent = '# Engram Index\n\nDirectorio unificado de conocimientos, decisiones y patrones.\n\n## Architecture\n\n## Pattern\n\n## Discovery\n\n## Decision\n\n## Bugfix\n\n## Session\n\n## Release\n';
-  intentions.push({ action: 'create', dest: engramIndexDest, content: engramIndexContent });
-
+  // ── Canvases (generación por CLI, no template estático) ──
   if (canvasConfig) {
     if (!canvasConfig.skipProjectCanvas) {
       const markdown = generateProjectCanvasMarkdown(canvasConfig.projectData || {});
@@ -70,23 +127,6 @@ export function runInit({ templatesDir, targetBase, canvasConfig, selectedProtoc
     }
   }
 
-  // Copia de protocolos on-demand seleccionados
-  if (selectedProtocols && selectedProtocols.length > 0) {
-    const protocolsSrcDir = path.join(templatesDir, '..', 'protocols');
-    const protocolsDestDir = path.join(targetBase, '.agents', 'protocols');
-    
-    for (const protocolFile of selectedProtocols) {
-      const srcPath = path.join(protocolsSrcDir, protocolFile);
-      const destPath = path.join(protocolsDestDir, protocolFile);
-      intentions.push({ action: 'copy', src: srcPath, dest: destPath });
-    }
-
-    // También copiar/regenerar index.md en destino listando solo los protocolos importados
-    const indexDestPath = path.join(protocolsDestDir, 'index.md');
-    const indexSrcPath = path.join(protocolsSrcDir, 'index.md');
-    intentions.push({ action: 'copy', src: indexSrcPath, dest: indexDestPath });
-  }
-
   return intentions;
 }
 
@@ -99,13 +139,12 @@ export const initCommand = new Command('init')
 
     const projectCanvasPath = path.join(targetBase, 'PROJECT-CANVAS.md');
     const infraCanvasPath = path.join(targetBase, 'INFRA-CANVAS.md');
-    
+
     const hasProjectCanvas = fs.existsSync(projectCanvasPath);
     const hasInfraCanvas = fs.existsSync(infraCanvasPath);
 
     if (options.bootstrap) {
       let canvasConfig = null;
-      let selectedProtocols = [];
       let environment = 'ide';
 
       try {
@@ -123,8 +162,12 @@ export const initCommand = new Command('init')
           canvasConfig = null;
         }
 
-        const intentions = runInit({ templatesDir, targetBase, canvasConfig, selectedProtocols });
-        
+        // Escanear subárboles de templates
+        const rulesFiles = collectDirFiles(path.join(templatesDir, 'funky-ai-rules'));
+        const sddFiles = collectDirFiles(path.join(templatesDir, 'sdd'));
+
+        const intentions = runInit({ templatesDir, targetBase, canvasConfig, rulesFiles, sddFiles });
+
         console.log('🚀 Inicializando Funky AI...');
         const { created, skipped, logs } = executeIntentions(intentions);
         for (const log of logs) {
@@ -143,7 +186,7 @@ export const initCommand = new Command('init')
         }
         fs.writeFileSync(projectCanvasPath, generateProjectCanvasMarkdown({}));
         fs.writeFileSync(infraCanvasPath, generateInfraCanvasMarkdown({}));
-        const guideSrc = path.join(templatesDir, 'canvas-planning-guide.md');
+        const guideSrc = path.join(__dirname, '../templates/funky-pipeline/canvas-planning-guide.md');
         const guideDest = path.join(targetBase, 'canvas-planning-guide.md');
         if (!fs.existsSync(guideDest)) {
           fs.copyFileSync(guideSrc, guideDest);

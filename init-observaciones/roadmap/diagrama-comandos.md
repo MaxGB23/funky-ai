@@ -41,13 +41,13 @@
    ├── 📄 agents-rules-secops.md → .agents/rules/secops.md
    ├── 📄 agents-rules-sdd-orchestrator.md → .agents/rules/sdd-orchestrator.md
    ├── 📄 agents-rules-secops-setup.md → .agents/rules/secops-setup.md
-   ├── 📄 architecture-assessment.md → docs/architecture-assessment.md
-   ├── 📄 architecture-assessment-guide.md → docs/architecture-assessment-guide.md
+   ├── 📄 architecture-assessment.md → docs/architecture-assessment.md (creo deprecado)
+   ├── 📄 architecture-assessment-guide.md → docs/architecture-assessment-guide.md (creo deprecado)
    ├── 📄 TEMPLATE_GUIDE.md → raíz
-   ├── 📄 README.md → raíz (sobreescribe)
-   ├── 📄 rfc-template.md → openspec/rfcs/000-TEMPLATE.md
+   ├── 📄 README.md → raíz (sobreescribe)**No debe sobreescribir**
+   ├── 📄 rfc-template.md → openspec/rfcs/000-TEMPLATE.md (cambiar nombre a 000-RFC-TEMPLATE.md)
    ├── 📄 engram-discoveries.md → docs/engram/discoveries.md
-    ├── 📄 engram-bugfixes.md → docs/engram/bugfix/bugfixes.md
+    ├── 📄 engram-bugfixes.md → docs/engram/bugfix/bugfixes.md (FALTAN MUCHAS COSAS,)
     ├── 📄 release.md → release-template.md (template de release notes)
     ├── 🗂️ docs/engram/{architecture,pattern,discovery,decision,bugfix,session,release}
     └── ✍️ docs/engram/index.md

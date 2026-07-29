@@ -1,11 +1,12 @@
 funky init -> perfecto
 init --bootstrap ->
+
 ## `funky init --bootstrap`
 
 ```
-🔍 Verifica que exista al menos PROJECT-CANVAS.md
+🔍 No requiere canvases (si existen los respeta)
    ↓
-🔄 runInit() → 12 copias + 7 directorios + 1 index:
+🔄 runInit() → 13 copias + 7 directorios + 1 index:
    ├── 📄 ORCHESTRATOR-STATE.md → raíz
    ├── 📄 agents-rules-engram-protocol.md → .agents/rules/engram-protocol.md
    ├── 📄 agents-rules-secops.md → .agents/rules/secops.md
@@ -17,7 +18,8 @@ init --bootstrap ->
    ├── 📄 README.md → raíz (sobreescribe)
    ├── 📄 rfc-template.md → openspec/rfcs/000-TEMPLATE.md
    ├── 📄 engram-discoveries.md → docs/engram/discoveries.md
-   ├── 📄 engram-bugfixes.md → docs/engram/bugfix/bugfixes.md
-   ├── 🗂️ docs/engram/{architecture,pattern,discovery,decision,bugfix,session,release}
-   └── ✍️ docs/engram/index.md
+    ├── 📄 engram-bugfixes.md → docs/engram/bugfix/bugfixes.md
+    ├── 📄 release.md → release-template.md (template de release notes)
+    ├── 🗂️ docs/engram/{architecture,pattern,discovery,decision,bugfix,session,release}
+    └── ✍️ docs/engram/index.md
 ```

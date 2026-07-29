@@ -32,6 +32,17 @@ export const runEngramAdd = async ({ tag, category, desc, cwd }) => {
     throw new Error(`Categoría inválida: ${category}. Las categorías válidas son: ${validCategories.join(', ')}`);
   }
 
+  const typeMap = {
+    architecture: 'ARCH',
+    bugfix: 'BUG',
+    discovery: 'DISCOVERY',
+    decision: 'DECISION',
+    pattern: 'PATTERN',
+    session: 'SESSION',
+    release: 'RELEASE',
+  };
+  const typeLabel = typeMap[category];
+
   const fileTag = sanitizeName(tag.replace(/^\[|\]$/g, ''));
   const safeTag = `[${fileTag}]`; 
   const fileName = `${fileTag}.md`;
@@ -42,31 +53,36 @@ export const runEngramAdd = async ({ tag, category, desc, cwd }) => {
   }
 
   const filePath = path.join(engramDir, fileName);
-  const content = `# ${safeTag} ${desc}\n\nFecha: ${new Date().toISOString().split('T')[0]}\n\n## Contexto\n\n## Detalle\n`;
+  const today = new Date().toISOString().split('T')[0];
+  const content = `### [${typeLabel}][${fileTag}] ${desc}\n\n**Date:** ${today}\n**What:** \n**Why:** \n**Where:** \n**Learned:** \n`;
   fs.writeFileSync(filePath, content, 'utf8');
 
   const indexPath = path.join(cwd, 'docs', 'engram', 'index.md');
-  if (fs.existsSync(indexPath)) {
-    let indexContent = fs.readFileSync(indexPath, 'utf8');
-    const categoryHeader = `## ${category.charAt(0).toUpperCase() + category.slice(1)}`;
-    const parts = indexContent.split(categoryHeader);
-    const newEntry = `- [${safeTag} ${desc}](./${category}/${fileName})\n`;
-    
-    if (parts.length > 1) {
-      const nextCategoryMatch = parts[1].match(/\n## /);
-      if (nextCategoryMatch) {
-        const idx = nextCategoryMatch.index;
-        let before = parts[1].substring(0, idx);
-        const after = parts[1].substring(idx);
-        if (!before.endsWith('\n')) before += '\n';
-        indexContent = parts[0] + categoryHeader + before + newEntry + after;
-      } else {
-        let before = parts[1];
-        if (!before.endsWith('\n')) before += '\n';
-        indexContent = parts[0] + categoryHeader + before + newEntry;
-      }
-      fs.writeFileSync(indexPath, indexContent, 'utf8');
+  if (!fs.existsSync(indexPath)) {
+    const header = '# Engram Index\n\nDirectorio unificado de conocimientos, decisiones y patrones.\n\n';
+    const categories = ['Architecture', 'Pattern', 'Discovery', 'Decision', 'Bugfix', 'Session', 'Release'];
+    fs.writeFileSync(indexPath, header + categories.map(c => `## ${c}`).join('\n\n') + '\n\n', 'utf8');
+  }
+
+  let indexContent = fs.readFileSync(indexPath, 'utf8');
+  const categoryHeader = `## ${category.charAt(0).toUpperCase() + category.slice(1)}`;
+  const parts = indexContent.split(categoryHeader);
+  const newEntry = `- [${safeTag} ${desc}](./${category}/${fileName})\n`;
+  
+  if (parts.length > 1) {
+    const nextCategoryMatch = parts[1].match(/\n## /);
+    if (nextCategoryMatch) {
+      const idx = nextCategoryMatch.index;
+      let before = parts[1].substring(0, idx);
+      const after = parts[1].substring(idx);
+      if (!before.endsWith('\n')) before += '\n';
+      indexContent = parts[0] + categoryHeader + before + newEntry + after;
+    } else {
+      let before = parts[1];
+      if (!before.endsWith('\n')) before += '\n';
+      indexContent = parts[0] + categoryHeader + before + newEntry;
     }
+    fs.writeFileSync(indexPath, indexContent, 'utf8');
   }
 
   return { success: true, path: filePath };
