@@ -53,6 +53,11 @@ export const runEngramAdd = async ({ tag, category, desc, cwd }) => {
   }
 
   const filePath = path.join(engramDir, fileName);
+  if (fs.existsSync(filePath)) {
+    console.warn(`⚠️  El engrama "${safeTag}" ya existe en ${filePath}. No se sobrescribió.`);
+    return { success: false, path: filePath, skipped: true };
+  }
+
   const today = new Date().toISOString().split('T')[0];
   const content = `### [${typeLabel}][${fileTag}] ${desc}\n\n**Date:** ${today}\n**What:** \n**Why:** \n**Where:** \n**Learned:** \n`;
   fs.writeFileSync(filePath, content, 'utf8');

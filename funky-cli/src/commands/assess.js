@@ -108,11 +108,15 @@ export function runAssess(targetBase, opts = {}) {
   }
 
   const outputPath = path.join(assessDir, 'architecture-review.md');
-  try {
-    fs.writeFileSync(outputPath, outputContent, 'utf8');
-  } catch (err) {
-    const msg = err.code === 'EACCES' ? `Error de permisos al escribir "${outputPath}". Verificá que tengas permisos de escritura.` : err.message;
-    console.warn('⚠️  No se pudo escribir el archivo de guía:', msg);
+  if (fs.existsSync(outputPath)) {
+    console.warn(`⚠️  "${outputPath}" ya existe. No se sobrescribió.`);
+  } else {
+    try {
+      fs.writeFileSync(outputPath, outputContent, 'utf8');
+    } catch (err) {
+      const msg = err.code === 'EACCES' ? `Error de permisos al escribir "${outputPath}". Verificá que tengas permisos de escritura.` : err.message;
+      console.warn('⚠️  No se pudo escribir el archivo de guía:', msg);
+    }
   }
 
   // ── 6. Decisions Template ──

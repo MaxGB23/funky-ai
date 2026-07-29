@@ -58,11 +58,15 @@ export function runEstimate(targetBase, opts = {}) {
     }
 
     const pricingGuidePath = path.join(estimateDir, 'pricing-guide.md');
-    try {
-      fs.writeFileSync(pricingGuidePath, pricingGuide, 'utf8');
-    } catch (err) {
-      const msg = err.code === 'EACCES' ? `Error de permisos al escribir "${pricingGuidePath}". Verificá que tengas permisos de escritura.` : err.message;
-      console.warn('⚠️  No se pudo escribir pricing-guide.md:', msg);
+    if (fs.existsSync(pricingGuidePath)) {
+      console.warn(`⚠️  "${pricingGuidePath}" ya existe. No se sobrescribió.`);
+    } else {
+      try {
+        fs.writeFileSync(pricingGuidePath, pricingGuide, 'utf8');
+      } catch (err) {
+        const msg = err.code === 'EACCES' ? `Error de permisos al escribir "${pricingGuidePath}". Verificá que tengas permisos de escritura.` : err.message;
+        console.warn('⚠️  No se pudo escribir pricing-guide.md:', msg);
+      }
     }
 
     // ── 4. Generate Decisions Template ──
@@ -75,11 +79,15 @@ export function runEstimate(targetBase, opts = {}) {
     }
 
     const decisionsTemplatePath = path.join(estimateDir, 'pricing-decisions.md');
-    try {
-      fs.writeFileSync(decisionsTemplatePath, decisionsTemplate, 'utf8');
-    } catch (err) {
-      const msg = err.code === 'EACCES' ? `Error de permisos al escribir "${decisionsTemplatePath}". Verificá que tengas permisos de escritura.` : err.message;
-      console.warn('⚠️  No se pudo escribir pricing-decisions.md:', msg);
+    if (fs.existsSync(decisionsTemplatePath)) {
+      console.warn(`⚠️  "${decisionsTemplatePath}" ya existe. No se sobrescribió.`);
+    } else {
+      try {
+        fs.writeFileSync(decisionsTemplatePath, decisionsTemplate, 'utf8');
+      } catch (err) {
+        const msg = err.code === 'EACCES' ? `Error de permisos al escribir "${decisionsTemplatePath}". Verificá que tengas permisos de escritura.` : err.message;
+        console.warn('⚠️  No se pudo escribir pricing-decisions.md:', msg);
+      }
     }
 
     // ── 5. Update Context ──
