@@ -13,14 +13,14 @@ describe('runInit()', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
-  it('crea el plan completo: 35 copy + 1 create + 7 mkdir', () => {
+  it('crea el plan completo: 35 copy + 1 create + 8 mkdir', () => {
     const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
 
     const mkdirIntentions = intentions.filter(i => i.action === 'mkdir');
     const copyIntentions = intentions.filter(i => i.action === 'copy');
     const createIntentions = intentions.filter(i => i.action === 'create');
 
-    expect(mkdirIntentions).toHaveLength(7);
+    expect(mkdirIntentions).toHaveLength(8);
     expect(copyIntentions).toHaveLength(35);
     expect(createIntentions).toHaveLength(1);
   });
@@ -92,6 +92,15 @@ describe('runInit()', () => {
       action: 'copy',
       src: path.join(fakeTemplatesDir, 'sdd/000-rfc-template.md'),
       dest: path.join(fakeTargetDir, 'openspec', 'rfcs', '000-rfc-template.md'),
+    });
+  });
+
+  it('crea el directorio docs-index/ vacío en .agents/templates/sdd/', () => {
+    const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
+
+    expect(intentions).toContainEqual({
+      action: 'mkdir',
+      dest: path.join(fakeTargetDir, '.agents', 'templates', 'sdd', 'docs-index'),
     });
   });
 

@@ -84,6 +84,9 @@ export function runInit({ templatesDir, targetBase, canvasConfig }) {
 `,
   });
 
+  // ── Crear directorio docs-index para el agente ──
+  intentions.push({ action: 'mkdir', dest: path.join(targetBase, '.agents', 'templates', 'sdd', 'docs-index') });
+
   // ── Crear directorios sharded de engram ──
   const engramDirs = ['architecture', 'pattern', 'discovery', 'decision', 'bugfix', 'session', 'release'];
   for (const dir of engramDirs) {
