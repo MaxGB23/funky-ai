@@ -3,26 +3,24 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 
-// Manual mock: provide both default and named exports
-vi.mock('fs', () => {
-  const mockFns = {
-    existsSync: vi.fn(),
-    readFileSync: vi.fn(),
-    writeFileSync: vi.fn(),
-    mkdirSync: vi.fn(),
-    copyFileSync: vi.fn(),
-    statSync: vi.fn(),
-    lstatSync: vi.fn(),
-    realpathSync: vi.fn(),
-  };
-  return {
-    ...mockFns,
-    default: mockFns,
-  };
-});
+// Manual mock: provide both default export (for `import fs from 'fs'`)
+// and named exports (for `import { writeFileSync } from 'fs'`)
+const sharedFsMock = vi.hoisted(() => ({
+  existsSync: vi.fn(),
+  readFileSync: vi.fn(),
+  writeFileSync: vi.fn(),
+  mkdirSync: vi.fn(),
+  copyFileSync: vi.fn(),
+  statSync: vi.fn(),
+  lstatSync: vi.fn(),
+  realpathSync: vi.fn(),
+}));
 
-import { loadDecisions, findCanvases, generatePricingGuide, generateDecisionsTemplate, generateIAPrompt, generateIAPromptBanner, generateIAPromptFooter } from '../src/utils/estimateDomain.js';
-import { estimateCommand } from '../src/commands/estimate.js';
+vi.mock('fs', () => ({ ...sharedFsMock, default: sharedFsMock }));
+vi.mock('node:fs', () => ({ ...sharedFsMock, default: sharedFsMock }));
+
+import { generatePricingGuide, generateDecisionsTemplate, generateIAPrompt, generateIAPromptBanner, generateIAPromptFooter } from '../src/utils/estimateDomain.js';
+import { estimateCommand, runEstimate } from '../src/commands/estimate.js';
 
 const __testDir = path.dirname(fileURLToPath(import.meta.url));
 const CWD = process.cwd();
@@ -120,90 +118,9 @@ function applyMocks(mockFiles) {
   });
 }
 
-// ═══════════════════════════════════════════════════
-// Fase 3.1: loadDecisions
-// ═══════════════════════════════════════════════════
-
-describe('loadDecisions', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  it('returns content when docs/architecture-decisions.md exists', () => {
-    const mf = {};
-    mf[path.join(CWD, 'docs', 'architecture-decisions.md')] = DECISIONS_CONTENT;
-    applyMocks(mf);
-
-    const result = loadDecisions(CWD);
-    expect(result).toBe(DECISIONS_CONTENT);
-  });
-
-  it('returns null when docs/architecture-decisions.md does not exist', () => {
-    applyMocks({});
-
-    const result = loadDecisions(CWD);
-    expect(result).toBeNull();
-  });
-});
-
-// ═══════════════════════════════════════════════════
-// Fase 3.2: findCanvases
-// ═══════════════════════════════════════════════════
-
-describe('findCanvases', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  it('finds both canvases in root', () => {
-    const mf = {};
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'root');
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'root');
-    applyMocks(mf);
-
-    const result = findCanvases(CWD);
-    expect(result.projectCanvas).toBe(CANVAS_PROJECT_CONTENT);
-    expect(result.infraCanvas).toBe(CANVAS_INFRA_CONTENT);
-    expect(result.projectSource).toBe('root');
-    expect(result.infraSource).toBe('root');
-    expect(result.unfilledCount).toBe(0);
-  });
-
-  it('finds both canvases in docs/ fallback', () => {
-    const mf = {};
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'docs');
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'docs');
-    applyMocks(mf);
-
-    const result = findCanvases(CWD);
-    expect(result.projectCanvas).toBe(CANVAS_PROJECT_CONTENT);
-    expect(result.infraCanvas).toBe(CANVAS_INFRA_CONTENT);
-    expect(result.projectSource).toBe('docs');
-    expect(result.infraSource).toBe('docs');
-    expect(result.unfilledCount).toBe(0);
-  });
-
-  it('returns null sources when both canvases are missing', () => {
-    applyMocks({});
-
-    const result = findCanvases(CWD);
-    expect(result.projectCanvas).toBeNull();
-    expect(result.infraCanvas).toBeNull();
-    expect(result.projectSource).toBeNull();
-    expect(result.infraSource).toBeNull();
-    expect(result.unfilledCount).toBe(0);
-  });
-
-  it('detects unfilled sections counting [Responde aquí] occurrences', () => {
-    const mf = {};
-    addCanvas(mf, 'PROJECT-CANVAS.md', 'Framework: [Responde aquí]\nEstado: [Responde aquí]', 'root');
-    addCanvas(mf, 'INFRA-CANVAS.md', 'DB: PostgreSQL', 'root');
-    applyMocks(mf);
-
-    const result = findCanvases(CWD);
-    expect(result.unfilledCount).toBe(2);
-  });
-});
+function addContextJson(mf, data) {
+  mf[path.join(CWD, 'context.json')] = JSON.stringify(data);
+}
 
 // ═══════════════════════════════════════════════════
 // Fase 3.3: generatePricingGuide
@@ -451,5 +368,87 @@ describe('estimateCommand — integration', () => {
 
     expect(guideContent).toContain('Guía de Discusión de Pricing');
     expect(decisionsContent).toContain('Decisiones de Pricing');
+  });
+});
+
+// ═══════════════════════════════════════════════════
+// --context flag tests
+// ═══════════════════════════════════════════════════
+
+describe('--context flag', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(fs.writeFileSync).mockReset();
+  });
+
+  it('prints error when context file is missing', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'root');
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'root');
+    applyMocks(mf);
+
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    runEstimate(CWD, { context: './context.json' });
+
+    expect(errorSpy).toHaveBeenCalled();
+    // Should NOT have written output (early return)
+    const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
+    const guideCall = writeCalls.find(c => String(c[0]).includes('pricing-guide.md'));
+    expect(guideCall).toBeFalsy();
+
+    errorSpy.mockRestore();
+  });
+
+  it('uses decisions path from context when provided', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'root');
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'root');
+    addContextJson(mf, {
+      canvases: {
+        projectCanvas: CANVAS_PROJECT_CONTENT,
+        infraCanvas: CANVAS_INFRA_CONTENT,
+        unfilledCount: 0
+      },
+      assess: { decisionsFile: 'docs/architecture-decisions.md', runAt: null, dynamicQuestions: [] },
+      estimate: { runAt: null },
+      pipeline: { lastCommand: null, completed: [] }
+    });
+    addDecisions(mf, DECISIONS_CONTENT);
+    applyMocks(mf);
+
+    runEstimate(CWD, { context: './context.json' });
+
+    const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
+    const guideCall = writeCalls.find(c => String(c[0]).includes('pricing-guide.md'));
+    expect(guideCall).toBeTruthy();
+    const guideContent = String(guideCall[1]);
+    expect(guideContent).toContain('Next.js');  // from DECISIONS_CONTENT
+  });
+
+  it('writes estimate timestamp to context.json', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'root');
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'root');
+    addDecisions(mf, DECISIONS_CONTENT);
+    addContextJson(mf, {
+      canvases: {
+        projectCanvas: CANVAS_PROJECT_CONTENT,
+        infraCanvas: CANVAS_INFRA_CONTENT,
+        unfilledCount: 0
+      },
+      assess: { runAt: null, dynamicQuestions: [] },
+      estimate: { runAt: null },
+      pipeline: { lastCommand: null, completed: [] }
+    });
+    applyMocks(mf);
+
+    runEstimate(CWD, { context: './context.json' });
+
+    const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
+    const contextCall = writeCalls.find(c => String(c[0]).endsWith('context.json'));
+    expect(contextCall).toBeTruthy();
+    const writtenData = JSON.parse(contextCall[1]);
+    expect(writtenData.estimate.runAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
   });
 });

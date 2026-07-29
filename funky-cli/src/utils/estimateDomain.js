@@ -5,69 +5,12 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-function findCanvas(name, targetBase) {
-  const rootPath = path.join(targetBase, name);
-  if (fs.existsSync(rootPath)) {
-    return { content: fs.readFileSync(rootPath, 'utf8'), source: 'root' };
-  }
-
-  const docsPath = path.join(targetBase, 'docs', name);
-  if (fs.existsSync(docsPath)) {
-    return { content: fs.readFileSync(docsPath, 'utf8'), source: 'docs' };
-  }
-
-  return null;
-}
-
-function countUnfilledSections(content) {
-  const regex = /\[Responde aquí\]/g;
-  const matches = content.match(regex);
-  return matches ? matches.length : 0;
-}
-
 function getTodayDate() {
   const d = new Date();
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
-}
-
-/**
- * Lee docs/architecture-decisions.md.
- * Retorna el contenido del archivo o null si no existe.
- */
-export function loadDecisions(targetBase) {
-  const decisionsPath = path.join(targetBase, 'docs', 'architecture-decisions.md');
-  if (fs.existsSync(decisionsPath)) {
-    return fs.readFileSync(decisionsPath, 'utf8');
-  }
-  return null;
-}
-
-/**
- * Busca PROJECT-CANVAS.md e INFRA-CANVAS.md (root → docs/ fallback).
- * Retorna contenido, fuente y conteo de secciones sin completar.
- */
-export function findCanvases(targetBase) {
-  const projectResult = findCanvas('PROJECT-CANVAS.md', targetBase);
-  const infraResult = findCanvas('INFRA-CANVAS.md', targetBase);
-
-  let unfilledCount = 0;
-  if (projectResult) {
-    unfilledCount += countUnfilledSections(projectResult.content);
-  }
-  if (infraResult) {
-    unfilledCount += countUnfilledSections(infraResult.content);
-  }
-
-  return {
-    projectCanvas: projectResult ? projectResult.content : null,
-    infraCanvas: infraResult ? infraResult.content : null,
-    projectSource: projectResult ? projectResult.source : null,
-    infraSource: infraResult ? infraResult.source : null,
-    unfilledCount,
-  };
 }
 
 /**
