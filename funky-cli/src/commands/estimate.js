@@ -25,27 +25,27 @@ export function runEstimate(targetBase, opts = {}) {
     const decisionsPath = ctx?.assess?.decisionsFile || null;
     const decisions = loadDecisions(targetBase, decisionsPath);
     if (!decisions) {
-      console.warn('⚠️  No se encontró docs/architecture-decisions.md. Generando guía con contenido parcial.');
+      console.warn('⚠️  No se encontró docs/funky-ai/assess/architecture-decisions.md. Generando guía con contenido parcial.');
     }
 
     // ── 2. Canvas Discovery ──
     const canvases = findCanvases(targetBase);
     if (!canvases.projectCanvas) {
-      console.warn('⚠️  No se encontró PROJECT-CANVAS.md (ni en raíz ni en docs/). Usando placeholder.');
+      console.warn('⚠️  No se encontró PROJECT-CANVAS.md en docs/funky-ai/canvas/. Usando placeholder.');
     }
     if (!canvases.infraCanvas) {
-      console.warn('⚠️  No se encontró INFRA-CANVAS.md (ni en raíz ni en docs/). Usando placeholder.');
+      console.warn('⚠️  No se encontró INFRA-CANVAS.md en docs/funky-ai/canvas/. Usando placeholder.');
     }
     if (canvases.unfilledCount > 0) {
       console.warn(`⚠️  Se detectaron ${canvases.unfilledCount} secciones sin completar ("[Responde aquí]") en los canvases. La discusión se basará en datos parciales.`);
     }
 
     // ── 3. Generate Pricing Guide ──
-    const promptsDir = path.join(targetBase, '.agents', 'prompts');
+    const estimateDir = path.join(targetBase, 'docs', 'funky-ai', 'estimate');
     try {
-      fs.mkdirSync(promptsDir, { recursive: true });
+      fs.mkdirSync(estimateDir, { recursive: true });
     } catch (err) {
-      console.warn('⚠️  No se pudo crear el directorio .agents/prompts/:', err.message);
+      console.warn('⚠️  No se pudo crear el directorio docs/funky-ai/estimate/:', err.message);
     }
 
     let pricingGuide;
@@ -56,7 +56,7 @@ export function runEstimate(targetBase, opts = {}) {
       pricingGuide = 'Error al generar la guía de pricing.';
     }
 
-    const pricingGuidePath = path.join(promptsDir, 'pricing-guide.md');
+    const pricingGuidePath = path.join(estimateDir, 'pricing-guide.md');
     try {
       fs.writeFileSync(pricingGuidePath, pricingGuide, 'utf8');
     } catch (err) {
@@ -72,11 +72,11 @@ export function runEstimate(targetBase, opts = {}) {
       decisionsTemplate = 'Error al generar el template de decisiones.';
     }
 
-    const decisionsTemplatePath = path.join(promptsDir, 'pricing-decisions-template.md');
+    const decisionsTemplatePath = path.join(estimateDir, 'pricing-decisions.md');
     try {
       fs.writeFileSync(decisionsTemplatePath, decisionsTemplate, 'utf8');
     } catch (err) {
-      console.warn('⚠️  No se pudo escribir pricing-decisions-template.md:', err.message);
+      console.warn('⚠️  No se pudo escribir pricing-decisions.md:', err.message);
     }
 
     // ── 5. Update Context ──

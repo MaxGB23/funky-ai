@@ -44,7 +44,7 @@ A continuación se detallan los vectores de falla detectados durante auditorías
 - **Resultado Esperado (UX):** Correcto por diseño — estimate nunca falla aunque falte contexto.
 
 ## Vector 8: Pipeline sin `context.json`
-- **Simulación:** El usuario ejecuta `funky pipeline assess` o `funky pipeline all` en un proyecto sin `context.json`.
-- **Acción:** `pipeline.js` busca `context.json` en `process.cwd()`.
+- **Simulación:** El usuario ejecuta `funky pipeline assess` o `funky pipeline all` en un proyecto sin `docs/funky-ai/pipeline/context.json`.
+- **Acción:** `pipeline.js` busca `context.json` en `docs/funky-ai/pipeline/`.
 - **Resultado Actual:** ✅ `initContext()` crea `context.json` automáticamente si no existe. `pipeline assess` funciona igual.
 - **Resultado Esperado (UX):** Correcto. No requiere fix.

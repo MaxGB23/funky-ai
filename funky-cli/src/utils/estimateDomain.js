@@ -17,7 +17,7 @@ function getTodayDate() {
  * Interpola pricing-guide-template.md con decisiones y contenidos de canvas.
  */
 export function generatePricingGuide(decisions, projectCanvas, infraCanvas) {
-  const templatePath = path.join(__dirname, '../templates/sdd/pricing-guide-template.md');
+  const templatePath = path.join(__dirname, '../templates/estimate/pricing-guide-template.md');
 
   let template;
   try {
@@ -40,7 +40,7 @@ export function generatePricingGuide(decisions, projectCanvas, infraCanvas) {
  * Interpola pricing-decisions-template.md con la fecha actual.
  */
 export function generateDecisionsTemplate() {
-  const templatePath = path.join(__dirname, '../templates/sdd/pricing-decisions-template.md');
+  const templatePath = path.join(__dirname, '../templates/estimate/pricing-decisions-template.md');
 
   let template;
   try {

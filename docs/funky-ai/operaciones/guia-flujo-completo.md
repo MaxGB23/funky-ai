@@ -72,19 +72,19 @@ funky assess
 
 **Output esperado:**
 ```
-📄 Guía de discusión generada → docs/architecture-review.md
-📄 Template de decisiones → docs/architecture-decisions.md (si no existía)
+📄 Guía de discusión generada → docs/funky-ai/assess/architecture-review.md
+📄 Template de decisiones → docs/funky-ai/assess/architecture-decisions.md (si no existía)
 ```
 
 ### Paso 1.5.2 — Discute la arquitectura con IA
 
-Abre un chat, copia el contenido de `docs/architecture-review.md` y discute:
+Abre un chat, copia el contenido de `docs/funky-ai/assess/architecture-review.md` y discute:
 
 - ¿El stack elegido es el correcto?
 - ¿Hay riesgos ocultos (escalabilidad, costos, seguridad)?
 - ¿Qué alternativas se descartaron y por qué?
 
-✅ **Criterio de salida:** `docs/architecture-decisions.md` con decisiones documentadas, alternativas consideradas y riesgos aceptados.
+✅ **Criterio de salida:** `docs/funky-ai/assess/architecture-decisions.md` con decisiones documentadas, alternativas consideradas y riesgos aceptados.
 
 ---
 
@@ -102,14 +102,14 @@ funky estimate
 
 **Qué hace:** El CLI inyecta una guía de discusión de pricing basada en los canvases del proyecto y (si existe) el archivo de decisiones del assess. No hay fórmulas hardcodeadas — el CLI no calcula nada. Genera:
 
-- `docs/pricing-guide.md` — guía de discusión con factores de costo, contexto del proyecto y preguntas guía
-- `docs/pricing-decisions.md` — template para documentar los acuerdos de pricing
+- `docs/funky-ai/estimate/pricing-guide.md` — guía de discusión con factores de costo, contexto del proyecto y preguntas guía
+- `docs/funky-ai/estimate/pricing-decisions.md` — template para documentar los acuerdos de pricing
 - Un prompt IA en español neutro para iniciar la sesión en el chat
 
 **Output esperado:**
 ```
-📄 Guía de pricing generada → docs/pricing-guide.md
-📄 Template de decisiones → docs/pricing-decisions.md
+📄 Guía de pricing generada → docs/funky-ai/estimate/pricing-guide.md
+📄 Template de decisiones → docs/funky-ai/estimate/pricing-decisions.md
 🤖 Prompt IA listo para copiar al chat
 ```
 
@@ -122,7 +122,7 @@ Copia el prompt que `funky estimate` imprime en consola, pégalo en un chat con 
 - Trade-offs entre precio y performance
 - Value-Based Pricing final
 
-✅ **Criterio de salida:** Tienes `docs/pricing-decisions.md` con los acuerdos documentados.
+✅ **Criterio de salida:** Tienes `docs/funky-ai/estimate/pricing-decisions.md` con los acuerdos documentados.
 
 **Objetivo:** Tener una sesión de discusión arquitectónica donde la IA actúa como peer informado, detecta riesgos, propone alternativas y ayuda a documentar decisiones.
 
@@ -138,19 +138,19 @@ funky assess
 
 **Output esperado:**
 ```
-📄 Guía de discusión generada → docs/architecture-review.md
-📄 Template de decisiones → docs/architecture-decisions.md (si no existía)
+📄 Guía de discusión generada → docs/funky-ai/assess/architecture-review.md
+📄 Template de decisiones → docs/funky-ai/assess/architecture-decisions.md (si no existía)
 ```
 
 ### Paso 1.6.2 — Discute la arquitectura con IA
 
-Abre un chat, copia el contenido de `docs/architecture-review.md` y discute:
+Abre un chat, copia el contenido de `docs/funky-ai/assess/architecture-review.md` y discute:
 
 - ¿El stack elegido es el correcto?
 - ¿Hay riesgos ocultos (escalabilidad, costos, seguridad)?
 - ¿Qué alternativas se descartaron y por qué?
 
-✅ **Criterio de salida:** `docs/architecture-decisions.md` con decisiones documentadas, alternativas consideradas y riesgos aceptados.
+✅ **Criterio de salida:** `docs/funky-ai/assess/architecture-decisions.md` con decisiones documentadas, alternativas consideradas y riesgos aceptados.
 
 ---
 
@@ -177,12 +177,13 @@ funky init
 **Output esperado:**
 ```
 🚀 Funky AI — Inicializando...
-✅ Creado: PROJECT-CANVAS.md
-✅ Creado: INFRA-CANVAS.md
-✅ Creado: canvas-planning-guide.md
+✅ Creado: docs/funky-ai/canvas/PROJECT-CANVAS.md
+✅ Creado: docs/funky-ai/canvas/INFRA-CANVAS.md
+✅ Creado: docs/funky-ai/canvas/canvas-planning-guide.md
 
-📘 Canvases generados. Completa PROJECT-CANVAS.md e INFRA-CANVAS.md
-   usando canvas-planning-guide.md como referencia.
+📘 Canvases generados. Completa docs/funky-ai/canvas/PROJECT-CANVAS.md
+   y docs/funky-ai/canvas/INFRA-CANVAS.md usando
+   docs/funky-ai/canvas/canvas-planning-guide.md como referencia.
    Luego ejecuta `funky init --bootstrap` para inicializar el ecosistema completo.
 ```
 
@@ -205,7 +206,6 @@ funky init --bootstrap
 🚀 Inicializando estructura completa del ecosistema...
 ✅ Creado: .agents/rules/engram-protocol.md
 ✅ Creado: .agents/rules/secops.md
-✅ Creado: .agents/rules/secops-setup.md
 ✅ Creado: .agents/rules/sdd-orchestrator.md
 ✅ Creado: docs/engram/index.md
 ✅ Creado: docs/engram/architecture/
@@ -213,16 +213,16 @@ funky init --bootstrap
 ✅ Creado: docs/engram/discovery/
 ✅ Creado: docs/engram/decision/
 ✅ Creado: docs/engram/bugfix/
-✅ Creado: docs/engram/discoveries.md
 ✅ Creado: docs/engram/bugfix/bugfixes.md
 ✅ Creado: docs/funky-ai/workers/plantilla-worker-handoff.md
-✅ Creado: docs/architecture-assessment.md
-✅ Creado: docs/architecture-assessment-guide.md
+✅ Creado: docs/funky-ai/canvas/PROJECT-CANVAS.md
+✅ Creado: docs/funky-ai/canvas/INFRA-CANVAS.md
+✅ Creado: docs/funky-ai/canvas/canvas-planning-guide.md
 ✅ Creado: openspec/rfcs/000-TEMPLATE.md
 ✅ Creado: TEMPLATE_GUIDE.md
 ✅ Creado: README.md
 
-✅ Funky AI inicializado. ~20 archivos/directorios creados.
+✅ Funky AI inicializado. ~18 archivos/directorios creados.
 ```
 
 ### Paso 2.5 — Verificar la estructura creada
@@ -230,20 +230,15 @@ funky init --bootstrap
 ```
 mi-nuevo-proyecto/
 ├── ORCHESTRATOR-STATE.md          ← Estado del Orquestador
-├── PROJECT-CANVAS.md              ← Canvas Core: Framework, Arquitectura, Testing
-├── INFRA-CANVAS.md                ← Canvas Infra: DB, Auth, Deployment
-├── canvas-planning-guide.md       ← Guía de referencia para llenar canvases
 ├── TEMPLATE_GUIDE.md
 ├── README.md
 ├── .agents/
-│   └── rules/
-│       ├── engram-protocol.md     ← Protocolo de memoria
-│       ├── secops.md              ← Reglas de seguridad
-│       ├── secops-setup.md        ← Setup inicial de seguridad
-│       └── sdd-orchestrator.md    ← Protocolo SDD
+│   ├── rules/
+│   │   ├── engram-protocol.md     ← Protocolo de memoria
+│   │   ├── secops.md              ← Reglas de seguridad
+│   │   └── sdd-orchestrator.md    ← Protocolo SDD
+│   └── templates/sdd/             ← Templates SDD
 └── docs/
-    ├── architecture-assessment.md
-    ├── architecture-assessment-guide.md
     ├── engram/
     │   ├── index.md               ← Índice tabla de todos los engramas
     │   ├── architecture/          ← Decisiones de arquitectura
@@ -254,8 +249,18 @@ mi-nuevo-proyecto/
     │   └── bugfix/
     │       └── bugfixes.md        ← Bugs corregidos
     ├── funky-ai/
-    │   └── workers/
-    │       └── plantilla-worker-handoff.md
+    │   ├── canvas/                ← Canvas del proyecto
+    │   │   ├── PROJECT-CANVAS.md
+    │   │   ├── INFRA-CANVAS.md
+    │   │   └── canvas-planning-guide.md
+    │   ├── assess/
+    │   │   ├── architecture-review.md
+    │   │   └── architecture-decisions.md
+    │   ├── estimate/
+    │   │   ├── pricing-guide.md
+    │   │   └── pricing-decisions.md
+    │   └── pipeline/
+    │       └── context.json
     └── openspec/
         └── rfcs/
             └── 000-TEMPLATE.md

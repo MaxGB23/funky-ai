@@ -79,7 +79,6 @@ Ubicación base: `src/templates/bootstrap/`
 | `[environment]/agents-rules-sdd-orchestrator.md` | `.agents/rules/sdd-orchestrator.md` | Ruteado según entorno (`ide/` o `cli/`) |
 | *(Scaffold de directorios)* | `docs/engram/architecture/`, `pattern/`, `discovery/`, `decision/`, `bugfix/` | Creados con `fs.mkdirSync` — no son archivos copiados sino directorios vacíos |
 | `plantilla-worker-handoff.md` | `docs/funky-ai/workers/plantilla-worker-handoff.md` | Estático general |
-| `../sdd/architecture-assessment.md` | `docs/architecture-assessment.md` | Estático general |
 | `../sdd/rfc-template.md` | `openspec/rfcs/000-TEMPLATE.md` | Estático general |
 | `TEMPLATE_GUIDE.md` | `TEMPLATE_GUIDE.md` | Estático general |
 | `../README.md` | `README.md` | Estático general |
@@ -158,7 +157,13 @@ proyecto/
 │       ├── secops.md
 │       └── sdd-orchestrator.md
 ├── docs/
-│   ├── architecture-assessment.md
+│   ├── funky-ai/
+│   │   ├── canvas/
+│   │   │   ├── PROJECT-CANVAS.md        ← funky init (sin flags)
+│   │   │   ├── INFRA-CANVAS.md
+│   │   │   └── canvas-planning-guide.md
+│   │   └── workers/
+│   │       └── plantilla-worker-handoff.md
 │   ├── engram/
 │   │   ├── index.md
 │   │   ├── architecture/
@@ -166,17 +171,12 @@ proyecto/
 │   │   ├── discovery/
 │   │   ├── decision/
 │   │   └── bugfix/
-│   ├── funky-ai/
-    │   │   └── workers/
-│   │       └── plantilla-worker-handoff.md
 │   └── openspec/
 │       └── rfcs/
 │           └── 000-TEMPLATE.md
 ├── ORCHESTRATOR-STATE.md
-├── PROJECT-CANVAS.md
-├── INFRA-CANVAS.md
 ├── TEMPLATE_GUIDE.md
 └── README.md
 ```
 
-> ⚠️ Por defecto (`funky init` sin flags), solo se generan `PROJECT-CANVAS.md`, `INFRA-CANVAS.md` y `canvas-planning-guide.md` en la raiz. El resto de la estructura se crea al ejecutar `funky init --bootstrap` (no requiere canvases, pero si existen los respeta).
+> ⚠️ `funky init` sin flags genera los canvases en `docs/funky-ai/canvas/`. `funky init --bootstrap` copia el resto del ecosistema (reglas, directorios engram, templates). No requiere canvases para bootstrap, pero si existen los respeta.

@@ -1,8 +1,7 @@
 import { Command } from 'commander';
-import { initContext, readContext, writeContext, findCanvases } from '../utils/context.js';
+import { initContext, readContext, writeContext } from '../utils/context.js';
 import { runAssess } from './assess.js';
 import { runEstimate } from './estimate.js';
-import { resolve } from 'node:path';
 
 export const pipelineCommand = new Command('pipeline')
   .description('Orchestrate the funky pipeline: init → assess → estimate');
@@ -12,20 +11,15 @@ pipelineCommand
   .description('Run assess with shared pipeline context')
   .action(() => {
     const targetBase = process.cwd();
-    const contextPath = resolve(targetBase, 'context.json');
 
     // Init context if missing
     let ctx = readContext(targetBase);
     if (!ctx) {
       ctx = initContext();
-      const canvases = findCanvases(targetBase);
-      ctx.canvases = canvases;
       writeContext(targetBase, ctx);
     }
 
-    // Run assess with --context flag
-    runAssess(targetBase, { context: contextPath });
-
+    runAssess(targetBase, { context: true });
     process.exit(0);
     return;
   });
@@ -51,9 +45,7 @@ pipelineCommand
       return;
     }
 
-    const contextPath = resolve(targetBase, 'context.json');
-    runEstimate(targetBase, { context: contextPath });
-
+    runEstimate(targetBase, { context: true });
     process.exit(0);
     return;
   });
@@ -63,20 +55,17 @@ pipelineCommand
   .description('Run full pipeline: assess → estimate')
   .action(() => {
     const targetBase = process.cwd();
-    const contextPath = resolve(targetBase, 'context.json');
 
     // Init context if missing
     let ctx = readContext(targetBase);
     if (!ctx) {
       ctx = initContext();
-      const canvases = findCanvases(targetBase);
-      ctx.canvases = canvases;
       writeContext(targetBase, ctx);
     }
 
     // Run assess
     try {
-      runAssess(targetBase, { context: contextPath });
+      runAssess(targetBase, { context: true });
       console.log('\n✅ Assess complete. Running estimate...\n');
     } catch (err) {
       console.error('❌ Assess failed:', err.message);
@@ -86,7 +75,7 @@ pipelineCommand
 
     // Run estimate (only if assess succeeded)
     try {
-      runEstimate(targetBase, { context: contextPath });
+      runEstimate(targetBase, { context: true });
       console.log('\n✅ Pipeline complete!');
     } catch (err) {
       console.error('❌ Estimate failed:', err.message);
@@ -115,13 +104,6 @@ pipelineCommand
     console.log('📋 Pipeline Status');
     console.log('──────────────────');
     console.log(`Created: ${ctx.createdAt}`);
-    console.log('');
-
-    // Canvas state
-    console.log('📄 Canvases:');
-    console.log(`  Project: ${ctx.canvases?.projectSource || 'not found'}`);
-    console.log(`  Infra:   ${ctx.canvases?.infraSource || 'not found'}`);
-    console.log(`  Unfilled: ${ctx.canvases?.unfilledCount || 0}`);
     console.log('');
 
     // Assess state

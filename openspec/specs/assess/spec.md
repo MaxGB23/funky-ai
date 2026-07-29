@@ -57,19 +57,19 @@ The system MUST detect unfilled placeholders (`[Responde aquí]`) in canvas cont
 
 ### R3: Discussion Guide Generation
 
-The system MUST generate a discussion guide at `.agents/prompts/architecture-review.md` containing: embedded canvas content, 3 static C1 questions (budget+infra, RPS+DB, SLA+redundancy), optionally 1-2 dynamic C2 questions, and a 6-phase discussion structure (Contexto, Preocupaciones, Preguntas Guía, Riesgos, Alternativas, Acuerdos). The file MUST be overwritten if it already exists.
+The system MUST generate a discussion guide at `docs/funky-ai/assess/architecture-review.md` containing: embedded canvas content, 3 static C1 questions (budget+infra, RPS+DB, SLA+redundancy), optionally 1-2 dynamic C2 questions, and a 6-phase discussion structure (Contexto, Preocupaciones, Preguntas Guía, Riesgos, Alternativas, Acuerdos). The file MUST be overwritten if it already exists.
 
 #### Scenario: Happy path — full generation
 
 - GIVEN both canvases exist and have no unfilled placeholders
 - WHEN `funky assess` executes
-- THEN `.agents/prompts/architecture-review.md` is created
+- THEN `docs/funky-ai/assess/architecture-review.md` is created
 - AND it contains the 6-phase structure with all 3 C1 questions embedded
 - AND it contains the full content of both canvases
 
 #### Scenario: Overwrite existing file
 
-- GIVEN `.agents/prompts/architecture-review.md` already exists from a previous run
+- GIVEN `docs/funky-ai/assess/architecture-review.md` already exists from a previous run
 - WHEN `funky assess` executes
 - THEN the existing file is overwritten with new content
 - AND no backup of the old file is created
@@ -93,17 +93,17 @@ The system SHOULD generate 1-2 additional dynamic questions (C2) when canvas con
 
 ### R5: Decisions Template
 
-The system MUST create `docs/architecture-decisions.md` with a structured template (sections for decisión, rationale, alternativas, riesgos, fecha) IF the file does not already exist. The system MUST NOT overwrite an existing decisions file.
+The system MUST create `docs/funky-ai/assess/architecture-decisions.md` with a structured template (sections for decisión, rationale, alternativas, riesgos, fecha) IF the file does not already exist. The system MUST NOT overwrite an existing decisions file.
 
 #### Scenario: Create decisions template
 
-- GIVEN `docs/architecture-decisions.md` does not exist
+- GIVEN `docs/funky-ai/assess/architecture-decisions.md` does not exist
 - WHEN `funky assess` executes
 - THEN the file is created with the standard decision template structure
 
 #### Scenario: Decisions template already exists
 
-- GIVEN `docs/architecture-decisions.md` already exists with previous decisions
+- GIVEN `docs/funky-ai/assess/architecture-decisions.md` already exists with previous decisions
 - WHEN `funky assess` executes
 - THEN the file is NOT modified
 - AND a notice is printed indicating the file already exists
@@ -182,4 +182,4 @@ The system MUST export `async function runAssess(targetBase, opts)` containing a
 | Backward compatibility | `runAssess()` MUST be importable without breaking existing test mocks that import from `assess.js` |
 | Boundary | `process.exit(0)` MUST appear ONLY in the `.action()` callback, exactly once |
 | Security | The system MUST NOT read files outside the project root (process.cwd()) |
-| Determinism | Given identical canvas files, the system MUST produce identical `.agents/prompts/architecture-review.md` content |
+| Determinism | Given identical canvas files, the system MUST produce identical `docs/funky-ai/assess/architecture-review.md` content |

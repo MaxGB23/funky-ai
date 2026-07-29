@@ -5,7 +5,8 @@ vi.mock('node:fs', () => {
   const mockFns = {
     existsSync: vi.fn(),
     readFileSync: vi.fn(),
-    writeFileSync: vi.fn()
+    writeFileSync: vi.fn(),
+    mkdirSync: vi.fn()
   };
   return {
     ...mockFns,
@@ -27,13 +28,6 @@ describe('initContext', () => {
     const ctx = initContext();
     expect(ctx.version).toBe(1);
     expect(typeof ctx.createdAt).toBe('string');
-    expect(ctx.canvases).toEqual({
-      projectCanvas: null,
-      projectSource: null,
-      infraCanvas: null,
-      infraSource: null,
-      unfilledCount: 0
-    });
     expect(ctx.assess).toEqual({ runAt: null, dynamicQuestions: [] });
     expect(ctx.estimate).toEqual({ runAt: null });
     expect(ctx.pipeline).toEqual({ lastCommand: null, completed: [] });
@@ -83,12 +77,13 @@ describe('writeContext', () => {
     vi.resetAllMocks();
   });
 
-  it('writes JSON with correct indentation', () => {
+  it('writes JSON with correct indentation to docs/funky-ai/pipeline/', () => {
     const ctx = { version: 1, name: 'test' };
+    vi.mocked(existsSync).mockReturnValue(true);
     writeContext(TARGET_BASE, ctx);
 
     expect(writeFileSync).toHaveBeenCalledWith(
-      join(TARGET_BASE, 'context.json'),
+      join(TARGET_BASE, 'docs', 'funky-ai', 'pipeline', 'context.json'),
       JSON.stringify(ctx, null, 2),
       'utf-8'
     );
@@ -104,10 +99,10 @@ describe('findCanvases', () => {
     vi.resetAllMocks();
   });
 
-  it('finds both in root', () => {
+  it('finds both canvases in docs/funky-ai/canvas/', () => {
     vi.mocked(existsSync).mockImplementation((p) => {
       const str = String(p);
-      return str.endsWith('PROJECT-CANVAS.md') || str.endsWith('INFRA-CANVAS.md');
+      return str.includes('funky-ai') && (str.endsWith('PROJECT-CANVAS.md') || str.endsWith('INFRA-CANVAS.md'));
     });
     vi.mocked(readFileSync).mockImplementation((p) => {
       if (String(p).endsWith('PROJECT-CANVAS.md')) return 'project content';
@@ -118,38 +113,18 @@ describe('findCanvases', () => {
     const result = findCanvases(TARGET_BASE);
     expect(result.projectCanvas).toBe('project content');
     expect(result.infraCanvas).toBe('infra content');
-    expect(result.projectSource).toBe('root');
-    expect(result.infraSource).toBe('root');
-    expect(result.unfilledCount).toBe(0);
-  });
-
-  it('falls back to docs/', () => {
-    vi.mocked(existsSync).mockImplementation((p) => {
-      const str = String(p);
-      return str.includes('docs') && (str.endsWith('PROJECT-CANVAS.md') || str.endsWith('INFRA-CANVAS.md'));
-    });
-    vi.mocked(readFileSync).mockImplementation((p) => {
-      if (String(p).endsWith('PROJECT-CANVAS.md')) return 'docs project';
-      if (String(p).endsWith('INFRA-CANVAS.md')) return 'docs infra';
-      return '';
-    });
-
-    const result = findCanvases(TARGET_BASE);
-    expect(result.projectCanvas).toBe('docs project');
-    expect(result.infraCanvas).toBe('docs infra');
-    expect(result.projectSource).toBe('docs');
-    expect(result.infraSource).toBe('docs');
     expect(result.unfilledCount).toBe(0);
   });
 
   it('handles missing canvases', () => {
     vi.mocked(existsSync).mockReturnValue(false);
+    vi.mocked(readFileSync).mockImplementation(() => {
+      throw new Error('ENOENT');
+    });
 
     const result = findCanvases(TARGET_BASE);
     expect(result.projectCanvas).toBeNull();
     expect(result.infraCanvas).toBeNull();
-    expect(result.projectSource).toBeNull();
-    expect(result.infraSource).toBeNull();
     expect(result.unfilledCount).toBe(0);
   });
 });
@@ -181,7 +156,7 @@ describe('loadDecisions', () => {
     vi.resetAllMocks();
   });
 
-  it('reads from default path', () => {
+  it('reads from default path (docs/funky-ai/assess/)', () => {
     const content = '# Decisions\nSome text';
     vi.mocked(readFileSync).mockReturnValue(content);
 

@@ -13,7 +13,7 @@ describe('runInit()', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
-  it('crea el plan completo: 37 copy + 1 create + 8 mkdir', () => {
+  it('crea el plan completo: 35 copy + 1 create + 8 mkdir', () => {
     const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
 
     const mkdirIntentions = intentions.filter(i => i.action === 'mkdir');
@@ -21,11 +21,11 @@ describe('runInit()', () => {
     const createIntentions = intentions.filter(i => i.action === 'create');
 
     expect(mkdirIntentions).toHaveLength(8);
-    expect(copyIntentions).toHaveLength(37);
+    expect(copyIntentions).toHaveLength(35);
     expect(createIntentions).toHaveLength(1);
   });
 
-  it('incluye los 5 root files con rutas correctas', () => {
+  it('incluye los 3 root files con rutas correctas (sin canvases — van a docs/funky-ai/canvas/)', () => {
     const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
 
     expect(intentions).toContainEqual({
@@ -46,17 +46,9 @@ describe('runInit()', () => {
       dest: path.join(fakeTargetDir, 'TEMPLATE_GUIDE.md'),
     });
 
-    expect(intentions).toContainEqual({
-      action: 'copy',
-      src: path.join(fakeTemplatesDir, 'PROJECT-CANVAS.md'),
-      dest: path.join(fakeTargetDir, 'PROJECT-CANVAS.md'),
-    });
-
-    expect(intentions).toContainEqual({
-      action: 'copy',
-      src: path.join(fakeTemplatesDir, 'INFRA-CANVAS.md'),
-      dest: path.join(fakeTargetDir, 'INFRA-CANVAS.md'),
-    });
+    // Canvases are NOT copied by runInit — they're created in docs/funky-ai/canvas/ by init command action
+    expect(intentions.filter(i => String(i.src || '').includes('PROJECT-CANVAS.md'))).toHaveLength(0);
+    expect(intentions.filter(i => String(i.src || '').includes('INFRA-CANVAS.md'))).toHaveLength(0);
   });
 
   it('copia funky-ai-rules/ a .agents/rules/ con rutas correctas', () => {

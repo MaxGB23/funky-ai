@@ -32,4 +32,4 @@ La IA analiza el stack completo buscando incompatibilidades conocidas, trade-off
 Para cada riesgo identificado, propón al menos una alternativa con pros/cons concretos.
 
 ### Fase 6: Acuerdos (5 min)
-Documentar las decisiones finales en docs/architecture-decisions.md. Incluir rationale, alternativas descartadas y riesgos aceptados.
+Documentar las decisiones finales en docs/funky-ai/assess/architecture-decisions.md. Incluir rationale, alternativas descartadas y riesgos aceptados.

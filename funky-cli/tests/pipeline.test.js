@@ -5,8 +5,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 vi.mock('../src/utils/context.js', () => ({
   initContext: vi.fn(),
   readContext: vi.fn(),
-  writeContext: vi.fn(),
-  findCanvases: vi.fn()
+  writeContext: vi.fn()
 }));
 
 vi.mock('../src/commands/assess.js', () => ({
@@ -17,7 +16,7 @@ vi.mock('../src/commands/estimate.js', () => ({
   runEstimate: vi.fn()
 }));
 
-import { initContext, readContext, writeContext, findCanvases } from '../src/utils/context.js';
+import { initContext, readContext, writeContext } from '../src/utils/context.js';
 import { runAssess } from '../src/commands/assess.js';
 import { runEstimate } from '../src/commands/estimate.js';
 import { pipelineCommand } from '../src/commands/pipeline.js';
@@ -27,24 +26,9 @@ import { pipelineCommand } from '../src/commands/pipeline.js';
 const DEFAULT_CTX = {
   version: 1,
   createdAt: '2024-01-01T00:00:00.000Z',
-  canvases: {
-    projectCanvas: null,
-    projectSource: null,
-    infraCanvas: null,
-    infraSource: null,
-    unfilledCount: 0
-  },
   assess: { runAt: null, dynamicQuestions: [] },
   estimate: { runAt: null },
   pipeline: { lastCommand: null, completed: [] }
-};
-
-const CANVASES = {
-  projectCanvas: 'project content',
-  projectSource: 'root',
-  infraCanvas: 'infra content',
-  infraSource: 'root',
-  unfilledCount: 0
 };
 
 // ═══════════════════════════════════════════════════
@@ -66,13 +50,11 @@ describe('pipeline assess', () => {
   it('first run — initializes context when context.json missing', () => {
     readContext.mockReturnValue(null);
     initContext.mockReturnValue({ ...DEFAULT_CTX });
-    findCanvases.mockReturnValue({ ...CANVASES });
 
     pipelineCommand.parse(['assess'], { from: 'user' });
 
     expect(readContext).toHaveBeenCalled();
     expect(initContext).toHaveBeenCalledTimes(1);
-    expect(findCanvases).toHaveBeenCalledTimes(1);
     expect(writeContext).toHaveBeenCalledTimes(1);
     expect(runAssess).toHaveBeenCalledTimes(1);
     expect(exitSpy).toHaveBeenCalledWith(0);
@@ -176,12 +158,10 @@ describe('pipeline all', () => {
   it('completes full flow — assess then estimate', () => {
     readContext.mockReturnValue(null);
     initContext.mockReturnValue({ ...DEFAULT_CTX });
-    findCanvases.mockReturnValue({ ...CANVASES });
 
     pipelineCommand.parse(['all'], { from: 'user' });
 
     expect(initContext).toHaveBeenCalledTimes(1);
-    expect(findCanvases).toHaveBeenCalledTimes(1);
     expect(writeContext).toHaveBeenCalledTimes(1);
     expect(runAssess).toHaveBeenCalledTimes(1);
     expect(runEstimate).toHaveBeenCalledTimes(1);
@@ -191,7 +171,6 @@ describe('pipeline all', () => {
   it('stops on assess failure — does not run estimate', () => {
     readContext.mockReturnValue(null);
     initContext.mockReturnValue({ ...DEFAULT_CTX });
-    findCanvases.mockReturnValue({ ...CANVASES });
     runAssess.mockImplementation(() => {
       throw new Error('Template missing');
     });
@@ -246,7 +225,6 @@ describe('pipeline status', () => {
   it('shows partial progress when assess done but estimate pending', () => {
     readContext.mockReturnValue({
       ...DEFAULT_CTX,
-      canvases: { projectSource: 'root', infraSource: 'docs', unfilledCount: 2 },
       assess: {
         runAt: '2024-01-01T12:00:00.000Z',
         dynamicQuestions: [{ category: 'test', question: '?' }]

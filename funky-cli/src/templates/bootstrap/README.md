@@ -9,7 +9,7 @@ Este documento es el Architecture Hub del proyecto. Aquí se centralizará la do
 ### 1. Estado del Proyecto
 *La fuente de verdad del estado actual y la memoria a corto plazo.*
 - **[ORCHESTRATOR-STATE.md](./ORCHESTRATOR-STATE.md)**: El punto de entrada obligatorio para iniciar cualquier sesión.
-- **[PROJECT-CANVAS.md](./PROJECT-CANVAS.md)**: Definiciones de arquitectura, stack y testing.
+- **[PROJECT-CANVAS.md](./docs/funky-ai/canvas/PROJECT-CANVAS.md)**: Definiciones de arquitectura, stack y testing.
 
 ### 2. Memoria Persistente (Engram)
 *El cerebro del proyecto. Decisiones, bugs y lecciones.*

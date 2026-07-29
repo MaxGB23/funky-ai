@@ -25,35 +25,64 @@ action: 'create',
 content: '# 📚 Índice de Docs Vivos (SSOT)\n\n| # | Doc | ...',
 ---
 
-## 🔲 Punto 3 — Decisión sobre canvases
+## ✅ Punto 3 — Canvases a templates estáticos
 
-`funky init` (sin flags) genera PROJECT-CANVAS.md e INFRA-CANVAS.md por CLI al igual que el punto 2.
+Los canvases ahora son templates estáticos que `funky init` copia directamente.
 
-- [ ] ¿Seguimos con generación por CLI (código en `canvas.js`)? ¿Los movemos a templates estáticos que init copia como el resto de archivos?
-
----
-
-## 🔲 Punto 4 — `funky-pipeline/` destino
-
-`funky-cli/src/templates/funky-pipeline/` tiene 6 archivos:
-- `architecture-assessment.md`
-- `architecture-decisions-template.md`
-- `architecture-review-template.md`
-- `canvas-planning-guide.md`
-- `pricing-decisions-template.md`
-- `pricing-guide-template.md`
-
-- [ ] ¿Destino final debería ser `docs/funky-pipeline/`?
-- [ ] ¿Qué comando los inyecta? Tienen su comando individual (init,assess,estimate) pero existe un flujo de funky pipeline. Analizar cómo funcionan ya que menciona algo de un json. Entenderlo primero es la clave antes de continuar.
-- [ ] Decidir si necesitan refactorizarse o no. Ya que funky-cli/src/templates/funky-pipeline/ podría causar confusion por combinar files de 3 comandos diferentes, aunque a la vez se relacionan entre si.
+- `canvas.js` y `canvas.test.js` eliminados
+- `PROJECT-CANVAS.md` e `INFRA-CANVAS.md` como templates en `src/templates/bootstrap/`
+- Contenido restaurado al original de `canvas.js` (preguntas guía con ejemplos en comentarios HTML)
+- Tests actualizados: `init.integration.test.js` verifica "Framework Base" y "Estrategia de Testing"
 
 ---
 
-## 🎯 Meta final
+## ✅ Punto 4 — `funky-pipeline/` reorganizado a `init/` `assess/` `estimate/`
 
-- [ ] Migrar `--bootstrap` a un comando independiente de funky-ai (separado de `funky init`)
+**Completado.** `funky-pipeline/` eliminado y su contenido redistribuido en directorios por comando:
 
-## Al finalizar
+### Cambios de estructura
+- `src/templates/funky-pipeline/` → **eliminado**
+- `architecture-review-template.md`, `architecture-decisions-template.md` → `src/templates/assess/`
+- `pricing-guide-template.md`, `pricing-decisions-template.md` → `src/templates/estimate/`
+- `PROJECT-CANVAS.md`, `INFRA-CANVAS.md`, `canvas-planning-guide.md` → `src/templates/init/`
+- `architecture-assessment.md` → **eliminado** (no lo usaba ningún comando)
 
-- [ ] Verificar que todos los comandos salteen archivos existentes (no sobreescribir). `executeIntentions()` ya lo hace con `fs.existsSync(dest)`, pero revisar comando por comando que no haya `writeFileSync` directos sin check.
-- [ ] Eliminar todo el argentinismo del repo, debe hacerse una busqueda exhaustiva. Se deben eliminar palabras como "ejecutá" por "ejecuta". Esto es mas amigable para cualquier tipo de usuario. Un framework mas amigable para cualquier tipo de público.
+### Cambios de output paths
+- `funky init` (sin flags) → escribe canvases en `docs/funky-ai/canvas/` (antes raíz)
+- `funky assess` → escribe en `docs/funky-ai/assess/` (antes `.agents/prompts/` + `docs/`)
+- `funky estimate` → escribe en `docs/funky-ai/estimate/` (antes `.agents/prompts/`)
+- `funky pipeline` → context.json en `docs/funky-ai/pipeline/` (antes raíz)
+
+### Simplificaciones
+- `context.js`: initContext sin canvases, writeContext auto-crea directorio, findCanvases solo lee de `docs/funky-ai/canvas/` (sin root/docs fallback)
+- `assess.js`: canvases siempre leídos de filesystem, `--context` solo escribe context.json (no lee datos de contexto)
+- `pipeline.js`: sin `findCanvases`, sin canvas status en `pipeline status`
+
+### Documentación actualizada
+- `diagrama-comandos.md` — rewrite completo
+- `escenarios-de-uso.md` — paths corregidos
+- `funky-init-flow.md` — tabla, árbol y notas
+- `guia-flujo-completo.md` — todos los outputs y árbol post-init
+- `funky-cli/README.md` — árbol completo con nuevos directorios
+- `cli-simulations.md` — context.json path corregido
+- `openspec/specs/assess/spec.md` — 4 referencias actualizadas
+- `openspec/specs/estimate/spec.md` — 10 referencias actualizadas
+- Templates: `architecture-review-template.md` (Fase 6), `bootstrap/README.md` (PROJECT-CANVAS path)
+- `checklist-pendientes.md` — sección Punto 3 actualizada con estado ✅
+- `propuestas-diagrama.md` — **eliminado** (reemplazado por diagrama-comandos.md)
+
+---
+
+---
+
+## 🔲 Punto 5 — Por definir
+
+Candidatos según pendientes actuales:
+
+- [ ] **Opción A: Eliminar comandos obsoletos** — `funky phase`, `funky gentle`, `funky release`, `planning-handoff.md`, y sus registros en `bin/funky.js`. Referencia: `sesion-pendientes.md` PASO 2.
+- [ ] **Opción B: Migrar `--bootstrap` a comando independiente** — separar la inyección del ecosistema de `funky init` para que sea `funky bootstrap` o similar.
+- [ ] **Opción C: EACCES handling** — manejar excepción de permisos en `init.js` con mensaje amigable en vez de stacktrace crudo (Vector 3 de cli-simulations.md).
+- [ ] **Opción D: Argentinismos** — limpiar voseo/imperativo en docs operativos (dejar solo gentle-ai-global.md).
+- [ ] **Otra propuesta** — lo que el usuario quiera traer.
+
+---

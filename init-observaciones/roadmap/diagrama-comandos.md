@@ -1,6 +1,6 @@
 # Diagrama de Responsabilidad de Comandos
 
-> Generado: 2026-07-28 (actualizado post-verificación)
+> Generado: 2026-07-29 (actualizado Punto 4 — reorganización funky-pipeline/)
 > Propósito: Mapa visual de qué archivos inyecta o genera cada comando.
 > Formato: Árbol por comando para identificar rápidamente qué inyecta cada uno.
 
@@ -16,18 +16,17 @@
 | 🗂️ | Crea directorio |
 | 🔍 | Lee archivo (solo lectura) |
 | ⚠️ | Candidato a eliminar |
-| 🐛 | Bug detectado |
 
 ---
 
 ## `funky init` (sin flags)
 
 ```
-🔍 Verifica que NO existan PROJECT-CANVAS.md ni INFRA-CANVAS.md
+🔍 Verifica que NO existan PROJECT-CANVAS.md ni INFRA-CANVAS.md en docs/funky-ai/canvas/
    ↓
-✍️ PROJECT-CANVAS.md → raíz
-✍️ INFRA-CANVAS.md → raíz
-📄 canvas-planning-guide.md → raíz
+📄 PROJECT-CANVAS.md → docs/funky-ai/canvas/ (desde src/templates/init/)
+📄 INFRA-CANVAS.md → docs/funky-ai/canvas/ (desde src/templates/init/)
+📄 canvas-planning-guide.md → docs/funky-ai/canvas/ (si no existe)
 ```
 
 ## `funky init --bootstrap`
@@ -35,38 +34,31 @@
 ```
 🔍 No requiere canvases (si existen los respeta)
    ↓
-🔄 runInit() → 13 copias + 7 directorios + 1 index:
+🔄 runInit() → 35 copias + 1 create + 8 mkdir:
    ├── 📄 ORCHESTRATOR-STATE.md → raíz
-   ├── 📄 agents-rules-engram-protocol.md → .agents/rules/engram-protocol.md
-   ├── 📄 agents-rules-secops.md → .agents/rules/secops.md
-   ├── 📄 agents-rules-sdd-orchestrator.md → .agents/rules/sdd-orchestrator.md
-   ├── 📄 agents-rules-secops-setup.md → .agents/rules/secops-setup.md
-   ├── 📄 architecture-assessment.md → docs/architecture-assessment.md (creo deprecado)
-   ├── 📄 architecture-assessment-guide.md → docs/architecture-assessment-guide.md (creo deprecado)
+   ├── 📄 README.md → raíz
    ├── 📄 TEMPLATE_GUIDE.md → raíz
-   ├── 📄 README.md → raíz (sobreescribe)**No debe sobreescribir**
-   ├── 📄 rfc-template.md → openspec/rfcs/000-TEMPLATE.md (cambiar nombre a 000-RFC-TEMPLATE.md)
-   ├── 📄 engram-discoveries.md → docs/engram/discoveries.md
-    ├── 📄 engram-bugfixes.md → docs/engram/bugfix/bugfixes.md (FALTAN MUCHAS COSAS,)
-    ├── 📄 release.md → release-template.md (template de release notes)
-    ├── 🗂️ docs/engram/{architecture,pattern,discovery,decision,bugfix,session,release}
-    └── ✍️ docs/engram/index.md
+   ├── 📄 .agents/rules/ (8 reglas enggram/secops/sdd/tiers)
+   ├── 📄 .agents/templates/sdd/ (explore, proposal, spec, tasks, etc.)
+   ├── 🌱 docs-live-index.md → .agents/templates/sdd/
+   ├── 🗂️ .agents/templates/sdd/docs-index/
+   └── 🗂️ docs/engram/{architecture,pattern,discovery,decision,bugfix,session,release}
 ```
 
-> 💡 **Descubrimiento:** `canvas-planning-guide.md` estaba duplicado — init lo copiaba a raíz y bootstrap también lo copiaba a `docs/funky-ai/cli/`. Se removió de bootstrap. La guía es material de init, no de bootstrap.
+> 💡 Los canvases ahora se crean en `docs/funky-ai/canvas/` por `funky init` (sin flags). `--bootstrap` solo copia el ecosistema de reglas/templates.
 
 ---
 
 ## `funky assess`
 
 ```
-🔍 PROJECT-CANVAS.md + INFRA-CANVAS.md (desde archivos o context.json)
-🔍 templates/sdd/architecture-review-template.md
-🔍 templates/sdd/architecture-decisions-template.md (si no existe decisions)
+🔍 PROJECT-CANVAS.md + INFRA-CANVAS.md (desde docs/funky-ai/canvas/, siempre filesystem)
+🔍 src/templates/assess/architecture-review-template.md
+🔍 src/templates/assess/architecture-decisions-template.md (si no existe decisions)
    ↓
-✍️ .agents/prompts/architecture-review.md (guía 6 fases + C1/C2)
-✍️ docs/architecture-decisions.md (template si no existía)
-📌 Con --context: actualiza context.json (assess.runAt + dynamicQuestions)
+✍️ docs/funky-ai/assess/architecture-review.md (guía 6 fases + preguntas dinámicas)
+✍️ docs/funky-ai/assess/architecture-decisions.md (template si no existía)
+📌 Con --context: actualiza docs/funky-ai/pipeline/context.json (assess.runAt + dynamicQuestions)
 ```
 
 ---
@@ -74,15 +66,15 @@
 ## `funky estimate`
 
 ```
-🔍 PROJECT-CANVAS.md + INFRA-CANVAS.md
-🔍 docs/architecture-decisions.md
-🔍 templates/sdd/pricing-guide-template.md
-🔍 templates/sdd/pricing-decisions-template.md
+🔍 PROJECT-CANVAS.md + INFRA-CANVAS.md (desde docs/funky-ai/canvas/)
+🔍 docs/funky-ai/assess/architecture-decisions.md
+🔍 src/templates/estimate/pricing-guide-template.md
+🔍 src/templates/estimate/pricing-decisions-template.md
    ↓
-✍️ .agents/prompts/pricing-guide.md
-✍️ .agents/prompts/pricing-decisions-template.md
+✍️ docs/funky-ai/estimate/pricing-guide.md
+✍️ docs/funky-ai/estimate/pricing-decisions.md
 ✍️ stdout: prompt IA (banner + cuerpo + footer)
-📌 Con --context: actualiza context.json (estimate.runAt)
+📌 Con --context: actualiza docs/funky-ai/pipeline/context.json (estimate.runAt)
 ```
 
 ---
@@ -91,13 +83,13 @@
 
 ```
 pipeline assess:
-   ├── 🔍 context.json (crea si no existe con canvases)
-   ├── 🔗 runAssess(targetBase, { context })
+   ├── 🔍 docs/funky-ai/pipeline/context.json (crea metadatos si no existe, sin canvases)
+   ├── 🔗 runAssess(targetBase, { context: true })
    └── 💾 context.json (assess.runAt + dynamicQuestions)
 
 pipeline estimate:
    ├── 🔍 context.json (valida que exista + assess.runAt)
-   ├── 🔗 runEstimate(targetBase, { context })
+   ├── 🔗 runEstimate(targetBase, { context: true })
    └── 💾 context.json (estimate.runAt)
 
 pipeline all:
@@ -107,7 +99,8 @@ pipeline all:
    └── ✅ "Pipeline complete!"
 
 pipeline status:
-   └── 🔍 context.json → stdout (muestra estado)
+   └── 🔍 context.json → stdout (createdAt, assess.runAt, estimate.runAt)
+     (ya NO muestra canvas info — context.json no contiene canvases)
 ```
 
 ---
@@ -139,8 +132,6 @@ T3 (feature compleja):
 Destino: openspec/changes/{name}/
 ```
 
-> 🐛 **Bug (legacy):** El modo legacy (sin tier, 9 archivos) referencia `design.md`, `apply.md`, `verify.md` que **no existen** en `templates/sdd/`. El comando intenta copiarlos y falla silenciosamente o con error.
-
 ---
 
 ## `funky engram add`
@@ -156,32 +147,22 @@ Flags / input: --tag, --category, --desc
 
 ---
 
-## Templates disponibles en `templates/sdd/`
+## Directorios de templates (post-Punto 4)
 
-| Template | ¿Se usa? |
-|----------|----------|
-| explore.md | ✅ feature (T2) |
-| proposal.md | ✅ feature (T2) |
-| spec.md | ✅ feature (T2) |
-| tasks.md | ✅ feature (T1/T2/T3) |
-| report.md | ✅ feature (T1/T2) |
-| docs.md | ✅ feature (T2/T3 condicional) |
-| release.md | ✅ feature (T2/T3) — release checklist |
-| architecture-assessment.md | ❌ bootstrap (copiado por --bootstrap) |
-| architecture-review-template.md | ✅ assess |
-| architecture-decisions-template.md | ✅ assess |
-| pricing-guide-template.md | ✅ estimate |
-| pricing-decisions-template.md | ✅ estimate |
-| rfc-template.md | ❌ bootstrap (copiado por --bootstrap) |
+| Directorio | Templates | Comandos que lo usan |
+|------------|-----------|---------------------|
+| `src/templates/init/` | PROJECT-CANVAS.md, INFRA-CANVAS.md, canvas-planning-guide.md | `funky init` (sin flags) |
+| `src/templates/bootstrap/` | ORCHESTRATOR-STATE.md, TEMPLATE_GUIDE.md, sdd/{ explore, proposal, spec, ... } | `funky init --bootstrap` |
+| `src/templates/assess/` | architecture-review-template.md, architecture-decisions-template.md | `funky assess` |
+| `src/templates/estimate/` | pricing-guide-template.md, pricing-decisions-template.md | `funky estimate` |
 
 ---
 
-## Bugs resueltos (PASO 2)
+## Directorios de output (`docs/funky-ai/`)
 
-| # | Problema | Resolución |
-|---|----------|------------|
-| 🔧 1 | `funky phase` con template mismatch | ✅ **Eliminado** — comando eliminado |
-| 🔧 3 | `release.md` duplicado | ✅ **Eliminado** — `templates/release.md` movido a `templates/bootstrap/release.md`, `funky release` eliminado |
-| 🔧 4 | Golden path de gentle roto | ✅ **Eliminado** — comando y templates `gentle/` eliminados |
-| 🔧 5 | `canvas-planning-guide.md` duplicado | ✅ **Corregido** — removido de `runInit()` |
-| 🐛 2 | Legacy mode feature roto | ⏳ **Pendiente** — no afecta el flujo activo (usa tiers T1/T2/T3) |
+| Directorio | Archivos | Creado por |
+|------------|----------|------------|
+| `docs/funky-ai/canvas/` | PROJECT-CANVAS.md, INFRA-CANVAS.md, canvas-planning-guide.md | `funky init` |
+| `docs/funky-ai/assess/` | architecture-review.md, architecture-decisions.md | `funky assess` |
+| `docs/funky-ai/estimate/` | pricing-guide.md, pricing-decisions.md | `funky estimate` |
+| `docs/funky-ai/pipeline/` | context.json (metadatos, sin canvases) | `funky pipeline` |

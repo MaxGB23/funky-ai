@@ -36,9 +36,6 @@ function getTodayDate() {
 
 export function runAssess(targetBase, opts = {}) {
   // ── 1. Canvas Discovery ──
-  let projectCanvas;
-  let infraCanvas;
-  let unfilledCount = 0;
   let ctx = null;
 
   if (opts.context || opts.contextPath) {
@@ -47,33 +44,21 @@ export function runAssess(targetBase, opts = {}) {
       console.error('❌ No se pudo leer context.json. Asegurate de haber ejecutado "funky pipeline assess" primero.');
       return;
     }
-    projectCanvas = ctx.canvases.projectCanvas;
-    infraCanvas = ctx.canvases.infraCanvas;
-    unfilledCount = ctx.canvases.unfilledCount || 0;
+  }
 
-    if (!projectCanvas) {
-      console.warn('⚠️  PROJECT-CANVAS no disponible en context.json. Usando placeholder.');
-      projectCanvas = 'Canvas no disponible';
-    }
-    if (!infraCanvas) {
-      console.warn('⚠️  INFRA-CANVAS no disponible en context.json. Usando placeholder.');
-      infraCanvas = 'Canvas no disponible';
-    }
-  } else {
-    const canvases = findCanvases(targetBase);
-    projectCanvas = canvases.projectCanvas;
-    infraCanvas = canvases.infraCanvas;
-    unfilledCount = canvases.unfilledCount;
+  const canvases = findCanvases(targetBase);
+  let projectCanvas = canvases.projectCanvas;
+  let infraCanvas = canvases.infraCanvas;
+  let unfilledCount = canvases.unfilledCount;
 
-    if (!projectCanvas) {
-      console.warn('⚠️  No se encontró PROJECT-CANVAS.md (ni en raíz ni en docs/). Usando placeholder.');
-      projectCanvas = 'Canvas no disponible';
-    }
+  if (!projectCanvas) {
+    console.warn('⚠️  No se encontró PROJECT-CANVAS.md en docs/funky-ai/canvas/. Usando placeholder.');
+    projectCanvas = 'Canvas no disponible';
+  }
 
-    if (!infraCanvas) {
-      console.warn('⚠️  No se encontró INFRA-CANVAS.md (ni en raíz ni en docs/). Usando placeholder.');
-      infraCanvas = 'Canvas no disponible';
-    }
+  if (!infraCanvas) {
+    console.warn('⚠️  No se encontró INFRA-CANVAS.md en docs/funky-ai/canvas/. Usando placeholder.');
+    infraCanvas = 'Canvas no disponible';
   }
 
   // ── 2. Canvas Validation ──
@@ -94,7 +79,7 @@ export function runAssess(targetBase, opts = {}) {
   }
 
   // ── 4. Interpolate Template ──
-  const templatesDir = path.join(__dirname, '../templates/sdd');
+  const templatesDir = path.join(__dirname, '../templates/assess');
   const reviewTemplatePath = path.join(templatesDir, 'architecture-review-template.md');
 
   let templateContent;
@@ -114,14 +99,14 @@ export function runAssess(targetBase, opts = {}) {
     .replace('{{DYNAMIC_QUESTIONS}}', dynamicQuestionsText);
 
   // ── 5. Write Output ──
-  const promptsDir = path.join(targetBase, '.agents', 'prompts');
+  const assessDir = path.join(targetBase, 'docs', 'funky-ai', 'assess');
   try {
-    fs.mkdirSync(promptsDir, { recursive: true });
+    fs.mkdirSync(assessDir, { recursive: true });
   } catch (err) {
-    console.warn('⚠️  No se pudo crear el directorio .agents/prompts/:', err.message);
+    console.warn('⚠️  No se pudo crear el directorio docs/funky-ai/assess/:', err.message);
   }
 
-  const outputPath = path.join(promptsDir, 'architecture-review.md');
+  const outputPath = path.join(assessDir, 'architecture-review.md');
   try {
     fs.writeFileSync(outputPath, outputContent, 'utf8');
   } catch (err) {
@@ -129,7 +114,8 @@ export function runAssess(targetBase, opts = {}) {
   }
 
   // ── 6. Decisions Template ──
-  const decisionsDestPath = path.join(targetBase, 'docs', 'architecture-decisions.md');
+  const decisionsDir = path.join(targetBase, 'docs', 'funky-ai', 'assess');
+  const decisionsDestPath = path.join(decisionsDir, 'architecture-decisions.md');
   if (!fs.existsSync(decisionsDestPath)) {
     const decisionsTemplatePath = path.join(templatesDir, 'architecture-decisions-template.md');
     try {
@@ -137,9 +123,9 @@ export function runAssess(targetBase, opts = {}) {
       decisionsContent = decisionsContent.replace(/{{DATE}}/g, getTodayDate());
       fs.mkdirSync(path.dirname(decisionsDestPath), { recursive: true });
       fs.writeFileSync(decisionsDestPath, decisionsContent, 'utf8');
-      console.log('📄 Template de decisiones creado en docs/architecture-decisions.md');
+      console.log('📄 Template de decisiones creado en docs/funky-ai/assess/architecture-decisions.md');
     } catch (err) {
-      console.warn('⚠️  No se pudo crear docs/architecture-decisions.md:', err.message);
+      console.warn('⚠️  No se pudo crear docs/funky-ai/assess/architecture-decisions.md:', err.message);
     }
   } else {
     console.log('ℹ️  docs/architecture-decisions.md ya existe — no se modificó.');
@@ -155,12 +141,12 @@ export function runAssess(targetBase, opts = {}) {
   // ── 8. Summary ──
   console.log('\n✅ Guía de discusión generada exitosamente.');
   console.log(`   📝 Guía: ${path.relative(targetBase, outputPath)}`);
-  console.log(`   📝 Decisiones: docs/architecture-decisions.md`);
+  console.log(`   📝 Decisiones: docs/funky-ai/assess/architecture-decisions.md`);
   console.log('\n📋 Próximos pasos:');
   console.log(`   1. Abrí una sesión de chat con la IA.`);
   console.log(`   2. Arrastrá el archivo ${path.relative(targetBase, outputPath)} a la conversación.`);
   console.log('   3. Seguí las 6 fases de la guía para discutir la arquitectura.');
-  console.log('   4. Documentá los acuerdos en docs/architecture-decisions.md durante la discusión.\n');
+  console.log('   4. Documentá los acuerdos en docs/funky-ai/assess/architecture-decisions.md durante la discusión.\n');
 }
 
 export const assessCommand = new Command('assess')

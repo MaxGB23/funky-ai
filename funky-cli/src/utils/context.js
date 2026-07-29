@@ -1,17 +1,18 @@
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, isAbsolute, resolve } from 'node:path';
+
+function pipelineDir(targetBase) {
+  return join(targetBase, 'docs', 'funky-ai', 'pipeline');
+}
+
+function canvasDir(targetBase) {
+  return join(targetBase, 'docs', 'funky-ai', 'canvas');
+}
 
 export function initContext() {
   return {
     version: 1,
     createdAt: new Date().toISOString(),
-    canvases: {
-      projectCanvas: null,
-      projectSource: null,
-      infraCanvas: null,
-      infraSource: null,
-      unfilledCount: 0
-    },
     assess: {
       runAt: null,
       dynamicQuestions: []
@@ -27,7 +28,7 @@ export function initContext() {
 }
 
 export function readContext(targetBase) {
-  const contextPath = join(targetBase, 'context.json');
+  const contextPath = join(pipelineDir(targetBase), 'context.json');
   try {
     const raw = readFileSync(contextPath, 'utf-8');
     return JSON.parse(raw);
@@ -37,41 +38,43 @@ export function readContext(targetBase) {
 }
 
 export function writeContext(targetBase, ctx) {
-  const contextPath = join(targetBase, 'context.json');
+  const dir = pipelineDir(targetBase);
+  try {
+    if (!existsSync(dir)) {
+      mkdirSync(dir, { recursive: true });
+    }
+  } catch {}
+  const contextPath = join(dir, 'context.json');
   writeFileSync(contextPath, JSON.stringify(ctx, null, 2), 'utf-8');
 }
 
-function findCanvas(name, targetBase) {
-  const rootPath = join(targetBase, name);
-  if (existsSync(rootPath)) {
-    return { content: readFileSync(rootPath, 'utf-8'), source: 'root' };
+/**
+ * Lee un archivo de canvas desde docs/funky-ai/canvas/.
+ */
+function readCanvas(name, targetBase) {
+  const path = join(canvasDir(targetBase), name);
+  try {
+    return readFileSync(path, 'utf-8');
+  } catch {
+    return null;
   }
-
-  const docsPath = join(targetBase, 'docs', name);
-  if (existsSync(docsPath)) {
-    return { content: readFileSync(docsPath, 'utf-8'), source: 'docs' };
-  }
-
-  return null;
 }
 
 export function findCanvases(targetBase) {
-  const projectResult = findCanvas('PROJECT-CANVAS.md', targetBase);
-  const infraResult = findCanvas('INFRA-CANVAS.md', targetBase);
+  const projectCanvas = readCanvas('PROJECT-CANVAS.md', targetBase);
+  const infraCanvas = readCanvas('INFRA-CANVAS.md', targetBase);
 
   let unfilledCount = 0;
-  if (projectResult) {
-    unfilledCount += countUnfilledSections(projectResult.content);
+  if (projectCanvas) {
+    unfilledCount += countUnfilledSections(projectCanvas);
   }
-  if (infraResult) {
-    unfilledCount += countUnfilledSections(infraResult.content);
+  if (infraCanvas) {
+    unfilledCount += countUnfilledSections(infraCanvas);
   }
 
   return {
-    projectCanvas: projectResult ? projectResult.content : null,
-    projectSource: projectResult ? projectResult.source : null,
-    infraCanvas: infraResult ? infraResult.content : null,
-    infraSource: infraResult ? infraResult.source : null,
+    projectCanvas,
+    infraCanvas,
     unfilledCount
   };
 }
@@ -85,7 +88,7 @@ export function countUnfilledSections(markdown) {
 export function loadDecisions(targetBase, decisionsPath) {
   let resolvedPath;
   if (decisionsPath === null || decisionsPath === undefined) {
-    resolvedPath = join(targetBase, 'docs', 'architecture-decisions.md');
+    resolvedPath = join(targetBase, 'docs', 'funky-ai', 'assess', 'architecture-decisions.md');
   } else if (isAbsolute(decisionsPath)) {
     resolvedPath = decisionsPath;
   } else {

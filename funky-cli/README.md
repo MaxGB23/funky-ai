@@ -44,38 +44,36 @@ pnpm link --global
 
 ## Estructura generada por `funky init`
 
-`funky init` (sin flags) genera solo **PROJECT-CANVAS.md**, **INFRA-CANVAS.md** y **canvas-planning-guide.md**.
+`funky init` (sin flags) genera canvases en **`docs/funky-ai/canvas/`**.
 `funky init --bootstrap` copia toda la estructura del ecosistema. A continuación, la estructura completa post-bootstrap:
 
 ```text
 .
+├── ORCHESTRATOR-STATE.md        (Estado global del proyecto)
+├── TEMPLATE_GUIDE.md            (Guía de uso de templates)
+├── README.md                    (README del proyecto)
 ├── .agents/
-│   └── rules/
-│       ├── engram-protocol.md       (Protocolo de memoria Engram)
-│       ├── secops.md                 (Reglas de seguridad)
-│       ├── secops-setup.md          (Setup inicial de seguridad)
-│       └── sdd-orchestrator.md      (Reglas de orquestación SDD)
-├── docs/
-│   ├── architecture-assessment.md  (Assessment legado — ya no se usa desde CLI)
-│   ├── architecture-assessment-guide.md (Guía de assessment para discusión humano+IA)
-│   ├── engram/
-│   │   ├── index.md             (Índice de todos los engramas)
-│   │   ├── architecture/        (Decisiones de arquitectura)
-│   │   ├── pattern/             (Patrones establecidos)
-│   │   ├── discovery/           (Hallazgos)
-│   │   ├── discoveries.md       (Registro plano de descubrimientos)
-│   │   ├── decision/            (Decisiones con impacto)
-│   │   └── bugfix/
-│   │       └── bugfixes.md      (Registro de bugs corregidos)
-│   ├── funky-ai/
-│   │   └── workers/
-│   │       └── plantilla-worker-handoff.md (Template de handoff para workers)
-│   └── openspec/
-│       └── rfcs/
-│           └── 000-TEMPLATE.md   (Template de RFC)
-├── ORCHESTRATOR-STATE.md  (Estado global del proyecto)
-├── PROJECT-CANVAS.md      (Canvas Core: Framework, Arquitectura, Testing)
-├── INFRA-CANVAS.md        (Canvas Operacional: DB, Auth, Deployment)
-├── TEMPLATE_GUIDE.md      (Guía de uso de templates)
-└── README.md              (README del proyecto)
+│   ├── rules/
+│   │   ├── engram-protocol.md   (Protocolo de memoria Engram)
+│   │   ├── secops.md            (Reglas de seguridad)
+│   │   └── sdd-orchestrator.md  (Reglas de orquestación SDD)
+│   └── templates/sdd/           (Templates SDD)
+└── docs/
+    ├── engram/                  (Memoria persistente sharded)
+    ├── funky-ai/
+    │   ├── canvas/              ← funky init
+    │   │   ├── PROJECT-CANVAS.md     (Canvas Core: Framework, Arquitectura, Testing)
+    │   │   ├── INFRA-CANVAS.md       (Canvas Operacional: DB, Auth, Deployment)
+    │   │   └── canvas-planning-guide.md
+    │   ├── assess/              ← funky assess
+    │   │   ├── architecture-review.md
+    │   │   └── architecture-decisions.md
+    │   ├── estimate/            ← funky estimate
+    │   │   ├── pricing-guide.md
+    │   │   └── pricing-decisions.md
+    │   └── pipeline/            ← funky pipeline
+    │       └── context.json
+    └── openspec/
+        └── rfcs/
+            └── 000-TEMPLATE.md  (Template de RFC)
 ```

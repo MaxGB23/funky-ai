@@ -79,11 +79,11 @@ funky assess
 
 **Output esperado:**
 ```
-📄 Guía de discusión generada → docs/architecture-review.md
-📄 Template de decisiones → docs/architecture-decisions.md (si no existía)
+📄 Guía de discusión generada → docs/funky-ai/assess/architecture-review.md
+📄 Template de decisiones → docs/funky-ai/assess/architecture-decisions.md (si no existía)
 ```
 
-> 💡 Copia `docs/architecture-review.md` en un chat con IA y discute: riesgos, alternativas, trade-offs. Documenta los acuerdos en `docs/architecture-decisions.md`.
+> 💡 Copia el contenido de `docs/funky-ai/assess/architecture-review.md` en un chat con IA y discute: riesgos, alternativas, trade-offs. Documenta los acuerdos en `docs/funky-ai/assess/architecture-decisions.md`.
 
 ---
 
@@ -235,7 +235,7 @@ funky init --bootstrap
 funky assess
 ```
 
-Genera `docs/architecture-review.md` (guía de discusión de 6 fases) y `docs/architecture-decisions.md` (template de decisiones). Copia la guía en un chat con IA y discute riesgos, alternativas y trade-offs.
+Genera `docs/funky-ai/assess/architecture-review.md` (guía de discusión de 6 fases) y `docs/funky-ai/assess/architecture-decisions.md` (template de decisiones). Copia la guía en un chat con IA y discute riesgos, alternativas y trade-offs.
 
 **Paso 4.2 — Sesión de pricing**
 
@@ -253,7 +253,7 @@ funky pipeline all
 
 Orquesta assess → estimate en secuencia con estado compartido vía `context.json`. No tienes que ejecutar los comandos manualmente.
 
-✅ **Criterio de salida:** Tienes `docs/architecture-decisions.md` y `docs/pricing-decisions.md` documentados.
+✅ **Criterio de salida:** Tienes `docs/funky-ai/assess/architecture-decisions.md` y `docs/funky-ai/estimate/pricing-decisions.md` documentados.
 
 ---
 

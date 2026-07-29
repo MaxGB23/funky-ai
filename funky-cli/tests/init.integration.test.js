@@ -21,17 +21,22 @@ describe('runInit() Integration', () => {
     }
   });
 
-  it('debería copiar el template estático de PROJECT-CANVAS.md', () => {
+  it('NO debería copiar PROJECT-CANVAS.md desde bootstrap (va a docs/funky-ai/canvas/ via init command)', () => {
     const intentions = runInit({ templatesDir, targetBase: tmpDir });
     const result = executeIntentions(intentions);
 
     const canvasPath = path.join(tmpDir, 'PROJECT-CANVAS.md');
-    expect(fs.existsSync(canvasPath)).toBe(true);
-    
-    const content = fs.readFileSync(canvasPath, 'utf8');
-    expect(content).toContain('Nombre del Proyecto');
-    expect(content).toContain('Stakeholders');
+    expect(fs.existsSync(canvasPath)).toBe(false);
     expect(result.created).toBeGreaterThan(0);
+  });
+
+  it('debería copiar ORCHESTRATOR-STATE.md como root file', () => {
+    const intentions = runInit({ templatesDir, targetBase: tmpDir });
+    const result = executeIntentions(intentions);
+
+    const statePath = path.join(tmpDir, 'ORCHESTRATOR-STATE.md');
+    expect(fs.existsSync(statePath)).toBe(true);
+    expect(result.created + result.skipped).toBeGreaterThan(0);
   });
 
   it('NO debería copiar la plantilla canónica worker-handoff al nuevo workspace', () => {
@@ -39,14 +44,14 @@ describe('runInit() Integration', () => {
     expect(fs.existsSync(workerHandoffPath)).toBe(false);
   });
 
-  it('NO debería sobreescribir PROJECT-CANVAS.md si ya existe', () => {
-    const canvasPath = path.join(tmpDir, 'PROJECT-CANVAS.md');
-    fs.writeFileSync(canvasPath, 'CONTENIDO ORIGINAL DEL USUARIO');
+  it('NO debería sobreescribir ORCHESTRATOR-STATE.md si ya existe', () => {
+    const statePath = path.join(tmpDir, 'ORCHESTRATOR-STATE.md');
+    fs.writeFileSync(statePath, 'CONTENIDO ORIGINAL DEL USUARIO');
 
     const intentions = runInit({ templatesDir, targetBase: tmpDir });
     const result = executeIntentions(intentions);
 
-    const content = fs.readFileSync(canvasPath, 'utf8');
+    const content = fs.readFileSync(statePath, 'utf8');
     expect(content).toBe('CONTENIDO ORIGINAL DEL USUARIO');
     expect(result.skipped).toBeGreaterThan(0);
   });

@@ -24,13 +24,16 @@ import { parseFrontmatter, assessCommand, runAssess } from '../src/commands/asse
 // ── Helpers ──
 
 const __testDir = path.dirname(fileURLToPath(import.meta.url));
-const TPL_DIR = path.resolve(__testDir, '../src/templates/sdd');
+const TPL_DIR = path.resolve(__testDir, '../src/templates/assess');
 const TPL_REVIEW_PATH = path.join(TPL_DIR, 'architecture-review-template.md');
 const TPL_DECISIONS_PATH = path.join(TPL_DIR, 'architecture-decisions-template.md');
 
 const CANVAS_PROJECT_CONTENT = 'React 18 + Next.js 14\nPatrón: Clean Architecture';
 const CANVAS_INFRA_CONTENT = 'AWS EC2 + PostgreSQL\nDeploy: Docker Compose';
 const CWD = process.cwd();
+
+// Canvas location: docs/funky-ai/canvas/
+const CANVAS_DIR = path.join(CWD, 'docs', 'funky-ai', 'canvas');
 
 const DEFAULT_TEMPLATE = `# 🗣️ Guía de Discusión Arquitectónica
 
@@ -79,12 +82,11 @@ function createMockFiles() {
 }
 
 function addContextJson(mf, data) {
-  mf[path.join(CWD, 'context.json')] = JSON.stringify(data);
+  mf[path.join(CWD, 'docs', 'funky-ai', 'pipeline', 'context.json')] = JSON.stringify(data);
 }
 
-function addCanvas(mockFiles, name, content, location) {
-  const dir = location === 'docs' ? path.join(CWD, 'docs') : CWD;
-  mockFiles[path.join(dir, name)] = content;
+function addCanvas(mockFiles, name, content) {
+  mockFiles[path.join(CANVAS_DIR, name)] = content;
 }
 
 function applyMocks(mockFiles) {
@@ -154,22 +156,10 @@ describe('assess Command - action flow', () => {
     exitSpy.mockRestore();
   });
 
-  it('exits 0 when both canvases exist in root', () => {
+  it('exits 0 when both canvases exist in docs/funky-ai/canvas/', () => {
     const mf = createMockFiles();
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'root');
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'root');
-    applyMocks(mf);
-
-    assessCommand.parse(['node', 'assess'], { from: 'user' });
-
-    expect(exitSpy).toHaveBeenCalledWith(0);
-    expect(vi.mocked(fs.writeFileSync).mock.calls.length).toBeGreaterThan(0);
-  });
-
-  it('exits 0 when both canvases exist in docs/ fallback', () => {
-    const mf = createMockFiles();
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'docs');
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'docs');
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     applyMocks(mf);
 
     assessCommand.parse(['node', 'assess'], { from: 'user' });
@@ -180,7 +170,7 @@ describe('assess Command - action flow', () => {
 
   it('warns when one canvas is missing and uses placeholder', () => {
     const mf = createMockFiles();
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'root');
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     applyMocks(mf);
 
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
@@ -212,8 +202,8 @@ describe('assess Command - action flow', () => {
 
   it('warns when canvas contains [Responde aquí]', () => {
     const mf = createMockFiles();
-    addCanvas(mf, 'PROJECT-CANVAS.md', 'Framework: [Responde aquí]\nEstado: [Responde aquí]', 'root');
-    addCanvas(mf, 'INFRA-CANVAS.md', 'DB: PostgreSQL', 'root');
+    addCanvas(mf, 'PROJECT-CANVAS.md', 'Framework: [Responde aquí]\nEstado: [Responde aquí]');
+    addCanvas(mf, 'INFRA-CANVAS.md', 'DB: PostgreSQL');
     applyMocks(mf);
 
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
@@ -229,8 +219,8 @@ describe('assess Command - action flow', () => {
 
   it('generates output file with 6-phase structure and C1 questions', () => {
     const mf = createMockFiles();
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'root');
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'root');
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     applyMocks(mf);
 
     assessCommand.parse(['node', 'assess'], { from: 'user' });
@@ -257,8 +247,8 @@ describe('assess Command - action flow', () => {
 
   it('creates decisions template on first run and skips on second', () => {
     const mf = createMockFiles();
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'root');
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'root');
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     applyMocks(mf);
 
     assessCommand.parse(['node', 'assess'], { from: 'user' });
@@ -272,9 +262,9 @@ describe('assess Command - action flow', () => {
 
   it('skips decisions template when file already exists', () => {
     const mf = createMockFiles();
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'root');
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'root');
-    mf[path.join(CWD, 'docs', 'architecture-decisions.md')] = '# Existing content';
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    mf[path.join(CWD, 'docs', 'funky-ai', 'assess', 'architecture-decisions.md')] = '# Existing content';
     applyMocks(mf);
 
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
@@ -297,42 +287,38 @@ describe('--context flag', () => {
     vi.mocked(fs.writeFileSync).mockReset();
   });
 
-  it('uses canvases from context when --context flag is provided', () => {
+  it('reads canvases from filesystem when --context is provided', () => {
     const mf = createMockFiles();
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'root');
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'root');
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     addContextJson(mf, {
-      canvases: {
-        projectCanvas: 'Context Project Canvas',
-        infraCanvas: 'Context Infra Canvas',
-        unfilledCount: 0
-      },
       assess: { runAt: null, dynamicQuestions: [] },
       estimate: { runAt: null },
       pipeline: { lastCommand: null, completed: [] }
     });
     applyMocks(mf);
 
-    runAssess(CWD, { context: './context.json' });
+    runAssess(CWD, { context: true });
 
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const reviewCall = writeCalls.find(c => String(c[0]).includes('architecture-review.md'));
     expect(reviewCall).toBeTruthy();
     const writtenContent = String(reviewCall[1]);
-    expect(writtenContent).toContain('Context Project Canvas');
-    expect(writtenContent).toContain('Context Infra Canvas');
+    // Canvases come from filesystem, not context.json
+    expect(writtenContent).toContain(CANVAS_PROJECT_CONTENT);
+    expect(writtenContent).toContain(CANVAS_INFRA_CONTENT);
   });
 
   it('prints error when context file is missing', () => {
     const mf = createMockFiles();
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'root');
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'root');
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     // No addContextJson — context.json is missing
     applyMocks(mf);
 
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    runAssess(CWD, { context: './context.json' });
+    runAssess(CWD, { context: true });
 
     expect(errorSpy).toHaveBeenCalled();
     // Should NOT have written context.json (early return)
@@ -345,21 +331,16 @@ describe('--context flag', () => {
 
   it('writes assess results to context.json', () => {
     const mf = createMockFiles();
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'root');
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'root');
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     addContextJson(mf, {
-      canvases: {
-        projectCanvas: 'project content',
-        infraCanvas: 'infra content',
-        unfilledCount: 0
-      },
       assess: { runAt: null, dynamicQuestions: [] },
       estimate: { runAt: null },
       pipeline: { lastCommand: null, completed: [] }
     });
     applyMocks(mf);
 
-    runAssess(CWD, { context: './context.json' });
+    runAssess(CWD, { context: true });
 
     // Verify context.json was written with assess results
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;

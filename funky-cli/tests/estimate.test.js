@@ -24,9 +24,16 @@ import { estimateCommand, runEstimate } from '../src/commands/estimate.js';
 
 const __testDir = path.dirname(fileURLToPath(import.meta.url));
 const CWD = process.cwd();
-const TPL_DIR = path.resolve(__testDir, '../src/templates/sdd');
+const TPL_DIR = path.resolve(__testDir, '../src/templates/estimate');
 const TPL_PRICING_GUIDE_PATH = path.join(TPL_DIR, 'pricing-guide-template.md');
 const TPL_PRICING_DECISIONS_PATH = path.join(TPL_DIR, 'pricing-decisions-template.md');
+
+// Canvas location: docs/funky-ai/canvas/
+const CANVAS_DIR = path.join(CWD, 'docs', 'funky-ai', 'canvas');
+// Decisions location: docs/funky-ai/assess/
+const DECISIONS_DIR = path.join(CWD, 'docs', 'funky-ai', 'assess');
+// Context location: docs/funky-ai/pipeline/
+const CONTEXT_DIR = path.join(CWD, 'docs', 'funky-ai', 'pipeline');
 
 const DEFAULT_GUIDE_TEMPLATE = `# Guía de Discusión de Pricing
 
@@ -96,13 +103,12 @@ function createMockFiles() {
   };
 }
 
-function addCanvas(mockFiles, name, content, location) {
-  const dir = location === 'docs' ? path.join(CWD, 'docs') : CWD;
-  mockFiles[path.join(dir, name)] = content;
+function addCanvas(mockFiles, name, content) {
+  mockFiles[path.join(CANVAS_DIR, name)] = content;
 }
 
 function addDecisions(mockFiles, content) {
-  mockFiles[path.join(CWD, 'docs', 'architecture-decisions.md')] = content;
+  mockFiles[path.join(DECISIONS_DIR, 'architecture-decisions.md')] = content;
 }
 
 function applyMocks(mockFiles) {
@@ -119,7 +125,7 @@ function applyMocks(mockFiles) {
 }
 
 function addContextJson(mf, data) {
-  mf[path.join(CWD, 'context.json')] = JSON.stringify(data);
+  mf[path.join(CONTEXT_DIR, 'context.json')] = JSON.stringify(data);
 }
 
 // ═══════════════════════════════════════════════════
@@ -265,10 +271,10 @@ describe('estimateCommand — integration', () => {
     stderrSpy.mockRestore();
   });
 
-  it('exits 0 with full flow (decisions + canvases in root)', () => {
+  it('exits 0 with full flow (decisions + canvases)', () => {
     const mf = createMockFiles();
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'root');
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'root');
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     addDecisions(mf, DECISIONS_CONTENT);
     applyMocks(mf);
 
@@ -277,13 +283,13 @@ describe('estimateCommand — integration', () => {
     expect(exitSpy).toHaveBeenCalledWith(0);
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     expect(writeCalls.some(c => String(c[0]).includes('pricing-guide.md'))).toBe(true);
-    expect(writeCalls.some(c => String(c[0]).includes('pricing-decisions-template.md'))).toBe(true);
+    expect(writeCalls.some(c => String(c[0]).includes('pricing-decisions.md'))).toBe(true);
   });
 
   it('warns when decisions are missing and exits 0', () => {
     const mf = createMockFiles();
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'root');
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'root');
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     applyMocks(mf);
 
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
@@ -300,7 +306,7 @@ describe('estimateCommand — integration', () => {
 
   it('warns when project canvas is missing and exits 0', () => {
     const mf = createMockFiles();
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'root');
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     addDecisions(mf, DECISIONS_CONTENT);
     applyMocks(mf);
 
@@ -317,8 +323,8 @@ describe('estimateCommand — integration', () => {
 
   it('warns on unfilled canvas sections and exits 0', () => {
     const mf = createMockFiles();
-    addCanvas(mf, 'PROJECT-CANVAS.md', 'Framework: [Responde aquí]', 'root');
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'root');
+    addCanvas(mf, 'PROJECT-CANVAS.md', 'Framework: [Responde aquí]');
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     addDecisions(mf, DECISIONS_CONTENT);
     applyMocks(mf);
 
@@ -349,8 +355,8 @@ describe('estimateCommand — integration', () => {
 
   it('writes pricing-guide.md and pricing-decisions-template.md', () => {
     const mf = createMockFiles();
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'root');
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'root');
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     addDecisions(mf, DECISIONS_CONTENT);
     applyMocks(mf);
 
@@ -358,7 +364,7 @@ describe('estimateCommand — integration', () => {
 
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const guideCall = writeCalls.find(c => String(c[0]).includes('pricing-guide.md'));
-    const decisionsCall = writeCalls.find(c => String(c[0]).includes('pricing-decisions-template.md'));
+    const decisionsCall = writeCalls.find(c => String(c[0]).includes('pricing-decisions.md'));
 
     expect(guideCall).toBeTruthy();
     expect(decisionsCall).toBeTruthy();
@@ -383,13 +389,13 @@ describe('--context flag', () => {
 
   it('prints error when context file is missing', () => {
     const mf = createMockFiles();
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'root');
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'root');
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     applyMocks(mf);
 
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    runEstimate(CWD, { context: './context.json' });
+    runEstimate(CWD, { context: true });
 
     expect(errorSpy).toHaveBeenCalled();
     // Should NOT have written output (early return)
@@ -400,24 +406,19 @@ describe('--context flag', () => {
     errorSpy.mockRestore();
   });
 
-  it('uses decisions path from context when provided', () => {
+  it('uses decisions from filesystem when --context is provided', () => {
     const mf = createMockFiles();
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'root');
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'root');
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     addContextJson(mf, {
-      canvases: {
-        projectCanvas: CANVAS_PROJECT_CONTENT,
-        infraCanvas: CANVAS_INFRA_CONTENT,
-        unfilledCount: 0
-      },
-      assess: { decisionsFile: 'docs/architecture-decisions.md', runAt: null, dynamicQuestions: [] },
+      assess: { decisionsFile: null, runAt: null, dynamicQuestions: [] },
       estimate: { runAt: null },
       pipeline: { lastCommand: null, completed: [] }
     });
     addDecisions(mf, DECISIONS_CONTENT);
     applyMocks(mf);
 
-    runEstimate(CWD, { context: './context.json' });
+    runEstimate(CWD, { context: true });
 
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const guideCall = writeCalls.find(c => String(c[0]).includes('pricing-guide.md'));
@@ -428,22 +429,17 @@ describe('--context flag', () => {
 
   it('writes estimate timestamp to context.json', () => {
     const mf = createMockFiles();
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'root');
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'root');
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     addDecisions(mf, DECISIONS_CONTENT);
     addContextJson(mf, {
-      canvases: {
-        projectCanvas: CANVAS_PROJECT_CONTENT,
-        infraCanvas: CANVAS_INFRA_CONTENT,
-        unfilledCount: 0
-      },
       assess: { runAt: null, dynamicQuestions: [] },
       estimate: { runAt: null },
       pipeline: { lastCommand: null, completed: [] }
     });
     applyMocks(mf);
 
-    runEstimate(CWD, { context: './context.json' });
+    runEstimate(CWD, { context: true });
 
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const contextCall = writeCalls.find(c => String(c[0]).endsWith('context.json'));

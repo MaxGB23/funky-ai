@@ -15,14 +15,14 @@ Living spec canónico para el dominio `estimate`. Refleja el estado actual tras 
 
 ### R1: Validación de prerrequisito
 
-El sistema DEBE verificar que `docs/architecture-decisions.md` exista. Si no existe, DEBE advertir y generar guía con contenido parcial. Nunca debe fallar.
+El sistema DEBE verificar que `docs/funky-ai/assess/architecture-decisions.md` exista. Si no existe, DEBE advertir y generar guía con contenido parcial. Nunca debe fallar.
 
-- GIVEN `docs/architecture-decisions.md` existe
+- GIVEN `docs/funky-ai/assess/architecture-decisions.md` existe
 - WHEN `funky estimate` se ejecuta
 - THEN se lee y se incorpora en la guía
 - AND no hay warning de decisión faltante
 
-- GIVEN `docs/architecture-decisions.md` no existe
+- GIVEN `docs/funky-ai/assess/architecture-decisions.md` no existe
 - WHEN `funky estimate` se ejecuta
 - THEN se imprime un warning
 - AND la guía se genera con "Sin decisiones documentadas"
@@ -44,24 +44,24 @@ El sistema DEBE localizar PROJECT-CANVAS.md e INFRA-CANVAS.md (root → `docs/`)
 
 ### R3: Generación de guía de pricing
 
-El sistema DEBE generar `.agents/prompts/pricing-guide.md` con: decisiones arquitectónicas (o "Sin decisiones documentadas"), contenido de ambos canvases, y estructura de discusión (contexto de pricing, factores de costo, referencia de infra, acuerdos). DEBE sobrescribir si existe.
+El sistema DEBE generar `docs/funky-ai/estimate/pricing-guide.md` con: decisiones arquitectónicas (o "Sin decisiones documentadas"), contenido de ambos canvases, y estructura de discusión (contexto de pricing, factores de costo, referencia de infra, acuerdos). DEBE sobrescribir si existe.
 
 - GIVEN canvases completos y decisions existen
 - WHEN `funky estimate` se ejecuta
-- THEN `.agents/prompts/pricing-guide.md` se crea
+- THEN `docs/funky-ai/estimate/pricing-guide.md` se crea
 - AND contiene decisions, canvases y estructura de pricing
 
-- GIVEN `.agents/prompts/pricing-guide.md` ya existe
+- GIVEN `docs/funky-ai/estimate/pricing-guide.md` ya existe
 - WHEN `funky estimate` se ejecuta
 - THEN se sobrescribe sin respaldo
 
 ### R4: Template de decisiones de pricing
 
-El sistema DEBE crear `.agents/prompts/pricing-decisions-template.md` con secciones: decisión, justificación, impacto en presupuesto, alternativas, fecha. DEBE sobrescribir si existe.
+El sistema DEBE crear `docs/funky-ai/estimate/pricing-decisions.md` con secciones: decisión, justificación, impacto en presupuesto, alternativas, fecha. DEBE sobrescribir si existe.
 
 - GIVEN `funky estimate` se ejecuta
 - WHEN se genera el template
-- THEN `.agents/prompts/pricing-decisions-template.md` se crea/sobrescribe con la estructura estándar
+- THEN `docs/funky-ai/estimate/pricing-decisions.md` se crea/sobrescribe con la estructura estándar
 
 ### R5: Prompt IA en español neutro
 
@@ -72,7 +72,7 @@ El sistema DEBE generar un prompt en español neutro para que la IA inicie la se
 - THEN se produce texto en español neutro listo para copiar al chat
 - AND invita a discutir pricing basado en decisiones y canvases
 
-- GIVEN no existe `docs/architecture-decisions.md`
+- GIVEN no existe `docs/funky-ai/assess/architecture-decisions.md`
 - WHEN se genera el prompt
 - THEN indica que no hay decisiones previas
 - AND invita a discutir desde cero con la info de canvases disponible
@@ -90,14 +90,14 @@ El sistema DEBE salir con exit(0) en todos los escenarios. DEBE imprimir resumen
 
 ### R-E1: `--context` flag for context file integration
 
-The system MUST accept an optional `--context <path>` / `-c` flag on `funky estimate`. When the flag is provided, the system MUST read the decisions path from `context.json` at the given path instead of defaulting to `docs/architecture-decisions.md`. The decisions content is still read from the filesystem at that path. After generating the pricing guide, the system MUST write `estimate.runAt` (ISO 8601 timestamp) to `context.json`. When the flag is NOT provided, the system MUST behave exactly as specified in the main estimate spec (backward compatible).
+The system MUST accept an optional `--context <path>` / `-c` flag on `funky estimate`. When the flag is provided, the system MUST read the decisions path from `context.json` at the given path instead of defaulting to `docs/funky-ai/assess/architecture-decisions.md`. The decisions content is still read from the filesystem at that path. After generating the pricing guide, the system MUST write `estimate.runAt` (ISO 8601 timestamp) to `context.json`. When the flag is NOT provided, the system MUST behave exactly as specified in the main estimate spec (backward compatible).
 
 #### Scenario: --context provides decisions path
 
 - GIVEN `funky estimate --context ./context.json` is invoked
-- AND `context.json` contains `{ "assess": { "decisionsFile": "docs/architecture-decisions.md" } }`
+- AND `context.json` contains `{ "assess": { "decisionsFile": "docs/funky-ai/assess/architecture-decisions.md" } }`
 - WHEN the command executes
-- THEN decisions are read from `docs/architecture-decisions.md` (resolved relative to targetBase)
+- THEN decisions are read from `docs/funky-ai/assess/architecture-decisions.md` (resolved relative to targetBase)
 
 #### Scenario: --context writes estimate timestamp
 
@@ -110,7 +110,7 @@ The system MUST accept an optional `--context <path>` / `-c` flag on `funky esti
 - GIVEN `funky estimate` is invoked without `--context`
 - WHEN the command executes
 - THEN all main-spec requirements R1-R6 apply unchanged
-- AND decisions are read from `docs/architecture-decimals.md` (hardcoded default)
+- AND decisions are read from `docs/funky-ai/assess/architecture-decisions.md` (hardcoded default)
 - AND no `context.json` is read or written
 
 #### Scenario: --context file does not exist
@@ -166,4 +166,4 @@ The system MUST export `async function runEstimate(targetBase, opts)` containing
 | Sin modo interactivo | NO DEBE usar `@inquirer/prompts` ni preguntar nada al usuario. Todo headless |
 | Dependency | `loadDecisions()` and `findCanvases()` MUST be importable from `context.js` with zero behavioral change |
 | Boundary | `process.exit(0)` MUST appear ONLY in the `.action()` callback, exactly once |
-| Determinismo | Mismos inputs → idéntico `.agents/prompts/pricing-guide.md` |
+| Determinismo | Mismos inputs → idéntico `docs/funky-ai/estimate/pricing-guide.md` |

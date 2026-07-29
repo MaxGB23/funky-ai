@@ -32,8 +32,6 @@ export function runInit({ templatesDir, targetBase }) {
   add('ORCHESTRATOR-STATE.md', 'ORCHESTRATOR-STATE.md');
   add('README.md', 'README.md');
   add('TEMPLATE_GUIDE.md', 'TEMPLATE_GUIDE.md');
-  add('PROJECT-CANVAS.md', 'PROJECT-CANVAS.md');
-  add('INFRA-CANVAS.md', 'INFRA-CANVAS.md');
 
   // ── funky-ai-rules/ → .agents/rules/ ──
   add('funky-ai-rules/engram-protocol.md',                '.agents/rules/engram-protocol.md');
@@ -101,13 +99,14 @@ export const initCommand = new Command('init')
   .description('Genera PROJECT-CANVAS.md e INFRA-CANVAS.md para iniciar la planificacion del proyecto. Usa --bootstrap para copiar toda la estructura del ecosistema Funky AI.')
   .option('-b, --bootstrap', 'Copia toda la estructura base del ecosistema Funky AI (reglas de agentes, ORCHESTRATOR-STATE, plantillas, directorios engram)')
   .action(async (options) => {
-    const templatesDir = path.join(__dirname, '../templates/bootstrap');
+    const bootstrapDir = path.join(__dirname, '../templates/bootstrap');
+    const initDir = path.join(__dirname, '../templates/init');
     const targetBase = process.cwd();
 
     if (options.bootstrap) {
       try {
         console.log('🚀 Inicializando Funky AI...');
-        const intentions = runInit({ templatesDir, targetBase });
+        const intentions = runInit({ templatesDir: bootstrapDir, targetBase });
 
         const { created, skipped, logs } = executeIntentions(intentions);
         for (const log of logs) {
@@ -120,22 +119,24 @@ export const initCommand = new Command('init')
       }
     } else {
       try {
-        const projectCanvasPath = path.join(targetBase, 'PROJECT-CANVAS.md');
-        const infraCanvasPath = path.join(targetBase, 'INFRA-CANVAS.md');
+        const canvasDir = path.join(targetBase, 'docs', 'funky-ai', 'canvas');
+        const projectCanvasPath = path.join(canvasDir, 'PROJECT-CANVAS.md');
+        const infraCanvasPath = path.join(canvasDir, 'INFRA-CANVAS.md');
 
         if (fs.existsSync(projectCanvasPath) || fs.existsSync(infraCanvasPath)) {
-          console.error('❌ Error: Ya existe PROJECT-CANVAS.md o INFRA-CANVAS.md en el directorio.');
+          console.error('❌ Error: Ya existe PROJECT-CANVAS.md o INFRA-CANVAS.md en docs/funky-ai/canvas/.');
           process.exit(1);
         }
 
-        const guideDest = path.join(targetBase, 'canvas-planning-guide.md');
+        const guideDest = path.join(canvasDir, 'canvas-planning-guide.md');
         const intentions = [
-          { action: 'copy', src: path.join(templatesDir, 'PROJECT-CANVAS.md'), dest: projectCanvasPath },
-          { action: 'copy', src: path.join(templatesDir, 'INFRA-CANVAS.md'), dest: infraCanvasPath },
+          { action: 'mkdir', dest: canvasDir },
+          { action: 'copy', src: path.join(initDir, 'PROJECT-CANVAS.md'), dest: projectCanvasPath },
+          { action: 'copy', src: path.join(initDir, 'INFRA-CANVAS.md'), dest: infraCanvasPath },
         ];
 
         if (!fs.existsSync(guideDest)) {
-          const guideSrc = path.join(__dirname, '../templates/funky-pipeline/canvas-planning-guide.md');
+          const guideSrc = path.join(initDir, 'canvas-planning-guide.md');
           intentions.push({ action: 'copy', src: guideSrc, dest: guideDest });
         }
 
