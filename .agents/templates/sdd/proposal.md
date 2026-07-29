@@ -42,5 +42,3 @@
 ## 6. Success Criteria
 - [ ] [Criterio de éxito 1 verificable]
 - [ ] [Criterio de éxito 2 verificable]
-
-> **[SISTEMA - PARA EL ORQUESTADOR]** Si la propuesta es aprobada, procede a generar el `spec.md` basado en las Capabilities, o directo a `tasks.md` si no requiere specs.

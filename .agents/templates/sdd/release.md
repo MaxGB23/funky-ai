@@ -15,7 +15,7 @@ La versión se determina DESPUÉS de funky-archive: leer `package.json` → incr
 
 **🚨 CHECKLIST:**
 - [ ] **Release Notes:** Generar `docs/funky-ai/releases/vX.Y.Z-release.md` Leer template .agents/templates/release-notes.md. 
-- [ ] **Sincronización:** Actualizar `ORCHESTRATOR-STATE.md`
+- [ ] **Sincronización:** Leer y Actualizar `ORCHESTRATOR-STATE.md`
 
 ---
 

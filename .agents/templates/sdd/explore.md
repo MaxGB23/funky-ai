@@ -6,7 +6,7 @@
 > - ALWAYS read real code, never guess about the codebase.
 > - If you can't find enough information, say so clearly.
 > - The ONLY file you MAY create/edit is this exploration document. DO NOT modify any existing code or files.
-
+ 
 > **INVESTIGATE GUIDELINES:**
 > - Read entry points and key files
 > - Search for related functionality
@@ -47,5 +47,3 @@
 **Riesgos mitigables:**
 - [Riesgo 1]: [Cómo mitigarlo]
 - [Riesgo 2]: [Cómo mitigarlo]
-
-> **[SISTEMA - PARA EL ORQUESTADOR]** Una vez finalizada la exploración, espera aprobación del humano, y luego utilizá este documento como base para generar el `proposal.md`
