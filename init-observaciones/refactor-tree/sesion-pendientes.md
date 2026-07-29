@@ -66,11 +66,14 @@ Después de eliminar los comandos:
 
 ---
 
-## 4. Vector 3 de cli-simulations.md
+## 4. Vector 3 de cli-simulations.md [RESUELTO]
 
-- **Problema:** `funky init` en directorio de solo lectura lanza excepción EACCES con stacktrace sin formato.
-- **Estado:** Pendiente de solución.
-- **Acción:** Manejar la excepción en `init.js` con mensaje "Error de permisos al escribir en X" en vez del error de Node crudo.
+- **Problema:** `funky init` en directorio de solo lectura lanzaba excepción EACCES con stacktrace sin formato.
+- **Solución:** 
+  - `executeIntentions()`: cada FS op captura EACCES y relanza con mensaje amigable (ruta + sugerencia de permisos).
+  - `assess.js` y `estimate.js`: mismo patrón en catch blocks directos.
+  - `init.js`: propaga el mensaje sin stacktrace.
+- **Estado:** ✅ Resuelto en Punto 5.
 
 ---
 

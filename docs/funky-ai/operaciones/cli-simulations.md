@@ -12,12 +12,15 @@ A continuación se detallan los vectores de falla detectados durante auditorías
 - **Simulacion:** ~~El usuario inicia `funky init` en setup inicial~~ [OBSOLETO — el modo interactivo fue eliminado. `funky init` no tiene prompts, genera archivos y termina.]
 - **Estado:** Flujo simplificado. No hay prompts que interrumpir.
 
-## Vector 3: Errores de Entorno (Permisos Denegados) [PENDIENTE]
+## Vector 3: Errores de Entorno (Permisos Denegados) [RESUELTO]
 - **Simulación:** El usuario corre `funky init` en un directorio de solo lectura.
-- **Acción:** `fs.mkdirSync` y `fs.copyFileSync` intentan escribir.
-- **Resultado Actual:** ⚠️ Lanza una excepción de Node (ej. `EACCES`) en medio de la ejecución. El catch global de `init.js` imprime el error de Node crudo — setup potencialmente incompleto.
-- **Resultado Esperado (UX):** Debería manejar la excepción, informar "Error de permisos al escribir en X" y evitar stacktrace feo.
-- **Estado:** Pendiente de fix.
+- **Acción:** `fs.mkdirSync` y `fs.copyFileSync` / `fs.writeFileSync` intentan escribir.
+- **Resultado Anterior:** ⚠️ Lanzaba excepción EACCES de Node crudo — setup potencialmente incompleto.
+- **Fix Aplicado:**
+  - `executeIntentions()` (usado por init): cada operación FS captura EACCES y lanza `"Error de permisos al crear directorio / copiar archivo en X. Verificá que tengas permisos de escritura."`
+  - `init.js` catch blocks: propagan el mensaje amigable sin stacktrace.
+  - `assess.js` y `estimate.js`: cada FS op detecta `err.code === 'EACCES'` y muestra mensaje amigable con la ruta específica.
+- **Resultado Actual:** ✅ Mensaje claro y sin stacktrace. El usuario sabe qué archivo/directorio causó el problema.
 
 ## Vector 4: Flags Inválidos (`funky init` con archivo previo)
 - **Simulación:** El usuario ejecuta `funky init` pero ya tiene un `PROJECT-CANVAS.md` de otra iteración.

@@ -45,7 +45,8 @@ export function runEstimate(targetBase, opts = {}) {
     try {
       fs.mkdirSync(estimateDir, { recursive: true });
     } catch (err) {
-      console.warn('⚠️  No se pudo crear el directorio docs/funky-ai/estimate/:', err.message);
+      const msg = err.code === 'EACCES' ? `Error de permisos al crear el directorio "${estimateDir}". Verificá que tengas permisos de escritura.` : err.message;
+      console.warn('⚠️  No se pudo crear el directorio docs/funky-ai/estimate/:', msg);
     }
 
     let pricingGuide;
@@ -60,7 +61,8 @@ export function runEstimate(targetBase, opts = {}) {
     try {
       fs.writeFileSync(pricingGuidePath, pricingGuide, 'utf8');
     } catch (err) {
-      console.warn('⚠️  No se pudo escribir pricing-guide.md:', err.message);
+      const msg = err.code === 'EACCES' ? `Error de permisos al escribir "${pricingGuidePath}". Verificá que tengas permisos de escritura.` : err.message;
+      console.warn('⚠️  No se pudo escribir pricing-guide.md:', msg);
     }
 
     // ── 4. Generate Decisions Template ──
@@ -76,7 +78,8 @@ export function runEstimate(targetBase, opts = {}) {
     try {
       fs.writeFileSync(decisionsTemplatePath, decisionsTemplate, 'utf8');
     } catch (err) {
-      console.warn('⚠️  No se pudo escribir pricing-decisions.md:', err.message);
+      const msg = err.code === 'EACCES' ? `Error de permisos al escribir "${decisionsTemplatePath}". Verificá que tengas permisos de escritura.` : err.message;
+      console.warn('⚠️  No se pudo escribir pricing-decisions.md:', msg);
     }
 
     // ── 5. Update Context ──

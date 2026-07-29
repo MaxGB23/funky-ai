@@ -83,6 +83,7 @@ Candidatos según pendientes actuales:
 - [ ] **Opción B: Migrar `--bootstrap` a comando independiente** — separar la inyección del ecosistema de `funky init` para que sea `funky bootstrap` o similar.
 - [ ] **Opción C: EACCES handling** — manejar excepción de permisos en `init.js` con mensaje amigable en vez de stacktrace crudo (Vector 3 de cli-simulations.md).
 - [ ] **Opción D: Argentinismos** — limpiar voseo/imperativo en docs operativos (dejar solo gentle-ai-global.md).
-- [ ] **Otra propuesta** — lo que el usuario quiera traer.
+- [ ] Verificar que todos los comandos salteen archivos existentes (no sobreescribir). `executeIntentions()` ya lo hace con `fs.existsSync(dest)`, pero revisar comando por comando que no haya `writeFileSync` directos sin check.
+
 
 ---

@@ -2,6 +2,26 @@ import fs from 'fs';
 import path from 'path';
 
 /**
+ * Wraps a sync FS operation to catch EACCES and re-throw with a friendly message.
+ * @param {() => void} fn - Sync FS operation to execute
+ * @param {string} path - The file/directory path being operated on
+ * @param {string} description - What was being attempted (e.g. "crear directorio", "escribir archivo")
+ */
+function wrapFSOp(fn, fsPath, description) {
+  try {
+    fn();
+  } catch (err) {
+    if (err.code === 'EACCES') {
+      throw new Error(
+        `Error de permisos al ${description} en "${fsPath}". ` +
+        `Verificá que tengas permisos de escritura en ese directorio.`
+      );
+    }
+    throw err;
+  }
+}
+
+/**
  * Ejecuta un plan de intenciones de I/O sobre el file system.
  * 
  * @param {Array<{ action: 'copy'|'create'|'mkdir', dest: string, src?: string, content?: string }>} intentions 
@@ -20,7 +40,11 @@ export function executeIntentions(intentions, { dryRun = false } = {}) {
     if (action === 'mkdir') {
       if (!fs.existsSync(dest)) {
         if (!dryRun) {
-          fs.mkdirSync(dest, { recursive: true });
+          wrapFSOp(
+            () => fs.mkdirSync(dest, { recursive: true }),
+            dest,
+            'crear directorio'
+          );
         }
         logs.push(`✅ Creado directorio: ${dest}`);
       }
@@ -36,19 +60,31 @@ export function executeIntentions(intentions, { dryRun = false } = {}) {
     if (!dryRun) {
       const dir = path.dirname(dest);
       if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
+        wrapFSOp(
+          () => fs.mkdirSync(dir, { recursive: true }),
+          dir,
+          'crear directorio'
+        );
       }
     }
 
     if (action === 'copy') {
       if (!dryRun) {
-        fs.copyFileSync(src, dest);
+        wrapFSOp(
+          () => fs.copyFileSync(src, dest),
+          dest,
+          'copiar archivo'
+        );
       }
       logs.push(`✅ Creado: ${dest}`);
       createdCount++;
     } else if (action === 'create') {
       if (!dryRun) {
-        fs.writeFileSync(dest, content, 'utf8');
+        wrapFSOp(
+          () => fs.writeFileSync(dest, content, 'utf8'),
+          dest,
+          'escribir archivo'
+        );
       }
       logs.push(`✅ Creado: ${dest}`);
       createdCount++;

@@ -103,14 +103,16 @@ export function runAssess(targetBase, opts = {}) {
   try {
     fs.mkdirSync(assessDir, { recursive: true });
   } catch (err) {
-    console.warn('⚠️  No se pudo crear el directorio docs/funky-ai/assess/:', err.message);
+    const msg = err.code === 'EACCES' ? `Error de permisos al crear el directorio "${assessDir}". Verificá que tengas permisos de escritura.` : err.message;
+    console.warn('⚠️  No se pudo crear el directorio docs/funky-ai/assess/:', msg);
   }
 
   const outputPath = path.join(assessDir, 'architecture-review.md');
   try {
     fs.writeFileSync(outputPath, outputContent, 'utf8');
   } catch (err) {
-    console.warn('⚠️  No se pudo escribir el archivo de guía:', err.message);
+    const msg = err.code === 'EACCES' ? `Error de permisos al escribir "${outputPath}". Verificá que tengas permisos de escritura.` : err.message;
+    console.warn('⚠️  No se pudo escribir el archivo de guía:', msg);
   }
 
   // ── 6. Decisions Template ──
@@ -125,7 +127,8 @@ export function runAssess(targetBase, opts = {}) {
       fs.writeFileSync(decisionsDestPath, decisionsContent, 'utf8');
       console.log('📄 Template de decisiones creado en docs/funky-ai/assess/architecture-decisions.md');
     } catch (err) {
-      console.warn('⚠️  No se pudo crear docs/funky-ai/assess/architecture-decisions.md:', err.message);
+      const msg = err.code === 'EACCES' ? `Error de permisos al crear "${decisionsDestPath}". Verificá que tengas permisos de escritura.` : err.message;
+      console.warn('⚠️  No se pudo crear docs/funky-ai/assess/architecture-decisions.md:', msg);
     }
   } else {
     console.log('ℹ️  docs/architecture-decisions.md ya existe — no se modificó.');
