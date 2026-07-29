@@ -1,12 +1,9 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
 import { initCommand } from '../src/commands/init.js';
-import { phaseCommand } from '../src/commands/phase.js';
-import { releaseCommand } from '../src/commands/release.js';
 import { assessCommand } from '../src/commands/assess.js';
 import { featureCommand } from '../src/commands/feature.js';
 import { estimateCommand } from '../src/commands/estimate.js';
-import { gentleCommand } from '../src/commands/gentle.js';
 import { engramCommand } from '../src/commands/engram.js';
 import { pipelineCommand } from '../src/commands/pipeline.js';
 
@@ -18,12 +15,9 @@ program
   .version('1.0.0');
 
 program.addCommand(initCommand);
-program.addCommand(phaseCommand);
-program.addCommand(releaseCommand);
 program.addCommand(assessCommand);
 program.addCommand(featureCommand);
 program.addCommand(estimateCommand);
-program.addCommand(gentleCommand);
 program.addCommand(engramCommand);
 program.addCommand(pipelineCommand);
 

@@ -213,7 +213,7 @@ funky init --bootstrap
 
 | Anti-patron | Por que es un problema |
 |---|---|
-| Ejecutar `funky init --bootstrap` sin haber llenado los Canvas | El ecosistema se copia pero sin datos reales de stack en los archivos generados |
+| Ejecutar `funky init --bootstrap` sin haber llenado los Canvas | ✅ Válido — instala el framework sin canvases. Si después querés los canvases, ejecutá `funky init` y luego `funky init --bootstrap` de nuevo (es idempotente) |
 | Saltear `funky init` y llenar los Canvas directamente en el editor | Sin la `canvas-planning-guide.md` como referencia, se omiten campos o se usan valores invalidos |
 | Ejecutar `funky init --bootstrap` dos veces sin cambios | Es idempotente, no causa dano pero tampoco avanza |
 | Ejecutar `funky estimate` sin haber corrido `funky assess` antes | El pricing no tendrá contexto de decisiones arquitectónicas — se genera igual pero con contenido parcial |

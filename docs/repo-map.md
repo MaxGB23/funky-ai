@@ -10,6 +10,13 @@
 | `src/` | Código Fuente | Comandos, utilidades y templates del CLI. | Activo |
 | `tests/` | Testing | Batería principal de pruebas (incluye tests unificados). | Activo |
 
+### 1.1. Comandos del CLI
+
+| Comando | Rol | ¿Inyecta canvases? |
+|---------|-----|-------------------|
+| `funky init` | Genera PROJECT-CANVAS.md, INFRA-CANVAS.md y canvas-planning-guide.md | ✅ Sí — ese es su propósito |
+| `funky init --bootstrap` | Instala el framework Funky AI (rules, engram, templates). No inyecta canvases. Pendiente: separar en un comando dedicado (`funky install` o similar) para desacoplar los concerns. | ❌ No — solo framework |
+
 ## 2. Documentación (`docs/`)
 | Directorio | Rol | Propósito | Estado |
 |------------|-----|-----------|--------|

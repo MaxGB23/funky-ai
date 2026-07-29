@@ -19,7 +19,7 @@
 - [ ] **Changelog:** Generar o actualizar CHANGELOG.md con las entradas de esta release.
 
 ### Release Notes
-- [ ] **Release notes generadas:** Ejecutar `funky release vX.Y.Z` o crear manualmente.
+- [ ] **Release notes generadas:** Usar el template `release-template.md` (inyectado por `--bootstrap`) o crear manualmente.
 - [ ] **Review:** Revisar que las release notes sean claras y completas.
 
 ### Archivado

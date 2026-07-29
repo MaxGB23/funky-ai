@@ -12,7 +12,7 @@ Los proyectos inicializados con Funky AI no asumen un stack tecnológico complej
 
 ## 🛠️ Flujo de Customización Post-Inicialización
 
-Una vez que has ejecutado `funky init` y tienes los archivos base, el Orquestador (o el Tech Lead humano) debe adaptar las plantillas siguiendo estos pasos:
+Una vez que has ejecutado `funky init --bootstrap` y tienes los archivos base, el Orquestador (o el Tech Lead humano) debe adaptar las plantillas siguiendo estos pasos:
 
 ### 1. Definición de la Arquitectura
 Ejecuta la evaluación arquitectónica inicial y el canvas del proyecto. Este proceso arrojará requerimientos explícitos (NFRs, stack, integraciones).

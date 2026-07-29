@@ -27,7 +27,6 @@ export function runInit({ templatesDir, targetBase, canvasConfig, selectedProtoc
     { src: 'agents-rules-engram-protocol.md', dest: path.join('.agents', 'rules', 'engram-protocol.md') },
     { src: 'agents-rules-secops.md', dest: path.join('.agents', 'rules', 'secops.md') },
     { src: 'agents-rules-sdd-orchestrator.md', dest: path.join('.agents', 'rules', 'sdd-orchestrator.md') },
-    { src: 'canvas-planning-guide.md', dest: path.join('docs', 'funky-ai', 'cli', 'canvas-planning-guide.md') },
     { src: path.join('..', 'sdd', 'architecture-assessment.md'), dest: path.join('docs', 'architecture-assessment.md') },
     { src: path.join('..', 'sdd', 'rfc-template.md'), dest: path.join('openspec', 'rfcs', '000-TEMPLATE.md') },
     { src: 'TEMPLATE_GUIDE.md', dest: 'TEMPLATE_GUIDE.md' },
@@ -36,6 +35,7 @@ export function runInit({ templatesDir, targetBase, canvasConfig, selectedProtoc
     { src: 'engram-bugfixes.md', dest: path.join('docs', 'engram', 'bugfix', 'bugfixes.md') },
     { src: 'architecture-assessment-guide.md', dest: path.join('docs', 'architecture-assessment-guide.md') },
     { src: 'agents-rules-secops-setup.md', dest: path.join('.agents', 'rules', 'secops-setup.md') },
+    { src: 'release.md', dest: 'release-template.md' },
   ];
 
   for (const file of filesToCopy) {
@@ -118,9 +118,9 @@ export const initCommand = new Command('init')
           fs.writeFileSync(infraCanvasPath, `> ⚠️ **MIGRACION PENDIENTE**\n\n${generateInfraCanvasMarkdown({})}`);
           canvasConfig = { skipProjectCanvas: true, skipInfraCanvas: true, projectData: {}, infraData: {}, migratingLegacy: true };
         } else {
-          console.error('❌ No se encontraron PROJECT-CANVAS.md ni INFRA-CANVAS.md.');
-          console.error('Ejecuta `funky init` primero para generarlos.');
-          process.exit(1);
+          console.log('ℹ️  No se encontraron canvases. Instalando solo el framework Funky AI.');
+          console.log('ℹ️  Si después querés los canvases, ejecutá `funky init` y luego `funky init --bootstrap` de nuevo.');
+          canvasConfig = null;
         }
 
         const intentions = runInit({ templatesDir, targetBase, canvasConfig, selectedProtocols });

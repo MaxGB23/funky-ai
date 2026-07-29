@@ -215,7 +215,6 @@ funky init --bootstrap
 ✅ Creado: docs/engram/bugfix/
 ✅ Creado: docs/engram/discoveries.md
 ✅ Creado: docs/engram/bugfix/bugfixes.md
-✅ Creado: docs/funky-ai/cli/canvas-planning-guide.md
 ✅ Creado: docs/funky-ai/workers/plantilla-worker-handoff.md
 ✅ Creado: docs/architecture-assessment.md
 ✅ Creado: docs/architecture-assessment-guide.md
@@ -255,8 +254,6 @@ mi-nuevo-proyecto/
     │   └── bugfix/
     │       └── bugfixes.md        ← Bugs corregidos
     ├── funky-ai/
-    │   ├── cli/
-    │   │   └── canvas-planning-guide.md
     │   └── workers/
     │       └── plantilla-worker-handoff.md
     └── openspec/

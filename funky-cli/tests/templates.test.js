@@ -15,11 +15,4 @@ describe('Templates Validation', () => {
     }
   });
 
-  it('gentle templates should exist', () => {
-    const gentleFiles = ['01-explore.md', '02-proposal.md', '03-spec.md', '04-design.md', '05-tasks.md', '06-implement.md', '07-verify.md'];
-    for (const file of gentleFiles) {
-      const p = path.join(__dirname, '../src/templates/gentle', file);
-      expect(fs.existsSync(p)).toBe(true);
-    }
-  });
 });

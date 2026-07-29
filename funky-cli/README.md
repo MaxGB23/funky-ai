@@ -68,8 +68,6 @@ pnpm link --global
 │   │   └── bugfix/
 │   │       └── bugfixes.md      (Registro de bugs corregidos)
 │   ├── funky-ai/
-│   │   ├── cli/
-│   │   │   └── canvas-planning-guide.md (Guía de referencia para llenar canvases)
 │   │   └── workers/
 │   │       └── plantilla-worker-handoff.md (Template de handoff para workers)
 │   └── openspec/

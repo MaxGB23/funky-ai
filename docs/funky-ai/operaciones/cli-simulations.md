@@ -22,7 +22,7 @@ A continuación se detallan los vectores de falla detectados durante auditorías
 ## Vector 4: Flags Inválidos (`funky init` con archivo previo)
 - **Simulación:** El usuario ejecuta `funky init` pero ya tiene un `PROJECT-CANVAS.md` de otra iteración.
 - **Acción:** `funky init` detecta archivo existente.
-- **Resultado Actual:** ✅ Frena con código `1` y mensaje claro. También aplica a `--bootstrap` si no existen los canvases.
+- **Resultado Actual:** ✅ Frena con código `1` y mensaje claro. En `--bootstrap` no aplica porque ahora instala el framework aunque no haya canvases.
 - **Resultado Esperado (UX):** Correcto. No requiere fix.
 
 ## Vector 5: Fase Destructiva (`funky phase`)

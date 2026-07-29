@@ -11,7 +11,7 @@
 El comando `funky init` genera PROJECT-CANVAS.md, INFRA-CANVAS.md y la guia de planeacion. El flujo es de 2 pasos:
 
 1. **Inicializacion** (`funky init`): Genera canvases vacios + guia en el directorio actual.
-2. **Bootstrap** (`funky init --bootstrap`): Cuando los canvases ya existen, copia toda la estructura base del ecosistema Funky AI (reglas de agentes, ORCHESTRATOR-STATE, directorios engram, plantillas).
+2. **Bootstrap** (`funky init --bootstrap`): Copia toda la estructura base del ecosistema Funky AI (reglas de agentes, ORCHESTRATOR-STATE, directorios engram, plantillas). No requiere canvases, pero si existen los respeta.
 
 No existen modos interactivos ni prompts. El CLI genera los archivos y termina. El equipo discute las decisiones en chat con IA, no en la terminal.
 
@@ -36,7 +36,7 @@ funky init [--bootstrap?]
 └─ ¿flag --bootstrap?
     └─ SI
         ├─ ¿existen PROJECT-CANVAS.md E INFRA-CANVAS.md en cwd?
-        │   ├─ SI → Bootstrap completo:
+        │   ├─ AMBOS → Bootstrap completo:
         │   │       canvasConfig = { skipProjectCanvas: true, skipInfraCanvas: true }
         │   │       └─ runInit({})
         │   │           ├─ Copia archivos bootstrap
@@ -47,8 +47,12 @@ funky init [--bootstrap?]
         │   │       ├─ Genera INFRA-CANVAS.md con warning legacy
         │   │       └─ Continua con bootstrap
         │   │
-        │   └─ NINGUNO
-        │       └─ Error: "Ejecuta funky init primero" → process.exit(1)
+        │   └─ NINGUNO → Bootstrap solo (sin canvases):
+        │           canvasConfig = null
+        │           └─ runInit({})
+        │               ├─ Copia archivos bootstrap
+        │               ├─ Crea directorios engram
+        │               └─ Sin canvases (canvasConfig=null)
         └─ (fin)
 ```
 
@@ -75,7 +79,6 @@ Ubicación base: `src/templates/bootstrap/`
 | `[environment]/agents-rules-sdd-orchestrator.md` | `.agents/rules/sdd-orchestrator.md` | Ruteado según entorno (`ide/` o `cli/`) |
 | *(Scaffold de directorios)* | `docs/engram/architecture/`, `pattern/`, `discovery/`, `decision/`, `bugfix/` | Creados con `fs.mkdirSync` — no son archivos copiados sino directorios vacíos |
 | `plantilla-worker-handoff.md` | `docs/funky-ai/workers/plantilla-worker-handoff.md` | Estático general |
-| `canvas-planning-guide.md` | `docs/funky-ai/cli/canvas-planning-guide.md` | Estático general |
 | `../sdd/architecture-assessment.md` | `docs/architecture-assessment.md` | Estático general |
 | `../sdd/rfc-template.md` | `openspec/rfcs/000-TEMPLATE.md` | Estático general |
 | `TEMPLATE_GUIDE.md` | `TEMPLATE_GUIDE.md` | Estático general |
@@ -164,9 +167,7 @@ proyecto/
 │   │   ├── decision/
 │   │   └── bugfix/
 │   ├── funky-ai/
-│   │   ├── cli/
-│   │   │   └── canvas-planning-guide.md
-│   │   └── workers/
+    │   │   └── workers/
 │   │       └── plantilla-worker-handoff.md
 │   └── openspec/
 │       └── rfcs/
@@ -178,4 +179,4 @@ proyecto/
 └── README.md
 ```
 
-> ⚠️ Por defecto (`funky init` sin flags), solo se generan `PROJECT-CANVAS.md`, `INFRA-CANVAS.md` y `canvas-planning-guide.md` en la raiz. El resto de la estructura se crea al ejecutar `funky init --bootstrap` con los Canvas ya llenos.
+> ⚠️ Por defecto (`funky init` sin flags), solo se generan `PROJECT-CANVAS.md`, `INFRA-CANVAS.md` y `canvas-planning-guide.md` en la raiz. El resto de la estructura se crea al ejecutar `funky init --bootstrap` (no requiere canvases, pero si existen los respeta).
