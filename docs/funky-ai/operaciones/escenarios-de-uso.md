@@ -6,12 +6,13 @@
 
 ## Tabla de Referencia Rápida
 
-| # | ¿En que estado estas? | Primer comando |
+| # | ¿En qué estado estás? | Primer comando |
 |---|---|---|
-| [Escenario 1](#escenario-1) | No tenes claro que construir ni con que stack | Chat vacio → debate → `funky init` |
-| [Escenario 2](#escenario-2) | Sabes que construir, empezas desde cero | `funky init` |
-| [Escenario 3](#escenario-3) | Repo existente, queres incorporar Funky AI | `funky init` (genera canvases) |
-| [Escenario 4](#escenario-4) | Queres registrar un hallazgo o decision tecnica | `funky engram add` |
+| [Escenario 1](#escenario-1) | No tenés claro qué construir ni con qué stack | Chat vacío → debate → `funky init` |
+| [Escenario 2](#escenario-2) | Sabés qué construir, empezás desde cero | `funky init` |
+| [Escenario 3](#escenario-3) | Repo existente, querés incorporar Funky AI | `funky init` (genera canvases) |
+| [Escenario 4](#escenario-4) | Querés discutir arquitectura o pricing | `funky assess` / `funky estimate` / `funky pipeline all` |
+| [Escenario 5](#escenario-5) | Querés registrar un hallazgo o decisión técnica | `funky engram add` |
 
 ---
 
@@ -48,10 +49,12 @@ funky init
 
 **Output esperado:**
 ```
-✅ PROJECT-CANVAS.md generado
-✅ INFRA-CANVAS.md generado
-✅ canvas-planning-guide.md copiado. Úsala como referencia para llenar los Canvas.
-✅ Templates generados. Llénalos y vuelve a ejecutar `funky init`.
+🚀 Funky AI — Inicializando...
+✅ Creado: PROJECT-CANVAS.md
+✅ Creado: INFRA-CANVAS.md
+✅ Creado: canvas-planning-guide.md
+
+📘 Canvases generados. Completalos y ejecuta `funky init --bootstrap`.
 ```
 
 ---
@@ -60,11 +63,11 @@ funky init
 
 Abrí `canvas-planning-guide.md` como referencia. Completá `PROJECT-CANVAS.md` e `INFRA-CANVAS.md` con las decisiones del debate anterior.
 
-**✅ Criterio de salida:** Ambos Canvas tienen valores concretos en todos los campos (no "No definido").
+**✅ Criterio de salida:** Ambos Canvas tienen valores concretos en todos los campos (sin `[Responde aquí]`).
 
 ---
 
-**Paso 1.4 — (Opcional) Validá la arquitectura con `funky assess`**
+**Paso 1.4 — (Opcional) Discutí la arquitectura con `funky assess`**
 
 Si la arquitectura tiene puntos de riesgo o no estás seguro de alguna decisión:
 
@@ -72,9 +75,15 @@ Si la arquitectura tiene puntos de riesgo o no estás seguro de alguna decisión
 funky assess
 ```
 
-El comando evalúa `docs/architecture-assessment.md` contra el motor de reglas y genera challenges para debatir con la IA antes de comprometerte al stack.
+**Qué hace:** El CLI lee PROJECT-CANVAS.md e INFRA-CANVAS.md e inyecta una guía de discusión de 6 fases (Contexto → Preocupaciones → Preguntas Guía → Riesgos → Alternativas → Acuerdos), más un template de decisiones. Sin reglas estáticas, sin validación binaria, nunca falla. Si hay placeholders sin completar (`[Responde aquí]`), advierte pero continúa.
 
-> ⚠️ Si `funky assess` detecta campos incompletos o contradicciones, revisá los Canvas y repetí hasta que pase.
+**Output esperado:**
+```
+📄 Guía de discusión generada → docs/architecture-review.md
+📄 Template de decisiones → docs/architecture-decisions.md (si no existía)
+```
+
+> 💡 Copiá `docs/architecture-review.md` en un chat con IA y discutí: riesgos, alternativas, trade-offs. Documentá los acuerdos en `docs/architecture-decisions.md`.
 
 ---
 
@@ -88,14 +97,34 @@ funky init --bootstrap
 
 **Output esperado:**
 ```
-📄 Inicializando estructura completa del ecosistema...
+🚀 Inicializando estructura completa del ecosistema...
 ✅ Creado: .agents/rules/engram-protocol.md
 ✅ Creado: .agents/rules/secops.md
-... (resto de la estructura)
+✅ Creado: .agents/rules/secops-setup.md
+✅ Creado: .agents/rules/sdd-orchestrator.md
+... (~20 archivos/directorios)
 ✅ Funky AI inicializado.
 ```
 
-**✅ Criterio de salida:** Tenés el ecosistema completo. Podés hacer el primer commit y arrancar con `funky phase explore`.
+**✅ Criterio de salida:** Tenés el ecosistema completo.
+
+---
+
+**Paso 1.6 — (Opcional) Sesión de pricing con `funky estimate`**
+
+Si querés discutir costos y trade-offs de pricing basados en las decisiones arquitectónicas:
+
+```bash
+funky estimate
+```
+
+O si preferís orquestar assess + estimate en secuencia:
+
+```bash
+funky pipeline all
+```
+
+✅ **Criterio de salida:** Podés hacer el primer commit y arrancar con `funky phase explore`.
 
 ---
 
@@ -117,9 +146,9 @@ funky init
 
 El CLI genera `PROJECT-CANVAS.md` e `INFRA-CANVAS.md` con placeholders guia, mas `canvas-planning-guide.md` como referencia.
 
-> 💡 **Nota:** No hay prompts interactivos. `funky init` genera los canvases vacios para que el equipo los llene discutiendo con IA. Cuando esten listos, ejecuta `funky init --bootstrap` para copiar toda la estructura Funky AI.
+> 💡 **Nota:** No hay prompts interactivos. `funky init` genera los canvases vacíos. Cuando estén llenos, ejecutá `funky init --bootstrap` para copiar toda la estructura Funky AI.
 
-**✅ Criterio de salida:** Tenés el ecosistema completo + Canvas pre-poblados. Primer commit y al flujo SDD.
+**✅ Criterio de salida:** Tenés los canvases llenos. Ejecutá `funky init --bootstrap` para el ecosistema completo, luego primer commit y al flujo SDD.
 
 ---
 
@@ -166,13 +195,13 @@ No estás decidiendo — estás documentando lo que ya existe. Cada campo del Ca
 
 ---
 
-**Paso 3.3 — Inicializá el ecosistema en modo Headless**
+**Paso 3.3 — Inicializá el ecosistema completo**
+
+Con los canvases llenos, ejecutá `--bootstrap` para copiar la estructura Funky AI sin sobreescribir archivos existentes:
 
 ```bash
-funky init
+funky init --bootstrap
 ```
-
-El CLI detecta ambos Canvas y activa el modo Headless: copia toda la estructura de Funky AI sin sobreescribir ningún archivo existente y asumiendo `'ide'` de manera determinista y retrocompatible (evitando colgar prompts en CI/CD).
 
 > ⚠️ **Migración Legacy:** Si solo existe `PROJECT-CANVAS.md` pero no `INFRA-CANVAS.md` (proyecto pre-v1.7), el CLI genera automáticamente `INFRA-CANVAS.md` con una advertencia de migración en el encabezado. Completá los campos de infra antes de continuar.
 
@@ -187,11 +216,48 @@ El CLI detecta ambos Canvas y activa el modo Headless: copia toda la estructura 
 | Ejecutar `funky init --bootstrap` sin haber llenado los Canvas | El ecosistema se copia pero sin datos reales de stack en los archivos generados |
 | Saltear `funky init` y llenar los Canvas directamente en el editor | Sin la `canvas-planning-guide.md` como referencia, se omiten campos o se usan valores invalidos |
 | Ejecutar `funky init --bootstrap` dos veces sin cambios | Es idempotente, no causa dano pero tampoco avanza |
-| Usar `funky assess` sin haber completado los Canvas | El motor de reglas no puede validar lo que no está definido |
+| Ejecutar `funky estimate` sin haber corrido `funky assess` antes | El pricing no tendrá contexto de decisiones arquitectónicas — se genera igual pero con contenido parcial |
+| Ejecutar `funky assess` con canvases incompletos | El CLI advierte pero continúa — la guía se genera con contenido parcial |
 
 ---
 
 ## Escenario 4
+
+### "Quiero discutir la arquitectura o pricing de mi proyecto"
+
+**Condición de entrada:** Ya tenés los canvases llenos (PROJECT-CANVAS.md e INFRA-CANVAS.md) y querés una sesión de discusión con IA.
+
+#### Flujo recomendado
+
+**Paso 4.1 — Discutí la arquitectura**
+
+```bash
+funky assess
+```
+
+Genera `docs/architecture-review.md` (guía de discusión de 6 fases) y `docs/architecture-decisions.md` (template de decisiones). Copiá la guía en un chat con IA y discutí riesgos, alternativas y trade-offs.
+
+**Paso 4.2 — Sesión de pricing**
+
+```bash
+funky estimate
+```
+
+Inyecta guía de pricing + prompt IA. Copiá el prompt en un chat y discutí costos, alternativas más económicas y value-based pricing.
+
+**Paso 4.3 — O todo en uno con pipeline**
+
+```bash
+funky pipeline all
+```
+
+Orquesta assess → estimate en secuencia con estado compartido via `context.json`. No tenés que ejecutar los comandos manualmente.
+
+✅ **Criterio de salida:** Tenés `docs/architecture-decisions.md` y `docs/pricing-decisions.md` documentados.
+
+---
+
+## Escenario 5
 
 ### "Encontré un bug o tomé una decisión de arquitectura que debe ser recordada"
 
@@ -199,7 +265,7 @@ El CLI detecta ambos Canvas y activa el modo Headless: copia toda la estructura 
 
 #### Flujo recomendado
 
-**Paso 4.1 — Ejecutar el comando de engrama**
+**Paso 5.1 — Ejecutar el comando de engrama**
 
 ```bash
 funky engram add

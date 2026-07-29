@@ -23,12 +23,13 @@ pnpm link --global
 | Comando | Descripción | Ejemplo |
 |---------|-------------|---------|
 | `funky init` | Genera PROJECT-CANVAS.md e INFRA-CANVAS.md para iniciar la planificacion del proyecto. Usa `--bootstrap` para copiar toda la estructura del ecosistema Funky AI. | `funky init` -> genera canvases vacios + guia |
-| `funky estimate` | Calcula el costo estimado y riesgo cruzando el Canvas técnico con factores de negocio. Genera un análisis de Pricing. | `funky estimate` -> "💰 Piso Base Calculado..." |
+| `funky estimate` | Facilita una sesión de pricing colaborativa humano+IA. Inyecta una guía de discusión basada en decisiones arquitectónicas y canvases del proyecto, más un template para documentar acuerdos. Sin fórmulas hardcodeadas. | `funky estimate` -> guía de pricing + prompt IA + template de decisiones |
+| `funky pipeline` | Orquesta el flujo unificado `assess → estimate` con estado compartido vía `context.json`. Subcomandos: `assess`, `estimate`, `all`, `status`. | `funky pipeline all` -> assess → estimate secuencial |
 | `funky feature <nombre>` | Inicializa el scaffolding para una feature SDD en `openspec/changes/<nombre>`. Ejecuta 3 inquirers interactivos (Tier T1/T2/T3, docs core, tipo de release) para inyectar condicionalmente solo los templates necesarios según la matriz de inyección. `docs.md` y `release.md` se inyectan solo si corresponde. T1 nunca recibe `release.md`. | `funky feature auth` → prompts → "🚀 Scaffolding de feature creado... Archivos inyectados: 8 — tasks.md, ..." |
 | `funky gentle <nombre>` | Inicializa el scaffolding de **Tier 4 Deep SDD** en `openspec/gentle/<nombre>`. Genera los 7 templates de roles aislados (Explorer → Verifier) para tareas hipercríticas. | `funky gentle db-migration` -> "🚀 Scaffolding de Tier 4 Deep SDD creado..." |
 | `funky phase <nombre>` | Inyecta el template correspondiente a la fase SDD indicada en el directorio activo. | `funky phase explore` -> "📄 Template 'explore' inyectado!" |
 | `funky release <version>` | Genera las notas de release estandarizadas automáticamente basándose en templates. | `funky release v1.12.0` -> "🚀 Release Notes v1.12.0 creados" |
-| `funky assess` | Architecture Readiness Gate. Evalúa `docs/architecture-assessment.md` contra el motor de reglas y genera challenges para el LLM. | `funky assess` -> "✅ Arquitectura validada..." |
+| `funky assess` | Facilita una sesión de discusión arquitectónica entre el equipo humano y la IA. Inyecta una guía de discusión basada en PROJECT-CANVAS e INFRA-CANVAS con preguntas C1/C2, más un template para documentar decisiones. Sin reglas estáticas, nunca falla. | `funky assess` -> guía de discusión + template de decisiones |
 | `funky engram add` | Inyecta un nuevo engrama al sistema de conocimiento persistente. Soporta entrada interactiva (sin flags) y flags directos para automatizacion. | `funky engram add --tag "[mi-tag]" --category discovery --desc "..."` |
 
 ## Fases SDD Disponibles
@@ -42,28 +43,41 @@ pnpm link --global
 | `report` | `report.md` | Al finalizar un Worker Handoff. Resume archivos modificados, bugs encontrados y los próximos pasos. |
 
 ## Estructura generada por `funky init`
-**PENDIENTE HACER DISTINCION ENTRE INIT Y BOOTSTRAP**
 
-Al ejecutar `funky init`, se generará la siguiente estructura en el directorio actual:
+`funky init` (sin flags) genera solo **PROJECT-CANVAS.md**, **INFRA-CANVAS.md** y **canvas-planning-guide.md**.
+`funky init --bootstrap` copia toda la estructura del ecosistema. A continuación, la estructura completa post-bootstrap:
 
 ```text
 .
 ├── .agents/
-│   └── rules/             (Reglas de agente adaptadas al entorno seleccionado IDE o CLI)
-│       ├── engram-protocol.md       (Protocolo de Engram asíncrono/síncrono según entorno)
-│       ├── secops.md                 (Auditoría de dependencias y NPM segura)
-│       └── sdd-orchestrator.md      (Reglas de orquestación adaptadas al workflow seleccionado)
+│   └── rules/
+│       ├── engram-protocol.md       (Protocolo de memoria Engram)
+│       ├── secops.md                 (Reglas de seguridad)
+│       ├── secops-setup.md          (Setup inicial de seguridad)
+│       └── sdd-orchestrator.md      (Reglas de orquestación SDD)
 ├── docs/
-│   ├── engram/            (Memoria persistente sharded por categoría)
-│   │   ├── index.md             (Resumen tabla de todos los engramas)
+│   ├── architecture-assessment.md  (Assessment legado — ya no se usa desde CLI)
+│   ├── architecture-assessment-guide.md (Guía de assessment para discusión humano+IA)
+│   ├── engram/
+│   │   ├── index.md             (Índice de todos los engramas)
 │   │   ├── architecture/        (Decisiones de arquitectura)
 │   │   ├── pattern/             (Patrones establecidos)
-│   │   ├── discovery/           (Hallazgos y evaluaciones)
-│   │   ├── decision/            (Decisiones con impacto en el proyecto)
-│   │   └── bugfix/              (Bugs corregidos)
-│   ├── openspec/          (Carpeta para tus cambios y fases SDD)
-│   └── funky-ai/cli/      (Contiene la guía canvas-planning-guide.md)
+│   │   ├── discovery/           (Hallazgos)
+│   │   ├── discoveries.md       (Registro plano de descubrimientos)
+│   │   ├── decision/            (Decisiones con impacto)
+│   │   └── bugfix/
+│   │       └── bugfixes.md      (Registro de bugs corregidos)
+│   ├── funky-ai/
+│   │   ├── cli/
+│   │   │   └── canvas-planning-guide.md (Guía de referencia para llenar canvases)
+│   │   └── workers/
+│   │       └── plantilla-worker-handoff.md (Template de handoff para workers)
+│   └── openspec/
+│       └── rfcs/
+│           └── 000-TEMPLATE.md   (Template de RFC)
 ├── ORCHESTRATOR-STATE.md  (Estado global del proyecto)
 ├── PROJECT-CANVAS.md      (Canvas Core: Framework, Arquitectura, Testing)
-└── INFRA-CANVAS.md        (Canvas Operacional: DB, Auth, Deployment)
+├── INFRA-CANVAS.md        (Canvas Operacional: DB, Auth, Deployment)
+├── TEMPLATE_GUIDE.md      (Guía de uso de templates)
+└── README.md              (README del proyecto)
 ```

@@ -7,8 +7,21 @@
 ## 🗺️ Mapa del Flujo
 
 ```
-[Chat virgen]  →  exploración  →  [funky estimate (Opcional)]  →  funky init  →  funky feature <name>  →  Workers  →  Release
-                                                                                        └─ (Tier 4 hipercrítico) →  funky gentle <name>  →  7 Workers secuenciales  →  Release
+[Chat virgen]  →  exploración  →  funky init  →  llenar canvases
+                                          ↓
+                                    funky init --bootstrap
+                                          ↓
+                              [funky assess (discusión arquitectónica)]
+                                          ↓
+                                 [funky estimate (sesión de pricing)]
+                                          ↓
+                              ┌─── [funky pipeline (opcional)] ───┐
+                              │   (orquesta assess → estimate)    │
+                              ↓                                   ↓
+                         SDD planning (explore → propose → tasks)
+                              ↓
+                          Workers → Release
+                          └─ Tier 4 → funky gentle → 7 Workers
 ```
 
 ---
@@ -43,19 +56,101 @@ Cuando tengas claridad, pedí:
 
 ---
 
-## ETAPA 1.5 — Estimación de Costo y Pricing (Opcional)
+## ETAPA 1.5 — Discusión Arquitectónica con Assess (Opcional)
 
-**Objetivo:** Obtener un piso base orientativo para presupuestar el proyecto basándose en la complejidad de los Canvas.
+**Objetivo:** Tener una sesión de discusión arquitectónica donde la IA actúa como peer informado, detecta riesgos, propone alternativas y ayuda a documentar decisiones.
 
-### Paso 1.5.1 — Ejecutar el Estimador
+### Paso 1.5.1 — Ejecutar el facilitador de assess
 
-Si ya tenés los archivos `PROJECT-CANVAS.md` e `INFRA-CANVAS.md` creados, podés correr:
+Una vez que los canvases están llenos (después de `funky init`):
+
+```bash
+funky assess
+```
+
+**Qué hace:** El CLI lee PROJECT-CANVAS.md e INFRA-CANVAS.md, inyecta una guía de discusión de 6 fases (Contexto → Preocupaciones → Preguntas Guía → Riesgos → Alternativas → Acuerdos), más un template para documentar decisiones. Sin reglas estáticas, sin validación binaria, nunca falla.
+
+**Output esperado:**
+```
+📄 Guía de discusión generada → docs/architecture-review.md
+📄 Template de decisiones → docs/architecture-decisions.md (si no existía)
+```
+
+### Paso 1.5.2 — Discutí la arquitectura con IA
+
+Abrí un chat, copiá el contenido de `docs/architecture-review.md` y discutí:
+
+- ¿El stack elegido es el correcto?
+- ¿Hay riesgos ocultos (escalabilidad, costos, seguridad)?
+- ¿Qué alternativas se descartaron y por qué?
+
+✅ **Criterio de salida:** `docs/architecture-decisions.md` con decisiones documentadas, alternativas consideradas y riesgos aceptados.
+
+---
+
+## ETAPA 1.6 — Sesión de Pricing Colaborativa (Opcional)
+
+**Objetivo:** Discutir valor real, costos y trade-offs de pricing en una sesión humano+IA, basada en decisiones arquitectónicas documentadas.
+
+> 💡 **Prerrequisito:** Si querés que estimate incorpore las decisiones del assess, corré `funky assess` primero (ETAPA 1.5).
+
+### Paso 1.6.1 — Ejecutar el facilitador de pricing
 
 ```bash
 funky estimate
 ```
 
-La CLI extraerá los factores técnicos, te hará preguntas de contexto de negocio y generará `docs/pricing-analysis.md`. Usá ese archivo en el chat del Orquestador para debatir el Value-Based Pricing final.
+**Qué hace:** El CLI inyecta una guía de discusión de pricing basada en los canvases del proyecto y (si existe) el archivo de decisiones del assess. No hay fórmulas hardcodeadas — el CLI no calcula nada. Genera:
+
+- `docs/pricing-guide.md` — guía de discusión con factores de costo, contexto del proyecto y preguntas guía
+- `docs/pricing-decisions.md` — template para documentar los acuerdos de pricing
+- Un prompt IA en español neutro para iniciar la sesión en el chat
+
+**Output esperado:**
+```
+📄 Guía de pricing generada → docs/pricing-guide.md
+📄 Template de decisiones → docs/pricing-decisions.md
+🤖 Prompt IA listo para copiar al chat
+```
+
+### Paso 1.6.2 — Abrí el chat con el prompt IA
+
+Copiá el prompt que `funky estimate` imprime en consola, pegálo en un chat con la IA y discutí:
+
+- Costo real de las decisiones arquitectónicas
+- Alternativas más económicas (si las hay)
+- Trade-offs entre precio y performance
+- Value-Based Pricing final
+
+✅ **Criterio de salida:** Tenés `docs/pricing-decisions.md` con los acuerdos documentados.
+
+**Objetivo:** Tener una sesión de discusión arquitectónica donde la IA actúa como peer informado, detecta riesgos, propone alternativas y ayuda a documentar decisiones.
+
+### Paso 1.6.1 — Ejecutar el facilitador de assess
+
+Una vez que los canvases están llenos (después de `funky init`):
+
+```bash
+funky assess
+```
+
+**Qué hace:** El CLI lee PROJECT-CANVAS.md e INFRA-CANVAS.md, inyecta una guía de discusión de 6 fases (Contexto → Preocupaciones → Preguntas Guía → Riesgos → Alternativas → Acuerdos), más un template para documentar decisiones. Sin reglas estáticas, sin validación binaria, nunca falla.
+
+**Output esperado:**
+```
+📄 Guía de discusión generada → docs/architecture-review.md
+📄 Template de decisiones → docs/architecture-decisions.md (si no existía)
+```
+
+### Paso 1.6.2 — Discutí la arquitectura con IA
+
+Abrí un chat, copiá el contenido de `docs/architecture-review.md` y discutí:
+
+- ¿El stack elegido es el correcto?
+- ¿Hay riesgos ocultos (escalabilidad, costos, seguridad)?
+- ¿Qué alternativas se descartaron y por qué?
+
+✅ **Criterio de salida:** `docs/architecture-decisions.md` con decisiones documentadas, alternativas consideradas y riesgos aceptados.
 
 ---
 
@@ -71,9 +166,9 @@ cd mi-nuevo-proyecto
 git init
 ```
 
-### Paso 2.2 — Inicializar el ecosistema Funky AI
+### Paso 2.2 — Generar los canvases
 
-> 💡 **¿No tenes claro el stack todavia?** Ejecuta `funky init` primero para generar los canvases vacios. Te genera los Canvas vacíos y la guía de llenado. Completá los Canvas, después continuá con el paso siguiente. Ver [Escenario 1 en escenarios-de-uso.md](./escenarios-de-uso.md).
+> 💡 **¿No tenés claro el stack todavía?** Primero pasá por la ETAPA 1 de exploración para definir qué construir.
 
 ```bash
 funky init
@@ -81,10 +176,36 @@ funky init
 
 **Output esperado:**
 ```
-🚀 Inicializando Funky AI...
-✅ Creado: ORCHESTRATOR-STATE.md
+🚀 Funky AI — Inicializando...
+✅ Creado: PROJECT-CANVAS.md
+✅ Creado: INFRA-CANVAS.md
+✅ Creado: canvas-planning-guide.md
+
+📘 Canvases generados. Completa PROJECT-CANVAS.md e INFRA-CANVAS.md
+   usando canvas-planning-guide.md como referencia.
+   Luego ejecuta `funky init --bootstrap` para inicializar el ecosistema completo.
+```
+
+### Paso 2.3 — Llenar los canvases (discusión con IA)
+
+Usá `canvas-planning-guide.md` como referencia y completá PROJECT-CANVAS.md e INFRA-CANVAS.md. La mejor forma es discutir cada sección con la IA en el chat, aprovechando las preguntas guía y Architect Notes incorporadas en los templates.
+
+✅ **Criterio de salida:** Ambos canvases tienen valores concretos en todos los campos (sin `[Responde aquí]`).
+
+### Paso 2.4 — Inicializar el ecosistema completo
+
+Con los canvases llenos, ejecutá `--bootstrap` para copiar toda la estructura del ecosistema Funky AI:
+
+```bash
+funky init --bootstrap
+```
+
+**Output esperado:**
+```
+🚀 Inicializando estructura completa del ecosistema...
 ✅ Creado: .agents/rules/engram-protocol.md
 ✅ Creado: .agents/rules/secops.md
+✅ Creado: .agents/rules/secops-setup.md
 ✅ Creado: .agents/rules/sdd-orchestrator.md
 ✅ Creado: docs/engram/index.md
 ✅ Creado: docs/engram/architecture/
@@ -92,41 +213,47 @@ funky init
 ✅ Creado: docs/engram/discovery/
 ✅ Creado: docs/engram/decision/
 ✅ Creado: docs/engram/bugfix/
+✅ Creado: docs/engram/discoveries.md
+✅ Creado: docs/engram/bugfix/bugfixes.md
 ✅ Creado: docs/funky-ai/cli/canvas-planning-guide.md
 ✅ Creado: docs/funky-ai/workers/plantilla-worker-handoff.md
 ✅ Creado: docs/architecture-assessment.md
+✅ Creado: docs/architecture-assessment-guide.md
 ✅ Creado: openspec/rfcs/000-TEMPLATE.md
 ✅ Creado: TEMPLATE_GUIDE.md
 ✅ Creado: README.md
-✅ Creado: PROJECT-CANVAS.md (Dinámico)
-✅ Creado: INFRA-CANVAS.md (Dinámico)
 
-✅ Funky AI inicializado. 18 archivos/directorios creados, 0 ya existían.
+✅ Funky AI inicializado. ~20 archivos/directorios creados.
 ```
 
-### Paso 2.3 — Verificar la estructura creada
+### Paso 2.5 — Verificar la estructura creada
 
 ```
 mi-nuevo-proyecto/
 ├── ORCHESTRATOR-STATE.md          ← Estado del Orquestador
 ├── PROJECT-CANVAS.md              ← Canvas Core: Framework, Arquitectura, Testing
 ├── INFRA-CANVAS.md                ← Canvas Infra: DB, Auth, Deployment
+├── canvas-planning-guide.md       ← Guía de referencia para llenar canvases
 ├── TEMPLATE_GUIDE.md
 ├── README.md
 ├── .agents/
 │   └── rules/
 │       ├── engram-protocol.md     ← Protocolo de memoria
 │       ├── secops.md              ← Reglas de seguridad
-│       └── sdd-orchestrator.md   ← Protocolo SDD
+│       ├── secops-setup.md        ← Setup inicial de seguridad
+│       └── sdd-orchestrator.md    ← Protocolo SDD
 └── docs/
     ├── architecture-assessment.md
+    ├── architecture-assessment-guide.md
     ├── engram/
     │   ├── index.md               ← Índice tabla de todos los engramas
     │   ├── architecture/          ← Decisiones de arquitectura
     │   ├── pattern/               ← Patrones establecidos
     │   ├── discovery/             ← Hallazgos y evaluaciones
+    │   ├── discoveries.md         ← Registro plano de descubrimientos
     │   ├── decision/              ← Decisiones con impacto en el proyecto
-    │   └── bugfix/                ← Bugs corregidos
+    │   └── bugfix/
+    │       └── bugfixes.md        ← Bugs corregidos
     ├── funky-ai/
     │   ├── cli/
     │   │   └── canvas-planning-guide.md
@@ -137,7 +264,7 @@ mi-nuevo-proyecto/
             └── 000-TEMPLATE.md
 ```
 
-### Paso 2.4 — Crear la rama de feature
+### Paso 2.6 — Crear la rama de feature
 
 > ⚠️ NUNCA planifiques ni ejecutes Workers estando en `main`.
 
@@ -247,14 +374,19 @@ Eliminá los archivos `sdd-*.md` del directorio raíz una vez mergeado. Son arte
 
 | Comando | ¿Cuándo usarlo? |
 |---------|-----------------|
-| `funky init` | Una sola vez al crear el proyecto |
-| `funky feature <name>` | Al iniciar cualquier feature SDD (Tier 1–3) — inyecta todos los templates de golpe |
+| `funky init` | Una sola vez al crear el proyecto. Sin flags genera canvases vacíos + guía; `--bootstrap` copia el ecosistema completo |
+| `funky assess` | Después de llenar los canvases — facilita una discusión arquitectónica y genera template de decisiones |
+| `funky estimate` | Después del assess (o con canvases llenos) — facilita una sesión de pricing colaborativa |
+| `funky pipeline all` | Alternativa a ejecutar assess + estimate manualmente — los orquesta en secuencia con estado compartido |
+| `funky pipeline status` | Consulta el estado del pipeline (qué fases se ejecutaron) |
+| `funky feature <name>` | Al iniciar cualquier feature SDD (Tier 1–3) — inyecta templates de planificación |
 | `funky gentle <name>` | Al iniciar una tarea hipercrítica (Tier 4) — inyecta los 7 templates de roles aislados |
-| `funky phase explore` | Si preferís inyectar templates individualmente |
-| `funky phase proposal` | Después de explorar — decisiones técnicas |
-| `funky phase tasks` | Después de la propuesta — checklist de Fases |
-| `funky phase worker-handoff` | Antes de cada delegación a un Worker |
-| `funky phase report` | Al finalizar — el Worker lo completa |
+| `funky phase explore` | Template individual de exploración SDD |
+| `funky phase proposal` | Template individual de propuesta técnica |
+| `funky phase tasks` | Template individual de desglose de tareas |
+| `funky phase worker-handoff` | Template individual de handoff para Workers |
+| `funky phase report` | Template de reporte de Worker |
+| `funky engram add` | Registrar un hallazgo, decisión o bug en la memoria persistente |
 
 ---
 
