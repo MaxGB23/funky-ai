@@ -21,20 +21,16 @@ describe('runInit() Integration', () => {
     }
   });
 
-  it('debería persistir los CANVAS físicos cuando se provee canvasConfig', () => {
-    const config = {
-      projectData: { pattern: 'Integration Pattern' },
-      infraData: { db: 'Test DB' }
-    };
-
-    const intentions = runInit({ templatesDir, targetBase: tmpDir, canvasConfig: config });
+  it('debería copiar el template estático de PROJECT-CANVAS.md', () => {
+    const intentions = runInit({ templatesDir, targetBase: tmpDir });
     const result = executeIntentions(intentions);
 
     const canvasPath = path.join(tmpDir, 'PROJECT-CANVAS.md');
     expect(fs.existsSync(canvasPath)).toBe(true);
     
     const content = fs.readFileSync(canvasPath, 'utf8');
-    expect(content).toContain('Integration Pattern');
+    expect(content).toContain('Nombre del Proyecto');
+    expect(content).toContain('Stakeholders');
     expect(result.created).toBeGreaterThan(0);
   });
 
@@ -43,13 +39,11 @@ describe('runInit() Integration', () => {
     expect(fs.existsSync(workerHandoffPath)).toBe(false);
   });
 
-  it('NO debería sobreescribir PROJECT-CANVAS.md si tiene skipProjectCanvas', () => {
+  it('NO debería sobreescribir PROJECT-CANVAS.md si ya existe', () => {
     const canvasPath = path.join(tmpDir, 'PROJECT-CANVAS.md');
     fs.writeFileSync(canvasPath, 'CONTENIDO ORIGINAL DEL USUARIO');
-    
-    const config = { skipProjectCanvas: true, skipInfraCanvas: true };
 
-    const intentions = runInit({ templatesDir, targetBase: tmpDir, canvasConfig: config });
+    const intentions = runInit({ templatesDir, targetBase: tmpDir });
     const result = executeIntentions(intentions);
 
     const content = fs.readFileSync(canvasPath, 'utf8');

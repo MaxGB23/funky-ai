@@ -13,7 +13,7 @@ describe('runInit()', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
-  it('crea el plan completo: 35 copy + 1 create + 8 mkdir', () => {
+  it('crea el plan completo: 37 copy + 1 create + 8 mkdir', () => {
     const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
 
     const mkdirIntentions = intentions.filter(i => i.action === 'mkdir');
@@ -21,11 +21,11 @@ describe('runInit()', () => {
     const createIntentions = intentions.filter(i => i.action === 'create');
 
     expect(mkdirIntentions).toHaveLength(8);
-    expect(copyIntentions).toHaveLength(35);
+    expect(copyIntentions).toHaveLength(37);
     expect(createIntentions).toHaveLength(1);
   });
 
-  it('incluye los 3 root files con rutas correctas', () => {
+  it('incluye los 5 root files con rutas correctas', () => {
     const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
 
     expect(intentions).toContainEqual({
@@ -44,6 +44,18 @@ describe('runInit()', () => {
       action: 'copy',
       src: path.join(fakeTemplatesDir, 'TEMPLATE_GUIDE.md'),
       dest: path.join(fakeTargetDir, 'TEMPLATE_GUIDE.md'),
+    });
+
+    expect(intentions).toContainEqual({
+      action: 'copy',
+      src: path.join(fakeTemplatesDir, 'PROJECT-CANVAS.md'),
+      dest: path.join(fakeTargetDir, 'PROJECT-CANVAS.md'),
+    });
+
+    expect(intentions).toContainEqual({
+      action: 'copy',
+      src: path.join(fakeTemplatesDir, 'INFRA-CANVAS.md'),
+      dest: path.join(fakeTargetDir, 'INFRA-CANVAS.md'),
     });
   });
 
@@ -114,32 +126,4 @@ describe('runInit()', () => {
     });
   });
 
-  it('incluye intenciones create para PROJECT-CANVAS e INFRA-CANVAS si se provee canvasConfig', () => {
-    const config = { projectData: { pattern: 'Test Pattern' }, infraData: { db: 'Test DB' } };
-    const intentions = runInit({
-      templatesDir: fakeTemplatesDir,
-      targetBase: fakeTargetDir,
-      canvasConfig: config,
-    });
-
-    const createIntentions = intentions.filter(i => i.action === 'create' && i.dest.includes('CANVAS'));
-    expect(createIntentions).toHaveLength(2);
-
-    expect(createIntentions[0].dest).toContain('PROJECT-CANVAS.md');
-    expect(createIntentions[0].content).toContain('Test Pattern');
-
-    expect(createIntentions[1].dest).toContain('INFRA-CANVAS.md');
-  });
-
-  it('NO incluye intenciones create si canvasConfig tiene los skips en true', () => {
-    const config = { skipProjectCanvas: true, skipInfraCanvas: true };
-    const intentions = runInit({
-      templatesDir: fakeTemplatesDir,
-      targetBase: fakeTargetDir,
-      canvasConfig: config,
-    });
-
-    const createIntentions = intentions.filter(i => i.action === 'create' && i.dest.includes('CANVAS'));
-    expect(createIntentions).toHaveLength(0);
-  });
 });
