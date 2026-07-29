@@ -122,7 +122,7 @@ describe('runInit()', () => {
     expect(intentions).toContainEqual({
       action: 'create',
       dest: path.join(fakeTargetDir, '.agents', 'templates', 'sdd', 'docs-live-index.md'),
-      content: expect.stringContaining('Índice de Docs Vivos'),
+      content: expect.stringContaining('<ruta-del-doc>'),
     });
   });
 
