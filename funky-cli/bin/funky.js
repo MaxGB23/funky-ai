@@ -8,6 +8,7 @@ import { featureCommand } from '../src/commands/feature.js';
 import { estimateCommand } from '../src/commands/estimate.js';
 import { gentleCommand } from '../src/commands/gentle.js';
 import { engramCommand } from '../src/commands/engram.js';
+import { pipelineCommand } from '../src/commands/pipeline.js';
 
 const program = new Command();
 
@@ -24,5 +25,6 @@ program.addCommand(featureCommand);
 program.addCommand(estimateCommand);
 program.addCommand(gentleCommand);
 program.addCommand(engramCommand);
+program.addCommand(pipelineCommand);
 
 program.parse(process.argv);

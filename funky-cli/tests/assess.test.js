@@ -5,24 +5,21 @@ import fs from 'fs';
 
 // Manual mock: provide both default export (for `import fs from 'fs'`)
 // and named exports (for `import { writeFileSync } from 'fs'`)
-vi.mock('fs', () => {
-  const mockFns = {
-    existsSync: vi.fn(),
-    readFileSync: vi.fn(),
-    writeFileSync: vi.fn(),
-    mkdirSync: vi.fn(),
-    copyFileSync: vi.fn(),
-    statSync: vi.fn(),
-    lstatSync: vi.fn(),
-    realpathSync: vi.fn(),
-  };
-  return {
-    ...mockFns,
-    default: mockFns,
-  };
-});
+const sharedFsMock = vi.hoisted(() => ({
+  existsSync: vi.fn(),
+  readFileSync: vi.fn(),
+  writeFileSync: vi.fn(),
+  mkdirSync: vi.fn(),
+  copyFileSync: vi.fn(),
+  statSync: vi.fn(),
+  lstatSync: vi.fn(),
+  realpathSync: vi.fn(),
+}));
 
-import { parseFrontmatter, assessCommand } from '../src/commands/assess.js';
+vi.mock('fs', () => ({ ...sharedFsMock, default: sharedFsMock }));
+vi.mock('node:fs', () => ({ ...sharedFsMock, default: sharedFsMock }));
+
+import { parseFrontmatter, assessCommand, runAssess } from '../src/commands/assess.js';
 
 // ── Helpers ──
 
@@ -79,6 +76,10 @@ function createMockFiles() {
     [TPL_REVIEW_PATH]: DEFAULT_TEMPLATE,
     [TPL_DECISIONS_PATH]: DEFAULT_DECISIONS_TEMPLATE
   };
+}
+
+function addContextJson(mf, data) {
+  mf[path.join(CWD, 'context.json')] = JSON.stringify(data);
 }
 
 function addCanvas(mockFiles, name, content, location) {
@@ -285,5 +286,87 @@ describe('assess Command - action flow', () => {
     expect(logMsgs.some(m => m.includes('ya existe'))).toBe(true);
 
     logSpy.mockRestore();
+  });
+});
+
+// ── --context flag tests ──
+
+describe('--context flag', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(fs.writeFileSync).mockReset();
+  });
+
+  it('uses canvases from context when --context flag is provided', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'root');
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'root');
+    addContextJson(mf, {
+      canvases: {
+        projectCanvas: 'Context Project Canvas',
+        infraCanvas: 'Context Infra Canvas',
+        unfilledCount: 0
+      },
+      assess: { runAt: null, dynamicQuestions: [] },
+      estimate: { runAt: null },
+      pipeline: { lastCommand: null, completed: [] }
+    });
+    applyMocks(mf);
+
+    runAssess(CWD, { context: './context.json' });
+
+    const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
+    const reviewCall = writeCalls.find(c => String(c[0]).includes('architecture-review.md'));
+    expect(reviewCall).toBeTruthy();
+    const writtenContent = String(reviewCall[1]);
+    expect(writtenContent).toContain('Context Project Canvas');
+    expect(writtenContent).toContain('Context Infra Canvas');
+  });
+
+  it('prints error when context file is missing', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'root');
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'root');
+    // No addContextJson — context.json is missing
+    applyMocks(mf);
+
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    runAssess(CWD, { context: './context.json' });
+
+    expect(errorSpy).toHaveBeenCalled();
+    // Should NOT have written context.json (early return)
+    const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
+    const contextCall = writeCalls.find(c => String(c[0]).endsWith('context.json'));
+    expect(contextCall).toBeFalsy();
+
+    errorSpy.mockRestore();
+  });
+
+  it('writes assess results to context.json', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT, 'root');
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT, 'root');
+    addContextJson(mf, {
+      canvases: {
+        projectCanvas: 'project content',
+        infraCanvas: 'infra content',
+        unfilledCount: 0
+      },
+      assess: { runAt: null, dynamicQuestions: [] },
+      estimate: { runAt: null },
+      pipeline: { lastCommand: null, completed: [] }
+    });
+    applyMocks(mf);
+
+    runAssess(CWD, { context: './context.json' });
+
+    // Verify context.json was written with assess results
+    const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
+    const contextCall = writeCalls.find(c => String(c[0]).endsWith('context.json'));
+    expect(contextCall).toBeTruthy();
+    const writtenData = JSON.parse(contextCall[1]);
+    expect(writtenData.assess.runAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+    expect(Array.isArray(writtenData.assess.dynamicQuestions)).toBe(true);
   });
 });

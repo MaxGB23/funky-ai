@@ -42,6 +42,7 @@ pnpm link --global
 | `report` | `report.md` | Al finalizar un Worker Handoff. Resume archivos modificados, bugs encontrados y los próximos pasos. |
 
 ## Estructura generada por `funky init`
+**PENDIENTE HACER DISTINCION ENTRE INIT Y BOOTSTRAP**
 
 Al ejecutar `funky init`, se generará la siguiente estructura en el directorio actual:
 
