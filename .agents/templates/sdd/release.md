@@ -28,6 +28,7 @@ La versión se determina DESPUÉS de funky-archive: leer `package.json` → incr
   ```
   openspec/changes/{feature}/  →  openspec/archive/{vX.Y.Z-{feature}}/
   ```
+- [ ] El sdd surgió de un rfc? Sí: **Mover RFC al archivado en caso de que exista**,  No: Marcar como omitido en [OMITIDO] 
 - [ ] **Verificar conteo:** Si `openspec/archive/` tiene más de 40 entradas → emitir warning
 - [ ] **Confirmar limpieza:** Verificar que `openspec/changes/{feature}/` ya no existe
 - [ ] **Actualizar versión en Readme**: Actualizar la versión en `README.md`

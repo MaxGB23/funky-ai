@@ -67,7 +67,7 @@ Abre `canvas-planning-guide.md` como referencia. Completa `PROJECT-CANVAS.md` e 
 
 ---
 
-**Paso 1.4 — (Opcional) Discutí la arquitectura con `funky assess`**
+**Paso 1.4 — (Opcional) Discute la arquitectura con `funky assess`**
 
 Si la arquitectura tiene puntos de riesgo o no estás seguro de alguna decisión:
 
@@ -213,7 +213,7 @@ funky scaffold
 
 | Anti-patron | Por que es un problema |
 |---|---|
-| Ejecutar `funky scaffold` sin haber llenado los Canvas | ✅ Válido — instala el framework sin canvases. Si después querés los canvases, ejecutá `funky init` y luego `funky scaffold` de nuevo (es idempotente) |
+| Ejecutar `funky scaffold` sin haber llenado los Canvas | ✅ Válido — instala el framework sin canvases. Si después quieres los canvases, ejecuta `funky init` y luego `funky scaffold` de nuevo (es idempotente) |
 | Saltear `funky init` y llenar los Canvas directamente en el editor | Sin la `canvas-planning-guide.md` como referencia, se omiten campos o se usan valores invalidos |
 | Ejecutar `funky scaffold` dos veces sin cambios | Es idempotente, no causa dano pero tampoco avanza |
 | Ejecutar `funky estimate` sin haber corrido `funky assess` antes | El pricing no tendrá contexto de decisiones arquitectónicas — se genera igual pero con contenido parcial |

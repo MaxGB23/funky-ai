@@ -14,7 +14,7 @@ function wrapFSOp(fn, fsPath, description) {
     if (err.code === 'EACCES') {
       throw new Error(
         `Error de permisos al ${description} en "${fsPath}". ` +
-        `Verificá que tengas permisos de escritura en ese directorio.`
+        `Verifica que tengas permisos de escritura en ese directorio.`
       );
     }
     throw err;

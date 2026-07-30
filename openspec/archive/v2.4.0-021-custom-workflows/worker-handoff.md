@@ -1,11 +1,11 @@
 # 🤖 Funky AI — Worker Handoff: Fase [N] ([Nombre de la Fase])
 
-> **Instrucción para el LLM:** Sos un Worker **Tier [⚠️ COMPLETAR: T1 / T2 / T3]** de ejecución de Funky AI.
+> **Instrucción para el LLM:** Eres un Worker **Tier [⚠️ COMPLETAR: T1 / T2 / T3]** de ejecución de Funky AI.
 > Tu única misión es leer este documento, ejecutar las tareas exactas detalladas abajo escribiendo al disco mediante tus tools, y luego actualizar el `sdd-report.md` final.
 > **NO redactes código ni explicaciones largas en el chat. Acción directa al disco.**
 
-> **[HUMANO]** Para ejecutar este worker, abrí un chat nuevo y pegá:
-> `/funky-worker @docs/openspec/changes/{feature-name}/worker-handoff.md Ejecutá la Fase [N]`
+> **[HUMANO]** Para ejecutar este worker, abre un chat nuevo y pega:
+> `/funky-worker @docs/openspec/changes/{feature-name}/worker-handoff.md Ejecuta la Fase [N]`
 
 ---
 
@@ -25,13 +25,13 @@ view_file ORCHESTRATOR-STATE.md
 view_file docs/engram/index.md
 ```
 
-**Stage 2 (solo si encontrás un tag relevante en Stage 1):**
+**Stage 2 (solo si encuentras un tag relevante en Stage 1):**
 ```
 grep_search "[TAG-EXACTO-DEL-INDICE]" docs/engram/discoveries.md (IsRegex: false)
 grep_search "[TAG-EXACTO-DEL-INDICE]" docs/engram/bugfixes.md (IsRegex: false)
 ```
 
-> Si agregás una entrada nueva al engram en esta Fase, TAMBIÉN actualizá `docs/engram/index.md`.
+> Si agregas una entrada nueva al engram en esta Fase, TAMBIÉN actualiza `docs/engram/index.md`.
 
 ### C) Especificación de Tarea
 ```
@@ -60,15 +60,15 @@ Leé tus tareas a ejecutar directamente desde la Fase actual en `sdd-tasks.md` (
 | Regla | Descripción |
 |-------|-------------|
 | 🔴 Cero Exploración | No uses `list_dir` ni `view_file` sobre archivos no indicados en §1 |
-| 🔴 Foco Láser | Tu scope está delimitado en §2. Si algo fuera de scope está roto, documentalo en el report, no lo arregles |
+| 🔴 Foco Láser | Tu scope está delimitado en §2. Si algo fuera de scope está roto, documéntalo en el report, no lo arregles |
 | 🔴 Acción Directa | Cada archivo se escribe con tools de escritura directa. |
-| 🟡 Bugs Encontrados | Si encontrás un bug no relacionado con tu tarea → registralo en `sdd-report.md` bajo `## Bugs Encontrados` con schema engram (`What / Why / Where / Learned`) |
-| 🟢 Idempotencia | Verificá si el destino ya existe antes de sobreescribir. Documentá si salteás algo |
+| 🟡 Bugs Encontrados | Si encuentras un bug no relacionado con tu tarea → regístralo en `sdd-report.md` bajo `## Bugs Encontrados` con schema engram (`What / Why / Where / Learned`) |
+| 🟢 Idempotencia | Verifica si el destino ya existe antes de sobreescribir. Documenta si salteas algo |
 
 ### 🔍 Jerarquía de Conocimiento (Doc-Ops)
-1. **Prioridad 1 (Skills Estrictas):** Acatá religiosamente las skills inyectadas en la sección §1.D. Son leyes absolutas para tu ejecución.
-2. **Prioridad 2 (MCP context7):** Si la API es nueva/compleja, dudás de su sintaxis, y el Orquestador no te pasó ninguna skill en §1.D, estás **OBLIGADO** a usar el servidor MCP `context7` (`resolve-library-id` + `query-docs`) antes de escribir código.
-3. **Extracción:** Si descubrís un patrón nuevo usando `context7`, documentalo en tu Return Envelope para que el Orquestador lo convierta en una Skill.
+1. **Prioridad 1 (Skills Estrictas):** Acata religiosamente las skills inyectadas en la sección §1.D. Son leyes absolutas para tu ejecución.
+2. **Prioridad 2 (MCP context7):** Si la API es nueva/compleja, dudas de su sintaxis, y el Orquestador no te pasó ninguna skill en §1.D, estás **OBLIGADO** a usar el servidor MCP `context7` (`resolve-library-id` + `query-docs`) antes de escribir código.
+3. **Extracción:** Si descubres un patrón nuevo usando `context7`, documéntalo en tu Return Envelope para que el Orquestador lo convierta en una Skill.
 
 ---
 
@@ -83,7 +83,7 @@ Leé tus tareas a ejecutar directamente desde la Fase actual en `sdd-tasks.md` (
 
 ## 5. Return Envelope (Al terminar)
 
-Actualizá `docs/openspec/changes/{feature-name}/sdd-report.md` con:
+Actualiza `docs/openspec/changes/{feature-name}/sdd-report.md` con:
 
 ```markdown
 ## Fase [N] — [Nombre de la Fase]

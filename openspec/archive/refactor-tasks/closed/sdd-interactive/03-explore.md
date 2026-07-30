@@ -55,7 +55,7 @@ No hay soporte para OAuth ni providers externos.
 
 ⚠️ **Riesgos**: refresh token no testea expiración actualmente
 
-**¿Querés ajustar algo o continuamos?**
+**¿Quieres ajustar algo o continuamos?**
 ```
 
 ## Casos especiales

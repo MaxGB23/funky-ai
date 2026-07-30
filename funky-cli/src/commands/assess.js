@@ -103,7 +103,7 @@ export function runAssess(targetBase, opts = {}) {
   try {
     fs.mkdirSync(assessDir, { recursive: true });
   } catch (err) {
-    const msg = err.code === 'EACCES' ? `Error de permisos al crear el directorio "${assessDir}". Verificá que tengas permisos de escritura.` : err.message;
+    const msg = err.code === 'EACCES' ? `Error de permisos al crear el directorio "${assessDir}". Verifica que tengas permisos de escritura.` : err.message;
     console.warn('⚠️  No se pudo crear el directorio docs/funky-ai/assess/:', msg);
   }
 
@@ -114,7 +114,7 @@ export function runAssess(targetBase, opts = {}) {
     try {
       fs.writeFileSync(outputPath, outputContent, 'utf8');
     } catch (err) {
-      const msg = err.code === 'EACCES' ? `Error de permisos al escribir "${outputPath}". Verificá que tengas permisos de escritura.` : err.message;
+      const msg = err.code === 'EACCES' ? `Error de permisos al escribir "${outputPath}". Verifica que tengas permisos de escritura.` : err.message;
       console.warn('⚠️  No se pudo escribir el archivo de guía:', msg);
     }
   }
@@ -131,7 +131,7 @@ export function runAssess(targetBase, opts = {}) {
       fs.writeFileSync(decisionsDestPath, decisionsContent, 'utf8');
       console.log('📄 Template de decisiones creado en docs/funky-ai/assess/architecture-decisions.md');
     } catch (err) {
-      const msg = err.code === 'EACCES' ? `Error de permisos al crear "${decisionsDestPath}". Verificá que tengas permisos de escritura.` : err.message;
+      const msg = err.code === 'EACCES' ? `Error de permisos al crear "${decisionsDestPath}". Verifica que tengas permisos de escritura.` : err.message;
       console.warn('⚠️  No se pudo crear docs/funky-ai/assess/architecture-decisions.md:', msg);
     }
   } else {
@@ -150,10 +150,10 @@ export function runAssess(targetBase, opts = {}) {
   console.log(`   📝 Guía: ${path.relative(targetBase, outputPath)}`);
   console.log(`   📝 Decisiones: docs/funky-ai/assess/architecture-decisions.md`);
   console.log('\n📋 Próximos pasos:');
-  console.log(`   1. Abrí una sesión de chat con la IA.`);
-  console.log(`   2. Arrastrá el archivo ${path.relative(targetBase, outputPath)} a la conversación.`);
-  console.log('   3. Seguí las 6 fases de la guía para discutir la arquitectura.');
-  console.log('   4. Documentá los acuerdos en docs/funky-ai/assess/architecture-decisions.md durante la discusión.\n');
+  console.log(`   1. Abre una sesión de chat con la IA.`);
+  console.log(`   2. Arrastra el archivo ${path.relative(targetBase, outputPath)} a la conversación.`);
+  console.log('   3. Sigue las 6 fases de la guía para discutir la arquitectura.');
+  console.log('   4. Documenta los acuerdos en docs/funky-ai/assess/architecture-decisions.md durante la discusión.\n');
 }
 
 export const assessCommand = new Command('assess')

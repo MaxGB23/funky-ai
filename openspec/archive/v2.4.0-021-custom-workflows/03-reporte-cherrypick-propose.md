@@ -7,7 +7,7 @@
 
 | Dimensión | `gentle-templates/sdd-propose/SKILL.md` (oficial) | `.agents/templates/sdd/proposal.md` (local) |
 |---|---|---|
-| **Guardrail de rol** | `ORCHESTRATOR GATE` bloqueante: si cargaste este skill sos el orquestador → STOP, delegar. | ❌ Ninguno. El template es pasivo. |
+| **Guardrail de rol** | `ORCHESTRATOR GATE` bloqueante: si cargaste este skill eres el orquestador → STOP, delegar. | ❌ Ninguno. El template es pasivo. |
 | **Sección de capacidades (Capabilities)** | Contrato explícito con la fase sdd-spec. Fuerza mapeo New/Modified capabilities → spec files. | ❌ Ausente. Decisiones técnicas sin contrato descendente. |
 | **Budget de tamaño** | Hard limit: `< 450 palabras`. Fuerza bullets/tablas sobre prosa. | ❌ Sin límite. Riesgo de propuestas novelísticas. |
 | **Rollback Plan** | Campo obligatorio. El agente no puede omitirlo. | ❌ Ausente. |

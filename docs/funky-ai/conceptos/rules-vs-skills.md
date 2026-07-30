@@ -16,7 +16,7 @@ Utiliza una Rule cuando necesites establecer las *Leyes inquebrantables* del Uni
 - **Característica:** **No contienen pasos de acción**. Son aserciones de estado ("Siempre usa `pnpm`", "Nunca le pongas tu nombre a los Commits").
 - **Ejemplo en Funky AI:** 
   - `secops.md`: Bloquea estrictamente la ejecución de herramientas ajenas a la política de seguridad.
-  - `engram-protocol.md`: Instruye que al estar en `docs/`, el bot asume el formato de datos MCP (What/Why/Where). No le dice "ejecutá 10 comandos", le dice "si escribís acá, escribí así".
+  - `engram-protocol.md`: Instruye que al estar en `docs/`, el bot asume el formato de datos MCP (What/Why/Where). No le dice "ejecuta 10 comandos", le dice "si escribes acá, escribe así".
 
 ### Riesgo Arquitectónico (El Anti-Patrón):
 Si pones tareas procedimentales largas dentro de una Rule, el Agente cargará ese peso gigante (cientos de tokens) en su memoria de trabajo contínuamente, incluso cuando estés conversando sobre rediseñar un mísero `<div>` CSS. Eso destruye la retentiva del modelo y gasta contexto innecesariamente.

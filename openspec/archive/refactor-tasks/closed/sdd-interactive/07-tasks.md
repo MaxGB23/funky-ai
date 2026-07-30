@@ -58,7 +58,7 @@
 
 → Este cambio necesita decisión antes de apply.
 
-**¿Querés ajustar algo o continuamos?**
+**¿Quieres ajustar algo o continuamos?**
 ```
 
 ## Review Workload Guard (flujo especial)
@@ -69,7 +69,7 @@ Si `Decision needed before apply: Yes`, el orchestrator NO pregunta
 ```markdown
 ⚠️ Este cambio se estima en ~520 líneas (supera las 400).
 
-¿Cómo querés manejarlo?
+¿Cómo quieres manejarlo?
 
 1. **Stacked PRs to main** — cada PR mergea a main secuencialmente
 2. **Feature Branch Chain** — PRs encadenados contra feature branch

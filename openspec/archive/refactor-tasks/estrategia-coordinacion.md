@@ -51,7 +51,7 @@ graph TD
 
 ### Dependencias Duras
 
-| Si arrancás... | Necesitás que esté listo... | Por qué |
+| Si arrancas... | Necesitas que esté listo... | Por qué |
 |----------------|---------------------------|---------|
 | **Returns Corte 1** (Core) | Nada | Es el esqueleto base |
 | **Refactor Sprint 1** (Scaffolding) | Returns Corte 1 (Core) | Los 3 Inquirers y el preflight viven en el Core |

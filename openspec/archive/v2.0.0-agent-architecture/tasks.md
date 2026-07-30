@@ -4,7 +4,7 @@
 **Rama:** `feature/v2.0.0-agent-architecture`
 **Ref:** `proposal.md`, `spec.md`
 
-> **[SISTEMA - PARA EL ORQUESTADOR]** Antes de delegar la primera fase, verificá el Planning Checklist en `.agents/rules/sdd-orchestrator.md`. Generá un `worker-handoff.md` basado en `funky-cli/src/templates/sdd/worker-handoff.md`. **NO delegues mediante prompts en el chat.**
+> **[SISTEMA - PARA EL ORQUESTADOR]** Antes de delegar la primera fase, verifica el Planning Checklist en `.agents/rules/sdd-orchestrator.md`. Genera un `worker-handoff.md` basado en `funky-cli/src/templates/sdd/worker-handoff.md`. **NO delegues mediante prompts en el chat.**
 
 > **[SISTEMA - PREREQUISITO]** ¿Existe `sdd-spec.md` en esta misma carpeta (`docs/openspec/changes/{feature}/`)? Si **NO** existe → **PARAR. Generarlo primero.** El `tasks.md` sin `spec.md` es construir sin plano arquitectónico.
 
@@ -137,4 +137,4 @@ Al finalizar cada fase, actualizar `sdd-report.md` con:
 > Antes de escribir cualquier instrucción al humano, verificar **en este orden**:
 > 1. ¿`worker-handoff.md` generado en `docs/openspec/changes/{feature}/`? Si **NO** → generarlo AHORA. No se delega ninguna fase sin handoff.
 > 2. ¿Revisaste el Planning Checklist (items 0–4) en `.agents/rules/sdd-orchestrator.md`? Si **NO** → leerlo antes de continuar.
-> 3. Solo después de confirmar los dos puntos anteriores, instruir al humano: *"Cerrá este chat, abrí uno nuevo y decíme: `/funky-worker @docs/openspec/changes/{feature}/worker-handoff.md Ejecuta la fase N`"*
+> 3. Solo después de confirmar los dos puntos anteriores, instruir al humano: *"Cierra este chat, abre uno nuevo y dime: `/funky-worker @docs/openspec/changes/{feature}/worker-handoff.md Ejecuta la fase N`"*

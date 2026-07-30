@@ -66,7 +66,7 @@ Cada tool call tiene un costo fijo de serialización + transmisión. Medido en c
 
 ## 2. Operaciones Específicas
 
-### 2.1 Leer un entry conocido (sabés el tag exacto)
+### 2.1 Leer un entry conocido (sabes el tag exacto)
 
 **Escenario:** El agente ya sabe que existe `[massive-consolidation]` y quiere leerlo.
 

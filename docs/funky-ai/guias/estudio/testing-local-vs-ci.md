@@ -6,10 +6,10 @@
 Cuando escribes un archivo `.test.js` en tu repositorio, estás usando un framework (en el caso de Funky AI, usamos **Vitest**). 
 
 **¿Cómo funciona?**
-- Escribís código que ejecuta tus funciones reales y verifica que devuelvan lo que esperás.
-- Corrés un comando en tu consola (`npm run test`).
+- Escribes código que ejecuta tus funciones reales y verifica que devuelvan lo que esperas.
+- Corres un comando en tu consola (`npm run test`).
 - Vitest escanea tu computadora, busca los archivos de prueba y te avisa si todo está verde o si rompiste algo.
-- **El problema:** Todo esto ocurre en *tu* máquina. Si estás apurado, te olvidas de correr el comando, haces un `git push` y subís código roto al repositorio oficial sin darte cuenta.
+- **El problema:** Todo esto ocurre en *tu* máquina. Si estás apurado, te olvidas de correr el comando, haces un `git push` y subes código roto al repositorio oficial sin darte cuenta.
 
 ## 2. GitHub Actions (El Robot del CI/CD)
 Acá es donde entra la magia de la **Integración Continua (CI)**. GitHub Actions es, en términos simples, un robot o un servidor en la nube de GitHub que vigila tu código.
@@ -35,19 +35,19 @@ Para lograr que nuestros tests locales en Vitest se ejecuten automáticamente en
 
 3. **Las Instrucciones (El Pipeline):** 
    En ese YAML le dictamos a GitHub exactamente qué hacer:
-   - **Cuándo ejecutarse:** `on: [push, pull_request]` (dispará la acción en cada nuevo commit o PR).
+   - **Cuándo ejecutarse:** `on: [push, pull_request]` (dispara la acción en cada nuevo commit o PR).
    - **Dónde ejecutarse:** `runs-on: ubuntu-latest` (dame una máquina Linux fresca y en blanco).
    - **Qué pasos dar:**
      1. Usa la acción `actions/checkout` para descargarte nuestro código fuente.
-     2. Instalá Node.js.
-     3. Corré `npm install` (instalando Vitest y nuestras dependencias).
-     4. Corré `npm run test` (que por debajo dispara la batería de Vitest sobre nuestra carpeta unificada `tests/`).
+     2. Instala Node.js.
+     3. Corre `npm install` (instalando Vitest y nuestras dependencias).
+     4. Corre `npm run test` (que por debajo dispara la batería de Vitest sobre nuestra carpeta unificada `tests/`).
 ## 3. ¿Por qué era crítico consolidar `test/` y `tests/`?
 En nuestra auditoría vimos que había archivos en `funky-cli/test/` y otros en `funky-cli/tests/`. Esto es un *antipatrón* letal para el CI/CD:
 
-- Los sistemas automatizados (y el propio Vitest) suelen configurarse para mirar un patrón específico, por ejemplo: *"corré todo lo que esté adentro de `tests/`"*.
-- Si dejás pruebas tiradas en una carpeta con otro nombre (`test/`), el robot **no las va a ejecutar**.
-- **El desenlace fatal:** El robot corre los tests de la carpeta principal, te da el OK verde (✅), y vos pensás que el sistema está perfecto. Pero los tests de la carpeta ignorada podrían estar fallando y jamás te enterarías. Es un "falso positivo" de seguridad.
+- Los sistemas automatizados (y el propio Vitest) suelen configurarse para mirar un patrón específico, por ejemplo: *"corre todo lo que esté adentro de `tests/`"*.
+- Si dejas pruebas tiradas en una carpeta con otro nombre (`test/`), el robot **no las va a ejecutar**.
+- **El desenlace fatal:** El robot corre los tests de la carpeta principal, te da el OK verde (✅), y tú piensas que el sistema está perfecto. Pero los tests de la carpeta ignorada podrían estar fallando y jamás te enterarías. Es un "falso positivo" de seguridad.
 
 ### La Regla de Oro
 **Single Source of Truth (Única fuente de la verdad):** Al mover todo a una única carpeta oficial (`tests/`), garantizamos que el 100% de la batería de pruebas sea ejecutada tanto en tu máquina como por el robot de GitHub Actions. Si el código está ordenado, la automatización nunca falla.

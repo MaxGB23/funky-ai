@@ -27,7 +27,7 @@ Use it for:
 | Keep it short | Prefer 1 to 3 short paragraphs or a tight bullet list. |
 | Explain why | Give the technical reason when asking for a change. |
 | Avoid pile-ons | Comment on the highest-value issue, not every tiny preference. |
-| Match thread language | Write in the thread/user language. If writing in Spanish, use Rioplatense Spanish/voseo: `podés`, `tenés`, `fijate`, `dale`. |
+| Match thread language | Write in the thread/user language. If writing in Spanish, use Rioplatense Spanish/voseo: `puedes`, `tienes`, `fíjate`, `dale`. |
 | No em dashes | Use commas, periods, or parentheses instead. |
 
 ## Comment Formula
@@ -55,7 +55,7 @@ Eso le baja carga al reviewer y hace que el rollback sea más claro si falla la 
 ```markdown
 Está bien encaminado y el scope se entiende rápido.
 
-Dejo aprobado. Para el próximo PR, agregá el link al anterior y al siguiente así la cadena queda navegable.
+Dejo aprobado. Para el próximo PR, agrega el link al anterior y al siguiente así la cadena queda navegable.
 ```
 
 ### Ask for split

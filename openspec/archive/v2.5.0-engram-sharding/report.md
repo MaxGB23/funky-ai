@@ -78,4 +78,4 @@ Ninguno.
 
 ---
 
-> **[SISTEMA - PARA EL ORQUESTADOR]** Al finalizar, extraé conocimiento al engram usando `funky engram add` con las categorías apropiadas, e instruí al usuario a ELIMINAR FÍSICAMENTE toda la carpeta de este feature.
+> **[SISTEMA - PARA EL ORQUESTADOR]** Al finalizar, extrae conocimiento al engram usando `funky engram add` con las categorías apropiadas, e instruye al usuario a ELIMINAR FÍSICAMENTE toda la carpeta de este feature.

@@ -14,7 +14,7 @@ Mi recomendación:
   Release Template: [Inyectar release.md (si es Minor o Major) / No aplica (si es Patch o None)]
   Modo:             [Interactivo / Auto / Handoff]
 
-Decime qué elegiste cuando termines para que yo sepa cómo seguimos.
+Dime qué elegiste cuando termines para que yo sepa cómo seguimos.
 ```
 
 ## Cacheo de Sesión (Post-Preflight)

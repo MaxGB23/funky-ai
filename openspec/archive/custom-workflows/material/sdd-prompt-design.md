@@ -140,8 +140,8 @@ Ready for tasks (sdd-tasks).
 - Cada decisión DEBE tener rationale (el "why")
 - Incluir file paths CONCRETOS, no descripciones abstractas
 - Usar los patrones y convenciones ACTUALES del proyecto
-- Si encontrás que el codebase usa un patrón diferente al que recomendarías, NOTARLO pero SEGUIR el patrón existente
+- Si encuentras que el codebase usa un patrón diferente al que recomendarías, NOTARLO pero SEGUIR el patrón existente
 - Mantener ASCII diagrams simples — claridad sobre belleza
-- Si tenés open questions que BLOQUEAN el diseño, decilo claramente
+- Si tienes open questions que BLOQUEAN el diseño, decilo claramente
 - Apply any `rules.design` from `openspec/config.yaml`
 - Return envelope per **Section D** de `sdd-phase-common.md`

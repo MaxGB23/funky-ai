@@ -11,7 +11,7 @@ Durante la sesión de planificación de la Tarea 007 (Architecture Readiness v2)
 **El Motivo:** El borrador del Proposal era bastante técnico, lo que me llevó a la falsa asunción de que ya servía como plano arquitectónico. Esto viola el principio base del SDD: el *Proposal* define el "Qué y Por qué", pero el *Spec* define el "Cómo técnico" (contrato de datos, testing, regex vs zod, etc.) antes de picar tareas.
 
 ## 3. Omisión del Patrón de Delegación (`worker-handoff.md`)
-**El Salto:** Una vez escrito el `tasks.md`, declaré el fin de la sesión e instruí al humano a referenciar el `tasks.md` directamente (`@docs/.../tasks.md Ejecutá la Fase 1`), olvidando generar el documento canónico de transporte (`worker-handoff.md`).
+**El Salto:** Una vez escrito el `tasks.md`, declaré el fin de la sesión e instruí al humano a referenciar el `tasks.md` directamente (`@docs/.../tasks.md Ejecuta la Fase 1`), olvidando generar el documento canónico de transporte (`worker-handoff.md`).
 **El Motivo:** Sobrecarga Cognitiva (Agent Cognitive Load). Toda mi "memoria a corto plazo" se consumió redactando la lógica de las fases en el `tasks.md`. Al terminar esa redacción compleja, mi directiva interna de "avisar al humano para cerrar" se disparó antes de verificar el *Planning Checklist* que obliga a crear el Handoff.
 
 ---

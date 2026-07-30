@@ -17,7 +17,7 @@ A continuación se detallan los vectores de falla detectados durante auditorías
 - **Acción:** `fs.mkdirSync` y `fs.copyFileSync` / `fs.writeFileSync` intentan escribir.
 - **Resultado Anterior:** ⚠️ Lanzaba excepción EACCES de Node crudo — setup potencialmente incompleto.
 - **Fix Aplicado:**
-  - `executeIntentions()` (usado por init): cada operación FS captura EACCES y lanza `"Error de permisos al crear directorio / copiar archivo en X. Verificá que tengas permisos de escritura."`
+  - `executeIntentions()` (usado por init): cada operación FS captura EACCES y lanza `"Error de permisos al crear directorio / copiar archivo en X. Verifica que tengas permisos de escritura."`
   - `init.js` catch blocks: propagan el mensaje amigable sin stacktrace.
   - `assess.js` y `estimate.js`: cada FS op detecta `err.code === 'EACCES'` y muestra mensaje amigable con la ruta específica.
 - **Resultado Actual:** ✅ Mensaje claro y sin stacktrace. El usuario sabe qué archivo/directorio causó el problema.

@@ -38,7 +38,7 @@ La v2.0.0 destruye el monolito y usa los **Workflows On-Demand** (Slash Commands
 
 ### Cómo se comunican ahora
 1. **Planificación:** El usuario abre un chat y dice *"Quiero hacer X"*. El sistema carga la Capa 1 y la Capa 2. El LLM opera como Arquitecto.
-2. **Delegación (Handoff):** El Orquestador arma el plan y le dice al humano: *"Ejecutá `/funky-worker @handoff.md`"*. 
+2. **Delegación (Handoff):** El Orquestador arma el plan y le dice al humano: *"Ejecuta `/funky-worker @handoff.md`"*. 
 3. **Ejecución Quirúrgica:** El usuario abre un **chat nuevo** y ejecuta ese comando. Antigravity carga la Capa 1, pero en lugar de cargar las reglas del Orquestador, **inyecta el Workflow del Worker** (Capa 3) y el contenido del Handoff. 
 4. **Resultado:** El Worker entra ciego a la planificación, pero con foco láser en la ejecución. Cero Context Dilution. Cero alucinaciones de roles. 
 

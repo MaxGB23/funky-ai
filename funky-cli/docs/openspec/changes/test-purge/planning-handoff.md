@@ -1,7 +1,7 @@
 # Planning Handoff: [Nombre de la Fase]
 
 > **[SISTEMA — PARA EL ORQUESTADOR PRINCIPAL]**
-> Este archivo se genera ANTES de delegar una fase con riesgo alto. Tu objetivo aquí es dar contexto digerido sin que tú leas los archivos y te sobrecargues de contexto, para que el Sub-Orquestador (Arquitecto Táctico) diseñe el plan de implementación. NO diseñes el código vos, limitate a mapear el terreno.
+> Este archivo se genera ANTES de delegar una fase con riesgo alto. Tu objetivo aquí es dar contexto digerido sin que tú leas los archivos y te sobrecargues de contexto, para que el Sub-Orquestador (Arquitecto Táctico) diseñe el plan de implementación. NO diseñes el código tú, limítate a mapear el terreno.
 
 ## 1. Contexto de la Tarea
 - **Feature:** [Nombre de la feature en spec]
@@ -20,7 +20,7 @@
 ---
 
 > **[SISTEMA — FORMATO DE SALIDA ESTRICTO PARA EL SUB-ORQUESTADOR]**
-> Una vez que hayas leído este documento y los archivos de código correspondientes, generá el `implementation_plan_task[N].md` siguiendo EXACTAMENTE esta estructura:
+> Una vez que hayas leído este documento y los archivos de código correspondientes, genera el `implementation_plan_task[N].md` siguiendo EXACTAMENTE esta estructura:
 
 ### 1. Resumen de la Implementación
 [Explicar brevemente cómo se va a resolver la tarea a nivel técnico. Mencionando patrones a usar y por qué se eligieron en base al código actual.]

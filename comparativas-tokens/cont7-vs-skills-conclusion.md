@@ -36,7 +36,7 @@ Skills y Context7 **no compiten**. Se complementan. Usar solo uno es perder la m
 | Conocimiento interno del equipo ("en este proyecto hacemos X así") | **Skills** |
 | Necesitás la fuente oficial, no una interpretación | **Context7** |
 | Estás offline | **Skills** |
-| Querés cero latencia | **Skills** |
+| Quieres cero latencia | **Skills** |
 
 ## La combinación ganadora
 

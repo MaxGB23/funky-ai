@@ -7,11 +7,11 @@ export const runEngramAdd = async ({ tag, category, desc, cwd }) => {
   const sanitizeName = (str) => str.trim().replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '').toLowerCase();
   
   if (!tag) {
-    tag = await input({ message: 'Ingresá el tag del engrama (ej. [fix-auth]):' });
+    tag = await input({ message: 'Ingresa el tag del engrama (ej. [fix-auth]):' });
   }
   if (!category) {
     category = await select({
-      message: 'Seleccioná la categoría del engrama:',
+      message: 'Selecciona la categoría del engrama:',
       choices: [
         { name: 'Architecture', value: 'architecture' },
         { name: 'Pattern', value: 'pattern' },

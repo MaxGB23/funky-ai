@@ -60,7 +60,7 @@ Límite de 5 PRs abiertos por ecosistema.
 
 ### Actualizar SHAs
 
-Cuando Dependabot o vos quieran actualizar una Action:
+Cuando Dependabot o tú quieran actualizar una Action:
 
 1. Ir al release del repo (ej: `github.com/actions/checkout/releases`)
 2. Copiar el SHA completo del commit del release

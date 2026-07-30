@@ -56,7 +56,7 @@ actual como fallback
 
 **⚠️ Risk Level**: Medium — Google API puede cambiar endpoints
 
-**¿Querés ajustar algo o continuamos?**
+**¿Quieres ajustar algo o continuamos?**
 ```
 
 ## Diferencia clave

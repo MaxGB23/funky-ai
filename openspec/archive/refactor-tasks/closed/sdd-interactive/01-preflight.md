@@ -6,8 +6,8 @@
 ## Lo que muestra
 
 ```
-Antes de continuar con SDD, elegí una opción por grupo.
-Respondé con "usar recomendado" o con códigos como: A1, B1, C1, D1.
+Antes de continuar con SDD, elige una opción por grupo.
+Responde con "usar recomendado" o con códigos como: A1, B1, C1, D1.
 
 A. Ritmo
    A1 Interactivo (recomendado): mostrar cada fase y esperar confirmación

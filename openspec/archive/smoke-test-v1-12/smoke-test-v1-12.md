@@ -25,7 +25,7 @@
 
 **Objetivo:** Validar que el motor de reglas detecta inconsistencias y genera el prompt de revisión para el agente.
 
-- [ ] En la misma carpeta del Escenario 1, editar el frontmatter de `docs/architecture-assessment.md` forzando fallas de validación. Editá estos valores clave:
+- [ ] En la misma carpeta del Escenario 1, editar el frontmatter de `docs/architecture-assessment.md` forzando fallas de validación. Edita estos valores clave:
   ```yaml
   budget: "20"
   rps: "5000"
@@ -73,4 +73,4 @@
 
 - [ ] Volver a **este chat (Orquestador)** pegando el output y el resultado de los 3 escenarios.
 - [ ] **Si todo pasó:** Marcamos el Smoke Test como ✅ en el `ORCHESTRATOR-STATE.md`.
-- [ ] **Si algo falló:** Reportá acá el error y levantamos un Worker para fixearlo.
+- [ ] **Si algo falló:** Reporta acá el error y levantamos un Worker para fixearlo.

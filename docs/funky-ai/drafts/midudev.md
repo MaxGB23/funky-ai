@@ -206,7 +206,7 @@ Los compromisos de paquetes npm ya tienen respuesta activa en `.agents/rules/sec
 2. **Vulnerabilidad en Python — ejecución automática sin intención del usuario**
    - La percepción popular es "sin ejecutar el archivo ya estás infectado", pero la formulación técnicamente precisa es: el código **sí se ejecuta**, pero de forma **automática e implícita**, sin que el usuario lo corra conscientemente.
    - Los vectores concretos son: `setup.py` (al instalar el paquete), hooks de build, imports automáticos al cargar módulos, o herramientas del IDE/sandbox que analizan el archivo y disparan ejecución como efecto secundario.
-   - El impacto práctico es el mismo: comprometés el entorno sin haber tenido intención de correr nada. Rompe el supuesto de "no lo ejecuto, no me infecta", pero por ejecución implícita, no por magia.
+   - El impacto práctico es el mismo: comprometes el entorno sin haber tenido intención de correr nada. Rompe el supuesto de "no lo ejecuto, no me infecta", pero por ejecución implícita, no por magia.
    - **Nota:** el documento del análisis original (sección 3) aclara que hay mucho ruido y exageración en torno a este caso. No existe (hasta ahora) una vulnerabilidad general donde *abrir* un archivo sin ningún tipo de ejecución derive en infección directa. La distinción importa para no sobredimensionar el riesgo.
 
 **Acción requerida:**

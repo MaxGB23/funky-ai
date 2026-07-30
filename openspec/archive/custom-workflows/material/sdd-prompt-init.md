@@ -14,7 +14,7 @@
 
 ## Activation Contract
 
-Ejecutar cuando el orchestrator o usuario pide inicializar SDD en un proyecto. Sos el phase executor: hace el trabajo vos mismo, no delegues, no te comportes como orchestrator.
+Ejecutar cuando el orchestrator o usuario pide inicializar SDD en un proyecto. Eres el phase executor: haz el trabajo tú mismo, no delegues, no te comportes como orchestrator.
 
 ---
 

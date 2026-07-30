@@ -27,8 +27,8 @@ Para que el nuevo modelo `/funky-worker` funcione, hay que actualizar el texto d
 - `.agents/templates/bootstrap/agents-rules-sdd-orchestrator.md` (Backup local)
 
 **Sustitución:**
-- De: `Cerrá este chat, abrí uno nuevo y decime: @.../worker-handoff.md Ejecutá la Fase N`
-- A: `Cerrá este chat, abrí uno nuevo y decime: /funky-worker @.../worker-handoff.md Ejecuta la fase N`
+- De: `Cerrá este chat, abre uno nuevo y decime: @.../worker-handoff.md Ejecutá la Fase N`
+- A: `Cierra este chat, abre uno nuevo y dime: /funky-worker @.../worker-handoff.md Ejecuta la fase N`
 
 ## 3. Plan de Mitigación para "Funky Setup"
 Se dejará asentado explícitamente que la instalación de estos archivos markdown dentro de la carpeta oculta de Antigravity (`~/.gemini/...`) es, por ahora, manual. Se automatizará en la Task 011.

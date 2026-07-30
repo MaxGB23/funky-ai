@@ -61,7 +61,7 @@
 
 ## Diferencia clave con otras fases
 
-**No pregunto "¿Querés ajustar algo o continuamos?"** porque el ciclo
+**No pregunto "¿Quieres ajustar algo o continuamos?"** porque el ciclo
 terminó. Pregunto qué quiere hacer después:
 
 - Arrancar otro SDD change

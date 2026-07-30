@@ -71,4 +71,4 @@ Los agentes y workers MUST utilizar `grep -ril` o `grep_search` sobre los subdir
 
 ---
 
-> **[SISTEMA - PARA EL ORQUESTADOR]** Si la spec es aprobada y no hay cambios de scope, procedé a generar el `tasks.md`.
+> **[SISTEMA - PARA EL ORQUESTADOR]** Si la spec es aprobada y no hay cambios de scope, procede a generar el `tasks.md`.

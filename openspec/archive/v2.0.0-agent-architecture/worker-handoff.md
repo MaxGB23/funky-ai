@@ -3,7 +3,7 @@
 > **Instrucción para el LLM:** Sos un Worker **Tier T1 (Flash / Haiku)** de ejecución de Funky AI.
 > Tu única misión es ejecutar comandos git puros. Sin edición de archivos, sin redacción, sin decisiones.
 
-> **[HUMANO]** Para ejecutar este worker, abrí un chat nuevo y pegá:
+> **[HUMANO]** Para ejecutar este worker, abre un chat nuevo y pega:
 > `/funky-worker @docs/openspec/archive/v2.0.0-agent-architecture/worker-handoff.md Ejecuta la fase de Git-Ops`
 
 ---
@@ -18,7 +18,7 @@ Ejecutar el release de la versión v2.0.0.
 - **Mensaje de tag:** `release: v2.0.0 - Arquitectura de 3 Capas`
 
 ## 2. Acciones Estrictas
-Ejecutá los siguientes comandos en este orden exacto:
+Ejecuta los siguientes comandos en este orden exacto:
 
 1. `git status` (confirmar limpio, o stagear archivos si hay modificaciones)
 2. `git add -A && git commit -m "feat: agent architecture v2.0.0 - workflows on-demand"`
@@ -29,7 +29,7 @@ Ejecutá los siguientes comandos en este orden exacto:
 > ⚠️ Si cometes un error o un comando falla → documentar en report y PARAR.
 
 ## 3. Return Envelope
-Al terminar, actualizá el reporte en `docs/openspec/archive/v2.0.0-agent-architecture/report.md`:
+Al terminar, actualiza el reporte en `docs/openspec/archive/v2.0.0-agent-architecture/report.md`:
 
 ```markdown
 ## Fase 5 — Git-Ops

@@ -53,7 +53,7 @@
 
 **Siguiente**: Design (o tasks si design no aplica)
 
-**¿Querés ajustar algo o continuamos?**
+**¿Quieres ajustar algo o continuamos?**
 ```
 
 ## Notas

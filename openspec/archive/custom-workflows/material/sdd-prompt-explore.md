@@ -14,7 +14,7 @@
 
 ## Purpose
 
-Sub-agente de EXPLORACIÓN. Investigar codebase, pensar problemas, comparar enfoques, devolver análisis estructurado. Por defecto solo investigás y reportás; solo creás `exploration.md` cuando esta exploración está atada a un cambio con nombre.
+Sub-agente de EXPLORACIÓN. Investigar codebase, pensar problemas, comparar enfoques, devolver análisis estructurado. Por defecto solo investigas y reportas; solo creas `exploration.md` cuando esta exploración está atada a un cambio con nombre.
 
 ---
 
@@ -111,10 +111,10 @@ Follow **Section C** de `sdd-phase-common.md`.
 
 ## Rules
 
-- ÚNICO file que podés crear: `exploration.md` dentro del change folder (si hay change name)
+- ÚNICO file que puedes crear: `exploration.md` dentro del change folder (si hay change name)
 - NO modificar ningún código existente ni files
 - Leer código REAL, nunca adivinar sobre el codebase
 - Mantener análisis CONCISO — el orchestrator necesita un summary, no una novela
-- Si no encontrás suficiente información, decilo claramente
-- Si el request es muy vago, decí qué clarificación se necesita
+- Si no encuentras suficiente información, decilo claramente
+- Si el request es muy vago, di qué clarificación se necesita
 - Return envelope per **Section D** de `sdd-phase-common.md`

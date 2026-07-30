@@ -25,4 +25,4 @@ La Opción B aprovecha las herramientas nativas que ya nos da el IDE de Antigrav
 - **Riesgo 3 (Pérdida de Features de v1.20):** Que al desarmar el `sdd-orchestrator.md` actual perdamos el Auto-Tiering o los gates de Handoff.
   - *Mitigación:* La migración del markdown debe ser quirúrgica 1:1, partiendo el archivo actual en sus equivalentes para Workflow.
 
-> **[SISTEMA - PARA EL ORQUESTADOR]** Una vez finalizada la exploración, utilizá este documento como base para generar el `sdd-proposal.md`.
+> **[SISTEMA - PARA EL ORQUESTADOR]** Una vez finalizada la exploración, utiliza este documento como base para generar el `sdd-proposal.md`.

@@ -27,9 +27,9 @@ Remove-Item -Recurse -Force "docs\openspec\changes\v2.0.1-context-fix"
 Solo si el directorio existe. Si ya fue eliminado, ignorar.
 
 ## Constraints
-- Usá `pnpm` si necesitás correr tests (no npm).
+- Usa `pnpm` si necesitas correr tests (no npm).
 - NO modificar ningún archivo de código o docs. Esta fase es SOLO git.
 - Documentar en el sdd-report.md: rama mergeada, tag creado, push confirmado.
 
 ## Invocación
-`/funky-worker @docs/openspec/archive/v2.0.1-context-fix/worker-handoff.md Ejecutá el Git-Ops`
+`/funky-worker @docs/openspec/archive/v2.0.1-context-fix/worker-handoff.md Ejecuta el Git-Ops`

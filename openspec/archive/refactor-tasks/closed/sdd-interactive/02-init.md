@@ -29,7 +29,7 @@
 **Testing layers**: Unit (Vitest), Integration (supertest), E2E (Playwright)
 **Persistence**: Engram (`sdd-init/funky-ai`)
 
-**¿Querés ajustar algo o continuamos?**
+**¿Quieres ajustar algo o continuamos?**
 ```
 
 ## Comportamiento en interactivo

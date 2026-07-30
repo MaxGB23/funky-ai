@@ -19,7 +19,7 @@ view_file [⚠️ COMPLETAR: RUTAS EXACTAS DE LAS SKILLS EN .agents/skills/ O DE
 ### 🔍 Jerarquía de Conocimiento (Doc-Ops)
 1. **Prioridad 1 (Skills Estrictas):** Acata religiosamente las skills inyectadas en la sección §1.D. Son leyes absolutas para tu ejecución.
 2. **Prioridad 2 (MCP context7):** Si la API es nueva/compleja, dudas de su sintaxis, y el Orquestador no te pasó ninguna skill en §1.D, estás **OBLIGADO** a usar el servidor MCP `context7` (`resolve-library-id` + `query-docs`) antes de escribir código.
-3. **Extracción:** Si descubres un patrón nuevo usando `context7`, documentalo en tu Return Envelope para que el Orquestador lo convierta en una Skill.
+3. **Extracción:** Si descubres un patrón nuevo usando `context7`, documéntalo en tu Return Envelope para que el Orquestador lo convierta en una Skill.
 
 ---
 
@@ -33,7 +33,7 @@ view_file [⚠️ COMPLETAR: RUTAS EXACTAS DE LAS SKILLS EN .agents/skills/ O DE
 
 ## 5. Return Envelope (Al terminar)
 
-Actualizá `docs/openspec/changes/{feature-name}/report.md` con:
+Actualiza `docs/openspec/changes/{feature-name}/report.md` con:
 
 ```markdown
 ## Fase [N] — [Nombre de la Fase]

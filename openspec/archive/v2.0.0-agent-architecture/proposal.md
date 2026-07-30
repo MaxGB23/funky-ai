@@ -10,7 +10,7 @@ Basado en la exploración, implementaremos la **Opción B (Arquitectura de 3 Cap
 | **Capa 1: Global** | Token Diet extrema. Solo Tono y Personalidad (Rioplatense, filosofía, senior architect). | Garantiza consistencia en toda interacción sin inflar el contexto con lógicas operativas. |
 | **Capa 2: Workspace Rules** | División del `sdd-orchestrator.md` masivo en partes referenciables. | Evitar cargar todas las reglas del Orquestador si solo se va a ejecutar una acción puntual. |
 | **Capa 3: Workflows On-Demand** | Migrar los roles operativos a Workflows Antigravity (`/funky-orchestrator`, `/funky-worker`). | Aislamiento perfecto. El modelo lee exactamente las reglas de su rol actual y nada más. |
-| **Delegación Handoff** | Reemplazar "Ejecutá la Fase N" por un comando tipo slash: `funky-worker <ruta/al/handoff> Ejecuta la fase N`. | Aprovecha los triggers nativos de Workflows de Antigravity, forzando la inyección del contexto correcto en el nuevo chat. |
+| **Delegación Handoff** | Reemplazar "Ejecuta la Fase N" por un comando tipo slash: `funky-worker <ruta/al/handoff> Ejecuta la fase N`. | Aprovecha los triggers nativos de Workflows de Antigravity, forzando la inyección del contexto correcto en el nuevo chat. |
 
 ## 3. Stack / Scope
 **Mapeo de Capas (Scope de esta task):**
@@ -24,4 +24,4 @@ Basado en la exploración, implementaremos la **Opción B (Arquitectura de 3 Cap
 ## 4. Riesgos
 - **Rompimiento de Templates CLI:** Al cambiar el texto de delegación, tenemos que actualizar los templates canónicos (`.agents/templates/sdd/worker-handoff.md` y `funky-cli/src/templates/sdd/worker-handoff.md`).
 
-> **[SISTEMA - PARA EL ORQUESTADOR]** Si la propuesta es aprobada, procedé a generar el `sdd-spec.md` y luego el `sdd-tasks.md`.
+> **[SISTEMA - PARA EL ORQUESTADOR]** Si la propuesta es aprobada, procede a generar el `sdd-spec.md` y luego el `sdd-tasks.md`.

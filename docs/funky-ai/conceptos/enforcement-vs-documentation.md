@@ -61,7 +61,7 @@ En ingeniería de software tenemos una distinción fundamental que aplicamos al 
 | Documentación | Enforcement |
 |---|---|
 | Un comentario que dice "no usar `null` acá" | El compilador de TypeScript que te bloquea si usas `null` |
-| Una guía que dice "escribí tests antes del código" | Un pipeline de CI que no permite merge sin coverage |
+| Una guía que dice "escribe tests antes del código" | Un pipeline de CI que no permite merge sin coverage |
 | Un anti-patrón que dice "no omitir el Tier" | Un template con `Tier: [COMPLETAR T1/T2/T3]` que visualmente rompe el flujo si no se llena |
 
 **La documentación informa. El enforcement garantiza.**
@@ -99,10 +99,10 @@ Antes de cada fix, hazte estas preguntas en orden:
 No el error en sí — el **mecanismo subyacente**. Si el Tier fue omitido, el error no es "el agente olvidó el Tier". El mecanismo es: *"El Orquestador genera handoffs desde cero en lugar de usar el template canónico, y ninguna rule lo fuerza a hacer lo contrario."*
 
 ### 2. ¿Ese mecanismo sigue activo después de mi fix?
-Si respondés "sí" o "tal vez", tu fix es un parche, no una solución. El error va a volver.
+Si respondes "sí" o "tal vez", tu fix es un parche, no una solución. El error va a volver.
 
 ### 3. ¿Mi fix documenta o enforcea?
-Si la respuesta es "documenta", preguntate: *¿existe un mecanismo de enforcement posible?* Si existe y no lo implementás, estás dejando una deuda técnica consciente.
+Si la respuesta es "documenta", preguntate: *¿existe un mecanismo de enforcement posible?* Si existe y no lo implementas, estás dejando una deuda técnica consciente.
 
 ### 4. ¿Consideré los tres actores?
 ¿Cómo experimenta este fix el Humano Router? ¿El Orquestador? ¿El Worker? Un fix que solo considera uno de los tres es incompleto.
@@ -251,7 +251,7 @@ El Planning Checklist tiene el ítem correcto (item 2: generar handoff). El prob
 ```markdown
 > [SISTEMA — ORQUESTADOR] Antes de comunicar al humano:
 > 1. ¿Generaste `worker-handoff.md`? Si NO → generarlo ahora antes de cualquier instrucción al humano.
-> 2. Revisá el Planning Checklist en `sdd-orchestrator.md § Planning Checklist`.
+> 2. Revisa el Planning Checklist en `sdd-orchestrator.md § Planning Checklist`.
 ```
 Esto actúa como **Action Forcing post-escritura**: justo cuando el Orquestador termina el archivo y está a punto de cometer el error, se lo frenamos.
 

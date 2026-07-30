@@ -15,7 +15,7 @@ Antes de escribir el primer `worker-handoff.md` o de decirle al humano qué pega
 | 2 | ¿El `tasks.md` tiene `MANDATORY_RELEASE_PROTOCOL` completo? | Verificar secciones Doc-Ops y Git-Ops |
 | 3 | ¿El Tier del Worker está declarado (T1/T2/T3)? | Completar campo en el `worker-handoff.md` |
 
-> 🔴 **Si cualquier ítem es NO → no delegues. Completalo (o pedí al humano que lo complete) primero.** Un Orquestador que delega sin estos 4 ítems rompe el protocolo y hace al Worker ciego.
+> 🔴 **Si cualquier ítem es NO → no delegues. Complétalo (o pide al humano que lo complete) primero.** Un Orquestador que delega sin estos 4 ítems rompe el protocolo y hace al Worker ciego.
 
 ## Comandos y Acciones
 
@@ -41,18 +41,18 @@ El Orquestador NO puede emitir el prompt de delegación sin verificar este Pre-G
 | G2 | El campo `Tier [⚠️ COMPLETAR]` fue reemplazado por T1, T2 o T3 | Completarlo AHORA |
 | G3 | §1.C del handoff tiene la ruta exacta del `sdd-tasks.md` de esta feature | Completarlo AHORA |
 
-> 🔴 Si G1, G2 o G3 fallan → NO emitas el prompt. Corregí primero. Solo entonces:
+> 🔴 Si G1, G2 o G3 fallan → NO emitas el prompt. Corrige primero. Solo entonces:
 
-> "El plan está listo. Cerrá este chat, abrí uno nuevo y decime:
-> `/funky-worker @docs/openspec/changes/{name}/worker-handoff.md Ejecutá la Fase N`."
+> "El plan está listo. Cierra este chat, abre uno nuevo y dime:
+> `/funky-worker @docs/openspec/changes/{name}/worker-handoff.md Ejecuta la Fase N`."
 
 ## ⚡ T1 Phase Batching (Optimización)
-Podés combinar múltiples fases en un único Worker si se cumplen las TRES condiciones:
+Puedes combinar múltiples fases en un único Worker si se cumplen las TRES condiciones:
 1. **Todas las fases son Tier 1** (operaciones sin ambigüedad: git, crear/modificar markdown)
 2. **No hay dependencia crítica** entre ellas (la salida de Fase N no puede invalidar Fase N+1)
 3. **No se espera Scope Change** entre ellas
 
-En ese caso, decile al Worker: `Ejecutá las Fases N y N+1`. El Worker reporta ambas en el `sdd-report.md`.
+En ese caso, dile al Worker: `Ejecuta las Fases N y N+1`. El Worker reporta ambas en el `sdd-report.md`.
 > ⚠️ Si cualquiera de las 3 condiciones NO se cumple → fases separadas obligatorio.
 
 ## ⚠️ Checkpoint Entre Fases (MANDATORY)

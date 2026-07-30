@@ -4,7 +4,7 @@
 **Rama:** `feature/nombre-del-branch`
 **Ref:** `sdd-proposal.md`
 
-> **[SISTEMA - PARA EL ORQUESTADOR]** Antes de delegar la primera fase, verificá el Planning Checklist en `.agents/rules/sdd-orchestrator.md`. Generá un `worker-handoff.md` basado en `funky-cli/src/templates/sdd/worker-handoff.md`. **NO delegues mediante prompts en el chat.**
+> **[SISTEMA - PARA EL ORQUESTADOR]** Antes de delegar la primera fase, verifica el Planning Checklist en `.agents/rules/sdd-orchestrator.md`. Genera un `worker-handoff.md` basado en `funky-cli/src/templates/sdd/worker-handoff.md`. **NO delegues mediante prompts en el chat.**
 
 > **[SISTEMA - PREREQUISITO]** ¿Existe `sdd-spec.md` en esta misma carpeta (`docs/openspec/changes/{feature}/`)? Si **NO** existe → **PARAR. Generarlo primero.** El `tasks.md` sin `spec.md` es construir sin plano arquitectónico.
 
@@ -17,7 +17,7 @@
 > 2. Guardar el archivo al disco antes de continuar al siguiente ítem.
 > Un `tasks.md` desactualizado = próxima sesión ciega. Sin excusas.
 >
-> **[SISTEMA — PARA EL ORQUESTADOR]** Si detectás que una fase tiene lógica de negocio compleja o decisiones de diseño críticas, limitate a etiquetar su título con `[⚠️ RIESGO ALTO]`. El humano decidirá el protocolo a seguir.
+> **[SISTEMA — PARA EL ORQUESTADOR]** Si detectas que una fase tiene lógica de negocio compleja o decisiones de diseño críticas, limítate a etiquetar su título con `[⚠️ RIESGO ALTO]`. El humano decidirá el protocolo a seguir.
 
 ### FASE 0 — Branch Setup [T1]
 > **Tier:** T1 — Git ops puras, cero ambigüedad. Delegable a Worker.
@@ -45,8 +45,8 @@
 <OPTIONAL_DOC_UPDATE>
 
 > **[SISTEMA — ORQUESTADOR — DECISIÓN REQUERIDA]**
-> Analizá los cambios de esta feature contra el índice de abajo. Si algún doc cubre exactamente lo que cambió → expandí esta fase con tareas concretas. Si ninguno aplica → **eliminá este bloque completo del archivo.**
-> **Regla de contexto:** NO abras ningún doc del índice todavía. La columna "Aplica si..." es suficiente para decidir. Solo abrís el archivo en el momento exacto de editarlo.
+> Analiza los cambios de esta feature contra el índice de abajo. Si algún doc cubre exactamente lo que cambió → expande esta fase con tareas concretas. Si ninguno aplica → **elimina este bloque completo del archivo.**
+> **Regla de contexto:** NO abras ningún doc del índice todavía. La columna "Aplica si..." es suficiente para decidir. Solo abres el archivo en el momento exacto de editarlo.
 
 ### 📚 Índice de Docs Vivos
 
@@ -136,4 +136,4 @@ Al finalizar cada fase, actualizar `sdd-report.md` con:
 > Antes de escribir cualquier instrucción al humano, verificar **en este orden**:
 > 1. ¿`worker-handoff.md` generado en `docs/openspec/changes/{feature}/`? Si **NO** → generarlo AHORA. No se delega ninguna fase sin handoff.
 > 2. ¿Revisaste el Planning Checklist (items 0–4) en `.agents/rules/sdd-orchestrator.md`? Si **NO** → leerlo antes de continuar.
-> 3. Solo después de confirmar los dos puntos anteriores, instruir al humano: *"Cerrá este chat, abrí uno nuevo y decíme: `@docs/openspec/changes/{feature}/worker-handoff.md Ejecutá la Fase N`"*
+> 3. Solo después de confirmar los dos puntos anteriores, instruir al humano: *"Cierra este chat, abre uno nuevo y dime: `@docs/openspec/changes/{feature}/worker-handoff.md Ejecuta la Fase N`"*

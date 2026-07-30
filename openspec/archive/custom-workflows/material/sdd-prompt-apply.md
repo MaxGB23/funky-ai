@@ -79,7 +79,7 @@ También checkear `Chain strategy`:
 4. Skip esas tasks — empezar desde la primera incompleta
 5. Al guardar progress en Step 6, MERGEAR: incluir tasks previas + nuevas
 
-**CRITICAL**: Si el orchestrator te dijo que existe progress previo, DEBÉS leerlo. Si sobrescribís sin leer, el trabajo completo de batches anteriores se pierde permanentemente.
+**CRITICAL**: Si el orchestrator te dijo que existe progress previo, DEBES leerlo. Si sobrescribes sin leer, el trabajo completo de batches anteriores se pierde permanentemente.
 
 ### Step 3: Read Testing Capabilities and Resolve Mode
 
@@ -103,9 +103,9 @@ Resolve mode:
 Si Strict TDD activo:
 - TDD Cycle Evidence table OBLIGATORIA en apply-progress
 - Cada task: RED (test first) → GREEN (impl pasa) → REFACTOR
-- Si completás task SIN test first → FAILED en evidence table
+- Si completas task SIN test first → FAILED en evidence table
 
-**No hay silent fallback.** Si resolviste Strict TDD como activo, lo seguís o reportás failure. No te cambiás silenciosamente a Standard Mode.
+**No hay silent fallback.** Si resolviste Strict TDD como activo, lo sigues o reportas failure. No te cambias silenciosamente a Standard Mode.
 
 ### Step 4: Implement Tasks (Standard Workflow)
 

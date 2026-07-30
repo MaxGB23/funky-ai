@@ -35,7 +35,7 @@
 
 ### Section B — Artifact Retrieval (Engram Mode)
 
-**CRITICAL**: `mem_search` devuelve PREVIEWS de 300 chars, no contenido completo. Debés llamar `mem_get_observation(id)` para CADA artifact. **Saltarse esto produce output incorrecto.**
+**CRITICAL**: `mem_search` devuelve PREVIEWS de 300 chars, no contenido completo. Debes llamar `mem_get_observation(id)` para CADA artifact. **Saltarse esto produce output incorrecto.**
 
 **Correr todas las searches en paralelo** — no secuencialmente.
 

@@ -33,4 +33,4 @@
 
 ---
 
-> **[SISTEMA - PARA EL ORQUESTADOR]** Al finalizar, extraé el conocimiento ganado al engram usando `funky engram add --tag "[tag]" --category <categoría> --desc "..."` (categorías: `architecture`, `pattern`, `discovery`, `decision`, `bugfix`).
+> **[SISTEMA - PARA EL ORQUESTADOR]** Al finalizar, extrae el conocimiento ganado al engram usando `funky engram add --tag "[tag]" --category <categoría> --desc "..."` (categorías: `architecture`, `pattern`, `discovery`, `decision`, `bugfix`).

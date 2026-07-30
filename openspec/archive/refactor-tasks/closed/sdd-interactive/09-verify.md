@@ -74,7 +74,7 @@
 
 **🎯 Verdict**: PASS WITH WARNINGS
 
-**¿Querés ajustar algo o continuamos?**
+**¿Quieres ajustar algo o continuamos?**
 ```
 
 ## Casos especiales

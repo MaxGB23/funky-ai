@@ -74,7 +74,7 @@ None.
 
 **Siguiente**: Aplicar Phase 2 (OAuthService + callback) | Verificar lo hecho
 
-**¿Querés ajustar algo o continuamos?**
+**¿Quieres ajustar algo o continuamos?**
 ```
 
 ## Casos especiales

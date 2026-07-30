@@ -54,7 +54,7 @@ al AuthService existente.
 
 **❓ Open Questions**: None
 
-**¿Querés ajustar algo o continuamos?**
+**¿Quieres ajustar algo o continuamos?**
 ```
 
 ## Notas

@@ -106,7 +106,7 @@ function parseFrontmatter(content: string): Record<string, string>;
 ```
 # 🗣️ Guía de Discusión Arquitectónica
 
-> Generado por `funky assess`. Usá este documento como estructura para tu sesión de discusión.
+> Generado por `funky assess`. Usa este documento como estructura para tu sesión de discusión.
 
 ## Contexto del Proyecto
 
@@ -136,7 +136,7 @@ La IA descubre los NFRs preguntando al equipo.
 La IA analiza el stack completo buscando incompatibilidades conocidas, trade-offs no documentados, y riesgos operacionales.
 
 ### Fase 5: Alternativas (10 min)
-Para cada riesgo identificado, proponé al menos una alternativa con pros/cons concretos.
+Para cada riesgo identificado, propón al menos una alternativa con pros/cons concretos.
 
 ### Fase 6: Acuerdos (5 min)
 Documentar las decisiones finales en docs/architecture-decisions.md. Incluir rationale, alternativas descartadas, y riesgos aceptados.

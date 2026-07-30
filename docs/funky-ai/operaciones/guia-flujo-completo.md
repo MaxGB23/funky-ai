@@ -368,7 +368,7 @@ Actualiza la versión, las tareas completadas y el historial de versiones.
 
 ### Paso 5.3 — Limpiar el openspec (opcional pero recomendado)
 
-Eliminá los archivos `sdd-*.md` del directorio raíz una vez mergeado. Son artefactos de proceso, no código productivo.
+Elimina los archivos `sdd-*.md` del directorio raíz una vez mergeado. Son artefactos de proceso, no código productivo.
 
 ---
 

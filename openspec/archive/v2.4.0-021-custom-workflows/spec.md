@@ -14,4 +14,4 @@
 1. [Criterio 1]
 2. [Criterio 2]
 
-> **[SISTEMA - PARA EL ORQUESTADOR]** Si la spec es aprobada y no hay cambios de scope, procedé a generar el `tasks.md`.
+> **[SISTEMA - PARA EL ORQUESTADOR]** Si la spec es aprobada y no hay cambios de scope, procede a generar el `tasks.md`.

@@ -143,7 +143,7 @@ funky pipeline status
 
 ### Escenario 3 — Comandos standalone (sin pipeline)
 
-Útil cuando querés regenerar solo una guía sin el estado compartido:
+Útil cuando quieres regenerar solo una guía sin el estado compartido:
 
 ```bash
 funky assess

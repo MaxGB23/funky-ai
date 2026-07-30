@@ -154,7 +154,7 @@ Son preguntas adicionales que `generateGuideQuestions()` produce SOLO si los dat
 ```
 # 🗣️ Guía de Discusión Arquitectónica
 
-> Generado por `funky assess`. Usá este documento como estructura para tu sesión
+> Generado por `funky assess`. Usa este documento como estructura para tu sesión
 > de discusión entre el equipo y la IA.
 
 ## Contexto del Proyecto

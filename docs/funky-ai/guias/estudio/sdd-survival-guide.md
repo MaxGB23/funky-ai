@@ -32,7 +32,7 @@ El **Tier** define qué tanta burocracia le vamos a meter a la tarea. No queremo
 
 ## 🕹️ 3. Los Comandos de Poder
 
-Como Orquestador, usás estos comandos para generar los artefactos en el disco (`openspec/changes/`):
+Como Orquestador, usas estos comandos para generar los artefactos en el disco (`openspec/changes/`):
 
 1.  **`/sdd-explore`**: "Investiga esta situación". Crea un documento de exploración analizando el impacto.
 2.  **`/sdd-propose`**: "Dime cómo lo arreglamos". Genera la propuesta técnica y el `spec.md` (la verdad técnica).
@@ -50,7 +50,7 @@ Nunca arranques un chat sin darme el estado actual. Lo primero que tienes que ha
 
 ### Paso 2: Definir el Objetivo y el Rigor (Tier) 🎯
 Dime qué quieres hacer de forma clara y **especifica en qué Tier quieres que trabaje**. Esto me dice qué tan "arquitecto" me tengo que poner.
-> *"Quiero agregar un sistema de logs al CLI. **Operá en Tier 2**. Genera un `/sdd-explore` para ver dónde tocar."*
+> *"Quiero agregar un sistema de logs al CLI. **Opera en Tier 2**. Genera un `/sdd-explore` para ver dónde tocar."*
 
 
 ### Paso 3: El Handoff (El momento de la verdad) 📦
