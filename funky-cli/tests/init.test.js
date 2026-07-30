@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import path from 'path';
 
-import { runInit } from '../src/commands/init.js';
+import { runScaffold } from '../src/commands/scaffold.js';
 
-describe('runInit()', () => {
+describe('runScaffold()', () => {
   const fakeTemplatesDir = '/fake/templates';
   const fakeTargetDir = '/fake/project';
 
@@ -14,7 +14,7 @@ describe('runInit()', () => {
   });
 
   it('crea el plan completo: 35 copy + 1 create + 8 mkdir', () => {
-    const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
+    const intentions = runScaffold({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
 
     const mkdirIntentions = intentions.filter(i => i.action === 'mkdir');
     const copyIntentions = intentions.filter(i => i.action === 'copy');
@@ -26,7 +26,7 @@ describe('runInit()', () => {
   });
 
   it('incluye los 3 root files con rutas correctas (sin canvases — van a docs/funky-ai/canvas/)', () => {
-    const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
+    const intentions = runScaffold({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
 
     expect(intentions).toContainEqual({
       action: 'copy',
@@ -46,13 +46,13 @@ describe('runInit()', () => {
       dest: path.join(fakeTargetDir, 'TEMPLATE_GUIDE.md'),
     });
 
-    // Canvases are NOT copied by runInit — they're created in docs/funky-ai/canvas/ by init command action
+    // Canvases are NOT copied by runScaffold — they're created in docs/funky-ai/canvas/ by init command action
     expect(intentions.filter(i => String(i.src || '').includes('PROJECT-CANVAS.md'))).toHaveLength(0);
     expect(intentions.filter(i => String(i.src || '').includes('INFRA-CANVAS.md'))).toHaveLength(0);
   });
 
   it('copia funky-ai-rules/ a .agents/rules/ con rutas correctas', () => {
-    const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
+    const intentions = runScaffold({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
 
     expect(intentions).toContainEqual({
       action: 'copy',
@@ -74,7 +74,7 @@ describe('runInit()', () => {
   });
 
   it('copia sdd/ a .agents/templates/sdd/', () => {
-    const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
+    const intentions = runScaffold({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
 
     expect(intentions).toContainEqual({
       action: 'copy',
@@ -90,7 +90,7 @@ describe('runInit()', () => {
   });
 
   it('inyecta 000-rfc-template.md a openspec/rfcs/ como excepción', () => {
-    const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
+    const intentions = runScaffold({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
 
     expect(intentions).toContainEqual({
       action: 'copy',
@@ -100,7 +100,7 @@ describe('runInit()', () => {
   });
 
   it('crea el directorio docs-index/ vacío en .agents/templates/sdd/', () => {
-    const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
+    const intentions = runScaffold({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
 
     expect(intentions).toContainEqual({
       action: 'mkdir',
@@ -109,7 +109,7 @@ describe('runInit()', () => {
   });
 
   it('genera docs-live-index.md en .agents/templates/sdd/ con el header correcto', () => {
-    const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
+    const intentions = runScaffold({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
 
     expect(intentions).toContainEqual({
       action: 'create',

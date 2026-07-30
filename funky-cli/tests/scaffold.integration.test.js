@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import fs from 'fs';
 import path from 'path';
-import { runInit } from '../src/commands/init.js';
+import { runScaffold } from '../src/commands/scaffold.js';
 import { executeIntentions } from '../src/utils/fs-adapter.js';
 
-describe('runInit() Integration', () => {
+describe('runScaffold() Integration', () => {
   const tmpDir = path.join(process.cwd(), 'tmp-integration');
   const templatesDir = path.join(process.cwd(), 'src/templates/bootstrap');
 
@@ -22,7 +22,7 @@ describe('runInit() Integration', () => {
   });
 
   it('NO debería copiar PROJECT-CANVAS.md desde bootstrap (va a docs/funky-ai/canvas/ via init command)', () => {
-    const intentions = runInit({ templatesDir, targetBase: tmpDir });
+    const intentions = runScaffold({ templatesDir, targetBase: tmpDir });
     const result = executeIntentions(intentions);
 
     const canvasPath = path.join(tmpDir, 'PROJECT-CANVAS.md');
@@ -31,7 +31,7 @@ describe('runInit() Integration', () => {
   });
 
   it('debería copiar ORCHESTRATOR-STATE.md como root file', () => {
-    const intentions = runInit({ templatesDir, targetBase: tmpDir });
+    const intentions = runScaffold({ templatesDir, targetBase: tmpDir });
     const result = executeIntentions(intentions);
 
     const statePath = path.join(tmpDir, 'ORCHESTRATOR-STATE.md');
@@ -48,7 +48,7 @@ describe('runInit() Integration', () => {
     const statePath = path.join(tmpDir, 'ORCHESTRATOR-STATE.md');
     fs.writeFileSync(statePath, 'CONTENIDO ORIGINAL DEL USUARIO');
 
-    const intentions = runInit({ templatesDir, targetBase: tmpDir });
+    const intentions = runScaffold({ templatesDir, targetBase: tmpDir });
     const result = executeIntentions(intentions);
 
     const content = fs.readFileSync(statePath, 'utf8');

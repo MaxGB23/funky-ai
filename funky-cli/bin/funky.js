@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
 import { initCommand } from '../src/commands/init.js';
+import { scaffoldCommand } from '../src/commands/scaffold.js';
 import { assessCommand } from '../src/commands/assess.js';
 import { featureCommand } from '../src/commands/feature.js';
 import { estimateCommand } from '../src/commands/estimate.js';
@@ -15,6 +16,7 @@ program
   .version('1.0.0');
 
 program.addCommand(initCommand);
+program.addCommand(scaffoldCommand);
 program.addCommand(assessCommand);
 program.addCommand(featureCommand);
 program.addCommand(estimateCommand);
