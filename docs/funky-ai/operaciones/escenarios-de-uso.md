@@ -54,7 +54,7 @@ funky init
 ✅ Creado: INFRA-CANVAS.md
 ✅ Creado: canvas-planning-guide.md
 
-📘 Canvases generados. Completalos y ejecuta `funky init --bootstrap`.
+📘 Canvases generados. Ejecuta `funky scaffold`.
 ```
 
 ---
@@ -89,21 +89,21 @@ funky assess
 
 **Paso 1.5 — Inicializa el ecosistema completo**
 
-Con los Canvas llenos, ejecuta `--bootstrap` para copiar toda la estructura del ecosistema Funky AI:
+Con los Canvas llenos, ejecuta `funky scaffold` para copiar toda la estructura del ecosistema Funky AI:
 
 ```bash
-funky init --bootstrap
+funky scaffold
 ```
 
 **Output esperado:**
 ```
-🚀 Inicializando estructura completa del ecosistema...
+🚀 Instalando estructura Funky AI...
 ✅ Creado: .agents/rules/engram-protocol.md
 ✅ Creado: .agents/rules/secops.md
 ✅ Creado: .agents/rules/secops-setup.md
 ✅ Creado: .agents/rules/sdd-orchestrator.md
 ... (~20 archivos/directorios)
-✅ Funky AI inicializado.
+✅ Funky AI instalado.
 ```
 
 **✅ Criterio de salida:** Tienes el ecosistema completo.
@@ -124,7 +124,7 @@ O si prefieres orquestar assess + estimate en secuencia:
 funky pipeline all
 ```
 
-✅ **Criterio de salida:** Puedes hacer el primer commit y arrancar con `funky phase explore`.
+✅ **Criterio de salida:** Puedes hacer el primer commit y arrancar con SDD usando `funky feature`.
 
 ---
 
@@ -146,9 +146,9 @@ funky init
 
 El CLI genera `PROJECT-CANVAS.md` e `INFRA-CANVAS.md` con placeholders guía, más `canvas-planning-guide.md` como referencia.
 
-> 💡 **Nota:** No hay prompts interactivos. `funky init` genera los canvases vacíos. Cuando estén llenos, ejecuta `funky init --bootstrap` para copiar toda la estructura Funky AI.
+> 💡 **Nota:** No hay prompts interactivos. `funky init` genera los canvases vacíos. Cuando estén llenos, ejecuta `funky scaffold` para copiar toda la estructura Funky AI.
 
-**✅ Criterio de salida:** Tienes los canvases llenos. Ejecuta `funky init --bootstrap` para el ecosistema completo, luego primer commit y al flujo SDD.
+**✅ Criterio de salida:** Tienes los canvases llenos. Ejecuta `funky scaffold` para el ecosistema completo, luego primer commit y al flujo SDD.
 
 ---
 
@@ -158,7 +158,7 @@ El CLI genera `PROJECT-CANVAS.md` e `INFRA-CANVAS.md` con placeholders guía, m�
 git add -A
 git commit -m "chore: init funky ai ecosystem"
 git checkout -b feature/nombre-de-la-primera-feature
-funky phase explore    # → genera sdd-explore.md
+funky feature nombre-de-la-feature    # → scaffolding de feature SDD
 ```
 
 ---
@@ -197,15 +197,15 @@ No estás decidiendo — estás documentando lo que ya existe. Cada campo del Ca
 
 **Paso 3.3 — Inicializa el ecosistema completo**
 
-Con los canvases llenos, ejecuta `--bootstrap` para copiar la estructura Funky AI sin sobrescribir archivos existentes:
+Con los canvases llenos, ejecuta `funky scaffold` para copiar la estructura Funky AI sin sobrescribir archivos existentes:
 
 ```bash
-funky init --bootstrap
+funky scaffold
 ```
 
 > ⚠️ **Migración Legacy:** Si solo existe `PROJECT-CANVAS.md` pero no `INFRA-CANVAS.md` (proyecto pre-v1.7), el CLI genera automáticamente `INFRA-CANVAS.md` con una advertencia de migración en el encabezado. Completa los campos de infra antes de continuar.
 
-**✅ Criterio de salida:** El ecosistema Funky AI está activo sobre tu repo existente. Puedes empezar a usar `funky phase` para planificar la próxima feature.
+**✅ Criterio de salida:** El ecosistema Funky AI está activo sobre tu repo existente. Puedes empezar a usar `funky feature` para planificar la próxima feature.
 
 ---
 
@@ -213,9 +213,9 @@ funky init --bootstrap
 
 | Anti-patron | Por que es un problema |
 |---|---|
-| Ejecutar `funky init --bootstrap` sin haber llenado los Canvas | ✅ Válido — instala el framework sin canvases. Si después querés los canvases, ejecutá `funky init` y luego `funky init --bootstrap` de nuevo (es idempotente) |
+| Ejecutar `funky scaffold` sin haber llenado los Canvas | ✅ Válido — instala el framework sin canvases. Si después querés los canvases, ejecutá `funky init` y luego `funky scaffold` de nuevo (es idempotente) |
 | Saltear `funky init` y llenar los Canvas directamente en el editor | Sin la `canvas-planning-guide.md` como referencia, se omiten campos o se usan valores invalidos |
-| Ejecutar `funky init --bootstrap` dos veces sin cambios | Es idempotente, no causa dano pero tampoco avanza |
+| Ejecutar `funky scaffold` dos veces sin cambios | Es idempotente, no causa dano pero tampoco avanza |
 | Ejecutar `funky estimate` sin haber corrido `funky assess` antes | El pricing no tendrá contexto de decisiones arquitectónicas — se genera igual pero con contenido parcial |
 | Ejecutar `funky assess` con canvases incompletos | El CLI advierte pero continúa — la guía se genera con contenido parcial |
 

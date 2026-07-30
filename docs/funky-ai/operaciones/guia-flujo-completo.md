@@ -8,8 +8,8 @@
 
 ```
 [Chat virgen]  →  exploración  →  funky init  →  llenar canvases
-                                          ↓
-                                    funky init --bootstrap
+                                           ↓
+                                      funky scaffold
                                           ↓
                               [funky assess (discusión arquitectónica)]
                                           ↓
@@ -184,7 +184,7 @@ funky init
 📘 Canvases generados. Completa docs/funky-ai/canvas/PROJECT-CANVAS.md
    y docs/funky-ai/canvas/INFRA-CANVAS.md usando
    docs/funky-ai/canvas/canvas-planning-guide.md como referencia.
-   Luego ejecuta `funky init --bootstrap` para inicializar el ecosistema completo.
+   Luego ejecuta `funky scaffold` para instalar el ecosistema completo.
 ```
 
 ### Paso 2.3 — Llenar los canvases (discusión con IA)
@@ -195,10 +195,10 @@ Usa `canvas-planning-guide.md` como referencia y completa PROJECT-CANVAS.md e IN
 
 ### Paso 2.4 — Inicializar el ecosistema completo
 
-Con los canvases llenos, ejecuta `--bootstrap` para copiar toda la estructura del ecosistema Funky AI:
+Con los canvases llenos, ejecuta `funky scaffold` para copiar toda la estructura del ecosistema Funky AI:
 
 ```bash
-funky init --bootstrap
+funky scaffold
 ```
 
 **Output esperado:**
@@ -376,7 +376,8 @@ Eliminá los archivos `sdd-*.md` del directorio raíz una vez mergeado. Son arte
 
 | Comando | ¿Cuándo usarlo? |
 |---------|-----------------|
-| `funky init` | Una sola vez al crear el proyecto. Sin flags genera canvases vacíos + guía; `--bootstrap` copia el ecosistema completo |
+| `funky init` | Una sola vez al crear el proyecto. Genera canvases vacíos + guía |
+| `funky scaffold` | Después de llenar los canvases — copia el ecosistema completo (reglas, templates, engram) |
 | `funky assess` | Después de llenar los canvases — facilita una discusión arquitectónica y genera template de decisiones |
 | `funky estimate` | Después del assess (o con canvases llenos) — facilita una sesión de pricing colaborativa |
 | `funky pipeline all` | Alternativa a ejecutar assess + estimate manualmente — los orquesta en secuencia con estado compartido |

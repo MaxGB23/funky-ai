@@ -22,7 +22,8 @@ pnpm link --global
 
 | Comando | Descripción | Ejemplo |
 |---------|-------------|---------|
-| `funky init` | Genera PROJECT-CANVAS.md e INFRA-CANVAS.md para iniciar la planificacion del proyecto. Usa `--bootstrap` para copiar toda la estructura del ecosistema Funky AI. | `funky init` -> genera canvases vacios + guia |
+| `funky init` | Genera PROJECT-CANVAS.md e INFRA-CANVAS.md para iniciar la planificacion del proyecto. | `funky init` -> genera canvases vacios + guia |
+| `funky scaffold` | Copia toda la estructura base del ecosistema Funky AI (reglas de agentes, ORCHESTRATOR-STATE, plantillas SDD, directorios engram). | `funky scaffold` -> ecosistema completo |
 | `funky estimate` | Facilita una sesión de pricing colaborativa humano+IA. Inyecta una guía de discusión basada en decisiones arquitectónicas y canvases del proyecto, más un template para documentar acuerdos. Sin fórmulas hardcodeadas. | `funky estimate` -> guía de pricing + prompt IA + template de decisiones |
 | `funky pipeline` | Orquesta el flujo unificado `assess → estimate` con estado compartido vía `context.json`. Subcomandos: `assess`, `estimate`, `all`, `status`. | `funky pipeline all` -> assess → estimate secuencial |
 | `funky feature <nombre>` | Inicializa el scaffolding para una feature SDD en `openspec/changes/<nombre>`. Ejecuta 3 inquirers interactivos (Tier T1/T2/T3, docs core, tipo de release) para inyectar condicionalmente solo los templates necesarios según la matriz de inyección. `docs.md` y `release.md` se inyectan solo si corresponde. T1 nunca recibe `release.md`. | `funky feature auth` → prompts → "🚀 Scaffolding de feature creado... Archivos inyectados: 8 — tasks.md, ..." |
@@ -44,8 +45,8 @@ pnpm link --global
 
 ## Estructura generada por `funky init`
 
-`funky init` (sin flags) genera canvases en **`docs/funky-ai/canvas/`**.
-`funky init --bootstrap` copia toda la estructura del ecosistema. A continuación, la estructura completa post-bootstrap:
+`funky init` genera canvases en **`docs/funky-ai/canvas/`**.
+`funky scaffold` copia toda la estructura del ecosistema. A continuación, la estructura completa post-scaffold:
 
 ```text
 .

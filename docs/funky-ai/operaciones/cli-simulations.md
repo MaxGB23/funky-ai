@@ -5,7 +5,7 @@ A continuación se detallan los vectores de falla detectados durante auditorías
 ## Vector 1: ~~Sobreescritura Destructiva~~ [RESUELTO en v1.7.0]
 - **Simulación:** El usuario ya ejecutó `funky init`, llenó sus canvases con detalles importantes y vuelve a ejecutar `funky init`.
 - **Acción:** `funky init` detecta los archivos existentes.
-- **Resultado Actual:** ✅ El CLI frena con error — no sobreescribe nada. También aplica a `funky init --bootstrap` (cada archivo se verifica con `existsSync` antes de copiar).
+- **Resultado Actual:** ✅ El CLI frena con error — no sobreescribe nada. También aplica a `funky scaffold` (cada archivo se verifica con `existsSync` antes de copiar).
 - **Fix aplicado:** Validación de existencia de archivos previo a escritura. Resuelto en v1.7.0.
 
 ## Vector 2: Interrupción de UX (Ctrl+C en Prompts)
@@ -25,7 +25,7 @@ A continuación se detallan los vectores de falla detectados durante auditorías
 ## Vector 4: Flags Inválidos (`funky init` con archivo previo)
 - **Simulación:** El usuario ejecuta `funky init` pero ya tiene un `PROJECT-CANVAS.md` de otra iteración.
 - **Acción:** `funky init` detecta archivo existente.
-- **Resultado Actual:** ✅ Frena con código `1` y mensaje claro. En `--bootstrap` no aplica porque ahora instala el framework aunque no haya canvases.
+- **Resultado Actual:** ✅ Frena con código `1` y mensaje claro. En `funky scaffold` no aplica porque instala el framework aunque no haya canvases.
 - **Resultado Esperado (UX):** Correcto. No requiere fix.
 
 ## Vector 5: Fase Destructiva (`funky phase`)
