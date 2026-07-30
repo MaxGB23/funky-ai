@@ -80,10 +80,12 @@ Los canvases ahora son templates estáticos que `funky init` copia directamente.
 Candidatos según pendientes actuales:
 
 - [x] **Opción A: Eliminar comandos obsoletos** — `funky phase`, `funky gentle`, `funky release`, `planning-handoff.md`, y sus registros en `bin/funky.js`. Referencia: `sesion-pendientes.md` PASO 2.
-- [ ] **Opción B: Migrar `--bootstrap` a comando independiente** — separar la inyección del ecosistema de `funky init` para que sea `funky bootstrap` o similar.
+- [x] **Opción B: Migrar `--bootstrap` a comando independiente** — separar la inyección del ecosistema de `funky init` para que sea `funky bootstrap` o similar.
 - [x] **Opción C: EACCES handling** — manejar excepción de permisos en `init.js` con mensaje amigable en vez de stacktrace crudo (Vector 3 de cli-simulations.md).
 - [ ] **Opción D: Argentinismos** — limpiar voseo/imperativo en docs operativos (dejar solo gentle-ai-global.md).
 - [x] Verificar que todos los comandos salteen archivos existentes (no sobreescribir). `executeIntentions()` ya lo hace con `fs.existsSync(dest)`, pero revisar comando por comando que no haya `writeFileSync` directos sin check.
+- [ ] **Opción E: Revisión humana de documentación** — revisar toda la documentación por el humano para validar precisión, tono, y detección de referencias stale que la IA no pueda detectar.
+- [ ] **Opción F: Smoke test del flujo completo** — crear un test que ejecute `funky init` → llenar canvases → `funky scaffold` → `funky assess` → `funky estimate` en un repo temp vacío y verifique que cada comando produce los archivos esperados.
 
 
 ---
