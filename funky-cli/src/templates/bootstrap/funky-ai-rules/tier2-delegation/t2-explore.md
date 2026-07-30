@@ -23,7 +23,7 @@ trigger: manual
 > ## Documento fuente
 > - `[RFC_PATH], si no existe debes pasar contexto`
 > ## Template a seguir
-> - `docs/openspec/changes/[CHANGE]/explore.md` — Leer y usar `replace_file_content`. No sobreescribas desde cero.
+> - `openspec/changes/[CHANGE]/explore.md` — Leer y usar `replace_file_content`. No sobreescribas desde cero.
 > ## Tags de engram relevantes (opcional)
 > - Nombre: [Nombre]
 > - Descripción: [Descripción]
@@ -33,5 +33,5 @@ trigger: manual
 > **Qué**: [resumen]
 > **Dónde**: `PATH`
 > **Context Preservation**: [SÍ/NO]
-> **Artefacto generado en**: docs/openspec/changes/[CHANGE]/explore.md
+> **Artefacto generado en**: openspec/changes/[CHANGE]/explore.md
 > ```

@@ -115,7 +115,7 @@ Para el CLI: tests unitarios y de integración. Para el protocolo: simula un Orq
 ## Ejemplos Concretos: Del Parche al Enforcement
 
 ### ❌ Parche (lo que hemos hecho)
-> "El Orquestador omite el Tier en handoffs → Lo agregamos a la lista de anti-patrones en `guia-flujo-completo.md`."
+> "El Orquestador omite el Tier en handoffs → Lo agregamos a la lista de anti-patrones en `docs/funky-forge/guia-flujo-completo.md`."
 
 **Problema:** Esa guía existe desde v1.5. El anti-patrón estaba ahí. Lo ignoramos igual.
 

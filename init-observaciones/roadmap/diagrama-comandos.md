@@ -1,5 +1,10 @@
 # Diagrama de Responsabilidad de Comandos
 
+> ⚠️ **DEPRECATED** — Este documento ya no se actualiza. La documentación viva de comandos
+> se consolidó en `docs/funky-forge/command-flow.md` (resumen) y archivos individuales
+> (`init.md`, `assess.md`, `estimate.md`, `pipeline.md`). Los docs del framework están en
+> `docs/funky-ai/scaffold.md`, `docs/funky-ai/feature.md`, `docs/funky-ai/engram.md`.
+>
 > Generado: 2026-07-29 (actualizado Punto 4 — reorganización funky-pipeline/)
 > Propósito: Mapa visual de qué archivos inyecta o genera cada comando.
 > Formato: Árbol por comando para identificar rápidamente qué inyecta cada uno.

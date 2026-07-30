@@ -174,7 +174,7 @@ Cuando el Orquestador escribe el `tasks.md` y le asigna a una fase `Worker Tier:
 
 ## Archivos Relacionados
 
-- `docs/funky-ai/guias/comando-vs-archivos.md` — Qué archivos genera cada comando CLI
+- `docs/funky-forge/comando-vs-archivos.md` — Qué archivos genera cada comando CLI
 - `docs/funky-ai/guias/funky-ai.md` — Pilares del ecosistema y Tiers de complejidad
 - `.agents/rules/engram-protocol.md` — Schema de escritura de memoria persistente
 - `docs/engram/discoveries.md` → tag `[system-prompt-vs-chat-history]` — Descubrimiento que motivó esta arquitectura

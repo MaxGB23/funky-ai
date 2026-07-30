@@ -20,9 +20,9 @@ trigger: manual
 > ## Tarea
 > Genera la propuesta de cambio para "[CHANGE]".
 > ## Artefactos a leer
-> - `docs/openspec/changes/[CHANGE]/explore.md`, **Prohibido ignorar la sección "2. Context Preservation"**
+> - `openspec/changes/[CHANGE]/explore.md`, **Prohibido ignorar la sección "2. Context Preservation"**
 > ## Template a seguir
-> - `docs/openspec/changes/[CHANGE]/proposal.md` — Leer y usar `replace_file_content`.
+> - `openspec/changes/[CHANGE]/proposal.md` — Leer y usar `replace_file_content`.
 > ## Tags de engram (opcional)
 > - Nombre: [Nombre]
 > - Descripción: [Descripción]
@@ -32,5 +32,5 @@ trigger: manual
 > **Change**: [CHANGE]
 > **Summary**: [resumen]
 > **Risk Level**: [Low/Medium/High]
-> **Artefacto generado en**: docs/openspec/changes/[CHANGE]/proposal.md
+> **Artefacto generado en**: openspec/changes/[CHANGE]/proposal.md
 > ```

@@ -20,9 +20,9 @@ trigger: manual
 > ## Tarea
 > Genera las especificaciones del cambio para "[CHANGE]".
 > ## Artefactos a leer
-> - `docs/openspec/changes/[CHANGE]/proposal.md`
+> - `openspec/changes/[CHANGE]/proposal.md`
 > ## Template a seguir
-> - `docs/openspec/changes/[CHANGE]/spec.md` — Leer y usar `replace_file_content`.
+> - `openspec/changes/[CHANGE]/spec.md` — Leer y usar `replace_file_content`.
 > ## Tags de engram relevantes (opcional)
 > - Nombre: [Nombre]
 > - Descripción: [Descripción]
@@ -35,5 +35,5 @@ trigger: manual
 > | [domain] | [New/Delta] | [N] | [M] |
 > 
 > **Coverage**: happy paths ✅ / error states ⚠️ parcial
-> **Artefacto generado en**: docs/openspec/changes/[CHANGE]/spec.md
+> **Artefacto generado en**: openspec/changes/[CHANGE]/spec.md
 > ```

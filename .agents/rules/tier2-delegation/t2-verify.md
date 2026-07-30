@@ -20,8 +20,8 @@ trigger: manual
 > ## Tarea
 > Verifica que la implementación de "[CHANGE]" cumple con las especificaciones.
 > ## Artefactos a leer
-> - `docs/openspec/changes/[CHANGE]/spec.md`
-> - `docs/openspec/changes/[CHANGE]/tasks.md`
+> - `openspec/changes/[CHANGE]/spec.md`
+> - `openspec/changes/[CHANGE]/tasks.md`
 > ## Tags de engram relevantes (opcional)
 > - Nombre: [Nombre]
 > - Descripción: [Descripción]

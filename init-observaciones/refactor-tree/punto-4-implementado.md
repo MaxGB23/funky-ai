@@ -91,7 +91,7 @@ docs/funky-ai/
 - `pipeline estimate`: lee canvases desde `docs/funky-ai/canvas/`, decisions desde `docs/funky-ai/assess/`, no desde context.json
 - `context.json` solo trackea qué fases se ejecutaron y cuándo
 
-> 📖 Explicación detallada de context.json, el flag `--context` y escenarios de uso en [punto-4-context-json.md](./punto-4-context-json.md)
+> 📖 Explicación detallada de context.json, el flag `--context` y escenarios de uso en [punto-4-context-json.md](./punto-4-context-json-implementado.md)
 
 ---
 
