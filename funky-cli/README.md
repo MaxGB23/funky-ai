@@ -20,61 +20,70 @@ pnpm link --global
 
 ## Comandos
 
-| Comando | Descripción | Ejemplo |
-|---------|-------------|---------|
-| `funky init` | Genera PROJECT-CANVAS.md e INFRA-CANVAS.md para iniciar la planificacion del proyecto. | `funky init` -> genera canvases vacios + guia |
-| `funky scaffold` | Copia toda la estructura base del ecosistema Funky AI (reglas de agentes, ORCHESTRATOR-STATE, plantillas SDD, directorios engram). | `funky scaffold` -> ecosistema completo |
-| `funky estimate` | Facilita una sesión de pricing colaborativa humano+IA. Inyecta una guía de discusión basada en decisiones arquitectónicas y canvases del proyecto, más un template para documentar acuerdos. Sin fórmulas hardcodeadas. | `funky estimate` -> guía de pricing + prompt IA + template de decisiones |
-| `funky pipeline` | Orquesta el flujo unificado `assess → estimate` con estado compartido vía `context.json`. Subcomandos: `assess`, `estimate`, `all`, `status`. | `funky pipeline all` -> assess → estimate secuencial |
-| `funky feature <nombre>` | Inicializa el scaffolding para una feature SDD en `openspec/changes/<nombre>`. Ejecuta 3 inquirers interactivos (Tier T1/T2/T3, docs core, tipo de release) para inyectar condicionalmente solo los templates necesarios según la matriz de inyección. `docs.md` y `release.md` se inyectan solo si corresponde. T1 nunca recibe `release.md`. | `funky feature auth` → prompts → "🚀 Scaffolding de feature creado... Archivos inyectados: 8 — tasks.md, ..." |
-| `funky gentle <nombre>` | Inicializa el scaffolding de **Tier 4 Deep SDD** en `openspec/gentle/<nombre>`. Genera los 7 templates de roles aislados (Explorer → Verifier) para tareas hipercríticas. | `funky gentle db-migration` -> "🚀 Scaffolding de Tier 4 Deep SDD creado..." |
-| `funky phase <nombre>` | Inyecta el template correspondiente a la fase SDD indicada en el directorio activo. | `funky phase explore` -> "📄 Template 'explore' inyectado!" |
-| `funky release <version>` | Genera las notas de release estandarizadas automáticamente basándose en templates. | `funky release v1.12.0` -> "🚀 Release Notes v1.12.0 creados" |
-| `funky assess` | Facilita una sesión de discusión arquitectónica entre el equipo humano y la IA. Inyecta una guía de discusión basada en PROJECT-CANVAS e INFRA-CANVAS con preguntas C1/C2, más un template para documentar decisiones. Sin reglas estáticas, nunca falla. | `funky assess` -> guía de discusión + template de decisiones |
-| `funky engram add` | Inyecta un nuevo engrama al sistema de conocimiento persistente. Soporta entrada interactiva (sin flags) y flags directos para automatizacion. | `funky engram add --tag "[mi-tag]" --category discovery --desc "..."` |
+| Comando | Descripción |
+|---------|-------------|
+| `funky init` | Genera PROJECT-CANVAS.md e INFRA-CANVAS.md en `docs/funky-ai/canvas/` para iniciar la planificación del proyecto. |
+| `funky scaffold` | Copia la estructura base del ecosistema Funky AI: reglas de agentes (.agents/rules/), templates SDD (.agents/templates/sdd/), ORCHESTRATOR-STATE.md, directorios engram (docs/engram/) y el template de RFC (openspec/rfcs/). |
+| `funky assess` | Facilita una sesión de discusión arquitectónica humano+IA. Inyecta una guía de discusión basada en PROJECT-CANVAS e INFRA-CANVAS con preguntas C1/C2, más un template para documentar decisiones. Genera `docs/funky-ai/assess/architecture-review.md`. |
+| `funky estimate` | Facilita una sesión de pricing colaborativa humano+IA. Inyecta una guía de discusión basada en decisiones arquitectónicas y canvases, más un template para documentar acuerdos. Sin fórmulas hardcodeadas. Genera `docs/funky-ai/estimate/pricing-guide.md`. |
+| `funky pipeline` | Orquesta el flujo unificado `assess → estimate` con estado compartido vía `context.json`. Subcomandos: `assess`, `estimate`, `all`, `status`. |
+| `funky feature <nombre>` | Inicializa el scaffolding de una feature SDD en `openspec/changes/<nombre>`. Ejecuta inquirers interactivos (Tier T1/T2/T3, docs core, tipo de release) e inyecta condicionalmente los templates según la matriz: T1 → tasks + report; T2 → tasks + report + explore + proposal + spec + (docs opcional) + release; T3 → tasks + (docs opcional) + release. |
+| `funky engram add` | Inyecta un nuevo engrama al sistema de conocimiento persistente. Soporta entrada interactiva (sin flags) y flags directos (`--tag`, `--category`, `--desc`). En modo standalone inyecta la regla `engram-protocol.md` en `.agents/rules/` si falta. |
 
-## Fases SDD Disponibles
+## Templates SDD Disponibles
 
-| Fase | Archivo Inyectado | Cuándo usarlo |
-|------|-------------------|---------------|
-| `explore` | `explore.md` | Cuando el problema no está claro. Para evaluar opciones arquitectónicas con sus pros/contras antes de proponer una solución. |
-| `proposal` | `proposal.md` | Cuando ya se eligió una opción arquitectónica. Define el scope, las decisiones técnicas concretas y los riesgos. |
-| `tasks` | `tasks.md` | Al aprobar una propuesta. Desglosa la solución en fases ejecutables con checklists precisos para humanos y workers. |
-| `worker-handoff` | `worker-handoff.md` | Al delegar una fase del `tasks.md` a un Worker LLM. Contiene inyección de contexto (Safe-Contexting), misión y reglas estrictas. |
-| `report` | `report.md` | Al finalizar un Worker Handoff. Resume archivos modificados, bugs encontrados y los próximos pasos. |
+| Template | Cuándo se usa |
+|----------|---------------|
+| `explore.md` | Cuando el problema no está claro; evalúa opciones arquitectónicas con pros/contras. |
+| `proposal.md` | Cuando se eligió una opción arquitectónica; define scope, decisiones técnicas y riesgos. |
+| `spec.md` | Especificación detallada de requisitos del cambio. |
+| `tasks.md` | Desglose de la solución en fases ejecutables con checklists. |
+| `report.md` | Reporte de ejecución: archivos modificados, bugs encontrados, próximos pasos. |
+| `release-checklist.md` / `release-notes.md` | Notas y checklist de release (inyectados por `funky feature` en T2/T3). |
+| `docs.md` | Documentación de feature (inyectado solo si el cambio afecta docs). |
 
-## Estructura generada por `funky init`
+## Estructura generada por `funky init` y `funky scaffold`
 
-`funky init` genera canvases en **`docs/funky-ai/canvas/`**.
-`funky scaffold` copia toda la estructura del ecosistema. A continuación, la estructura completa post-scaffold:
+`funky init` genera los canvases en **`docs/funky-ai/canvas/`**.
+`funky scaffold` copia toda la estructura base del ecosistema. A continuación, la estructura completa post-init + post-scaffold:
 
 ```text
-.
-├── ORCHESTRATOR-STATE.md        (Estado global del proyecto)
-├── TEMPLATE_GUIDE.md            (Guía de uso de templates)
-├── README.md                    (README del proyecto)
+proyecto/
+├── ORCHESTRATOR-STATE.md
+├── TEMPLATE_GUIDE.md
+├── README.md
 ├── .agents/
 │   ├── rules/
-│   │   ├── engram-protocol.md   (Protocolo de memoria Engram)
-│   │   ├── secops.md            (Reglas de seguridad)
-│   │   └── sdd-orchestrator.md  (Reglas de orquestación SDD)
-│   └── templates/sdd/           (Templates SDD)
-└── docs/
-    ├── engram/                  (Memoria persistente sharded)
-    ├── funky-ai/
-    │   ├── canvas/              ← funky init
-    │   │   ├── PROJECT-CANVAS.md     (Canvas Core: Framework, Arquitectura, Testing)
-    │   │   ├── INFRA-CANVAS.md       (Canvas Operacional: DB, Auth, Deployment)
-    │   │   └── canvas-planning-guide.md
-    │   ├── assess/              ← funky assess
-    │   │   ├── architecture-review.md
-    │   │   └── architecture-decisions.md
-    │   ├── estimate/            ← funky estimate
-    │   │   ├── pricing-guide.md
-    │   │   └── pricing-decisions.md
-    │   └── pipeline/            ← funky pipeline
-    │       └── context.json
-    └── openspec/
-        └── rfcs/
-            └── 000-TEMPLATE.md  (Template de RFC)
+│   │   ├── engram-protocol.md
+│   │   ├── sdd-escalation-matrix.md
+│   │   ├── sdd-orchestrator.md
+│   │   ├── sdd-preflight.md
+│   │   ├── secops.md
+│   │   ├── tier1-router.md
+│   │   ├── tier2-router.md
+│   │   ├── tier3-router.md
+│   │   ├── tier2-delegation/        (t2-archive, t2-explore, t2-propose, t2-spec, t2-tasks, t2-verify)
+│   │   └── tier3-interactive/       (interactive-apply, interactive-archive, interactive-design, ...)
+│   └── templates/sdd/
+│       ├── docs.md, explore.md, proposal.md, spec.md, tasks.md
+│       ├── report.md, release-checklist.md, release-notes.md
+│       └── docs-index/
+├── docs/
+│   ├── funky-ai/
+│   │   ├── canvas/                  ← funky init
+│   │   │   ├── PROJECT-CANVAS.md
+│   │   │   ├── INFRA-CANVAS.md
+│   │   │   └── canvas-planning-guide.md
+│   │   ├── assess/                  ← funky assess
+│   │   │   └── architecture-review.md
+│   │   ├── estimate/                ← funky estimate
+│   │   └── pipeline/                ← funky pipeline
+│   │       └── context.json
+│   └── engram/                      ← funky scaffold
+│       ├── index.md
+│       ├── architecture/  pattern/  discovery/
+│       ├── decision/  bugfix/  session/  release/
+└── openspec/
+    └── rfcs/
+        └── 000-rfc-template.md      ← funky scaffold
 ```

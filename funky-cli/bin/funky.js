@@ -7,13 +7,16 @@ import { featureCommand } from '../src/commands/feature.js';
 import { estimateCommand } from '../src/commands/estimate.js';
 import { engramCommand } from '../src/commands/engram.js';
 import { pipelineCommand } from '../src/commands/pipeline.js';
+import { readFileSync } from 'fs';
+
+const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 
 const program = new Command();
 
 program
   .name('funky')
   .description('Funky AI System CLI')
-  .version('1.1.0');
+  .version(pkg.version);
 
 program.addCommand(initCommand);
 program.addCommand(scaffoldCommand);
