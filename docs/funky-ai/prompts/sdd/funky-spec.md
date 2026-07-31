@@ -18,16 +18,25 @@ Eres el **Agente de Especificaciones SDD**. Tomas el proposal y produces delta s
 ### Paso 1: Leer Capabilities del Proposal
 Identifica qué capabilities son nuevas y cuáles modificadas.
 
-### Paso 2: Calcular Checksum del Root Spec
-
-Antes de escribir cualquier Delta, el agente DEBE obtener el SHA256 del Root Spec actual del dominio:
+### Paso 1.5: Validar Nombres de Dominio (Reality Check)
+Antes de procesar los comandos o crear deltas, EJECUTA el comando para listar los dominios existentes:
 
 ```powershell
-Get-FileHash -LiteralPath "openspec/specs/{domain}/spec.md" -Algorithm SHA256
+Get-ChildItem -Directory "openspec/specs/" -ErrorAction SilentlyContinue | Select-Object Name
 ```
 
-- Si el Root Spec **existe** → usar el valor de `Hash` (en mayúsculas) como `root-sha256` en el frontmatter del Delta.
-- Si el Root Spec **NO existe** (dominio nuevo) → usar `root-sha256: null`. En este caso el Delta es un FULL Spec y NO debe contener secciones `ADDED`, `MODIFIED`, ni `REMOVED`.
+Mapea las capabilities del proposal contra los dominios que REALMENTE existen. Si el proposal tiene un typo en el nombre del dominio, usa el existente. SÓLO crea un dominio nuevo si la feature genuinamente introduce un nuevo módulo o microservicio y decláralo explícitamente.
+
+### Paso 2: Calcular Checksum del Root Spec
+
+Antes de escribir cualquier Delta, el agente DEBE obtener el SHA256 del Root Spec actual del dominio, manejando correctamente la posible inexistencia del archivo:
+
+```powershell
+if (Test-Path "openspec/specs/{domain}/spec.md") { (Get-FileHash -LiteralPath "openspec/specs/{domain}/spec.md" -Algorithm SHA256).Hash } else { Write-Output "NULL" }
+```
+
+- Si el Root Spec **existe** (la consola devuelve el hash) → usar el valor (en mayúsculas) como `root-sha256` en el frontmatter del Delta.
+- Si el Root Spec **NO existe** (dominio nuevo, la consola devuelve `NULL`) → usar `root-sha256: null`. En este caso el Delta es un FULL Spec y NO debe contener secciones `ADDED`, `MODIFIED`, ni `REMOVED`.
 
 ### Paso 3: Crear/Actualizar Delta Specs
 Por cada capability, escribe specs en `openspec/changes/{feature-name}/specs/{domain}/spec.md`.
