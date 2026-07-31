@@ -58,7 +58,7 @@ Para entender cuándo usar cada comando forge, ver [`docs/funky-forge/command-fl
 
 ## 🧩 Dos dominios, un CLI
 
-### funky-ai — Framework agéntico para Antigravity (CLI / IDE)
+### funky-ai — Framework SDD agéntico para Antigravity (CLI / IDE)
 
 Instala y gestiona el ecosistema de reglas, templates y memoria que los agentes de IA necesitan para operar.
 
@@ -85,23 +85,26 @@ Docs completos: [`docs/funky-forge/`](docs/funky-forge/)
 
 ---
 
-## 🏛️ Tiers de Orquestación (SDD)
+## 🏛️ Arquitectura SDD (Spec Driven Development)
 
-Para el flujo SDD, Funky AI categoriza las tareas por impacto, aprovechando la **Carga JIT (Just-In-Time) de contexto**:
+Funky AI orquesta el desarrollo de software aprovechando una **Carga JIT (Just-In-Time) de contexto**. Escala dinámicamente desde tareas ultrarrápidas (Tier 1) hasta rediseños arquitectónicos completos orquestados por Subagentes Nativos aislados (Tier 3).
+
+### Tiers de Orquestación
 
 | Tier | Escala | Flujo |
 |------|--------|-------|
-| **T1 (Flash)** | 1-2 archivos, fixes rápidos | Tasks inline → Ejecución vía Worker. Sin templates. |
-| **T2 (Standard)** | 3-5 archivos, features regulares | Delegación estricta vía templates inyectables directos (ej. `t2-explore.md`). |
-| **T3 (Insano 👻)** | Refactors complejos | SDD profundo con **Subagentes Nativos** (aislados, no contaminan el contexto global). |
+| **T1 (Flash)** | 1-2 archivos | Fixes rápidos. Tasks inline → Ejecución vía Worker. |
+| **T2 (Standard)** | 3-5 archivos | Features regulares. Delegación vía templates inyectables. |
+| **T3 (Insano 👻)** | Refactors complejos | Flujo profundo con Subagentes Nativos aislados. |
 
-### 🤖 Modos de Ejecución (Subagentes)
+### Modos de Ejecución
 
-El framework soporta 3 modos de operación para adaptarse a tus herramientas:
+- **Interactivo:** Pausa entre fases para revisión humana. Entra en estado *Idle* para recibir feedback sin reiniciar contexto.
+- **Auto:** Flujo continuo (pide validación humana antes de modificar código).
+- **Handoff (Legacy IDE):** Genera un bloque copy-paste para inyectarlo manualmente en el IDE si no hay soporte de subagentes nativos.
 
-- **Interactivo:** El subagente pausa entre fases para revisión humana. Entra en estado *Idle* para recibir feedback sin gastar tokens en re-inicializarse.
-- **Auto:** Flujo continuo e ininterrumpido (excepto antes de modificar código, donde siempre pide validación).
-- **Handoff (Legacy IDE):** Si tu IDE no soporta llamadas nativas a subagentes, el Orquestador genera un bloque de texto estricto. Tú lo copias, lo pegas en un nuevo chat, y la magia continúa sin romper la cadena.
+> 👉 **[Arquitectura completa de SDD (Tiers y Modos)](docs/funky-ai/conceptos/arquitectura-sdd.md)**
+> 👉 **[Reglas del Orquestador](docs/funky-ai/conceptos/orquestador-sdd.md)**
 ---
 
 ## 📚 Referencias
@@ -112,7 +115,8 @@ El framework soporta 3 modos de operación para adaptarse a tus herramientas:
 | Cómo planear un proyecto (init, assess, estimate) | [`docs/funky-forge/command-flow.md`](docs/funky-forge/command-flow.md) |
 | Cómo crear features SDD por tier | [`docs/funky-ai/feature.md`](docs/funky-ai/feature.md) |
 | Cómo capturar conocimiento (standalone o con scaffold) | [`docs/funky-ai/engram.md`](docs/funky-ai/engram.md) |
-| Conceptos del framework | [`docs/funky-ai/conceptos/`](docs/funky-ai/conceptos/) |
+| Conceptos del framework y Orquestador | [`docs/funky-ai/conceptos/`](docs/funky-ai/conceptos/) |
+| Guía de Operación para el Equipo | [`docs/funky-ai/guias/funky-ai-team-guide.md`](docs/funky-ai/guias/funky-ai-team-guide.md) |
 | Base de conocimiento del proyecto | [`docs/engram/index.md`](docs/engram/index.md) |
 | Releases y retrospectivas | [`docs/funky-ai/releases/`](docs/funky-ai/releases/) |
 | Mapa completo del repo | [`docs/repo-map.md`](docs/repo-map.md) |
