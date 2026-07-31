@@ -1,6 +1,18 @@
-# 👻 Funky AI v3.1.0
+<div align="center">
+  <h1>👻 Funky AI</h1>
+  <p><strong>v3.1.0</strong></p>
+  <p>
+    <em>CLI que unifica la instalación de reglas agénticas, templates SDD, y tools de planeación de proyecto asistida con IA.</em>
+  </p>
+  <p>
+    <a href="https://github.com/MaxGB23/funky-ai/actions"><img src="https://img.shields.io/github/actions/workflow/status/MaxGB23/funky-ai/ci.yml?branch=main&style=for-the-badge&logo=github" alt="Build Status"></a>
+    <a href="https://github.com/MaxGB23/funky-ai/blob/main/LICENSE"><img src="https://img.shields.io/github/license/MaxGB23/funky-ai?style=for-the-badge&color=blue" alt="License"></a>
+    <img src="https://img.shields.io/node/v/funky-ai?style=for-the-badge&logo=nodedotjs" alt="Node version">
+  </p>
+</div>
 
-CLI que unifica la instalación de reglas agénticas, templates SDD, y tools de planeación de proyecto asistida con IA.
+---
+
 
 ```
 funky-cli/
@@ -47,7 +59,7 @@ Para entender cuándo usar cada comando forge, ver [`docs/funky-forge/command-fl
 
 ## 🧩 Dos dominios, un CLI
 
-### funky-ai — Framework agéntico
+### funky-ai — Framework agéntico para Antigravity (CLI / IDE)
 
 Instala y gestiona el ecosistema de reglas, templates y memoria que los agentes de IA necesitan para operar.
 
@@ -76,14 +88,21 @@ Docs completos: [`docs/funky-forge/`](docs/funky-forge/)
 
 ## 🏛️ Tiers de Orquestación (SDD)
 
-Para el flujo SDD, Funky AI categoriza las tareas por impacto:
+Para el flujo SDD, Funky AI categoriza las tareas por impacto, aprovechando la **Carga JIT (Just-In-Time) de contexto**:
 
 | Tier | Escala | Flujo |
 |------|--------|-------|
-| **T1 (Flash)** | 1-2 archivos, fixes rápidos | Tasks inline → ejecución directa |
-| **T2 (Standard)** | 3-5 archivos, features regulares | Delegación vía templates inyectables |
-| **T3 (Deep)** | Refactors complejos | SDD completo con subagentes nativos |
+| **T1 (Flash)** | 1-2 archivos, fixes rápidos | Tasks inline → Ejecución vía Worker. Sin templates. |
+| **T2 (Standard)** | 3-5 archivos, features regulares | Delegación estricta vía templates inyectables directos (ej. `t2-explore.md`). |
+| **T3 (Insano 👻)** | Refactors complejos | SDD profundo con **Subagentes Nativos** (aislados, no contaminan el contexto global). |
 
+### 🤖 Modos de Ejecución (Subagentes)
+
+El framework soporta 3 modos de operación para adaptarse a tus herramientas:
+
+- **Interactivo:** El subagente pausa entre fases para revisión humana. Entra en estado *Idle* para recibir feedback sin gastar tokens en re-inicializarse.
+- **Auto:** Flujo continuo e ininterrumpido (excepto antes de modificar código, donde siempre pide validación).
+- **Handoff (Legacy IDE):** Si tu IDE no soporta llamadas nativas a subagentes, el Orquestador genera un bloque de texto estricto. Tú lo copias, lo pegas en un nuevo chat, y la magia continúa sin romper la cadena.
 ---
 
 ## 📚 Referencias
@@ -99,6 +118,3 @@ Para el flujo SDD, Funky AI categoriza las tareas por impacto:
 | Releases y retrospectivas | [`docs/funky-ai/releases/`](docs/funky-ai/releases/) |
 | Mapa completo del repo | [`docs/repo-map.md`](docs/repo-map.md) |
 
----
-
-> **🛡️ CI Status:** ![CI](https://github.com/MaxGB23/funky-ai/actions/workflows/ci.yml/badge.svg)
