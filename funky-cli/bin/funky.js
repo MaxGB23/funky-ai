@@ -13,7 +13,7 @@ const program = new Command();
 program
   .name('funky')
   .description('Funky AI System CLI')
-  .version('1.0.0');
+  .version('1.1.0');
 
 program.addCommand(initCommand);
 program.addCommand(scaffoldCommand);
