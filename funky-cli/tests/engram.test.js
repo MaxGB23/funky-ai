@@ -144,16 +144,18 @@ describe('runEngramAdd() — unit (fs mocked)', () => {
     expect(updatedIndex).toContain('architecture/sin-index.md');
   });
 
-  it('no llama a mkdirSync si el directorio ya existe', async () => {
+  it('no llama a mkdirSync si los directorios ya existen', async () => {
     const tag = '[dir-existe]';
     const category = 'pattern';
     const desc = 'Dir ya existe';
     const engramDir = path.join(fakeCwd, 'docs', 'engram', category);
     const indexPath = path.join(fakeCwd, 'docs', 'engram', 'index.md');
+    const rulesFile = path.join(fakeCwd, '.agents', 'rules', 'engram-protocol.md');
 
     fs.existsSync.mockImplementation((p) => {
       if (p === engramDir) return true;
       if (p === indexPath) return true;
+      if (p === rulesFile) return true; // ya existe → salta el bloque de auto-inject
       return false;
     });
     fs.mkdirSync.mockImplementation(() => {});
