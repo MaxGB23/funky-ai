@@ -7,7 +7,6 @@
   <p>
     <a href="https://github.com/MaxGB23/funky-ai/actions"><img src="https://img.shields.io/github/actions/workflow/status/MaxGB23/funky-ai/ci.yml?branch=main&style=for-the-badge&logo=github" alt="Build Status"></a>
     <a href="https://github.com/MaxGB23/funky-ai/blob/main/LICENSE"><img src="https://img.shields.io/github/license/MaxGB23/funky-ai?style=for-the-badge&color=blue" alt="License"></a>
-    <img src="https://img.shields.io/node/v/funky-ai?style=for-the-badge&logo=nodedotjs" alt="Node version">
   </p>
 </div>
 
