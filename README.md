@@ -116,7 +116,7 @@ Funky AI orquesta el desarrollo de software aprovechando una **Carga JIT (Just-I
 | Cómo crear features SDD por tier | [`docs/funky-ai/feature.md`](docs/funky-ai/feature.md) |
 | Cómo capturar conocimiento (standalone o con scaffold) | [`docs/funky-ai/engram.md`](docs/funky-ai/engram.md) |
 | Conceptos del framework y Orquestador | [`docs/funky-ai/conceptos/`](docs/funky-ai/conceptos/) |
-| Guía de Operación para el Equipo | [`docs/funky-ai/guias/funky-ai-team-guide.md`](docs/funky-ai/guias/funky-ai-team-guide.md) |
+| Guía de Operación para el Equipo | [`docs/funky-ai/conceptos/funky-ai-team-guide.md`](docs/funky-ai/conceptos/funky-ai-team-guide.md) |
 | Base de conocimiento del proyecto | [`docs/engram/index.md`](docs/engram/index.md) |
 | Releases y retrospectivas | [`docs/funky-ai/releases/`](docs/funky-ai/releases/) |
 | Mapa completo del repo | [`docs/repo-map.md`](docs/repo-map.md) |

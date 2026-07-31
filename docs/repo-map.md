@@ -60,8 +60,7 @@ docs/
 | [`scaffold.md`](../docs/funky-ai/scaffold.md) | Árbol completo de inyección del ecosistema agéntico |
 | [`feature.md`](../docs/funky-ai/feature.md) | Tiers T1/T2/T3, inyección condicional, golden vs fallback |
 | [`engram.md`](../docs/funky-ai/engram.md) | Knowledge base: categorías, flags, buenas prácticas |
-| [`conceptos/`](../docs/funky-ai/conceptos/) | Conceptos fundamentales del protocolo |
-| [`guias/`](../docs/funky-ai/guias/) | Guías de equipo y estudios |
+| [`conceptos/`](../docs/funky-ai/conceptos/) | Conceptos: arquitectura SDD, manual del orquestador, guía de equipo, estudios |
 | [`operaciones/qa-governance.md`](../docs/funky-ai/operaciones/qa-governance.md) | QA governance |
 | [`releases/`](../docs/funky-ai/releases/) | Release notes y retrospectivas |
 | [`historico/`](../docs/funky-ai/historico/) | Journey, releases anteriores |
