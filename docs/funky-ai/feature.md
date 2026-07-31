@@ -44,7 +44,7 @@ El comando presenta un selector interactivo de tres tiers. Cada tier define un c
 
 El comando busca templates en dos ubicaciones, con prioridad para el proyecto local:
 
-1. **Golden templates** — `cwd/.agents/templates/sdd/`. Si el directorio existe y contiene los archivos solicitados, se usan estos templates.
+1. **Golden templates** — `.agents/templates/sdd/`. Si el directorio existe y contiene los archivos solicitados, se usan estos templates.
 2. **Fallback** — `src/templates/sdd/` dentro del paquete `funky-cli`. Se usan cuando no hay golden templates disponibles.
 
 El resultado incluye la bandera `usedFallback` que el comando reporta al usuario con un warning si se está usando la ruta de respaldo.

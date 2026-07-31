@@ -4,6 +4,26 @@
 
 Capturar conocimientos, decisiones técnicas y bugs en una base estructurada dentro del repositorio. Cada engrama se guarda como un archivo Markdown individual con campos predefinidos, y se indexa automáticamente en un índice central.
 
+## Requisitos (Automatizados)
+
+Para que los agentes de IA utilicen el protocolo de engramas de manera autónoma, es fundamental que exista la regla (`engram-protocol.md`) en el proyecto destino (`.agents/rules/`).
+
+**¡No te preocupes por configurarlo manualmente!** El CLI lo maneja de forma automática por ti:
+1. **Ecosistema Completo:** Al ejecutar `funky scaffold`, se instalan preventivamente todas las reglas y la estructura de carpetas (`docs/engram/*`).
+2. **Modo Standalone:** Si prefieres no usar el scaffold, simplemente ejecuta `funky engram add`. El comando inyectará automáticamente la regla faltante en `.agents/rules/` y creará las carpetas requeridas al vuelo (*on-demand*) la primera vez que lo necesites.
+
+## Uso
+
+El comando puede utilizarse de forma interactiva (prompts) o automatizada mediante flags:
+
+```bash
+# Modo interactivo
+funky engram add
+
+# Modo con flags (ideal para IA)
+funky engram add --tag "fix-cors" --category "bugfix" --desc "Arregla problema de CORS en preflight"
+```
+
 ## Categorías disponibles
 
 | Categoría     | Uso |

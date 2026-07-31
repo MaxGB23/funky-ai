@@ -8,7 +8,7 @@ Sin `scaffold` el proyecto no tiene las reglas de comportamiento que los agentes
 
 ## ¿Cuándo usarlo?
 
-Después de `funky init`. Se ejecuta una sola vez por repositorio, aunque es idempotente: los archivos existentes se skipean sin sobrescribirse.
+Preferentemente después de `funky init`. Se ejecuta una sola vez por repositorio, aunque es idempotente: los archivos existentes se skipean sin sobrescribirse.
 
 ```bash
 funky scaffold

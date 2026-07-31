@@ -19,6 +19,7 @@ Evalúa el stack tecnológico del proyecto, detecta riesgos arquitectónicos y g
 - `docs/funky-ai/canvas/PROJECT-CANVAS.md` debe existir.
 - `docs/funky-ai/canvas/INFRA-CANVAS.md` debe existir.
 - Si no se encuentran, se usan placeholders y se advierte al usuario.
+- Instalarlos usando `funky init`.
 
 ## Inputs
 

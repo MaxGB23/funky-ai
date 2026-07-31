@@ -1,10 +1,28 @@
 import { Command } from 'commander';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { input, select } from '@inquirer/prompts';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export const runEngramAdd = async ({ tag, category, desc, cwd }) => {
   const sanitizeName = (str) => str.trim().replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '').toLowerCase();
+  
+  // Aseguramos de que el protocolo exista en .agents/rules/ para que funcione de forma autónoma
+  const rulesDir = path.join(cwd, '.agents', 'rules');
+  const targetProtocolPath = path.join(rulesDir, 'engram-protocol.md');
+  if (!fs.existsSync(targetProtocolPath)) {
+    if (!fs.existsSync(rulesDir)) {
+      fs.mkdirSync(rulesDir, { recursive: true });
+    }
+    const sourceProtocolPath = path.join(__dirname, '../templates/bootstrap/funky-ai-rules/engram-protocol.md');
+    if (fs.existsSync(sourceProtocolPath)) {
+      fs.copyFileSync(sourceProtocolPath, targetProtocolPath);
+      console.log(`🚀 Regla inyectada: engram-protocol.md en .agents/rules/`);
+    }
+  }
   
   if (!tag) {
     tag = await input({ message: 'Ingresa el tag del engrama (ej. [fix-auth]):' });

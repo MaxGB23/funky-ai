@@ -203,8 +203,6 @@ Con los canvases llenos, ejecuta `funky scaffold` para copiar la estructura Funk
 funky scaffold
 ```
 
-> ⚠️ **Migración Legacy:** Si solo existe `PROJECT-CANVAS.md` pero no `INFRA-CANVAS.md` (proyecto pre-v1.7), el CLI genera automáticamente `INFRA-CANVAS.md` con una advertencia de migración en el encabezado. Completa los campos de infra antes de continuar.
-
 **✅ Criterio de salida:** El ecosistema Funky AI está activo sobre tu repo existente. Puedes empezar a usar `funky feature` para planificar la próxima feature.
 
 ---

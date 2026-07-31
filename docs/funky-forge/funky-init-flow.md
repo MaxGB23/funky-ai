@@ -87,43 +87,7 @@ Ubicación base: `src/templates/bootstrap/`
 
 ---
 
-## 4. Bugs Históricos
-
-### ~~BUG-01 — Mismatch de clave `ui` → `styling`~~ [RESUELTO en v1.7.0]
-
-El campo de UI del canvas mostraba `No definido` porque `init.js` guardaba con clave `ui` pero `canvas.js` leía `styling`. Corregido unificando a `styling` en ambos archivos.
-
----
-
-### ~~BUG-02 — `testing` se guarda como `boolean`, no como texto~~ [RESUELTO en v1.7.0]
-
-El prompt `p.confirm()` devolvía `true/false` que se interpolaba literal en el canvas. Corregido con transformación a texto descriptivo antes de pasarlo al generador.
-
----
-
-## 5. Deuda Técnica Identificada
-
-### DT-01 — Los templates estáticos no consumen el canvas
-
-El `ORCHESTRATOR-STATE.md`, las reglas de agente y los demás archivos de scaffold son copiados como archivos estáticos sin ninguna referencia al `PROJECT-CANVAS.md`. Esto significa que el ecosistema generado es genérico e independiente del tipo de proyecto configurado.
-
-**Impacto:** Un proyecto Next.js + Clean Architecture y uno Astro + Modular reciben exactamente los mismos archivos de contexto para el agente. La IA no tiene forma de saber con qué stack está trabajando a menos que el usuario edite los archivos manualmente.
-
-**Dirección de solución:** Migrar los templates críticos (al menos `ORCHESTRATOR-STATE.md`) a un sistema de interpolación que consuma el `canvasConfig` generado en el `init`.
-
----
-
-### DT-02 — Scaffold no parsea el canvas existente
-
-Cuando se ejecuta `funky scaffold`, el CLI respeta los canvases existentes (no los sobreescribe) pero tampoco los lee.
-
-**Impacto:** Los archivos estaticos copiados no contienen datos del canvas. El ORCHESTRATOR-STATE.md, por ejemplo, no sabe que stack usa el proyecto.
-
-**Direccion de solucion:** Implementar un parser de Markdown que extraiga las secciones del canvas y reconstruya el `canvasConfig` para poblar los templates copiados.
-
----
-
-## 6. Idempotencia
+## 4. Idempotencia
 
 `funky init` y `funky scaffold` son idempotentes por diseño. Ejecutarlos múltiples veces en el mismo directorio es seguro:
 
