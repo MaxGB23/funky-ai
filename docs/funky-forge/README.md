@@ -42,8 +42,6 @@ Estos archivos se movieron desde `docs/funky-ai/` como parte de la consolidació
 - [cli-simulations.md](cli-simulations.md) — Simulaciones de uso del CLI
 - [escenarios-de-uso.md](escenarios-de-uso.md) — Escenarios de uso del flujo completo
 - [funky-init-flow.md](funky-init-flow.md) — Flujo detallado de init
-- [guia-flujo-completo.md](guia-flujo-completo.md) — Guía de testing del ciclo completo
-- [comando-vs-archivos.md](comando-vs-archivos.md) — Matriz de qué archivos genera cada comando
 
 ---
 

@@ -11,8 +11,7 @@
 |------|-----------|
 | [`funky-cli/`](../funky-cli/) | Código fuente del CLI |
 | [`docs/`](../docs/) | Documentación del framework y tools |
-| [`init-observaciones/`](../init-observaciones/) | Histórico de refactors y exploraciones |
-| `.agents/` | Reglas y skills del workspace agéntico |
+| `.agents/` | Reglas, skills del workspace agéntico, golden templates |
 | `.github/` | Workflows de CI/CD |
 
 ---
@@ -48,11 +47,8 @@ docs/
 ├── funky-ai/          ← Framework agéntico (conceptos, scaffold, feature, engram)
 ├── funky-forge/       ← Tools de planeación (init, assess, estimate, pipeline)
 ├── engram/            ← Memoria persistente del sistema
-├── openspec/          ← RFCs humanos + cambios SDD formales
 ├── issues/            ← Issue tracker local
 ├── operaciones/       ← CI/CD, QA governance
-├── prompts/           ← Globales del agente
-├── references/        ← (reservado)
 ├── github-logs/       ← Logs de GitHub Actions
 └── repo-map.md        ← Este archivo
 ```
@@ -65,7 +61,7 @@ docs/
 | [`feature.md`](../docs/funky-ai/feature.md) | Tiers T1/T2/T3, inyección condicional, golden vs fallback |
 | [`engram.md`](../docs/funky-ai/engram.md) | Knowledge base: categorías, flags, buenas prácticas |
 | [`conceptos/`](../docs/funky-ai/conceptos/) | Conceptos fundamentales del protocolo |
-| [`guias/`](../docs/funky-ai/guias/) | Guías de equipo, SDD survival guide, testing |
+| [`guias/`](../docs/funky-ai/guias/) | Guías de equipo y estudios |
 | [`operaciones/qa-governance.md`](../docs/funky-ai/operaciones/qa-governance.md) | QA governance |
 | [`releases/`](../docs/funky-ai/releases/) | Release notes y retrospectivas |
 | [`historico/`](../docs/funky-ai/historico/) | Journey, releases anteriores |
@@ -80,19 +76,17 @@ docs/
 | [`assess.md`](../docs/funky-forge/assess.md) | Assess: architecture review, preguntas dinámicas |
 | [`estimate.md`](../docs/funky-forge/estimate.md) | Estimate: pricing guide, decisiones de costos |
 | [`pipeline.md`](../docs/funky-forge/pipeline.md) | Pipeline: cuándo usarlo, context.json |
-| [`guia-flujo-completo.md`](../docs/funky-forge/guia-flujo-completo.md) | Guía de testing del ciclo completo |
 | [`cli-simulations.md`](../docs/funky-forge/cli-simulations.md) | Simulaciones de uso del CLI |
 | [`escenarios-de-uso.md`](../docs/funky-forge/escenarios-de-uso.md) | Escenarios de uso del flujo completo |
 | [`funky-init-flow.md`](../docs/funky-forge/funky-init-flow.md) | Flujo detallado de init |
-| [`comando-vs-archivos.md`](../docs/funky-forge/comando-vs-archivos.md) | Matriz de qué archivos genera cada comando |
 
 ### OpenSpec
 
 | Ruta | Propósito | Autor |
 |------|-----------|-------|
-| [`openspec/rfcs/`](../docs/openspec/rfcs/) | Brain dump — ideas crudas del humano | Humano |
-| [`openspec/changes/`](../docs/openspec/changes/) | Proposals formales del ciclo SDD | Orquestador |
-| [`openspec/archive/`](../docs/openspec/archive/) | Features completadas archivadas | Sistema |
+| [`openspec/rfcs/`](../openspec/rfcs/) | Brain dump — ideas crudas del humano | Humano |
+| [`openspec/changes/`](../openspec/changes/) | Proposals formales del ciclo SDD | Orquestador |
+| [`openspec/archive/`](../openspec/archive/) | Features completadas archivadas | Sistema |
 
 ---
 
@@ -105,12 +99,3 @@ docs/
 | `assess/` | `funky assess` | Architecture review templates |
 | `estimate/` | `funky estimate` | Pricing guide templates |
 
----
-
-## 📜 Histórico de Refactors (`init-observaciones/`)
-
-| Ruta | Contenido |
-|------|-----------|
-| [`refactor-tree/`](../init-observaciones/refactor-tree/) | Puntos 1-6 del refactor de templates (2026-07) |
-| [`roadmap/`](../init-observaciones/roadmap/) | Roadmap y diagramas del refactor |
-| [`consolidacion/`](../init-observaciones/consolidacion/) | Propuesta de consolidación forge vs framework |

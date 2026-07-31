@@ -82,6 +82,6 @@ No hay forma de correr GitHub Actions localmente con `act` para este repo (usa p
 
 ## Referencias
 
-- [RFC original — checklist de hardening](openspec/rfcs/github-actions-megalodon-vulnerability.md)
-- [Workflows en este repo](.github/workflows/)
-- [Dependabot config](.github/dependabot.yml)
+- [RFC original — checklist de hardening](../../openspec/rfcs/github-actions-megalodon-vulnerability.md)
+- [Workflows en este repo](../../.github/workflows/)
+- [Dependabot config](../../.github/dependabot.yml)
