@@ -1,3 +1,5 @@
+Estado: Pendiente de Analizar con RFC megalodon GH actions
+
 Sí, lo que mencionas **es real y bastante reciente**, pero hay que separar bien los dos casos porque son ataques distintos aunque relacionados con el ecosistema open-source.
 
 ---
