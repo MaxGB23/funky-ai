@@ -15,14 +15,14 @@
 
 El comando `funky --version` imprime la versión leída de `funky-cli/package.json`.
 
-- **Estado actual verificado en el código:** `funky-cli/package.json` declara `version: "3.1.0"` y `funky --version` imprime `3.1.0`.
-- **Para que este smoke test tenga sentido, la versión debe estar en `3.5.0` al momento de ejecutarlo.** Si imprime otra versión, **detenerse y reportar al orquestador antes de continuar**.
+- **Estado actual verificado en el código:** `funky-cli/package.json` declara `version: "3.5.0"` (release v3.5.0 publicada) y `funky --version` imprime `3.5.0`.
+- **Condición de ejecución:** este smoke test solo tiene sentido contra la versión `3.5.0`. Si imprime otra versión, **detenerse y reportar al orquestador antes de continuar**.
 
 ---
 
 ## 0. Pre-condiciones
 
-- [ ] **Node.js 20+** instalado: ejecutar `node -v` (debe imprimir `v20.x.x` o superior).
+- [ ] **Node.js 20.12+** instalado: ejecutar `node -v` (debe imprimir `v20.12.x` o superior).
 - [ ] **pnpm** instalado (`pnpm -v`).
 - [ ] **CLI linkeado globalmente.** Desde `M:\funky-ai\funky-cli`:
   ```powershell
@@ -35,7 +35,7 @@ El comando `funky --version` imprime la versión leída de `funky-cli/package.js
   funky --version
   ```
   - [ ] Imprime `3.5.0`.
-  - [ ] Si imprime otra versión (hoy imprime `3.1.0`), **NO continuar**: reportar al orquestador.
+  - [ ] Si imprime otra versión, **NO continuar**: reportar al orquestador.
 - [ ] **Workspace base fuera del repo**:
   ```powershell
   New-Item -ItemType Directory -Force -Path C:\test\funky-smoke-v350 | Out-Null

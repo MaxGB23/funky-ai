@@ -56,7 +56,7 @@ El ecosistema cambia, pero hoy en día estas son las herramientas principales:
 |-------------|-------------------|-------------|
 | **Vitest** | Proyectos modernos (Vite, Vue, React moderno, TS) | Es rapidísimo, soporta TypeScript nativamente, y tiene una API casi idéntica a Jest. Es la evolución lógica. **(Nuestra elección en Funky CLI)**. |
 | **Jest** | Proyectos Legacy o Enterprise | Fue el rey durante años (creado por Facebook). Súper completo, pero configurarlo hoy para usar TypeScript puro o ESM (módulos modernos) es doloroso y lento. |
-| **node:test** | Scripts rápidos o librerías puras Node | Viene integrado en Node.js (v18+). No tienes que instalar *nada*. Es genial para cosas pequeñas, pero le faltan utilidades gráficas y de aserción maduras. |
+| **node:test** | Scripts rápidos o librerías puras Node | Viene integrado en Node.js (desde v18, estable en v20). No tienes que instalar *nada*. Es genial para cosas pequeñas, pero le faltan utilidades gráficas y de aserción maduras. |
 | **Mocha/Chai** | Proyectos muy viejos | Fue el estándar antes de Jest. Hoy en día no se recomienda para proyectos nuevos, pero lo vas a ver en código antiguo. |
 
 ### Para E2E (Simuladores de Navegador)

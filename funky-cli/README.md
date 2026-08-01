@@ -4,7 +4,7 @@
 El CLI oficial de Funky AI es la herramienta encargada de hacer andamiaje (scaffolding) de la arquitectura del proyecto, reglas canónicas, y templates del ciclo Spec-Driven Development (SDD). Elimina la configuración manual, asegurando un ecosistema estandarizado y libre de errores en cada proyecto.
 
 ## Prerequisitos
-- **Node.js**: Instalado (recomendado v18 o superior).
+- **Node.js**: Instalado (recomendado v20.12 o superior).
 - **pnpm**: Gestor de paquetes.
 - Habilitar el uso global de pnpm ejecutando `pnpm setup` si es la primera vez que lo utilizas y reiniciar la terminal.
 
