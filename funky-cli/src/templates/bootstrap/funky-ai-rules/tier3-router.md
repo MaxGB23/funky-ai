@@ -21,7 +21,7 @@ description: Leer obligatoriamente antes de CUALQUIER delegación a un subagente
 | 7. Verify | `/funky-verify` (build, tests, compliance, design, NFR) |
 | 8. Archive | `/funky-archive` |
 
-Post-archive: Llenar `release.md`, parar en git-ops, pedir aprobación. Llenar `docs.md` si existe.
+Post-archive: Llenar `release-checklist.md`, parar en git-ops, pedir aprobación. Llenar `docs.md` si existe.
 
 ## 2. Contratos de Presentación — Solo Interactivo
 > ⚠️ **SOLO APLICA EN MODO INTERACTIVO.** En modo Auto, el orquestador no presenta resultados al humano — simplemente ejecuta la siguiente fase. En modo Handoff, prepara bloques copy-paste según su propio formato.

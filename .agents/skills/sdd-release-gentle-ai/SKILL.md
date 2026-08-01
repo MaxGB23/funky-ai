@@ -1,6 +1,6 @@
 ---
 name: sdd-release
-description: "Trigger: release, tag, version bump, publicar release. Post-archive release workflow: version bump, release notes, git tag."
+description: "Trigger: No aplica en antigravity. Release en opencode + gentle-ai, tag, version bump, publicar release. Post-archive release workflow: version bump, release notes, git tag."
 ---
 
 # SDD Release

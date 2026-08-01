@@ -22,7 +22,7 @@ description: Leer obligatoriamente antes de CUALQUIER delegación a un subagente
 > | **5. Worker (Apply)**| Si Nativa: Lanza subagente(s) `/funky-worker` referenciando el batch o `tasks.md`. Si hay múltiples batches, ejecútalos **secuencialmente** (uno por uno). **CRÍTICO:** Cada worker genera un `report.md` en disco al terminar; debes esperarlo/leerlo antes de continuar. Si Handoff: pasale el bloque copy-paste. |
 > | **6. Verify** | Ejecuta `view_file .agents/rules/tier2-delegation/t2-verify.md` |
 > | **7. Archive** | Ejecuta `view_file .agents/rules/tier2-delegation/t2-archive.md` |
-> | **8. Release** | Leer `release.md` y `docs.md` (si existe). Completar checklist y PARAR en git ops, pedir aprobación humana. |
+> | **8. Release** | Leer `release-checklist.md` y `docs.md` (si existe). Completar checklist y PARAR en git ops, pedir aprobación humana. |
 
 **Si no lees el archivo de la fase antes de delegar, estarás rompiendo una regla absoluta de orquestación.**
 

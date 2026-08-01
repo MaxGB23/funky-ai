@@ -24,11 +24,11 @@ La versión se determina DESPUÉS de funky-archive: leer `package.json` → incr
 
 **🚨 CHECKLIST:**
 - [ ] **Determinar archive name:** Leer versión de `package.json` → construir nombre `vX.Y.Z-{feature}` (ej. `v1.2.0-living-specs`)
-- [ ] **Mover carpeta:**
+- [ ] **Archivar artefactos (Mover):** Mover el change folder y, si existe, el RFC origen.
   ```
   openspec/changes/{feature}/  →  openspec/archive/{vX.Y.Z-{feature}}/
+  openspec/rfc/{rfc-name}.md   →  openspec/archive/{vX.Y.Z-{feature}}/{rfc-name}.md (Marcar [OMITIDO] si no hay RFC)
   ```
-- [ ] El sdd surgió de un rfc? Sí: **Mover RFC al archivado en caso de que exista**,  No: Marcar como omitido en [OMITIDO] 
 - [ ] **Verificar conteo:** Si `openspec/archive/` tiene más de 40 entradas → emitir warning
 - [ ] **Confirmar limpieza:** Verificar que `openspec/changes/{feature}/` ya no existe
 - [ ] **Actualizar versión en Readme**: Actualizar la versión en `README.md`
