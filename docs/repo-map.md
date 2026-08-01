@@ -44,7 +44,7 @@
 
 ```
 docs/
-├── funky-ai/          ← Framework agéntico (conceptos, scaffold, feature, engram)
+├── funky-ai/          ← Framework agéntico (conceptos, scaffold, feature, engram, prompts)
 ├── funky-forge/       ← Tools de planeación (init, assess, estimate, pipeline)
 ├── engram/            ← Memoria persistente del sistema
 ├── issues/            ← Issue tracker local
@@ -61,6 +61,7 @@ docs/
 | [`feature.md`](../docs/funky-ai/feature.md) | Tiers T1/T2/T3, inyección condicional, golden vs fallback |
 | [`engram.md`](../docs/funky-ai/engram.md) | Knowledge base: categorías, flags, buenas prácticas |
 | [`conceptos/`](../docs/funky-ai/conceptos/) | Conceptos: arquitectura SDD, manual del orquestador, guía de equipo, estudios |
+| [`prompts/`](../docs/funky-ai/prompts/) | Prompts globales del framework y system prompts de cada fase SDD |
 | [`operaciones/qa-governance.md`](../docs/funky-ai/operaciones/qa-governance.md) | QA governance |
 | [`releases/`](../docs/funky-ai/releases/) | Release notes y retrospectivas |
 | [`historico/`](../docs/funky-ai/historico/) | Journey, releases anteriores |

@@ -1,6 +1,5 @@
 <div align="center">
-  <h1>👻 Funky AI</h1>
-  <p><strong>v3.1.0</strong></p>
+  <h1>👻 Funky AI v3.1.0</h1>
   <p>
     <em>CLI que unifica la instalación de reglas agénticas, templates SDD, y tools de planeación de proyecto asistida con IA.</em>
   </p>
@@ -120,4 +119,5 @@ Funky AI orquesta el desarrollo de software aprovechando una **Carga JIT (Just-I
 | Base de conocimiento del proyecto | [`docs/engram/index.md`](docs/engram/index.md) |
 | Releases y retrospectivas | [`docs/funky-ai/releases/`](docs/funky-ai/releases/) |
 | Mapa completo del repo | [`docs/repo-map.md`](docs/repo-map.md) |
+| Índice de Docs Vivos (SSOT para Agentes) | [`.agents/templates/sdd/docs-live-index.md`](.agents/templates/sdd/docs-live-index.md) |
 
