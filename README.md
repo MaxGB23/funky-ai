@@ -93,7 +93,7 @@ Funky AI orquesta el desarrollo de software aprovechando una **Carga JIT (Just-I
 | Tier | Escala | Flujo |
 |------|--------|-------|
 | **T1 (Flash)** | 1-2 archivos | Fixes rápidos. Tasks inline → Ejecución vía Worker. |
-| **T2 (Standard)** | 3-5 archivos | Features regulares. Delegación vía templates inyectables. |
+| **T2 (Standard)** | 3-5 archivos | Features regulares. Delegación vía subagentes ligeros + templates inyectables. |
 | **T3 (Insano 👻)** | Refactors complejos | Flujo profundo con Subagentes Nativos aislados. |
 
 ### Modos de Ejecución
