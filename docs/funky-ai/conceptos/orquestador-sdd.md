@@ -20,7 +20,7 @@ Al iniciar una nueva sesión o feature, el Orquestador ejecuta un análisis estr
    - **T0 (Conversación):** Ideación libre. Sin SDD.
    - **T1 (Flash):** 1-2 archivos, sin impacto arquitectónico. Tareas *inline*.
    - **T2 (Standard):** 3-5 archivos. Flujo estándar (Explore, Propose, Spec, Tasks, Verify, Archive).
-   - **T3 (Deep):** Cambios complejos, NFRs, refactors mayores. Subagentes aislados.
+   - **T3 (Insano 👻):** Cambios complejos, NFRs, refactors mayores. Subagentes aislados.
 2. **Recomendación Pre-Vuelo (`sdd-preflight.md`):**
    - Presenta al humano una propuesta de inicialización: 
      ```

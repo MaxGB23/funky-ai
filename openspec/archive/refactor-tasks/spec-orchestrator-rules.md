@@ -47,7 +47,7 @@ El Orquestador debe administrar la ejecución (Workers/Apply) equilibrando el Co
 
 **Estrategia de Task Budgeting (Batching):**
 - **Tiers 1 y 2 (Fast/Standard):** Delegación en **mínimo 2 Batches**. El Orquestador siempre divide la ejecución: **Batch A** cubre toda la lógica de código (Fase 0 → Fase N), **Batch B** es exclusivo para cierre y merge. Esto garantiza que el estado final del repo sea revisable antes de integrar a `main`. Si el worker detecta que el scope del Batch A es demasiado grande para su ventana de contexto, frena, emite su `report.md` parcial, y el Orquestador levanta un worker intermedio antes del Batch B.
-- **Tier 3 (Deep):** Delegación **Secuencial (Fase por Fase)**. Por el alto riesgo de "Context Decay" en features complejas, el Orquestador debe agrupar por fases lógicas. Cada apply se muere al terminar su batch, y el Orquestador levanta uno nuevo para la siguiente fase.
+- **Tier 3 (Insano 👻):** Delegación **Secuencial (Fase por Fase)**. Por el alto riesgo de "Context Decay" en features complejas, el Orquestador debe agrupar por fases lógicas. Cada apply se muere al terminar su batch, y el Orquestador levanta uno nuevo para la siguiente fase.
 
 *(Nota: Para detalles sobre el formato físico del Return Envelope y reglas de Checkpoints, referirse a `spec-roles-subagents.md` y `spec-cli-ide-boundaries.md`.)*
  

@@ -9,5 +9,6 @@
 
 - [ ] **Doc [#N]** — `{ruta}` (Índice: `{ruta_indice_seccional}`): Actualizar para reflejar `{concepto nuevo o comportamiento modificado}`
 - [ ] **Opcional (Nuevo Documento):** Si la feature crea un doc "nuevo" vital (no contemplado en el índice), debes: (1) crear su índice seccional en `.agents/templates/sdd/docs-index/{nombre_doc}.md` listando sus H2/H3, y (2) registrar el nuevo doc y su enlace al índice en el archivo canónico `.agents/templates/sdd/docs-live-index.md`.
+- [ ] **Actualizar los índices (docs vivos y seccionales)** en caso de que requieran reflejar el estado actual de los docs modificados.
 
 </OPTIONAL_DOC_UPDATE>

@@ -108,7 +108,7 @@ Para evitar decisiones ambiguas y proteger la regla absoluta de "NO escribes có
   - **Planeación:** Orquestador redacta `proposal.md` y `spec.md` *inline*.
   - **Tasks:** Delegada al workflow `/funky-tasks` (este workflow funge como detector de riesgo mediante su Return Envelope).
   - **Ejecución:** Delegada al Worker básico.
-- **Tier 3 (Deep):** Cambios complejos o de alto riesgo. CADA fase se aísla en su propio workflow. La ejecución la toma `/funky-apply` (que lee el `spec.md y design.md` directo, eliminando la necesidad de microplanning en el Orquestador).
+- **Tier 3 (Insano 👻):** Cambios complejos o de alto riesgo. CADA fase se aísla en su propio workflow. La ejecución la toma `/funky-apply` (que lee el `spec.md y design.md` directo, eliminando la necesidad de microplanning en el Orquestador).
 - **Tier 4 (Rediseño):** 8 Roles aislados, máximo límite de tokens. Frenado de emergencia.
 
 ### 7.3.2

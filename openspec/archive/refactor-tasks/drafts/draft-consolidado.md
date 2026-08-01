@@ -173,7 +173,7 @@ Se define una reubicación estricta de las responsabilidades de testing, con el 
      - *El Filtro de Contexto (Protección Anti-Alucinaciones):* Como el Mini-Explore no conoce las reglas de negocio globales, el Orquestador funge como puente. En el prompt de delegación, el Orquestador inyecta el contexto vital de la feature y le prohíbe inventar fixes. El Mini-Explore se limita a emitir un diagnóstico técnico crudo ("tronó porque X devuelve undefined").
      - Con este resumen técnico, el Orquestador (que sí tiene la visión completa del SDD) deduce la causa arquitectónica y genera un prompt ultra-específico para un nuevo Worker que aplicará el fix real.
 
-2. **El Flujo para Tier 3 (Deep):**
+2. **El Flujo para Tier 3 (Insano 👻):**
    - **Responsable (Segregation of Duties):** En Tier 3, la feature es gigante y el testing lo corre el agente auditor `/funky-verify`.
    - **Regla de Corrección:** `/funky-verify` sigue la misma política estricta de **No-Fix** (es un auditor puro). Si encuentra fallos, escupe un `FAIL` al Orquestador, y el Orquestador inicia el ciclo de diagnóstico para mandar un nuevo `/funky-apply`.
 

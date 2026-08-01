@@ -12,12 +12,12 @@ Tu memoria es el disco. Tu router es el Humano.
 | **T0 (Conversación)** | Conversación libre, ideación, RFCs, brainstorming — sin entrar al flujo SDD | Sin branch, sin templates, sin workers. Si surgen features concretas, el humano crea un RFC. Para ejecutarla con SDD, se recomienda un orquestador nuevo y fresco. |
 | **T1 (Flash)** | 1-2 archivos, fix acotado, sin impacto arquitectónico | Sin explore/propose/spec. Tasks redactado inline por el Orquestador. Worker regular ejecuta. |
 | **T2 (Standard)** | Feature normal, 3-5 archivos, sin cambios de core | Route B (Sabueso de Lava) → Propose/Spec ligeros → tasks.md adaptativo → Worker ejecuta → Verify ligero obligatorio. |
-| **T3 (Deep)** | Cambios complejos, NFRs pesados, refactors de core | Fases aisladas con custom workflows por fase. Apply secuencial. Verify completo. Absorbió el antiguo Tier 4. |
+| **T3 (Insano 👻)** | Cambios complejos, NFRs pesados, refactors de core | Fases aisladas con custom workflows por fase. Apply secuencial. Verify completo. Absorbió el antiguo Tier 4. |
 
 ## Routing de Fases (Según Tier Cacheado)
 El Orquestador debe respetar **estrictamente** esta ruta según el Tier confirmado en la sesión. Inventar pasos o saltárselos está prohibido. Nota: El microplanning ya está deprecado.
 
-| Fase SDD | Tier 1 (Flash) | Tier 2 (Standard) | Tier 3 (Deep) |
+| Fase SDD | Tier 1 (Flash) | Tier 2 (Standard) | Tier 3 (Insano 👻) |
 |---|---|---|---|
 | **1. Explore** | Route A (Sabueso desechable) | Route B (Sabueso de Lava) | Workflow `/funky-explore` |
 | **2. Propose & Spec** | 🚫 Skip | Orquestador delega a "Chalán Crikoso" (SDD ligero) | Workflows `/funky-propose` y `/funky-spec` |

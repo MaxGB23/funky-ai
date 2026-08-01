@@ -17,7 +17,7 @@ Tu memoria es el disco. Tu router es el Humano.
 | **T0 (Micro)** | Fix trivial (1-5 líneas). | **Excepción:** Frena, pide permiso al humano. Si aprueba, haz el cambio *inline*. Sin workflows. |
 | **T1 (Fast)** | 1-2 archivos. | Explore Ligero (Sabueso) → Orquestador redacta `tasks.md` inline → Worker ejecuta. |
 | **T2 (Standard)** | 2-5 archivos. | `/funky-explore` → Orquestador redacta `proposal/spec` inline → `/funky-tasks` redacta tareas → Worker ejecuta. |
-| **T3 (Deep)** | Cambios core/riesgo. | Fases aisladas. `/funky-tasks` alerta riesgo → Ejecución delegada a `/funky-apply`. |
+| **T3 (Insano 👻)** | Cambios core/riesgo. | Fases aisladas. `/funky-tasks` alerta riesgo → Ejecución delegada a `/funky-apply`. |
 | **T4 (Gentle)** | Rediseño masivo. | Frenado de emergencia. 8 roles aislados por el humano. |
 
 ## ⚠️ Guardrails de Edición de Templates

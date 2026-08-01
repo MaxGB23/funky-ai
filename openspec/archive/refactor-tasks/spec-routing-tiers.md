@@ -27,7 +27,7 @@
   - **Tasks:** Delegada al workflow `/funky-tasks` (este workflow funge como detector de riesgo mediante su Return Envelope).
   - **Ejecución:** Delegada al Worker básico.
   - **Verificación:** Verify ligero obligatorio (Comparar specs primero, task completion segundo + build + tests + issues, sin template).
-- **Tier 3 (Deep):** Cambios complejos o de alto riesgo. CADA fase se aísla en su propio workflow. La ejecución la toma `/funky-apply` (que lee el `spec.md` y `design.md` directo, eliminando la necesidad de microplanning en el Orquestador). Absorbió el alcance del antiguo Tier 4 (rediseños mayores).
+- **Tier 3 (Insano 👻):** Cambios complejos o de alto riesgo. CADA fase se aísla en su propio workflow. La ejecución la toma `/funky-apply` (que lee el `spec.md` y `design.md` directo, eliminando la necesidad de microplanning en el Orquestador). Absorbió el alcance del antiguo Tier 4 (rediseños mayores).
 
 ### 1.3 Branch Management (Aplica a Todos los Tiers)
 
