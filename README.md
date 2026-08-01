@@ -28,6 +28,19 @@ funky-cli/
 
 ## ⚡ Quick Start
 
+### Instalar el CLI
+
+`funky` se instala clonando el repo, instalando dependencias y linkeando el paquete globalmente. El link global crea el symlink `funky` en tu PATH:
+
+```bash
+git clone https://github.com/MaxGB23/funky-ai.git
+cd funky-ai/funky-cli
+pnpm install
+pnpm link --global          # crea el symlink global; alternativa: npm install && npm link
+```
+
+Prerequisitos (Node.js v20.12+, pnpm) y referencia de comandos: [`funky-cli/README.md`](funky-cli/README.md).
+
 ### Instalar el framework agéntico
 
 ```bash
