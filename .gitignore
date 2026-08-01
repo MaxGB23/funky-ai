@@ -14,3 +14,5 @@ dist/
 .DS_Store
 .atl/
 .aa
+# CodeGraph index — machine-local data, regenerated on demand
+.codegraph/
