@@ -5,10 +5,10 @@
 ---
 
 ## 🏷️ Estado Actual
-- **Versión:** v3.0.0
+- **Versión:** v3.5.0
 - **Rama activa:** `main`
-- **Última sesión:** 2026-07-22
-- **Estado:** 🟢 Publicada. Post-release: refinamiento de README y prompt handoff vs native execution.
+- **Última sesión:** 2026-07-31
+- **Estado:** 🟢 Publicada. Release v3.5.0: pipeline de integración completo, assess/estimate reescritos y scaffolding consolidado.
 
 ---
 
@@ -39,6 +39,7 @@
 ## ✅ Tareas Completadas
 - [x] **v3.0.0 — Subagentes Nativos + JIT Context Loading:** Rediseño arquitectónico completo. Orquestador arranca liviano con solo invariantes globales. Routers JIT por Tier (1/2/3) cargan reglas dinámicamente. Integración de `invoke_subagent` para research sin contaminar contexto. Subagentes con estado Idle para iterar sin re-inicialización. Lanzado 2026-07-21.
 - [x] **Post-release v3.0.0:** Refactor radical de README (eliminación de clutter legacy). Prompt de handoff vs native execution agregado a reglas SDD. Wording español neutralizado.
+- [x] **v3.5.0 — Pipeline funky-forge:** Orquestador `funky pipeline` (assess/estimate/all/status) con estado compartido vía `context.json`. `funky scaffold` como comando independiente e idempotente. `funky assess` y `funky estimate` reescritos como facilitadores de sesión (guías de discusión, no templates adversariales). Canvases estáticos en `funky init`. Comandos `phase`, `gentle` y `release` eliminados. Guards de escritura (`existsSync`) y manejo amigable de EACCES. `funky --version` lee de `package.json`. Documentación reorganizada (funky-ai vs funky-forge) con docs-live-index y 14 índices seccionales. Smoke test manual end-to-end archivado. Lanzado 2026-07-31.
 
 ---
 
@@ -63,3 +64,4 @@
 | v2.5.0 | Engram Sharding y comando `funky engram add`. Reemplazo de historial monolítico por indexación semántica distribuida. |
 | 2026-06-30 | Feature 024-living-specs completada: Transición a Living Specs en `openspec/specs/`. Flujo de deltas validado con checksums y merge por LLM. |
 | v3.0.0 | **MAJOR** — Subagentes Nativos + JIT Context Loading. Routers por Tier (1/2/3). Subagentes con estado Idle. Memory Polling vía Engram. 99 archivos, +3763/-685 líneas. |
+| v3.5.0 | **MINOR** — Pipeline funky-forge: `funky pipeline` con `context.json`, `scaffold` independiente e idempotente, `assess`/`estimate` reescritos como facilitadores de sesión, canvases estáticos, guards de escritura, versión desde `package.json`, docs reorganizados con 14 índices seccionales. Lanzado 2026-07-31. |

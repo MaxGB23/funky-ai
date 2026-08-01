@@ -1,26 +1,39 @@
-# ORCHESTRATOR-STATE.md
-> Archivo canónico de estado. Leer al inicio de CADA sesión de Orquestador antes de hacer cualquier cosa.
+# ORCHESTRATOR-STATE.md - { project-name }
+
+> **Propósito:** Contexto de recuperación de sesión para el Orquestador. Leer PRIMERO al iniciar cualquier chat de Orquestación.
 
 ---
 
-## 🎯 Objetivo Actual
-**[Nombre de la Feature o Tarea Principal]**. [Status: 🔴 TODO | 🟡 IN PROGRESS | ✅ DONE].
-
-## 📋 Estado del Proyecto
+## 🏷️ Estado Actual
 - **Versión activa:** vX.Y.Z
-- **Rama activa:** `feature/[nombre]`
-- **Siguiente acción inmediata:** [Ej: Crear specs, Ejecutar Worker, etc.]
+- **Rama activa:** `main`
+- **Última sesión:** dd/mm/yyyy
+- **Estado:** 🟢 Publicada | 🟡 En Progreso | 🔴 Pendiente
 
-## ✅ Completado en Esta Sesión
-- [ ] Tarea 1
-- [ ] Tarea 2
-
-## 🧠 Instrucciones Aprendidas
-- [Añadir preferencias específicas descubiertas durante la sesión]
-
-## 🔴 Pending Inmediato
-- [ ] Paso A
-- [ ] Paso B
+---
 
 ## 📁 Archivos Clave
 - `docs/...` — Descripción.
+
+---
+
+## ✅ Tareas Completadas
+- [ ] Feature v1.0.0
+- [ ] Feature v2.0.0
+
+---
+
+## ⏳ Tareas Pendientes
+**Roadmap sugerido:** PENDIENTE
+- [ ] Feature v3.0.0
+- [ ] Feature v4.0.0
+- [ ] Feature v5.0.0
+
+---
+
+## 🐛 Bugs Activos
+
+---
+
+## 📋 Historial de Versiones
+| Versión | Descripción |

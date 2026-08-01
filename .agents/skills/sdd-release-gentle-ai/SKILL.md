@@ -40,33 +40,9 @@ Ask the user to confirm if ambiguous.
 
 Create release notes following the project's format. Use this template:
 
-```markdown
-# vX.Y.Z Release Notes
+`.agents\templates\release-notes.md`
 
-## Summary
-
-[1-2 sentences describing what changed and why]
-
-## What Changed
-
-- **[Category]:** [Description of change]
-- **[Category]:** [Description of change]
-
-## Files Modified
-
-- `path/to/file` — [what changed]
-- `path/to/file` — [what changed]
-
-## Guardrails
-
-- [Any preserved behavior or safety measures]
-
-## Learnings
-
-- [Key discoveries from this change, if any]
-```
-
-Save to `docs/releases/vX.Y.Z-release.md` (or project's release notes location).
+Save to `docs/funky-ai/releases/vX.Y.Z-release.md`
 
 ### 3. Update version and root README
 
@@ -76,7 +52,7 @@ Save to `docs/releases/vX.Y.Z-release.md` (or project's release notes location).
 
 ### 4. Update ORCHESTRATOR-STATE.md
 
-- Update the version entry and release status in `ORCHESTRATOR-STATE.md`
+- view_file and Update the content of `ORCHESTRATOR-STATE.md`
 - Mark the release as completed with the new version and date
 
 ### 5. Git operations
