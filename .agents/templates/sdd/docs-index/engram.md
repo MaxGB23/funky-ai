@@ -1,6 +1,13 @@
 # Índice de Secciones: `docs/funky-ai/engram.md`
 
-- **1. ¿Qué problema resuelve?:** Gestión de la Knowledge Base con `funky engram add`.
-- **2. Requisitos y Uso:** Modos interactivo y por flags (ideal para IA).
-- **3. Categorías y Generación:** Categorías disponibles y estructura del archivo generado.
-- **4. Flags y Buenas Prácticas:** Opciones CLI, cuándo capturar, qué poner en cada campo y reglas clave.
+- **1. ¿Qué problema resuelve?:** Captura estructurada de conocimiento con indexación automática en `docs/engram/`.
+- **2. Requisitos (Automatizados):** La regla `engram-protocol.md` se instala sola (scaffold o modo standalone).
+- **3. Uso:** Modo interactivo o con flags (`--tag`, `--category`, `--desc`).
+- **4. Categorías disponibles:** `architecture`, `pattern`, `discovery`, `decision`, `bugfix`, `session` y `release`.
+- **5. Qué genera:** Archivo individual por categoría y el índice central `index.md`.
+  - **[{TYPE}][{tag}] {desc}:** Template con `Date`, `What`, `Why`, `Where` y `Learned`.
+- **6. Flags:** `-t/--tag`, `-c/--category` y `-d/--desc` con sanitización kebab-case.
+- **7. Buenas prácticas:** Cuándo, qué y cómo capturar engramas.
+  - **Cuándo capturar un engrama:** En el momento justo para bugfixes, decisiones, descubrimientos, etc.
+  - **Qué poner en cada campo:** Contenido esperado para `What`, `Why`, `Where` y `Learned`.
+  - **Reglas:** No sobrescribir, sanitizar tags y mantener el índice actualizado.
