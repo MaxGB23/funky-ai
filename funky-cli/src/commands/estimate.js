@@ -13,8 +13,9 @@ export function runEstimate(targetBase, opts = {}) {
     // ── Context (if applicable) ──
     let ctx = null;
 
-    if (opts.context) {
-      ctx = readContext(targetBase);
+    const contextArg = typeof opts.context === 'string' ? opts.context : (typeof opts.contextPath === 'string' ? opts.contextPath : null);
+    if (opts.context || opts.contextPath) {
+      ctx = readContext(targetBase, contextArg || undefined);
       if (!ctx) {
         console.error('❌ No se pudo leer context.json. Asegurate de haber ejecutado "funky pipeline assess" primero.');
         return;
@@ -93,11 +94,11 @@ export function runEstimate(targetBase, opts = {}) {
     // ── 5. Update Context ──
     if (ctx) {
       ctx.estimate.runAt = new Date().toISOString();
-      writeContext(targetBase, ctx);
+      writeContext(targetBase, ctx, contextArg || undefined);
     }
 
     // ── 6. Generate IA Prompt ──
-    const iaPrompt = generateIAPrompt(decisions, canvases.projectCanvas, canvases.infraCanvas);
+    const iaPrompt = generateIAPrompt(path.relative(targetBase, pricingGuidePath), path.relative(targetBase, decisionsTemplatePath));
     const iaBanner = generateIAPromptBanner();
     const iaFooter = generateIAPromptFooter();
 
@@ -106,9 +107,9 @@ export function runEstimate(targetBase, opts = {}) {
     console.log(`   📝 Guía de pricing: ${path.relative(targetBase, pricingGuidePath)}`);
     console.log(`   📝 Template de decisiones: ${path.relative(targetBase, decisionsTemplatePath)}`);
     console.log('\n📋 Próximos pasos:');
-    console.log('   1. Copie el prompt de abajo y péguelo en una sesión de chat con la IA.');
-    console.log('   2. La IA guiará la discusión de pricing basada en los materiales generados.');
-    console.log('   3. Documente los acuerdos en el template de decisiones durante la discusión.\n');
+    console.log('   1. Copie el prompt de abajo y péguelo en la sesión de IA del proyecto.');
+    console.log('   2. La IA leerá los archivos referenciados (pricing-guide.md y pricing-decisions.md) para guiar la discusión.');
+    console.log('   3. Documente los acuerdos en docs/funky-ai/estimate/pricing-decisions.md durante la discusión.\n');
 
     console.log(iaBanner);
     console.log('');

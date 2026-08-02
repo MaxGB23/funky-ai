@@ -66,6 +66,22 @@ describe('readContext', () => {
     const result = readContext(TARGET_BASE);
     expect(result).toBeNull();
   });
+
+  it('reads from custom contextPath when provided', () => {
+    const data = { version: 1, assess: { runAt: null } };
+    vi.mocked(readFileSync).mockImplementation((p) => {
+      const normalized = String(p).replace(/\\/g, '/');
+      if (normalized.endsWith('custom/context.json')) return JSON.stringify(data);
+      throw new Error('ENOENT');
+    });
+
+    const result = readContext(TARGET_BASE, 'custom/context.json');
+    expect(result).toEqual(data);
+
+    const calls = vi.mocked(readFileSync).mock.calls;
+    const normalizedPath = String(calls[0][0]).replace(/\\/g, '/');
+    expect(normalizedPath.endsWith('custom/context.json')).toBe(true);
+  });
 });
 
 // ═══════════════════════════════════════════════════
@@ -87,6 +103,16 @@ describe('writeContext', () => {
       JSON.stringify(ctx, null, 2),
       'utf-8'
     );
+  });
+
+  it('writes to custom contextPath when provided', () => {
+    const ctx = { version: 1, name: 'test' };
+    vi.mocked(existsSync).mockReturnValue(true);
+    writeContext(TARGET_BASE, ctx, 'custom/context.json');
+
+    const calls = vi.mocked(writeFileSync).mock.calls;
+    const normalizedPath = String(calls[0][0]).replace(/\\/g, '/');
+    expect(normalizedPath.endsWith('custom/context.json')).toBe(true);
   });
 });
 

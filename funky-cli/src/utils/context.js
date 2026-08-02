@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
-import { join, isAbsolute, resolve } from 'node:path';
+import { join, dirname, isAbsolute, resolve } from 'node:path';
 
 function pipelineDir(targetBase) {
   return join(targetBase, 'docs', 'funky-ai', 'pipeline');
@@ -7,6 +7,13 @@ function pipelineDir(targetBase) {
 
 function canvasDir(targetBase) {
   return join(targetBase, 'docs', 'funky-ai', 'canvas');
+}
+
+function resolveContextFile(targetBase, contextPath) {
+  if (!contextPath) {
+    return join(pipelineDir(targetBase), 'context.json');
+  }
+  return isAbsolute(contextPath) ? contextPath : resolve(targetBase, contextPath);
 }
 
 export function initContext() {
@@ -27,25 +34,24 @@ export function initContext() {
   };
 }
 
-export function readContext(targetBase) {
-  const contextPath = join(pipelineDir(targetBase), 'context.json');
+export function readContext(targetBase, contextPath) {
+  const contextFile = resolveContextFile(targetBase, contextPath);
   try {
-    const raw = readFileSync(contextPath, 'utf-8');
+    const raw = readFileSync(contextFile, 'utf-8');
     return JSON.parse(raw);
   } catch {
     return null;
   }
 }
 
-export function writeContext(targetBase, ctx) {
-  const dir = pipelineDir(targetBase);
+export function writeContext(targetBase, ctx, contextPath) {
+  const contextFile = resolveContextFile(targetBase, contextPath);
   try {
-    if (!existsSync(dir)) {
-      mkdirSync(dir, { recursive: true });
+    if (!existsSync(dirname(contextFile))) {
+      mkdirSync(dirname(contextFile), { recursive: true });
     }
   } catch {}
-  const contextPath = join(dir, 'context.json');
-  writeFileSync(contextPath, JSON.stringify(ctx, null, 2), 'utf-8');
+  writeFileSync(contextFile, JSON.stringify(ctx, null, 2), 'utf-8');
 }
 
 /**

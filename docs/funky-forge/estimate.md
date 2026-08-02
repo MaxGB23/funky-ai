@@ -95,6 +95,6 @@ Con `--context`, además actualiza `docs/funky-ai/pipeline/context.json` registr
 
 Después de ejecutar `funky estimate`, el usuario debe:
 
-1. Copiar el prompt de IA impreso en consola y usarlo en una sesión de chat.
+1. Copiar el prompt de IA impreso en consola y usarlo en la sesión de IA del proyecto. El prompt referencia `docs/funky-ai/estimate/pricing-guide.md` y `docs/funky-ai/estimate/pricing-decisions.md`; la IA puede leer esos archivos directamente.
 2. La IA guía la discusión de pricing basada en los materiales generados.
 3. Documentar los acuerdos en `pricing-decisions.md` durante la discusión colaborativa.

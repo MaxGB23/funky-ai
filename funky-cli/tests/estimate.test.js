@@ -211,24 +211,17 @@ describe('generateDecisionsTemplate', () => {
 // ═══════════════════════════════════════════════════
 
 describe('generateIAPrompt', () => {
-  it('includes canvas content when decisions is null (invite from scratch)', () => {
-    const result = generateIAPrompt(null, CANVAS_PROJECT_CONTENT, CANVAS_INFRA_CONTENT);
-    expect(result).toContain('React 18');
-    expect(result).toContain('AWS EC2');
+  it('referencia los archivos de material en lugar de incrustar contenido', () => {
+    const result = generateIAPrompt('docs/funky-ai/estimate/pricing-guide.md', 'docs/funky-ai/estimate/pricing-decisions.md');
+    expect(result).toContain('pricing-guide.md');
+    expect(result).toContain('pricing-decisions.md');
     expect(result).toContain('sesión de pricing');
-    expect(result).toContain('No hay decisiones arquitectónicas documentadas previamente');
-  });
-
-  it('includes decisions context when decisions is present', () => {
-    const result = generateIAPrompt(DECISIONS_CONTENT, CANVAS_PROJECT_CONTENT, CANVAS_INFRA_CONTENT);
-    expect(result).toContain('Next.js');
-    expect(result).toContain('PostgreSQL');
-    expect(result).toContain('React 18');
-    expect(result).toContain('sesión de pricing');
+    expect(result).not.toContain('React 18');
+    expect(result).not.toContain('AWS EC2');
   });
 
   it('uses neutral Spanish with proper accents', () => {
-    const result = generateIAPrompt(DECISIONS_CONTENT, CANVAS_PROJECT_CONTENT, CANVAS_INFRA_CONTENT);
+    const result = generateIAPrompt('docs/funky-ai/estimate/pricing-guide.md', 'docs/funky-ai/estimate/pricing-decisions.md');
     expect(result).toMatch(/[áéíóúñ]/i);
     expect(result).toContain('precio');
     expect(result).toMatch(/discutir/i);
@@ -443,6 +436,27 @@ describe('--context flag', () => {
 
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const contextCall = writeCalls.find(c => String(c[0]).endsWith('context.json'));
+    expect(contextCall).toBeTruthy();
+    const writtenData = JSON.parse(contextCall[1]);
+    expect(writtenData.estimate.runAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+  });
+
+  it('honors a custom context path', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    addDecisions(mf, DECISIONS_CONTENT);
+    mf[path.join(CWD, 'custom', 'context.json')] = JSON.stringify({
+      assess: { decisionsFile: null, runAt: null, dynamicQuestions: [] },
+      estimate: { runAt: null },
+      pipeline: { lastCommand: null, completed: [] }
+    });
+    applyMocks(mf);
+
+    runEstimate(CWD, { context: 'custom/context.json' });
+
+    const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
+    const contextCall = writeCalls.find(c => String(c[0]).replace(/\\/g, '/').endsWith('custom/context.json'));
     expect(contextCall).toBeTruthy();
     const writtenData = JSON.parse(contextCall[1]);
     expect(writtenData.estimate.runAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);

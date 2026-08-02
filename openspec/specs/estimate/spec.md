@@ -65,16 +65,17 @@ El sistema DEBE crear `docs/funky-ai/estimate/pricing-decisions.md` con seccione
 
 ### R5: Prompt IA en español neutro
 
-El sistema DEBE generar un prompt en español neutro para que la IA inicie la sesión de pricing. Incluye: contexto del proyecto (canvases), decisiones arquitectónicas, e invitación a discutir pricing. Se imprime en consola como parte del summary.
+El sistema DEBE generar un prompt en español neutro para que la IA inicie la sesión de pricing. El prompt DEBE referenciar (no incrustar) el material de análisis: `docs/funky-ai/estimate/pricing-guide.md` (contexto del proyecto, decisiones arquitectónicas y estructura de sesión) y `docs/funky-ai/estimate/pricing-decisions.md` (para documentar acuerdos). Se imprime en consola como parte del summary.
 
 - GIVEN datos completos
 - WHEN se genera el prompt
-- THEN se produce texto en español neutro listo para copiar al chat
-- AND invita a discutir pricing basado en decisiones y canvases
+- THEN se produce texto en español neutro listo para copiar a la sesión de IA
+- AND referencia `docs/funky-ai/estimate/pricing-guide.md` y `docs/funky-ai/estimate/pricing-decisions.md`
+- AND invita a discutir pricing
 
 - GIVEN no existe `docs/funky-ai/assess/architecture-decisions.md`
 - WHEN se genera el prompt
-- THEN indica que no hay decisiones previas
+- THEN el prompt no cambia (la guía `pricing-guide.md` ya contiene el placeholder "Sin decisiones documentadas")
 - AND invita a discutir desde cero con la info de canvases disponible
 
 ### R6: Códigos de salida y output

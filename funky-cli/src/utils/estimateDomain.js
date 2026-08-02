@@ -63,34 +63,23 @@ export function generateIAPromptBanner() {
 
 /**
  * Genera prompt en español neutro para iniciar sesión de pricing colaborativa.
+ * Referencia los archivos generados (material de análisis) en lugar de incrustar
+ * su contenido: la IA del entorno de desarrollo puede leer los archivos.
  * Retorna solo el cuerpo del prompt (sin banner decorativo).
  */
-export function generateIAPrompt(decisions, projectCanvas, infraCanvas) {
-  const decisionsSection = decisions
-    ? `Decisiones arquitectónicas:\n${decisions}`
-    : 'No hay decisiones arquitectónicas documentadas previamente. La discusión de pricing partirá desde cero con la información de los canvases disponible.';
-
-  const projectSection = projectCanvas || 'No disponible.';
-  const infraSection = infraCanvas || 'No disponible.';
-
+export function generateIAPrompt(pricingGuidePath, decisionsPath) {
   return `Eres un asistente experto en pricing de proyectos de software. Vamos a realizar una sesión de pricing colaborativa para definir el presupuesto de un proyecto.
 
-Contexto del proyecto basado en los canvases:
+Material de análisis:
+- ${pricingGuidePath}: contexto del proyecto, decisiones arquitectónicas y estructura de la sesión.
 
-[PROJECT-CANVAS]
-${projectSection}
+Los acuerdos de la sesión se documentan en:
+- ${decisionsPath}
 
-[INFRA-CANVAS]
-${infraSection}
-
-${decisionsSection}
-
-Los materiales de apoyo se encuentran en el archivo .agents/prompts/pricing-guide.md.
-
-Por favor, guía la sesión de pricing con esta estructura:
-1. Revisar el contexto del proyecto y las decisiones arquitectónicas
-2. Discutir factores de costo (infraestructura, complejidad técnica, equipo, timeline)
-3. Definir acuerdos de pricing
+Por favor, guía la sesión con esta estructura:
+1. Revisar el contexto del proyecto y las decisiones arquitectónicas.
+2. Discutir factores de costo (infraestructura, complejidad técnica, equipo, timeline).
+3. Definir acuerdos de pricing.
 
 Comienza preguntando al equipo si tienen algún presupuesto o rango de precio en mente.`;
 }

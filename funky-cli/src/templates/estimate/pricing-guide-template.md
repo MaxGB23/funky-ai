@@ -28,9 +28,9 @@ Revisar decisiones arquitectónicas y canvases para entender el alcance del proy
 Costos estimados de los servicios elegidos en los canvases. Investigar precios actuales de cada proveedor.
 
 ### 4. Acuerdos de Pricing (15 min)
-Definir precio final usando la guía de la sesión. Documentar en pricing-decisions-template.md.
+Definir precio final usando la guía de la sesión. Documentar los acuerdos en docs/funky-ai/estimate/pricing-decisions.md.
 
 ## Instrucciones
 1. Revise esta guía con el equipo.
 2. Discuta cada factor de costo.
-3. Documente los acuerdos en el template de decisiones.
+3. Documente los acuerdos en docs/funky-ai/estimate/pricing-decisions.md.
