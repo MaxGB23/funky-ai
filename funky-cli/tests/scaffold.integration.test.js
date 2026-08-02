@@ -40,6 +40,9 @@ describe('runScaffold() Integration', () => {
   });
 
   it('NO debería copiar la plantilla canónica worker-handoff al nuevo workspace', () => {
+    const intentions = runScaffold({ templatesDir, targetBase: tmpDir });
+    executeIntentions(intentions);
+
     const workerHandoffPath = path.join(tmpDir, 'docs', 'funky-ai', 'workers', 'plantilla-worker-handoff.md');
     expect(fs.existsSync(workerHandoffPath)).toBe(false);
   });
