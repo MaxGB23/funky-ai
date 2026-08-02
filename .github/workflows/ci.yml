@@ -36,10 +36,6 @@ jobs:
         working-directory: ./funky-cli
         run: pnpm install --frozen-lockfile
 
-      - name: Sync templates
-        working-directory: ./funky-cli
-        run: pnpm sync
-
       - name: Run tests
         working-directory: ./funky-cli
         run: pnpm test

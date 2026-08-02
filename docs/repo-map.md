@@ -1,6 +1,6 @@
 # Mapa Estructural del Repositorio
 
-> Última actualización: 2026-07-30
+> Última actualización: 2026-08-01
 > Propósito: Directorio de navegación del repo. Para el pitch y quick start, ver [`README.md`](../README.md).
 
 ---
@@ -24,7 +24,6 @@
 | [`src/commands/`](../funky-cli/src/commands/) | Comandos del CLI |
 | [`src/templates/`](../funky-cli/src/templates/) | Templates por comando |
 | [`src/utils/`](../funky-cli/src/utils/) | Utilidades compartidas |
-| [`scripts/`](../funky-cli/scripts/) | Scripts internos (sync-templates) |
 
 ### Comandos
 
@@ -60,7 +59,7 @@ docs/
 | [`scaffold.md`](../docs/funky-ai/scaffold.md) | Árbol completo de inyección del ecosistema agéntico |
 | [`feature.md`](../docs/funky-ai/feature.md) | Tiers T1/T2/T3, inyección condicional, golden vs fallback |
 | [`engram.md`](../docs/funky-ai/engram.md) | Knowledge base: categorías, flags, buenas prácticas |
-| [`conceptos/`](../docs/funky-ai/conceptos/) | Conceptos: arquitectura SDD, manual del orquestador, guía de equipo, estudios |
+| [`conceptos/`](../docs/funky-ai/conceptos/) | Conceptos: arquitectura SDD, manual del orquestador, guía de equipo, flujos de templates (golden vs base), estudios |
 | [`prompts/`](../docs/funky-ai/prompts/) | Prompts globales del framework y system prompts de cada fase SDD |
 | [`operaciones/qa-governance.md`](../docs/funky-ai/operaciones/qa-governance.md) | QA governance |
 | [`releases/`](../docs/funky-ai/releases/) | Release notes y retrospectivas |
