@@ -27,6 +27,7 @@ const __testDir = path.dirname(fileURLToPath(import.meta.url));
 const TPL_DIR = path.resolve(__testDir, '../src/templates/assess');
 const TPL_REVIEW_PATH = path.join(TPL_DIR, 'architecture-review-template.md');
 const TPL_DECISIONS_PATH = path.join(TPL_DIR, 'architecture-decisions-template.md');
+const TPL_RISK_PATTERNS_PATH = path.join(TPL_DIR, 'risk-patterns-template.md');
 
 const CANVAS_PROJECT_CONTENT = 'React 18 + Next.js 14\nPatrón: Clean Architecture';
 const CANVAS_INFRA_CONTENT = 'AWS EC2 + PostgreSQL\nDeploy: Docker Compose';
@@ -34,6 +35,7 @@ const CWD = process.cwd();
 
 // Canvas location: docs/funky-ai/canvas/
 const CANVAS_DIR = path.join(CWD, 'docs', 'funky-ai', 'canvas');
+const RISK_PATTERNS_DEST_PATH = path.join(CWD, 'docs', 'funky-ai', 'assess', 'risk-patterns.md');
 
 const DEFAULT_TEMPLATE = `# 🗣️ Guía de Discusión Arquitectónica
 
@@ -60,6 +62,9 @@ Confirmar stack elegido y NFRs. Leer los canvases embebidos arriba. La IA descub
 - **Concurrencia y Base de Datos**: ¿La base de datos soporta la concurrencia esperada? Revisa límites de conexiones y estrategias de escalado.
 - **SLA y Redundancia**: ¿La arquitectura elegida puede cumplir el SLA requerido? Un solo nodo implica downtime en deploys y fallos de hardware.
 
+### Patrones de Riesgo a Considerar
+Los patrones de referencia listados abajo son candidatos a evaluar, no riesgos confirmados. La IA debe leer los canvases embebidos arriba en la Fase 4 y decidir, junto con el equipo, cuáles aplican al proyecto concreto.
+
 {{DYNAMIC_QUESTIONS}}
 
 ### Fase 4: Riesgos Detectados (15 min)
@@ -74,10 +79,23 @@ Documentar las decisiones finales en docs/architecture-decisions.md. Incluir rat
 
 const DEFAULT_DECISIONS_TEMPLATE = '# Decisiones Arquitectónicas\n{{DATE}}';
 
+const DEFAULT_RISK_PATTERNS_TEMPLATE = `# Patrones de Riesgo de Referencia
+
+> Documento VIVO y editable por el equipo.
+
+## K8s / Kubernetes
+- **Señal a buscar en los canvases:** el INFRA-CANVAS menciona K8s.
+- **Riesgo a considerar:** costos operativos del clúster.
+
+## SQLite
+- **Señal a buscar en los canvases:** el INFRA-CANVAS elige SQLite.
+- **Riesgo a considerar:** límites de concurrencia.`;
+
 function createMockFiles() {
   return {
     [TPL_REVIEW_PATH]: DEFAULT_TEMPLATE,
-    [TPL_DECISIONS_PATH]: DEFAULT_DECISIONS_TEMPLATE
+    [TPL_DECISIONS_PATH]: DEFAULT_DECISIONS_TEMPLATE,
+    [TPL_RISK_PATTERNS_PATH]: DEFAULT_RISK_PATTERNS_TEMPLATE
   };
 }
 
@@ -277,6 +295,98 @@ describe('assess Command - action flow', () => {
 
     logSpy.mockRestore();
   });
+
+  it('overwrites architecture-review.md when the file already exists', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    mf[path.join(CWD, 'docs', 'funky-ai', 'assess', 'architecture-review.md')] = '# Previous stale content';
+    applyMocks(mf);
+
+    assessCommand.parse(['node', 'assess'], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+
+    const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
+    const reviewCall = writeCalls.find(c => String(c[0]).includes('architecture-review.md'));
+    expect(reviewCall).toBeTruthy();
+    const writtenContent = String(reviewCall[1]);
+
+    expect(writtenContent).toContain('Fase 1: Contexto');
+    expect(writtenContent).toContain(CANVAS_PROJECT_CONTENT);
+    expect(writtenContent).not.toContain('Previous stale content');
+  });
+
+  it('creates risk-patterns.md from the template when it does not exist', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    applyMocks(mf);
+
+    assessCommand.parse(['node', 'assess'], { from: 'user' });
+
+    const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
+    const patternsCall = writeCalls.find(c => String(c[0]).includes('risk-patterns.md'));
+    expect(patternsCall).toBeTruthy();
+    expect(String(patternsCall[1])).toContain('Patrones de Riesgo de Referencia');
+  });
+
+  it('does not overwrite an existing team risk-patterns.md', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    mf[RISK_PATTERNS_DEST_PATH] = '# Patrones del Equipo\n\n## Microservicios\n';
+    applyMocks(mf);
+
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+    assessCommand.parse(['node', 'assess'], { from: 'user' });
+
+    const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
+    const patternsCall = writeCalls.find(c => String(c[0]).includes('risk-patterns.md'));
+    expect(patternsCall).toBeFalsy();
+    const logMsgs = logSpy.mock.calls.map(c => String(c));
+    expect(logMsgs.some(m => m.includes('risk-patterns.md ya existe'))).toBe(true);
+
+    logSpy.mockRestore();
+  });
+
+  it('embeds the surfaced risk patterns in the guide as candidates to consider', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    mf[RISK_PATTERNS_DEST_PATH] = '# Patrones del Equipo\n\n## Microservicios\n- **Riesgo:** complejidad de deploys.';
+    applyMocks(mf);
+
+    assessCommand.parse(['node', 'assess'], { from: 'user' });
+
+    const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
+    const reviewCall = writeCalls.find(c => String(c[0]).includes('architecture-review.md'));
+    const writtenContent = String(reviewCall[1]);
+
+    expect(writtenContent).toContain('Patrones de Riesgo a Considerar');
+    expect(writtenContent).toContain('candidatos a evaluar');
+    expect(writtenContent).toContain('Microservicios');
+    expect(writtenContent).not.toContain('K8s / Kubernetes');
+  });
+
+  it('does not generate regex-detected C2 questions from canvas content', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', 'Equipo junior con React');
+    addCanvas(mf, 'INFRA-CANVAS.md', 'Deploy en K8s cluster con SQLite en single node');
+    applyMocks(mf);
+
+    assessCommand.parse(['node', 'assess'], { from: 'user' });
+
+    const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
+    const reviewCall = writeCalls.find(c => String(c[0]).includes('architecture-review.md'));
+    const writtenContent = String(reviewCall[1]);
+
+    expect(writtenContent).not.toContain('Elegiste Kubernetes');
+    expect(writtenContent).not.toContain('SQLite es liviano pero tiene límites');
+    expect(writtenContent).not.toContain('Con un solo nodo, cualquier deploy');
+    expect(writtenContent).not.toContain('El equipo es principalmente Junior');
+  });
 });
 
 // ── --context flag tests ──
@@ -345,6 +455,47 @@ describe('--context flag', () => {
     // Verify context.json was written with assess results
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const contextCall = writeCalls.find(c => String(c[0]).endsWith('context.json'));
+    expect(contextCall).toBeTruthy();
+    const writtenData = JSON.parse(contextCall[1]);
+    expect(writtenData.assess.runAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+    expect(Array.isArray(writtenData.assess.dynamicQuestions)).toBe(true);
+  });
+
+  it('writes the surfaced risk pattern names to assess.dynamicQuestions', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    addContextJson(mf, {
+      assess: { runAt: null, dynamicQuestions: [] },
+      estimate: { runAt: null },
+      pipeline: { lastCommand: null, completed: [] }
+    });
+    mf[RISK_PATTERNS_DEST_PATH] = '# Patrones del Equipo\n\n## Microservicios\n## Cola Síncrona';
+    applyMocks(mf);
+
+    runAssess(CWD, { context: true });
+
+    const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
+    const contextCall = writeCalls.find(c => String(c[0]).endsWith('context.json'));
+    const writtenData = JSON.parse(contextCall[1]);
+    expect(writtenData.assess.dynamicQuestions).toEqual(['Microservicios', 'Cola Síncrona']);
+  });
+
+  it('honors a custom context path', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    mf[path.join(CWD, 'custom', 'context.json')] = JSON.stringify({
+      assess: { runAt: null, dynamicQuestions: [] },
+      estimate: { runAt: null },
+      pipeline: { lastCommand: null, completed: [] }
+    });
+    applyMocks(mf);
+
+    runAssess(CWD, { context: 'custom/context.json' });
+
+    const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
+    const contextCall = writeCalls.find(c => String(c[0]).replace(/\\/g, '/').endsWith('custom/context.json'));
     expect(contextCall).toBeTruthy();
     const writtenData = JSON.parse(contextCall[1]);
     expect(writtenData.assess.runAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);

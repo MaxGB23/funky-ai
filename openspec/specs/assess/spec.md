@@ -8,7 +8,7 @@ It reflects the **current state** of all requirements. Read this file — NOT th
 
 ## Propósito
 
-El comando `funky assess` facilita una sesión de discusión arquitectónica entre el equipo humano y la IA. No evalúa, no produce scores, no falla. Inyecta una guía de discusión basada en los canvases del proyecto (PROJECT-CANVAS + INFRA-CANVAS) y un template de documentación de decisiones.
+El comando `funky assess` facilita una sesión de discusión arquitectónica entre el equipo humano y la IA. No evalúa, no produce scores, no falla. Inyecta una guía de discusión basada en los canvases del proyecto (PROJECT-CANVAS + INFRA-CANVAS), los patrones de riesgo de referencia (`risk-patterns.md`) como candidatos a considerar, y un template de documentación de decisiones.
 
 ## Requirements
 
@@ -57,7 +57,7 @@ The system MUST detect unfilled placeholders (`[Responde aquí]`) in canvas cont
 
 ### R3: Discussion Guide Generation
 
-The system MUST generate a discussion guide at `docs/funky-ai/assess/architecture-review.md` containing: embedded canvas content, 3 static C1 questions (budget+infra, RPS+DB, SLA+redundancy), optionally 1-2 dynamic C2 questions, and a 6-phase discussion structure (Contexto, Preocupaciones, Preguntas Guía, Riesgos, Alternativas, Acuerdos). The file MUST be overwritten if it already exists.
+The system MUST generate a discussion guide at `docs/funky-ai/assess/architecture-review.md` containing: embedded canvas content, 3 static C1 questions (budget+infra, RPS+DB, SLA+redundancy), a risk-patterns section listing the surfaced candidate patterns, and a 6-phase discussion structure (Contexto, Preocupaciones, Preguntas Guía, Riesgos, Alternativas, Acuerdos). The file MUST be overwritten if it already exists.
 
 #### Scenario: Happy path — full generation
 
@@ -74,22 +74,31 @@ The system MUST generate a discussion guide at `docs/funky-ai/assess/architectur
 - THEN the existing file is overwritten with new content
 - AND no backup of the old file is created
 
-### R4: C2 Dynamic Questions
+### R4: Risk Patterns Surfacing
 
-The system SHOULD generate 1-2 additional dynamic questions (C2) when canvas content matches known patterns: K8s/Kubernetes in infra, SQLite as DB, Single Node redundancy, or Junior team + complex infra. If no patterns match, the system MUST generate the guide with only C1 static questions.
+The system MUST surface reference risk patterns from `docs/funky-ai/assess/risk-patterns.md` as candidates to consider in the discussion guide, instead of detecting risks by matching regular expressions against canvas content. The system MUST create `docs/funky-ai/assess/risk-patterns.md` from the built-in template IF the file does not exist, and MUST NOT overwrite it when it already exists (it is a team-owned living document). The guide MUST list all surfaced patterns as candidates and MUST instruct the AI to evaluate, in Phase 4, which patterns apply to the concrete project by reading the canvases. The system MUST NOT filter or match patterns based on canvas content.
 
-#### Scenario: Pattern match triggers C2
+#### Scenario: risk-patterns.md does not exist — created from template
 
-- GIVEN INFRA-CANVAS mentions "Kubernetes" as deployment infrastructure
-- WHEN C2 detection runs
-- THEN a dynamic question about K8s operational costs is included in the guide
+- GIVEN `docs/funky-ai/assess/risk-patterns.md` does not exist
+- WHEN `funky assess` executes
+- THEN the file is created with the content of the built-in template
+- AND the guide includes the template patterns as candidates to consider
 
-#### Scenario: No pattern match — C1 only
+#### Scenario: risk-patterns.md already exists — team content preserved
 
-- GIVEN canvas content does not match any C2 pattern (no K8s, no SQLite, no Single Node, Senior team)
-- WHEN C2 detection runs
-- THEN no dynamic questions are added
-- AND the guide contains only the 3 C1 static questions
+- GIVEN `docs/funky-ai/assess/risk-patterns.md` already exists with team-specific patterns
+- WHEN `funky assess` executes
+- THEN the file is NOT modified
+- AND a notice is printed indicating the file already exists
+- AND the guide includes the team-specific patterns as candidates
+
+#### Scenario: Guide lists patterns as candidates, not confirmed risks
+
+- GIVEN the discussion guide is generated
+- THEN the guide lists the surfaced patterns as candidates to evaluate
+- AND the guide instructs the AI to evaluate in Phase 4 which patterns apply by reading the canvases
+- AND no pattern is asserted in the guide as a confirmed risk
 
 ### R5: Decisions Template
 
@@ -122,22 +131,23 @@ The system MUST exit with code 0 in all scenarios. No other exit codes are permi
 
 ### R-A1: `--context` flag for context file integration
 
-The system MUST accept an optional `--context <path>` / `-c` flag on `funky assess`. When the flag is provided, the system MUST read canvas content from paths defined in `context.json` at the given path instead of running its own `findCanvas()` discovery. After generating the discussion guide, the system MUST write `assess.runAt` (ISO 8601 timestamp) and `assess.dynamicQuestions` (array of C2 question objects) to the same `context.json` file. When the flag is NOT provided, the system MUST behave exactly as specified in the main assess spec (backward compatible).
+The system MUST accept an optional `--context <path>` / `-c` flag on `funky assess`. When the flag is provided, the system MUST use `context.json` at the given path only for execution and persistence metadata (such as `assess.runAt` and `assess.dynamicQuestions`). Canvas content MUST ALWAYS be discovered from the filesystem via `findCanvas()`, regardless of whether `--context` is provided. After generating the discussion guide, the system MUST write `assess.runAt` (ISO 8601 timestamp) and `assess.dynamicQuestions` (array of surfaced risk pattern names) to the same `context.json` file. When the flag is NOT provided, the system MUST behave exactly as specified in the main assess spec (backward compatible).
 
-#### Scenario: --context provides canvas paths
+#### Scenario: --context keeps canvas discovery on the filesystem
 
 - GIVEN `funky assess --context /path/to/context.json` is invoked
-- AND `context.json` contains `{ "canvases": { "projectCanvas": "<content>", "projectSource": "context", "infraCanvas": "<content>", "infraSource": "context" } }`
+- AND `context.json` contains only execution metadata (no canvas content)
 - WHEN the command executes
-- THEN canvas content is read from the context object
-- AND `findCanvas()` is NOT called in filesystem
+- THEN canvas content is read via `findCanvas()` from the filesystem
+- AND `context.json` is used only for execution metadata such as run timestamps and dynamic questions
+- AND no canvas data is read from the context object
 
 #### Scenario: --context writes assess results
 
 - GIVEN `funky assess --context ./context.json` completes successfully
 - WHEN the guide is generated
 - THEN `context.json` is updated with `assess.runAt` set to the current ISO timestamp
-- AND `assess.dynamicQuestions` contains the generated C2 questions (or empty array)
+- AND `assess.dynamicQuestions` contains the surfaced risk pattern names (or empty array)
 
 #### Scenario: No --context flag — full backward compatibility
 

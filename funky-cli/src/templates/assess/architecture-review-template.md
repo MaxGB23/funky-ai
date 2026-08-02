@@ -23,6 +23,9 @@ Confirmar stack elegido y NFRs. Leer los canvases embebidos arriba. La IA descub
 - **Concurrencia y Base de Datos**: ¿La base de datos soporta la concurrencia esperada? Revisa límites de conexiones y estrategias de escalado.
 - **SLA y Redundancia**: ¿La arquitectura elegida puede cumplir el SLA requerido? Un solo nodo implica downtime en deploys y fallos de hardware.
 
+### Patrones de Riesgo a Considerar
+Los patrones de referencia listados abajo son **candidatos a evaluar**, no riesgos confirmados. La IA debe leer los canvases embebidos arriba en la Fase 4 y decidir, junto con el equipo, cuáles aplican al proyecto concreto.
+
 {{DYNAMIC_QUESTIONS}}
 
 ### Fase 4: Riesgos Detectados (15 min)

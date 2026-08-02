@@ -2,7 +2,7 @@ import { Command } from 'commander';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { generateGuideQuestions } from '../utils/assessRules.js';
+import { surfaceRiskPatterns } from '../utils/assessRules.js';
 import { readContext, writeContext, findCanvases, countUnfilledSections } from '../utils/context.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -38,8 +38,9 @@ export function runAssess(targetBase, opts = {}) {
   // ── 1. Canvas Discovery ──
   let ctx = null;
 
+  const contextArg = typeof opts.context === 'string' ? opts.context : (typeof opts.contextPath === 'string' ? opts.contextPath : null);
   if (opts.context || opts.contextPath) {
-    ctx = readContext(targetBase);
+    ctx = readContext(targetBase, contextArg || undefined);
     if (!ctx) {
       console.error('❌ No se pudo leer context.json. Asegurate de haber ejecutado "funky pipeline assess" primero.');
       return;
@@ -66,20 +67,36 @@ export function runAssess(targetBase, opts = {}) {
     console.warn(`⚠️  Se detectaron ${unfilledCount} secciones sin completar ("[Responde aquí]") en los canvases. La discusión se basará en datos parciales.`);
   }
 
-  // ── 3. Generate Guide Questions ──
-  let dynamicQuestions;
+  // ── 3. Surface Risk Patterns ──
+  const templatesDir = path.join(__dirname, '../templates/assess');
+  const patternsTemplatePath = path.join(templatesDir, 'risk-patterns-template.md');
+  const patternsDestPath = path.join(targetBase, 'docs', 'funky-ai', 'assess', 'risk-patterns.md');
+
+  // Crea risk-patterns.md solo si no existe (documento vivo del equipo, no se sobrescribe).
+  if (!fs.existsSync(patternsDestPath)) {
+    try {
+      const patternsContent = fs.readFileSync(patternsTemplatePath, 'utf8');
+      fs.mkdirSync(path.dirname(patternsDestPath), { recursive: true });
+      fs.writeFileSync(patternsDestPath, patternsContent, 'utf8');
+      console.log('📄 Patrones de riesgo de referencia creados en docs/funky-ai/assess/risk-patterns.md (edítalos según tu contexto).');
+    } catch (err) {
+      const msg = err.code === 'EACCES' ? `Error de permisos al crear "${patternsDestPath}". Verifica que tengas permisos de escritura.` : err.message;
+      console.warn('⚠️  No se pudo crear docs/funky-ai/assess/risk-patterns.md:', msg);
+    }
+  } else {
+    console.log('ℹ️  docs/funky-ai/assess/risk-patterns.md ya existe — no se modificó.');
+  }
+
+  let surfaceResult;
   try {
-    dynamicQuestions = generateGuideQuestions({
-      projectCanvas,
-      infraCanvas
-    });
+    const patternsTemplateContent = fs.readFileSync(patternsTemplatePath, 'utf8');
+    surfaceResult = surfaceRiskPatterns(targetBase, patternsTemplateContent);
   } catch (err) {
-    console.warn('⚠️  Error al generar preguntas dinámicas:', err.message);
-    dynamicQuestions = { dynamic: [] };
+    console.warn('⚠️  Error al superficiar patrones de riesgo:', err.message);
+    surfaceResult = { content: '', patterns: [] };
   }
 
   // ── 4. Interpolate Template ──
-  const templatesDir = path.join(__dirname, '../templates/assess');
   const reviewTemplatePath = path.join(templatesDir, 'architecture-review-template.md');
 
   let templateContent;
@@ -89,14 +106,12 @@ export function runAssess(targetBase, opts = {}) {
     throw new Error(`Template architecture-review-template.md no encontrado en ${reviewTemplatePath}. La instalación está corrupta.`);
   }
 
-  const dynamicQuestionsText = dynamicQuestions.dynamic.length > 0
-    ? dynamicQuestions.dynamic.map(q => `- **${q.category}**: ${q.question}`).join('\n')
-    : '';
+  const riskPatternsText = surfaceResult.content.trim();
 
   let outputContent = templateContent
     .replace('{{PROJECT_CANVAS_CONTENT}}', projectCanvas)
     .replace('{{INFRA_CANVAS_CONTENT}}', infraCanvas)
-    .replace('{{DYNAMIC_QUESTIONS}}', dynamicQuestionsText);
+    .replace('{{DYNAMIC_QUESTIONS}}', riskPatternsText);
 
   // ── 5. Write Output ──
   const assessDir = path.join(targetBase, 'docs', 'funky-ai', 'assess');
@@ -108,15 +123,11 @@ export function runAssess(targetBase, opts = {}) {
   }
 
   const outputPath = path.join(assessDir, 'architecture-review.md');
-  if (fs.existsSync(outputPath)) {
-    console.warn(`⚠️  "${outputPath}" ya existe. No se sobrescribió.`);
-  } else {
-    try {
-      fs.writeFileSync(outputPath, outputContent, 'utf8');
-    } catch (err) {
-      const msg = err.code === 'EACCES' ? `Error de permisos al escribir "${outputPath}". Verifica que tengas permisos de escritura.` : err.message;
-      console.warn('⚠️  No se pudo escribir el archivo de guía:', msg);
-    }
+  try {
+    fs.writeFileSync(outputPath, outputContent, 'utf8');
+  } catch (err) {
+    const msg = err.code === 'EACCES' ? `Error de permisos al escribir "${outputPath}". Verifica que tengas permisos de escritura.` : err.message;
+    console.warn('⚠️  No se pudo escribir el archivo de guía:', msg);
   }
 
   // ── 6. Decisions Template ──
@@ -135,19 +146,20 @@ export function runAssess(targetBase, opts = {}) {
       console.warn('⚠️  No se pudo crear docs/funky-ai/assess/architecture-decisions.md:', msg);
     }
   } else {
-    console.log('ℹ️  docs/architecture-decisions.md ya existe — no se modificó.');
+    console.log('ℹ️  docs/funky-ai/assess/architecture-decisions.md ya existe — no se modificó.');
   }
 
   // ── 7. Write Context (if applicable) ──
   if (ctx) {
     ctx.assess.runAt = new Date().toISOString();
-    ctx.assess.dynamicQuestions = dynamicQuestions.dynamic || [];
-    writeContext(targetBase, ctx);
+    ctx.assess.dynamicQuestions = surfaceResult.patterns || [];
+    writeContext(targetBase, ctx, contextArg || undefined);
   }
 
   // ── 8. Summary ──
   console.log('\n✅ Guía de discusión generada exitosamente.');
   console.log(`   📝 Guía: ${path.relative(targetBase, outputPath)}`);
+  console.log('   📝 Patrones de riesgo: docs/funky-ai/assess/risk-patterns.md');
   console.log(`   📝 Decisiones: docs/funky-ai/assess/architecture-decisions.md`);
   console.log('\n📋 Próximos pasos:');
   console.log(`   1. Abre una sesión de chat con la IA.`);

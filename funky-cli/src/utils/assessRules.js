@@ -1,39 +1,45 @@
-export function generateGuideQuestions(canvasData) {
-  const { projectCanvas = '', infraCanvas = '' } = canvasData || {};
-  const combined = (projectCanvas + ' ' + infraCanvas).toLowerCase();
-  const dynamic = [];
+import fs from 'fs';
+import path from 'path';
 
-  // Pattern: K8s/Kubernetes
-  if (/k8s|kubernetes/i.test(infraCanvas)) {
-    dynamic.push({
-      category: 'K8s',
-      question: 'Elegiste Kubernetes. ¿Ya evaluaron los costos operativos de un clúster? En proyectos pequeños puede ser más caro que usar un PaaS.'
-    });
+/**
+ * Superficia los patrones de riesgo de referencia del proyecto como candidatos
+ * a considerar en la guía de discusión. NO detecta riesgos ni filtra por el
+ * contenido de los canvases: presenta TODOS los patrones tal cual.
+ *
+ * Lee `docs/funky-ai/assess/risk-patterns.md` del proyecto. Si el archivo no
+ * existe (o falla la lectura), devuelve el template recibido como respaldo.
+ *
+ * @param {string} targetBase Raíz del proyecto.
+ * @param {string} templateContent Contenido del template embebido como respaldo.
+ * @returns {{ content: string, patterns: string[] }} Contenido a insertar en la
+ *   guía y nombres (categorías) de los patrones superfíciados.
+ */
+export function surfaceRiskPatterns(targetBase, templateContent = '') {
+  const patternsPath = path.join(targetBase, 'docs', 'funky-ai', 'assess', 'risk-patterns.md');
+  let content;
+  try {
+    content = fs.readFileSync(patternsPath, 'utf8');
+  } catch {
+    content = templateContent;
   }
+  return {
+    content,
+    patterns: extractPatternNames(content)
+  };
+}
 
-  // Pattern: SQLite
-  if (/sqlite/i.test(infraCanvas)) {
-    dynamic.push({
-      category: 'SQLite',
-      question: 'SQLite es liviano pero tiene límites de concurrencia. Si el proyecto escala, ¿tienen pensado migrar a PostgreSQL u otro motor?'
-    });
+/**
+ * Extrae los nombres de los patrones a partir de los encabezados `##` del
+ * documento de patrones. No es detección de riesgos: solo lectura de secciones.
+ */
+function extractPatternNames(markdown) {
+  const names = [];
+  const lines = String(markdown || '').split(/\r?\n/);
+  for (const line of lines) {
+    const match = line.match(/^##\s+(.+?)\s*$/);
+    if (match) {
+      names.push(match[1].trim());
+    }
   }
-
-  // Pattern: Single Node
-  if (/single\s*nodo?|single\s*node/i.test(infraCanvas)) {
-    dynamic.push({
-      category: 'SingleNode',
-      question: 'Con un solo nodo, cualquier deploy o fallo de hardware causa downtime. ¿Tienen ventanas de mantenimiento o toleran cierto downtime?'
-    });
-  }
-
-  // Pattern: Junior + Complex Infra
-  if (/junior/i.test(combined) && /k8s|kubernetes/i.test(infraCanvas)) {
-    dynamic.push({
-      category: 'Junior',
-      question: 'El equipo es principalmente Junior y eligieron una infraestructura compleja. ¿Tienen DevOps dedicado o planean usar un PaaS que abstraiga la complejidad?'
-    });
-  }
-
-  return { dynamic };
+  return names;
 }
