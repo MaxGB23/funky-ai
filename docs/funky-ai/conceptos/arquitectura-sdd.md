@@ -26,12 +26,12 @@ Funky AI categoriza la delegación por "Tiers" dependiendo del impacto y la comp
   - `Tasks`: Divide en tareas.
   - `Verify`: Valida contra la especificación.
   - `Archive`: Cierra y documenta la feature internamente.
-  - `Post-Archive (Release)`: Inyectado condicionalmente por `funky feature`. Llena `release.md` y `docs.md` si el impacto lo amerita. El proceso frena estrictamente en operaciones Git para pedir aprobación humana antes de cerrar el SDD.
+  - `Post-Archive (Release)`: Inyectado condicionalmente por `funky feature`. Llena `release-checklist.md` y `docs.md` si el impacto lo amerita. El proceso frena estrictamente en operaciones Git para pedir aprobación humana antes de cerrar el SDD.
 - **Características:** Utiliza *subagentes ligeros*. Cada fase se apoya en *templates inyectables* (ej. `t2-explore.md`). El contexto se pasa entre fases a través de artefactos markdown, pero todo ocurre en el mismo hilo/sesión.
 
 ### Tier 3 (Insano - Custom Workflows)
 - **Finalidad:** Cambios arquitectónicos mayores, refactors complejos o scaffolding de features completas.
-- **Fases:** Utiliza un workflow SDD profundo con fases homólogas al T2, añadiendo fases exclusivas como `Design` y validación de NFRs. Al igual que el T2, culmina con un **Post-Archive** condicional donde se llenan `release.md` y `docs.md`, requiriendo aprobación humana para las operaciones de Git.
+- **Fases:** Utiliza un workflow SDD profundo con fases homólogas al T2, añadiendo fases exclusivas como `Design` y validación de NFRs. Al igual que el T2, culmina con un **Post-Archive** condicional donde se llenan `release-checklist.md` y `docs.md`, requiriendo aprobación humana para las operaciones de Git.
 - **Características:** Emplea **Subagentes Nativos**. El Orquestador delega cada fase a un LLM en un entorno aislado con su propio hilo. Esto asegura que el contexto global del Orquestador no se contamine (ni explote por tokens) con los pormenores de una implementación gigante.
 
 ---

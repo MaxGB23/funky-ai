@@ -37,17 +37,17 @@ describe('resolveFiles()', () => {
       expect(files).not.toContain('docs.md');
     });
 
-    it('T1 never includes release.md', () => {
+    it('T1 never includes release-checklist.md', () => {
       const files = resolveFiles({ tier: 'T1', docsImpact: false });
-      expect(files).not.toContain('release.md');
+      expect(files).not.toContain('release-checklist.md');
     });
 
-    // T2: tasks.md + report.md + explore/proposal/spec + release.md (always) + [docs].
+    // T2: tasks.md + report.md + explore/proposal/spec + release-checklist.md (always) + [docs].
     it('T2 / No → 6 files (base + tier + release)', () => {
       const files = resolveFiles({ tier: 'T2', docsImpact: false });
       expect(files).toEqual([
         'tasks.md', 'report.md', 'explore.md', 'proposal.md', 'spec.md',
-        'release.md',
+        'release-checklist.md',
       ]);
     });
 
@@ -55,29 +55,29 @@ describe('resolveFiles()', () => {
       const files = resolveFiles({ tier: 'T2', docsImpact: true });
       expect(files).toEqual([
         'tasks.md', 'report.md', 'explore.md', 'proposal.md', 'spec.md',
-        'docs.md', 'release.md',
+        'docs.md', 'release-checklist.md',
       ]);
     });
 
-    it('T2 always injects release.md', () => {
+    it('T2 always injects release-checklist.md', () => {
       const files = resolveFiles({ tier: 'T2', docsImpact: false });
-      expect(files).toContain('release.md');
+      expect(files).toContain('release-checklist.md');
     });
 
-    // T3: tasks.md + release.md (always) + [docs]. No report.md.
-    it('T3 / No → 2 files (tasks.md + release.md)', () => {
+    // T3: tasks.md + release-checklist.md (always) + [docs]. No report.md.
+    it('T3 / No → 2 files (tasks.md + release-checklist.md)', () => {
       const files = resolveFiles({ tier: 'T3', docsImpact: false });
-      expect(files).toEqual(['tasks.md', 'release.md']);
+      expect(files).toEqual(['tasks.md', 'release-checklist.md']);
     });
 
-    it('T3 / Sí → 3 files (tasks.md + docs.md + release.md)', () => {
+    it('T3 / Sí → 3 files (tasks.md + docs.md + release-checklist.md)', () => {
       const files = resolveFiles({ tier: 'T3', docsImpact: true });
-      expect(files).toEqual(['tasks.md', 'docs.md', 'release.md']);
+      expect(files).toEqual(['tasks.md', 'docs.md', 'release-checklist.md']);
     });
 
-    it('T3 always injects release.md', () => {
+    it('T3 always injects release-checklist.md', () => {
       const files = resolveFiles({ tier: 'T3', docsImpact: false });
-      expect(files).toContain('release.md');
+      expect(files).toContain('release-checklist.md');
     });
 
     it('T3 never includes report.md', () => {
@@ -163,7 +163,7 @@ describe('runFeature()', () => {
       expect(result.success).toBe(true);
       expect(result.copiedFiles).toHaveLength(7);
       expect(result.copiedFiles).toContain('docs.md');
-      expect(result.copiedFiles).toContain('release.md');
+      expect(result.copiedFiles).toContain('release-checklist.md');
       expect(result.copiedFiles).toContain('explore.md');
       expect(result.copiedFiles).toContain('proposal.md');
       expect(result.copiedFiles).toContain('spec.md');
@@ -191,7 +191,7 @@ describe('runFeature()', () => {
       expect(result.intentions.length).toBe(3);
     });
 
-    it('T3 / No → copies tasks.md + release.md (release always injected)', () => {
+    it('T3 / No → copies tasks.md + release-checklist.md (release always injected)', () => {
       const featureName = 'deep-feature';
       const expectedFeaturePath = path.join(fakeCwd, 'openspec', 'changes', featureName);
 
@@ -206,7 +206,7 @@ describe('runFeature()', () => {
       expect(result.success).toBe(true);
       expect(result.copiedFiles).toHaveLength(2);
       expect(result.copiedFiles).toContain('tasks.md');
-      expect(result.copiedFiles).toContain('release.md');
+      expect(result.copiedFiles).toContain('release-checklist.md');
       expect(result.copiedFiles).not.toContain('report.md');
     });
   });

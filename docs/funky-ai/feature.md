@@ -12,7 +12,7 @@ El comando presenta un selector interactivo de tres tiers. Cada tier define un c
 
 **Archivos base (siempre):** `tasks.md`, `report.md`
 
-**Condicionales:** ninguno. T1 nunca pregunta por impacto a documentación ni inyecta `release.md`.
+**Condicionales:** ninguno. T1 nunca pregunta por impacto a documentación ni inyecta `release-checklist.md`.
 
 **Total:** 2 archivos.
 
@@ -24,7 +24,7 @@ El comando presenta un selector interactivo de tres tiers. Cada tier define un c
 
 **Condicionales:** `docs.md` — se agrega solo si el usuario responde "sí" a la pregunta *¿Este cambio afecta documentación pública?*.
 
-**Siempre inyecta:** `release.md`
+**Siempre inyecta:** `release-checklist.md`
 
 **Total:** 6 archivos sin docs; 7 con docs.
 
@@ -36,7 +36,7 @@ El comando presenta un selector interactivo de tres tiers. Cada tier define un c
 
 **Condicionales:** `docs.md` — misma pregunta que en T2.
 
-**Siempre inyecta:** `release.md`
+**Siempre inyecta:** `release-checklist.md`
 
 **Total:** 2 archivos sin docs; 3 con docs.
 
@@ -45,7 +45,7 @@ El comando presenta un selector interactivo de tres tiers. Cada tier define un c
 El comando busca templates en dos ubicaciones, con prioridad para el proyecto local:
 
 1. **Golden templates** — `.agents/templates/sdd/`. Si el directorio existe y contiene los archivos solicitados, se usan estos templates.
-2. **Fallback** — `src/templates/sdd/` dentro del paquete `funky-cli`. Se usan cuando no hay golden templates disponibles.
+2. **Fallback** — `src/templates/bootstrap/sdd/` dentro del paquete `funky-cli`. Se usan cuando no hay golden templates disponibles.
 
 El resultado incluye la bandera `usedFallback` que el comando reporta al usuario con un warning si se está usando la ruta de respaldo.
 
@@ -58,7 +58,7 @@ funky feature <name>
     │
     ├─ ¿Golden templates existen en .agents/templates/sdd/?
     │   ├─ Sí → templatesToUse = .agents/templates/sdd/
-    │   └─ No  → templatesToUse = src/templates/sdd/ (fallback)
+    │   └─ No  → templatesToUse = src/templates/bootstrap/sdd/ (fallback)
     │
     ├─ selectTier (siempre)
     │   ├─ T1

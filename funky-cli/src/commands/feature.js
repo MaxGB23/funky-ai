@@ -15,27 +15,27 @@ const __dirname = path.dirname(__filename);
  * Source of truth: spec-cli-ide-boundaries.md §Diagrama de Inyección.
  *
  * T1: tasks.md + report.md. No docs, no release.
- * T2: tasks.md + report.md + explore.md + proposal.md + spec.md + [docs.md] + release.md.
- * T3: tasks.md + [docs.md] + release.md. No report.md.
+ * T2: tasks.md + report.md + explore.md + proposal.md + spec.md + [docs.md] + release-checklist.md.
+ * T3: tasks.md + [docs.md] + release-checklist.md. No report.md.
  */
 const INJECTION_MATRIX = {
   T1: {
     base: ['tasks.md', 'report.md'],
     tier: [],
     docsConditional: false, // T1 never asks about docs
-    release: false,         // T1 never injects release.md
+    release: false,         // T1 never injects release-checklist.md
   },
   T2: {
     base: ['tasks.md', 'report.md'],
     tier: ['explore.md', 'proposal.md', 'spec.md'],
     docsConditional: true,
-    release: true,          // T2 always injects release.md
+    release: true,          // T2 always injects release-checklist.md
   },
   T3: {
     base: ['tasks.md'],
     tier: [],
     docsConditional: true,
-    release: true,          // T3 always injects release.md
+    release: true,          // T3 always injects release-checklist.md
   },
 };
 
@@ -66,7 +66,7 @@ export function resolveFiles(injectionParams) {
   }
 
   if (config.release) {
-    files.push('release.md');
+    files.push('release-checklist.md');
   }
 
   return files;
@@ -118,7 +118,7 @@ export const featureCommand = new Command('feature')
   .description('Inicializa el scaffolding para una nueva feature SDD (openspec/changes/<nombre>)')
   .argument('<featureName>', 'Nombre de la feature (ej: auth-login)')
   .action(async (featureName) => {
-    const cliTemplatesDir = path.join(__dirname, '..', 'templates', 'sdd');
+    const cliTemplatesDir = path.join(__dirname, '..', 'templates', 'bootstrap', 'sdd');
     const cwd = process.cwd();
 
     // Inquirer 1: Tier (always asked)

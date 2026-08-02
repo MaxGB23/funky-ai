@@ -7,12 +7,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 describe('Templates Validation', () => {
-  it('release.md should satisfy the machine contract <MANDATORY_RELEASE_PROTOCOL>', () => {
-    const releasePath = path.join(__dirname, '../src/templates/sdd/release.md');
-    if (fs.existsSync(releasePath)) {
-      const content = fs.readFileSync(releasePath, 'utf8');
-      expect(content).toMatch(/<MANDATORY_RELEASE_PROTOCOL>/);
-    }
+  it('release-checklist.md should satisfy the machine contract <MANDATORY_RELEASE_PROTOCOL>', () => {
+    const releasePath = path.join(__dirname, '../src/templates/bootstrap/sdd/release-checklist.md');
+    const content = fs.readFileSync(releasePath, 'utf8');
+    expect(content).toMatch(/<MANDATORY_RELEASE_PROTOCOL>/);
   });
 
+  it('release-notes.md should exist in the base bootstrap/sdd templates', () => {
+    const releaseNotesPath = path.join(__dirname, '../src/templates/bootstrap/sdd/release-notes.md');
+    const content = fs.readFileSync(releaseNotesPath, 'utf8');
+    expect(content.length).toBeGreaterThan(0);
+  });
 });

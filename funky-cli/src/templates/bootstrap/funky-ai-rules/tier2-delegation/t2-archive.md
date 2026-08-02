@@ -18,4 +18,4 @@ trigger: manual
 feature_name: {change-name}
 tag: {tag-opcional}
 ```
-## 3. Siguiente fase es release.md
+## 3. Siguiente fase es release-checklist.md
