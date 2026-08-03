@@ -1,5 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterAll } from 'vitest';
 import path from 'path';
+import fs from 'fs';
 
 import { runScaffold } from '../src/commands/scaffold.js';
 
@@ -118,4 +119,48 @@ describe('runScaffold()', () => {
     });
   });
 
+});
+
+describe('runScaffold() — interpolación {{project_name}}', () => {
+  const bootstrapDir = path.join(process.cwd(), 'src/templates/bootstrap');
+  const tmpDir = path.join(process.cwd(), 'tmp-init-interpolation');
+
+  beforeEach(() => {
+    if (fs.existsSync(tmpDir)) {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
+    fs.mkdirSync(tmpDir, { recursive: true });
+  });
+
+  afterAll(() => {
+    if (fs.existsSync(tmpDir)) {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
+  });
+
+  const findReadme = (intentions) => {
+    return intentions.find(i => String(i.dest).replace(/\\/g, '/').endsWith('README.md'));
+  };
+
+  it('interpola {{project_name}} con el campo name del package.json del targetBase', () => {
+    fs.writeFileSync(path.join(tmpDir, 'package.json'), JSON.stringify({ name: 'mi-proyecto' }));
+
+    const intentions = runScaffold({ templatesDir: bootstrapDir, targetBase: tmpDir });
+
+    const readme = findReadme(intentions);
+    expect(readme).toBeTruthy();
+    expect(readme.action).toBe('create');
+    expect(readme.content).toContain('mi-proyecto');
+    expect(readme.content).not.toContain('{{project_name}}');
+  });
+
+  it('usa basename(targetBase) como fallback cuando no hay package.json', () => {
+    const intentions = runScaffold({ templatesDir: bootstrapDir, targetBase: tmpDir });
+
+    const readme = findReadme(intentions);
+    expect(readme).toBeTruthy();
+    expect(readme.action).toBe('create');
+    expect(readme.content).toContain('tmp-init-interpolation');
+    expect(readme.content).not.toContain('{{project_name}}');
+  });
 });

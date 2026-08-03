@@ -8,6 +8,28 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 /**
+ * Resuelve el nombre del proyecto destino para interpolación de templates.
+ * Fuente (en orden): campo `name` del package.json del targetBase; si no existe
+ * o no es legible, cae a basename(targetBase).
+ * @param {string} targetBase - Directorio destino.
+ * @returns {string}
+ */
+function resolveProjectName(targetBase) {
+  const pkgPath = path.join(targetBase, 'package.json');
+  try {
+    if (fs.existsSync(pkgPath)) {
+      const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+      if (typeof pkg.name === 'string' && pkg.name.trim()) {
+        return pkg.name.trim();
+      }
+    }
+  } catch {
+    // package.json ilegible o sin campo name: se cae al basename
+  }
+  return path.basename(targetBase);
+}
+
+/**
  * Lógica pura del comando `funky scaffold`.
  * Copia toda la estructura base del ecosistema Funky AI (reglas de agentes,
  * ORCHESTRATOR-STATE, plantillas SDD, directorios engram).
@@ -19,6 +41,7 @@ const __dirname = path.dirname(__filename);
  */
 export function runScaffold({ templatesDir, targetBase }) {
   const intentions = [];
+  const projectName = resolveProjectName(targetBase);
 
   /** @type {(src: string, dest: string) => void} */
   const add = (src, dest) => {
@@ -31,7 +54,20 @@ export function runScaffold({ templatesDir, targetBase }) {
 
   // ── Root files ──
   add('ORCHESTRATOR-STATE.md', 'ORCHESTRATOR-STATE.md');
-  add('README.md', 'README.md');
+  // README.md se genera interpolando {{project_name}}; si el template no se puede
+  // leer, cae al copy del archivo crudo (placeholder literal).
+  try {
+    const readmeContent = fs
+      .readFileSync(path.join(templatesDir, 'README.md'), 'utf8')
+      .replace(/{{project_name}}/g, projectName);
+    intentions.push({
+      action: 'create',
+      dest: path.join(targetBase, 'README.md'),
+      content: readmeContent,
+    });
+  } catch {
+    add('README.md', 'README.md');
+  }
   add('TEMPLATE_GUIDE.md', 'TEMPLATE_GUIDE.md');
 
   // ── funky-ai-rules/ → .agents/rules/ ──
