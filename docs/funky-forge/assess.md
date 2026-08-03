@@ -12,7 +12,7 @@ Evalúa el stack tecnológico del proyecto, facilita la discusión arquitectóni
 ## ¿Cuándo usarlo con pipeline?
 
 - Como paso intermedio del pipeline (`funky pipeline assess`), cuando se necesita compartir estado con el comando `estimate`.
-- El flag `--context` (o la ejecución vía pipeline) actualiza `docs/funky-ai/pipeline/context.json` con la fecha de ejecución y los nombres de los patrones de riesgo superfíciados, permitiendo que `estimate` consuma ese estado.
+- El flag `--context` (o la ejecución vía pipeline) actualiza `docs/funky-ai/pipeline/context.json` con el estado por fase (v2): `status: 'completed'`, fechas, duración, `artifacts`, `runAt`, `surfacedPatterns` (nombres de los patrones de riesgo superfíciados) y `decisionsFile`, permitiendo que `estimate` consuma ese estado.
 
 ## Requisitos previos
 
@@ -42,7 +42,7 @@ Evalúa el stack tecnológico del proyecto, facilita la discusión arquitectóni
 | `docs/funky-ai/assess/architecture-review.md` | Siempre (sobrescribe si existe) | Guía de discusión con canvases embebidos y patrones de riesgo a considerar |
 | `docs/funky-ai/assess/architecture-decisions.md` | Solo si no existe | Template para documentar decisiones durante la sesión |
 | `docs/funky-ai/assess/risk-patterns.md` | Solo si no existe | Patrones de riesgo de referencia, editables por el equipo |
-| `docs/funky-ai/pipeline/context.json` | Solo con `--context` | Actualiza `assess.runAt` y `assess.dynamicQuestions` |
+| `docs/funky-ai/pipeline/context.json` | Solo con `--context` | Actualiza estado de fase v2: `assess.status`/`runAt`/`surfacedPatterns`/`decisionsFile`/`artifacts` |
 
 ### architecture-review.md
 
@@ -119,8 +119,11 @@ Los patrones son **candidatos a evaluar, no riesgos confirmados**: se insertan e
 │         └── Solo si no existe (reemplaza {{DATE}})          │
 │                                                             │
 │  7. Write Context (si --context)                            │
-│     └── ctx.assess.runAt = new Date().toISOString()         │
-│     └── ctx.assess.dynamicQuestions = surfaceResult.patterns│
+│     └── updatePhaseState(ctx, 'assess', {                   │
+│     │       status: 'completed',                            │
+│     │       finishedAt, durationMs, artifacts,              │
+│     │       runAt, surfacedPatterns: surfaceResult.patterns,│
+│     │       decisionsFile })                                │
 │     └── writeContext(targetBase, ctx)                       │
 │                                                             │
 │  8. Summary + Próximos pasos                                │
@@ -131,6 +134,6 @@ Los patrones son **candidatos a evaluar, no riesgos confirmados**: se insertan e
 
 | Flag | Descripción |
 |---|---|
-| `--context, -c <path>` | Ruta al `context.json` para integración con pipeline. Habilita la escritura de `assess.runAt` y `assess.dynamicQuestions` (nombres de patrones superfíciados) en el archivo de contexto. |
+| `--context, -c <path>` | Ruta al `context.json` para integración con pipeline. Habilita la escritura del estado de fase v2: `assess.status` (`completed`), `runAt`, `surfacedPatterns` (nombres de patrones superfíciados), `decisionsFile` y `artifacts`. Si el archivo no existe, error y exit 1. |
 
 Sin `--context`, el comando ejecuta toda la lógica de canvas discovery, superficie de patrones y escritura de archivos, pero omite la actualización del pipeline context.

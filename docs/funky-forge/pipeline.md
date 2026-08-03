@@ -2,7 +2,7 @@
 
 ## ¿Qué problema resuelve?
 
-Orquestar los comandos `assess` y `estimate` con estado compartido a través de un archivo `context.json`. Esto permite: (a) mantener trazabilidad de cuándo se ejecutó cada fase, (b) pasar datos contextuales entre comandos sin intervención manual, y (c) retomar sesiones de trabajo interrumpidas.
+Orquestar los comandos `assess` y `estimate` con estado compartido a través de un archivo `docs/funky-ai/pipeline/context.json` (schema v2). Esto permite: (a) mantener trazabilidad real por fase (status `pending|running|completed|failed|skipped`, fechas, duración, artefactos, errores), (b) pasar datos contextuales entre comandos sin intervención manual, (c) retomar sesiones de trabajo interrumpidas (una fase dejada en `running` se re-ejecuta en el siguiente `all`), y (d) salida máquina-legible (`--json`) para integraciones.
 
 ## ¿Cuándo usar pipeline vs comandos individuales?
 
@@ -16,80 +16,112 @@ Orquestar los comandos `assess` y `estimate` con estado compartido a través de 
 
 ### `funky pipeline assess`
 
-1. Lee `context.json` desde `<target>/docs/funky-ai/pipeline/context.json`.
-2. Si no existe, lo crea con `initContext()` y lo persiste.
-3. Ejecuta `assess` con la opción `--context` (modo pipeline).
-4. `assess` actualiza `context.json` internamente: establece `assess.runAt` con la fecha ISO y escribe las `dynamicQuestions` que haya generado.
+1. Lee `context.json` desde `<target>/docs/funky-ai/pipeline/context.json` (typed read; v1 se migra a v2 automáticamente).
+2. Si no existe, lo crea con `initContext()` (v2) y lo persiste.
+3. Marca `assess` como `running` con `startedAt` y persiste (R-P10).
+4. Ejecuta `assess` con `{ context: true }` (modo pipeline).
+5. `assess` actualiza `context.json` vía `updatePhaseState`: `status: 'completed'`, `finishedAt`, `durationMs`, `artifacts`, `runAt`, `surfacedPatterns` y `decisionsFile`.
 
 ### `funky pipeline estimate`
 
-1. Valida que `context.json` exista. Si no, falla con error: `❌ Pipeline context not found.`.
-2. Valida que `assess.runAt` no sea `null`. Si no se ha ejecutado assess, falla con: `❌ Assess has not been run yet.`.
-3. Ejecuta `estimate` con la opción `--context`.
-4. `estimate` actualiza `context.json` internamente: establece `estimate.runAt`.
+1. Valida que `context.json` exista. Si no, falla con error: `❌ Contexto de pipeline no encontrado.`.
+2. Valida que `assess.runAt` no sea `null`. Si no se ha ejecutado assess, falla con: `❌ Assess aún no se ha ejecutado.`.
+3. Marca `estimate` como `running` con `startedAt` y persiste (R-P10).
+4. Ejecuta `estimate` con `{ context: true }`.
+5. `estimate` actualiza `context.json` vía `updatePhaseState`: `status: 'completed'`, `finishedAt`, `durationMs`, `artifacts` y `runAt`.
 
 ### `funky pipeline all`
 
-1. Crea `context.json` si no existe.
-2. Ejecuta `pipeline assess`.
-3. Si `assess` falla (lanza excepción), corta la ejecución y NO corre `estimate`.
-4. Si `assess` succeede, ejecuta `pipeline estimate`.
-5. Si `estimate` falla, corta con error.
+1. Crea `context.json` (v2) si no existe.
+2. Ejecuta la fase `assess` (marcando `running`/`startedAt`/`currentPhase` antes; la fase persiste su propia completion).
+3. Si `assess` falla (lanza o devuelve `status: 'failed'`), corta la ejecución: marca `assess` como `failed` con `error`/`finishedAt`/`durationMs`, marca `estimate` como `skipped`, persiste y sale con exit 1. NO corre `estimate`.
+4. Si `assess` succeede, ejecuta la fase `estimate` con el mismo protocolo.
+5. Si `estimate` falla, marca `estimate` como `failed`, persiste y corta con exit 1.
+6. Resume: una fase dejada en `running` (sin `finishedAt`) se re-ejecuta en el siguiente `all`; `skipped` es un snapshot veraz, nunca una instrucción de skip.
 
-### `funky pipeline status`
+### `funky pipeline status` / `funky pipeline status --json`
 
 1. Lee `context.json`.
-2. Muestra:
-   - `CreatedAt` — cuándo se inició el pipeline.
-   - Estado de `assess` (completado con fecha o "Not run yet") y cantidad de `dynamicQuestions` si existen.
-   - Estado de `estimate` (completado con fecha o "Not run yet").
-   - Progreso general: lista de fases completadas o indicador de "Not started".
+2. En modo humano muestra:
+   - `Creado` — cuándo se inició el pipeline.
+   - `Fase actual` (`currentPhase`) si hay una en curso.
+   - Estado por fase: `assess` y `estimate` con su `status`, `Completado` (fecha `runAt`) y `Error` si falló. `assess` además muestra `Patrones detectados` (cantidad de `surfacedPatterns`).
+   - Ya NO muestra el bloque `pipeline.completed`/`lastCommand` (eliminado en v2).
+3. En modo `--json` emite UN objeto JSON determinista en stdout (orden de claves fijo vía `statusJson`), exit 0. Ante `context.json` inválido/versión desconocida: error en stderr y exit 1.
 
 ## `context.json` — estructura y funcionamiento
 
-### Estructura
+### Estructura (schema v2)
 
 ```json
 {
-  "version": 1,
+  "version": 2,
   "createdAt": "2026-01-15T10:30:00.000Z",
+  "currentPhase": null,
   "assess": {
+    "status": "completed",
+    "startedAt": "2026-01-15T10:31:00.000Z",
+    "finishedAt": "2026-01-15T10:35:00.000Z",
+    "durationMs": 240000,
+    "error": null,
+    "artifacts": [
+      {
+        "name": "architecture-review.md",
+        "path": "docs/funky-ai/assess/architecture-review.md",
+        "kind": "generated"
+      }
+    ],
     "runAt": "2026-01-15T10:35:00.000Z",
-    "dynamicQuestions": [
-      "¿Cómo manejas la autenticación?",
-      "¿Qué base de datos usas?"
-    ]
+    "surfacedPatterns": ["Microservicios", "Cola Síncrona"],
+    "decisionsFile": "docs/funky-ai/assess/architecture-decisions.md"
   },
   "estimate": {
+    "status": "completed",
+    "startedAt": "2026-01-15T10:36:00.000Z",
+    "finishedAt": "2026-01-15T10:40:00.000Z",
+    "durationMs": 240000,
+    "error": null,
+    "artifacts": [
+      {
+        "name": "pricing-guide.md",
+        "path": "docs/funky-ai/estimate/pricing-guide.md",
+        "kind": "generated"
+      }
+    ],
     "runAt": "2026-01-15T10:40:00.000Z"
-  },
-  "pipeline": {
-    "lastCommand": "estimate",
-    "completed": ["assess", "estimate"]
   }
 }
 ```
 
+`status` ∈ `pending|running|completed|failed|skipped`. Los `artifacts` tienen `kind` ∈ `generated|living` y `path` relativo al targetBase con `/` como separador.
+
 ### Cómo se crea
 
-`initContext()` genera los metadatos iniciales:
+`initContext()` genera el estado inicial v2:
 
 ```js
 {
-  version: 1,
+  version: 2,
   createdAt: new Date().toISOString(),
-  assess: { runAt: null, dynamicQuestions: [] },
-  estimate: { runAt: null },
-  pipeline: { lastCommand: null, completed: [] }
+  currentPhase: null,
+  assess: { status: 'pending', startedAt: null, finishedAt: null, durationMs: null,
+            error: null, artifacts: [], runAt: null, surfacedPatterns: [], decisionsFile: null },
+  estimate: { status: 'pending', startedAt: null, finishedAt: null, durationMs: null,
+              error: null, artifacts: [], runAt: null }
 }
 ```
 
 El archivo se guarda en `docs/funky-ai/pipeline/context.json` dentro del directorio base del proyecto. Si el directorio no existe, `writeContext()` lo crea automáticamente.
 
+### Migración v1 → v2
+
+`readContext()` migra automáticamente un archivo v1 existente, en su lugar: conserva `createdAt`/`runAt`/`decisionsFile`, deriva `surfacedPatterns` desde `dynamicQuestions`, deriva `status: 'completed'` + `finishedAt` desde `runAt`, y elimina el bloque `pipeline` (vestigial). Versiones fuera de 1–2 se rechazan: error, sin escritura, exit 1.
+
 ### Cómo se usa
 
 - Cada comando del pipeline recibe `{ context: true }`, lo que indica a `assess` y `estimate` que deben leer y escribir `context.json` en lugar de operar de forma independiente.
-- El archivo se lee con `readContext(targetBase)` y se escribe con `writeContext(targetBase, ctx)`.
+- `readContext(targetBase)` devuelve un resultado tipado: `{ ok: true, ctx, migrated? }` o `{ ok: false, reason: 'missing'|'invalid'|'error', code?, message? }`.
+- El estado por fase se actualiza con el helper compartido `updatePhaseState(ctx, phase, patch)`, que además es dueño de `currentPhase` (`running` lo setea; `completed/failed/skipped` lo limpia).
 - `context.json` actúa como la fuente de verdad del estado del pipeline.
 
 ### Cómo NO usarlo (anti-patrones)
@@ -101,37 +133,36 @@ El archivo se guarda en `docs/funky-ai/pipeline/context.json` dentro del directo
 ## Diagrama de flujo
 
 ```
-funky pipeline assess
+funky pipeline all
        │
-       ├── ¿Existe context.json?
-       │     ├── No  → initContext() → writeContext()
-       │     └── Sí  → readContext()
+       ├── readContext() (typed)
+       │     ├── missing → initContext() → writeContext()
+       │     ├── invalid/unknown version → ERROR stderr + exit 1 (sin write)
+       │     └── ok → ctx v2
+       │
+       ├── updatePhaseState(assess, { status:'running', startedAt }) → writeContext()
        │
        ├── runAssess(targetBase, { context: true })
-       │     └── Assess escribe assess.runAt + dynamicQuestions en context.json
+       │     └── Assess persiste completed + finishedAt + durationMs + artifacts
+       │           + surfacedPatterns + decisionsFile (vía updatePhaseState)
        │
-       ▼
-  context.json actualizado
+       │     └── ¿Falla? → updatePhaseState(assess, failed) +
+       │                    updatePhaseState(estimate, skipped) → writeContext() → exit 1
        │
-       ▼
-funky pipeline estimate
-       │
-       ├── ¿Existe context.json?
-       │     └── No  → ERROR: "Pipeline context not found"
-       │
-       ├── ¿assess.runAt es válido?
-       │     └── No  → ERROR: "Assess has not been run yet"
+       ├── updatePhaseState(estimate, { status:'running', startedAt }) → writeContext()
        │
        ├── runEstimate(targetBase, { context: true })
-       │     └── Estimate escribe estimate.runAt en context.json
+       │     └── Estimate persiste completed + finishedAt + durationMs + artifacts
        │
-       ▼
-  Pipeline completo
+       │     └── ¿Falla? → updatePhaseState(estimate, failed) → writeContext() → exit 1
+       │
+       └── all --json → process.stdout.write(runJson(ctx, results)) → exit 0
 ```
 
 ## Reglas
 
 1. `pipeline assess` DEBE ejecutarse antes que `pipeline estimate`. Si no, `estimate` falla con un error claro.
-2. `pipeline all` ejecuta ambos en secuencia; si `assess` falla, `estimate` no se ejecuta.
+2. `pipeline all` ejecuta ambos en secuencia; si `assess` falla, `estimate` no se ejecuta (se marca `skipped`).
 3. `context.json` se almacena en `docs/funky-ai/pipeline/context.json`, no en la raíz del proyecto.
-4. `context.json` solo contiene metadatos de ejecución: fechas, preguntas dinámicas y estado del pipeline. No incluye datos de canvases ni artefactos de dominio.
+4. `context.json` solo contiene metadatos de ejecución: estado por fase, fechas, artefactos y errores. No incluye datos de canvases ni artefactos de dominio.
+5. `pipeline status --json` y `pipeline all --json` emiten UN solo JSON en stdout (texto humano a stderr/suprimido), con orden de claves determinista y antes de `process.exit`.

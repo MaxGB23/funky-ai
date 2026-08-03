@@ -124,7 +124,7 @@ The system MUST exit with code 0 in all scenarios. No other exit codes are permi
 
 ### R-A1: `--context` flag for context file integration
 
-The system MUST accept an optional `--context <path>` / `-c` flag on `funky assess`. When the flag is provided, the system MUST use `context.json` at the given path only for execution and persistence metadata (such as `assess.runAt` and `assess.dynamicQuestions`). Canvas content MUST ALWAYS be discovered from the filesystem via `findCanvas()`, regardless of whether `--context` is provided. After generating the discussion guide, the system MUST write `assess.runAt` (ISO 8601 timestamp) and `assess.dynamicQuestions` (array of surfaced risk pattern names) to the same `context.json` file. When the flag is NOT provided, the system MUST behave exactly as specified in the main assess spec (backward compatible).
+The system MUST accept an optional `--context <path>` / `-c` flag on `funky assess`. When the flag is provided, the system MUST use the context file only for execution/persistence metadata: `assess.runAt`, `assess.surfacedPatterns` (renamed from `dynamicQuestions`), `assess.decisionsFile`, and phase state via shared helper. Canvas content MUST ALWAYS come from the filesystem. Without the flag, behavior MUST match the main spec exactly.
 
 #### Scenario: --context keeps canvas discovery on the filesystem
 
@@ -132,7 +132,7 @@ The system MUST accept an optional `--context <path>` / `-c` flag on `funky asse
 - AND `context.json` contains only execution metadata (no canvas content)
 - WHEN the command executes
 - THEN canvas content is read via `findCanvas()` from the filesystem
-- AND `context.json` is used only for execution metadata such as run timestamps and dynamic questions
+- AND `context.json` is used only for execution metadata such as run timestamps and surfaced patterns
 - AND no canvas data is read from the context object
 
 #### Scenario: --context writes assess results
@@ -140,7 +140,9 @@ The system MUST accept an optional `--context <path>` / `-c` flag on `funky asse
 - GIVEN `funky assess --context ./context.json` completes successfully
 - WHEN the guide is generated
 - THEN `context.json` is updated with `assess.runAt` set to the current ISO timestamp
-- AND `assess.dynamicQuestions` contains the surfaced risk pattern names (or empty array)
+- AND `assess.surfacedPatterns` contains the surfaced risk pattern names (or empty array)
+- AND `assess.status` is `completed` with `finishedAt`/`durationMs`/`artifacts` per R-P8/R-P12
+- AND `dynamicQuestions` is NOT written
 
 #### Scenario: No --context flag — full backward compatibility
 
