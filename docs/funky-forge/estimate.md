@@ -49,7 +49,7 @@ Las sugerencias son SOLO de consola: nunca agregan secciones a la guía automát
 | pricing-decisions.md | `docs/funky-ai/estimate/pricing-decisions.md` | Template para documentar acuerdos de pricing durante la sesión colaborativa. Doc vivo del equipo: no se sobrescribe si ya existe. |
 | stdout | Consola | Prompt completo para la IA (banner + cuerpo + footer), resumen con rutas generadas y secciones incluidas, y sugerencias de tópicos detectados (R11). |
 
-Con `--context`, además actualiza `docs/funky-ai/pipeline/context.json` registrando el timestamp de ejecución en `estimate.runAt`.
+Con `--context`, además actualiza el estado de fase v2 en `docs/funky-ai/pipeline/context.json`: `estimate.status: 'completed'`, `startedAt`, `finishedAt`, `durationMs`, `artifacts` y `runAt`.
 
 ## Diagrama de flujo
 
@@ -101,7 +101,7 @@ Con `--context`, además actualiza `docs/funky-ai/pipeline/context.json` registr
 
 | Flag | Tipo | Descripción |
 |---|---|---|
-| `--context`, `-c` | `<path>` | Ruta a `context.json` para integración con pipeline. Activa lectura de ruta de decisiones desde el contexto y registro del timestamp de ejecución. |
+| `--context`, `-c` | `<path>` | Ruta a `context.json` para integración con pipeline. Activa lectura de ruta de decisiones desde el contexto y la escritura del estado de fase v2 (`estimate.status`/`runAt`/`artifacts`). Si el archivo no existe, error y exit 1. |
 | `--brief` | `[path]` | Sin valor: embebe el checklist de preguntas del brief funcional. Con valor: embebe el contenido de ese archivo. Si el archivo no existe, advierte y usa el checklist de todas formas. |
 | `--roles` | boolean | Incluye la sección "Roles del equipo" en la guía. |
 | `--multi-tenant` | boolean | Incluye la sección "Multi-tenant" en la guía. |

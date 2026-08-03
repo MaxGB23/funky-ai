@@ -9,7 +9,7 @@ It reflects the **current state** of all requirements. Read this file — NOT th
 
 ## Propósito
 
-`funky pipeline` es un comando de orquestación que conecta `assess` y `estimate` en un flujo secuencial con estado compartido a través de `context.json`. Permite ejecutar pasos individuales (`pipeline assess`, `pipeline estimate`), el flujo completo (`pipeline all`), o consultar el estado actual (`pipeline status`). Elimina la necesidad de que el usuario recuerde ejecutar comandos en orden manualmente.
+`funky pipeline` es un comando de orquestación que conecta `assess` y `estimate` en un flujo secuencial con estado compartido a través de `docs/funky-ai/pipeline/context.json` (schema v2, R-P8). Permite ejecutar pasos individuales (`pipeline assess`, `pipeline estimate`), el flujo completo (`pipeline all`), o consultar el estado actual (`pipeline status`, humano o `--json`). Elimina la necesidad de que el usuario recuerde ejecutar comandos en orden manualmente y deja trazabilidad real por fase (running/completed/failed/skipped).
 
 ---
 
@@ -27,26 +27,25 @@ The system MUST register `funky pipeline` as a Commander command with subcommand
 
 ### R-P2: `pipeline assess` runs assess with context
 
-The system MUST call `runAssess(targetBase, { contextPath })` where `contextPath` points to `./context.json` in the project root. If `context.json` does not exist, the system MUST initialize it via `initContext()` before running assess. The `canvases` object from context MUST be populated if `findCanvases()` finds canvas files.
+The system MUST call `runAssess(targetBase, { context: true })` against the context file at `{targetBase}/docs/funky-ai/pipeline/context.json`; if missing, MUST initialize via `initContext()`. Canvas content MUST ALWAYS come from the filesystem, never from context.
 
 #### Scenario: First run initializes context
 
-- GIVEN `funky pipeline assess` runs in a project with no `context.json`
+- GIVEN `funky pipeline assess` runs in a project with no context file at `docs/funky-ai/pipeline/context.json`
 - WHEN the command executes
-- THEN `context.json` is created with `initContext()` shape
-- AND assess is called with `--context ./context.json`
-- AND after completion `context.json` contains `assess.runAt` with a timestamp
+- THEN a v2 context is created at `docs/funky-ai/pipeline/context.json`
+- AND assess is called with `{ context: true }`
+- AND after completion `assess.status` is `completed` and `assess.runAt` is set
 
 #### Scenario: Subsequent runs reuse existing context
 
-- GIVEN `context.json` already exists from a previous run
+- GIVEN the context file already exists
 - WHEN `funky pipeline assess` executes
-- THEN existing context is read (not re-initialized)
-- AND `assess.runAt` is updated with the new timestamp
+- THEN existing context is read; phase state updated
 
 ### R-P3: `pipeline estimate` runs estimate with context
 
-The system MUST call `runEstimate(targetBase, { contextPath })` where `contextPath` points to `./context.json`. The system MUST verify that `context.json` exists and that `assess.runAt` is not null. If `assess.runAt` is null, the system MUST print an error and exit with code 1.
+The system MUST call `runEstimate(targetBase, { context: true })` against the context file at `{targetBase}/docs/funky-ai/pipeline/context.json`. The system MUST verify that `context.json` exists and that `assess.runAt` is not null. If `assess.runAt` is null, the system MUST print an error and exit with code 1.
 
 #### Scenario: assess already run — estimate proceeds
 
@@ -71,67 +70,114 @@ The system MUST call `runEstimate(targetBase, { contextPath })` where `contextPa
 
 ### R-P4: `pipeline all` runs assess then estimate sequentially
 
-The system MUST execute `pipeline assess` followed by `pipeline estimate` sequentially using the same `context.json`. If assess fails (non-zero exit), the pipeline MUST stop and NOT proceed to estimate.
+The system MUST run assess then estimate sequentially on the same context file, marking state per R-P10. If assess fails, the pipeline MUST stop, mark estimate `skipped`, and NOT proceed.
 
 #### Scenario: Full pipeline succeeds
 
-- GIVEN a project with canvases and no previous context
+- GIVEN a project with canvases, no previous context
 - WHEN `funky pipeline all` executes
-- THEN assess runs first, writing `assess.runAt`
-- AND estimate runs second, reading the updated context
-- AND `estimate.runAt` is written after completion
-- AND exit code is 0
+- THEN both phases persist `completed`; exit 0
 
 #### Scenario: Assess failure stops pipeline
 
-- GIVEN assess encounters an error (e.g., template missing)
+- GIVEN assess encounters an error
 - WHEN `funky pipeline all` executes
-- THEN the pipeline prints the assess error
-- AND estimate is NOT executed
-- AND exit code is non-zero
-
-### R-P5: `pipeline status` shows pipeline state
-
-The system MUST read `./context.json` and display: canvas state (found sources + unfilled count), assess state (date or "not run"), estimate state (date or "not run"), pipeline progress summary (completed steps list).
-
-#### Scenario: All steps completed
-
-- GIVEN `context.json` has both `assess.runAt` and `estimate.runAt` set
-- WHEN `funky pipeline status` executes
-- THEN output shows assess date, estimate date, and pipeline progress as complete
-
-#### Scenario: No context file
-
-- GIVEN `context.json` does not exist
-- WHEN `funky pipeline status` executes
-- THEN output shows "Pipeline no iniciado" message
-- AND exit code is 0
+- THEN error printed; estimate NOT executed (marked `skipped`); exit 1
 
 ### R-P6: context.json initialization
 
-The system MUST initialize `context.json` at `./context.json` (project root) on first `pipeline assess` or `pipeline all` if it does not exist. Initialization uses `initContext()`.
+The system MUST initialize the context file at `{targetBase}/docs/funky-ai/pipeline/context.json` on first `pipeline assess`/`all` if missing, via `initContext()` (v2 per R-P8).
 
 #### Scenario: initContext() default structure
 
 - GIVEN `initContext()` is called
 - WHEN it returns the initial state
-- THEN the object MUST have `{ version: 1, createdAt: "<ISO>", assess: { runAt: null, dynamicQuestions: [], decisionsFile: null }, estimate: { runAt: null }, pipeline: { lastCommand: null, completed: [] } }`
+- THEN the object matches the R-P8 v2 shape
 
 ### R-P7: Exit codes
 
-The pipeline MUST exit with code 0 on success and code 1 on any failure (assess error, estimate error, missing context, assess not run before estimate).
+The pipeline MUST exit 0 on success (including warnings) and 1 on any thrown failure (assess/estimate error, missing context, assess not run, unknown version).
 
 #### Scenario: Success exit
 
-- GIVEN any pipeline subcommand completes successfully
+- GIVEN any subcommand completes successfully, warnings included
 - WHEN the command finishes
 - THEN exit code is 0
 
 #### Scenario: Failure exit
 
-- GIVEN any error occurs (missing context, blocked step, runtime error)
+- GIVEN any thrown error occurs
 - WHEN the command finishes
 - THEN exit code is 1
+
+### R-P8: Schema v2
+
+`initContext()` MUST return `{version:2, createdAt, currentPhase:null, assess:{status,startedAt,finishedAt,durationMs,error:null,artifacts:[],runAt:null,surfacedPatterns:[],decisionsFile:null}, estimate:{status,startedAt,finishedAt,durationMs,error:null,artifacts:[],runAt:null}}`. `status` MUST be `pending|running|completed|failed|skipped`. Artifacts MUST be `{name,path,kind:'generated'|'living'}`; `path` relative to targetBase, forward slashes. Shape is validated on read; missing/unknown fields are invalid.
+
+#### Scenario: initContext returns v2
+
+- GIVEN `initContext()` is called
+- WHEN it returns
+- THEN `version` is 2; each phase holds full state, `status: 'pending'`
+
+### R-P9: Migration policy
+
+`readContext` MUST auto-migrate v1 in place: preserve `createdAt`/`runAt`/`decisionsFile`; derive `surfacedPatterns` from `dynamicQuestions`; derive `completed`+`finishedAt` from runAt; rewrite as v2. Versions outside 1–2 MUST be refused: no write, error, exit 1.
+
+#### Scenario: v1 migrates in place
+
+- GIVEN a v1 file with `runAt` and `dynamicQuestions: ['Microservicios']`
+- WHEN readContext loads it
+- THEN it is rewritten as v2; `surfacedPatterns` and `runAt` preserved
+
+#### Scenario: Unknown version refused
+
+- GIVEN a file with `version: 99`
+- WHEN readContext loads it
+- THEN error printed, no write, exit 1
+
+### R-P10: State machine and resume
+
+`pipeline all` MUST persist `currentPhase` + phase `running`/`startedAt` before each phase, then `completed`/`failed` + `finishedAt`/`durationMs`/`error`/`artifacts` after, clearing `currentPhase`. A phase left `running` (no finishedAt) MUST be re-run next `all`; unreached phases MUST be `skipped`. No signal handlers; interruption is detected from left-`running` state.
+
+#### Scenario: Interrupted run resumes
+
+- GIVEN `estimate.status: 'running'`, no finishedAt
+- WHEN `pipeline all` runs
+- THEN estimate is re-run, not skipped
+
+#### Scenario: Assess failure marks estimate skipped
+
+- GIVEN assess throws during `pipeline all`
+- WHEN the failure is handled
+- THEN `assess.status` is `failed`; `estimate.status` is `skipped`; estimate NOT executed
+
+### R-P11: `--json` contract
+
+`pipeline status --json` and `pipeline all --json` MUST emit exactly one JSON object on stdout; human text to stderr or suppressed. Field order MUST be deterministic (timestamps excepted). JSON MUST be emitted before `process.exit`. Exit 0 on success incl. warnings (status quo); exit 1 on throw.
+
+#### Scenario: JSON-only stdout
+
+- GIVEN `pipeline status --json` runs
+- WHEN the command exits
+- THEN stdout parses as one JSON object, stable order, exit 0
+
+#### Scenario: Warnings do not fail
+
+- GIVEN a phase completes with warnings
+- WHEN `pipeline all --json` finishes
+- THEN exit 0; warnings present in JSON
+
+### R-P12: Phase result objects
+
+`runAssess`/`runEstimate` MUST return `{phase,status,artifacts,durationMs,warnings}` and persist own state via shared helper `updatePhaseState`. `pipeline all` MUST build summary/`--json` from results without re-reading the file.
+
+#### Scenario: Results feed JSON
+
+- GIVEN `pipeline all --json` completes
+- WHEN results are collected
+- THEN stdout JSON artifacts/statuses match returned results
+- AND a standalone `runAssess({context:true})` persists `completed`+finishedAt+durationMs+artifacts
 
 ---
 
@@ -139,33 +185,39 @@ The pipeline MUST exit with code 0 on success and code 1 on any failure (assess 
 
 ### R-C1: `initContext()`
 
-`initContext()` MUST return the default context object as specified in R-P6.
+`initContext()` MUST return the default context object as specified in R-P8 (v2).
 
-### R-C2: `readContext(targetBase)`
+### R-C2: `readContext(targetBase, contextPath)`
 
-`readContext(targetBase)` MUST read and parse `{targetBase}/context.json`. MUST return the parsed object if the file exists and is valid JSON. MUST return `null` if the file does not exist or contains invalid JSON.
+`readContext` MUST read the file at the resolved path (default `{targetBase}/docs/funky-ai/pipeline/context.json`) and return a TYPED result: missing file vs invalid JSON/shape vs EACCES/other error. v1 MUST auto-migrate per R-P9; versions outside 1–2 MUST be refused.
 
 #### Scenario: File exists and valid
 
-- GIVEN `{targetBase}/context.json` contains valid JSON
-- WHEN `readContext(targetBase)` is called
-- THEN the parsed object is returned
+- GIVEN a valid v2 context file
+- WHEN `readContext` is called
+- THEN the parsed object is returned; file not rewritten
 
 #### Scenario: File missing
 
-- GIVEN `{targetBase}/context.json` does not exist
-- WHEN `readContext(targetBase)` is called
-- THEN `null` is returned
+- GIVEN the context file does not exist
+- WHEN `readContext` is called
+- THEN a "missing" typed result is returned
 
-#### Scenario: Invalid JSON
+#### Scenario: Invalid JSON or shape
 
-- GIVEN `{targetBase}/context.json` contains malformed JSON
-- WHEN `readContext(targetBase)` is called
-- THEN `null` is returned
+- GIVEN the file contains malformed JSON or an unknown v2 shape
+- WHEN `readContext` is called
+- THEN an "invalid" typed result is returned
 
-### R-C3: `writeContext(targetBase, ctx)`
+#### Scenario: Permission denied is distinct
 
-`writeContext(targetBase, ctx)` MUST stringify the `ctx` object as JSON and write it to `{targetBase}/context.json`. MUST overwrite any existing file.
+- GIVEN the file exists but is unreadable (EACCES)
+- WHEN `readContext` is called
+- THEN a typed error (not "missing") is returned
+
+### R-C3: `writeContext(targetBase, ctx, contextPath)`
+
+`writeContext` MUST stringify `ctx` and write to the resolved path (default `{targetBase}/docs/funky-ai/pipeline/context.json`), overwriting existing files.
 
 ### R-C4: `findCanvases(targetBase)`
 

@@ -1,11 +1,11 @@
 ---
 name: sdd-release
-description: "Trigger: No aplica en antigravity. Release en opencode + gentle-ai, tag, version bump, publicar release. Post-archive release workflow: version bump, release notes, git tag."
+description: "Trigger: No aplica en antigravity. Release en opencode + gentle-ai, tag, version bump, publicar release. Post-archive release workflow: version bump, release notes, git tag, publicar release en GitHub con gh."
 ---
 
 # SDD Release
 
-Post-archive release workflow. Handles version bump, release notes, and git tag.
+Post-archive release workflow. Handles version bump, release notes, git tag, and GitHub release publication.
 
 ## When to use
 
@@ -65,19 +65,38 @@ git tag -a vX.Y.Z -m "Release vX.Y.Z"
 git push origin main --tags
 ```
 
-### 6. Verify
+### 6. Publish GitHub release
+
+The generated release notes (step 2) are the release body. Publish them with the SAME tag used in step 5:
+
+```bash
+gh auth status                      # Verify authenticated before creating
+gh release create vX.Y.Z \
+  --title "{{project_name}} vX.Y.Z" \
+  --notes-file docs/funky-ai/releases/vX.Y.Z-release.md
+```
+
+- The release is named after the TAG (`vX.Y.Z`); the commit message is never used as the release name.
+- `--notes-file` publishes the exact markdown file generated in step 2. Do NOT use `--generate-notes` here — the curated notes are the source of truth.
+- If the release already exists (e.g. tag pushed earlier), update it instead: `gh release edit vX.Y.Z --notes-file docs/funky-ai/releases/vX.Y.Z-release.md`
+- If `gh` is not installed or not authenticated, STOP and surface that to the user — do not skip the GitHub release.
+
+### 7. Verify
 
 - [ ] Version bumped in package.json
 - [ ] Root README.md updated with new version
 - [ ] ORCHESTRATOR-STATE.md updated
 - [ ] Release notes created
 - [ ] Git tag created and pushed
+- [ ] GitHub release created with the exact notes file
 - [ ] No uncommitted changes
 
 ## Rules
 
 - ALWAYS confirm version bump type with user before proceeding
 - ALWAYS create release notes BEFORE git tag
+- ALWAYS publish the GitHub release with the exact notes file generated in step 2
 - NEVER force-push tags
 - NEVER skip the git status check
+- NEVER create a GitHub release without checking `gh auth status`
 - If user says "skip" or "no release", stop immediately

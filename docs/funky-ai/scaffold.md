@@ -18,11 +18,11 @@ funky scaffold
 
 ### Root files (3)
 
-| Destino | Origen |
-|---|---|
-| `ORCHESTRATOR-STATE.md` | `bootstrap/ORCHESTRATOR-STATE.md` |
-| `README.md` | `bootstrap/README.md` |
-| `TEMPLATE_GUIDE.md` | `bootstrap/TEMPLATE_GUIDE.md` |
+| Destino | Origen | Propósito |
+|---|---|---|
+| `ORCHESTRATOR-STATE.md` | `bootstrap/ORCHESTRATOR-STATE.md` | Estado global del proyecto y orquestador |
+| `README.md` | `bootstrap/README.md` | Documentación principal y punto de entrada |
+| `TEMPLATE_GUIDE.md` | `bootstrap/TEMPLATE_GUIDE.md` | Guía para customizar golden templates locales (sobrescriben los base del CLI en el proyecto actual) |
 
 ### `.agents/rules/` (23 archivos)
 

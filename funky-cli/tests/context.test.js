@@ -15,27 +15,177 @@ vi.mock('node:fs', () => {
 });
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
-import { initContext, readContext, writeContext, findCanvases, countUnfilledSections, loadDecisions } from '../src/utils/context.js';
+import { initContext, readContext, writeContext, migrateV1ToV2, updatePhaseState, findCanvases, countUnfilledSections, loadDecisions } from '../src/utils/context.js';
 
 const TARGET_BASE = '/test/project';
 
+// v2 shape (R-P8) shared across tests
+const V2_CTX = {
+  version: 2,
+  createdAt: '2024-01-01T00:00:00.000Z',
+  currentPhase: null,
+  assess: {
+    status: 'pending',
+    startedAt: null,
+    finishedAt: null,
+    durationMs: null,
+    error: null,
+    artifacts: [],
+    runAt: null,
+    surfacedPatterns: [],
+    decisionsFile: null
+  },
+  estimate: {
+    status: 'pending',
+    startedAt: null,
+    finishedAt: null,
+    durationMs: null,
+    error: null,
+    artifacts: [],
+    runAt: null
+  }
+};
+
+function fsError(code, message = code) {
+  const err = new Error(`${code}: ${message}`);
+  err.code = code;
+  return err;
+}
+
 // ═══════════════════════════════════════════════════
-// initContext
+// initContext (R-P8)
 // ═══════════════════════════════════════════════════
 
 describe('initContext', () => {
-  it('returns correct default structure with version: 1', () => {
+  it('returns v2 shape with version 2 and full per-phase state (R-P8)', () => {
     const ctx = initContext();
-    expect(ctx.version).toBe(1);
+    expect(ctx.version).toBe(2);
     expect(typeof ctx.createdAt).toBe('string');
-    expect(ctx.assess).toEqual({ runAt: null, dynamicQuestions: [], decisionsFile: null });
-    expect(ctx.estimate).toEqual({ runAt: null });
-    expect(ctx.pipeline).toEqual({ lastCommand: null, completed: [] });
+    expect(ctx.currentPhase).toBeNull();
+    expect(ctx.assess).toEqual({
+      status: 'pending',
+      startedAt: null,
+      finishedAt: null,
+      durationMs: null,
+      error: null,
+      artifacts: [],
+      runAt: null,
+      surfacedPatterns: [],
+      decisionsFile: null
+    });
+    expect(ctx.estimate).toEqual({
+      status: 'pending',
+      startedAt: null,
+      finishedAt: null,
+      durationMs: null,
+      error: null,
+      artifacts: [],
+      runAt: null
+    });
+  });
+
+  it('does not include the vestigial v1 pipeline object', () => {
+    const ctx = initContext();
+    expect(ctx.pipeline).toBeUndefined();
   });
 });
 
 // ═══════════════════════════════════════════════════
-// readContext
+// migrateV1ToV2 (R-P9) — pure function
+// ═══════════════════════════════════════════════════
+
+describe('migrateV1ToV2', () => {
+  it('migrates a full v1 file: runAt → completed+finishedAt, dynamicQuestions → surfacedPatterns (R-P9)', () => {
+    const v1 = {
+      version: 1,
+      createdAt: '2023-05-01T10:00:00.000Z',
+      assess: {
+        runAt: '2023-05-01T10:05:00.000Z',
+        dynamicQuestions: ['Microservicios', 'Cola Síncrona'],
+        decisionsFile: 'docs/funky-ai/assess/custom.md'
+      },
+      estimate: { runAt: '2023-05-01T10:10:00.000Z' },
+      pipeline: { lastCommand: 'estimate', completed: ['assess', 'estimate'] }
+    };
+
+    const v2 = migrateV1ToV2(v1);
+
+    expect(v2.version).toBe(2);
+    expect(v2.createdAt).toBe('2023-05-01T10:00:00.000Z');
+    expect(v2.currentPhase).toBeNull();
+    // assess: completed + finishedAt from runAt
+    expect(v2.assess.status).toBe('completed');
+    expect(v2.assess.finishedAt).toBe('2023-05-01T10:05:00.000Z');
+    expect(v2.assess.runAt).toBe('2023-05-01T10:05:00.000Z');
+    expect(v2.assess.surfacedPatterns).toEqual(['Microservicios', 'Cola Síncrona']);
+    expect(v2.assess.decisionsFile).toBe('docs/funky-ai/assess/custom.md');
+    expect(v2.assess.artifacts).toEqual([]);
+    expect(v2.assess.startedAt).toBeNull();
+    expect(v2.assess.durationMs).toBeNull();
+    expect(v2.assess.error).toBeNull();
+    // estimate: completed + finishedAt from runAt
+    expect(v2.estimate.status).toBe('completed');
+    expect(v2.estimate.finishedAt).toBe('2023-05-01T10:10:00.000Z');
+    expect(v2.estimate.runAt).toBe('2023-05-01T10:10:00.000Z');
+    // vestigial v1 fields dropped
+    expect(v2.pipeline).toBeUndefined();
+    expect(v2.assess.dynamicQuestions).toBeUndefined();
+  });
+
+  it('treats null runAt as pending with finishedAt null', () => {
+    const v1 = {
+      version: 1,
+      createdAt: '2023-05-01T10:00:00.000Z',
+      assess: { runAt: null, dynamicQuestions: [], decisionsFile: null },
+      estimate: { runAt: null }
+    };
+
+    const v2 = migrateV1ToV2(v1);
+
+    expect(v2.assess.status).toBe('pending');
+    expect(v2.assess.finishedAt).toBeNull();
+    expect(v2.estimate.status).toBe('pending');
+    expect(v2.estimate.finishedAt).toBeNull();
+  });
+
+  it('defaults missing dynamicQuestions to [] and preserves decisionsFile', () => {
+    const v1 = {
+      version: 1,
+      createdAt: '2023-05-01T10:00:00.000Z',
+      assess: { runAt: '2023-05-01T10:05:00.000Z', decisionsFile: 'docs/funky-ai/assess/decisions.md' },
+      estimate: { runAt: null }
+    };
+
+    const v2 = migrateV1ToV2(v1);
+
+    expect(v2.assess.surfacedPatterns).toEqual([]);
+    expect(v2.assess.decisionsFile).toBe('docs/funky-ai/assess/decisions.md');
+  });
+
+  it('defaults missing phase objects to pending v2 defaults', () => {
+    const v1 = {
+      version: 1,
+      createdAt: '2023-05-01T10:00:00.000Z'
+    };
+
+    const v2 = migrateV1ToV2(v1);
+
+    expect(v2.assess.status).toBe('pending');
+    expect(v2.assess.surfacedPatterns).toEqual([]);
+    expect(v2.assess.runAt).toBeNull();
+    expect(v2.estimate.status).toBe('pending');
+    expect(v2.estimate.runAt).toBeNull();
+  });
+
+  it('throws on non-object input (malformed v1)', () => {
+    expect(() => migrateV1ToV2(null)).toThrow();
+    expect(() => migrateV1ToV2('v1')).toThrow();
+    expect(() => migrateV1ToV2([1, 2])).toThrow();
+  });
+});
+
+// ═══════════════════════════════════════════════════
+// readContext — typed results (R-C2)
 // ═══════════════════════════════════════════════════
 
 describe('readContext', () => {
@@ -43,44 +193,176 @@ describe('readContext', () => {
     vi.resetAllMocks();
   });
 
-  it('returns parsed object when file exists and valid', () => {
-    const data = { version: 1, assess: { runAt: null } };
-    vi.mocked(readFileSync).mockReturnValue(JSON.stringify(data));
+  it('returns { ok: true, ctx } for a valid v2 file (not rewritten)', () => {
+    vi.mocked(readFileSync).mockReturnValue(JSON.stringify(V2_CTX));
 
     const result = readContext(TARGET_BASE);
-    expect(result).toEqual(data);
+
+    expect(result.ok).toBe(true);
+    expect(result.ctx).toEqual(V2_CTX);
+    expect(result.migrated).toBeUndefined();
+    expect(writeFileSync).not.toHaveBeenCalled();
   });
 
-  it('returns null when file missing', () => {
+  it('returns { ok: false, reason: "missing" } when file does not exist (ENOENT)', () => {
     vi.mocked(readFileSync).mockImplementation(() => {
-      throw new Error('ENOENT');
+      throw fsError('ENOENT');
     });
 
     const result = readContext(TARGET_BASE);
-    expect(result).toBeNull();
+    expect(result).toEqual({ ok: false, reason: 'missing' });
   });
 
-  it('returns null when invalid JSON', () => {
+  it('returns { ok: false, reason: "invalid" } on malformed JSON', () => {
     vi.mocked(readFileSync).mockReturnValue('not valid json');
 
     const result = readContext(TARGET_BASE);
-    expect(result).toBeNull();
+    expect(result.ok).toBe(false);
+    expect(result.reason).toBe('invalid');
   });
 
-  it('reads from custom contextPath when provided', () => {
-    const data = { version: 1, assess: { runAt: null } };
+  it('returns { ok: false, reason: "invalid" } for an unknown v2 shape', () => {
+    vi.mocked(readFileSync).mockReturnValue(JSON.stringify({ version: 2, assess: { status: 'weird' } }));
+
+    const result = readContext(TARGET_BASE);
+    expect(result.ok).toBe(false);
+    expect(result.reason).toBe('invalid');
+  });
+
+  it('returns { ok: false, reason: "invalid" } for a non-object JSON value', () => {
+    vi.mocked(readFileSync).mockReturnValue('42');
+
+    const result = readContext(TARGET_BASE);
+    expect(result.ok).toBe(false);
+    expect(result.reason).toBe('invalid');
+  });
+
+  it('refuses unknown versions: { ok: false, reason: "invalid" } and no write (R-P9)', () => {
+    vi.mocked(readFileSync).mockReturnValue(JSON.stringify({ version: 99, whatever: true }));
+
+    const result = readContext(TARGET_BASE);
+    expect(result.ok).toBe(false);
+    expect(result.reason).toBe('invalid');
+    expect(writeFileSync).not.toHaveBeenCalled();
+  });
+
+  it('returns { ok: false, reason: "error", code: "EACCES" } on permission denied (not "missing")', () => {
+    vi.mocked(readFileSync).mockImplementation(() => {
+      throw fsError('EACCES');
+    });
+
+    const result = readContext(TARGET_BASE);
+    expect(result.ok).toBe(false);
+    expect(result.reason).toBe('error');
+    expect(result.code).toBe('EACCES');
+  });
+
+  it('auto-migrates v1 in place: rewrites as v2 and returns migrated ctx (R-P9)', () => {
+    const v1 = {
+      version: 1,
+      createdAt: '2023-05-01T10:00:00.000Z',
+      assess: { runAt: '2023-05-01T10:05:00.000Z', dynamicQuestions: ['Microservicios'], decisionsFile: null },
+      estimate: { runAt: null },
+      pipeline: { lastCommand: 'assess', completed: [] }
+    };
+    vi.mocked(readFileSync).mockReturnValue(JSON.stringify(v1));
+
+    const result = readContext(TARGET_BASE);
+
+    expect(result.ok).toBe(true);
+    expect(result.migrated).toBe(true);
+    expect(result.ctx.version).toBe(2);
+    expect(result.ctx.assess.status).toBe('completed');
+    expect(result.ctx.assess.surfacedPatterns).toEqual(['Microservicios']);
+    // rewritten to the default context path as v2
+    const writeCall = vi.mocked(writeFileSync).mock.calls[0];
+    expect(String(writeCall[0]).replace(/\\/g, '/')).toContain('docs/funky-ai/pipeline/context.json');
+    const written = JSON.parse(writeCall[1]);
+    expect(written.version).toBe(2);
+    expect(written.assess.surfacedPatterns).toEqual(['Microservicios']);
+    expect(written.estimate.status).toBe('pending');
+  });
+
+  it('reads from custom contextPath when provided (and migrates there)', () => {
+    const v1 = {
+      version: 1,
+      createdAt: '2023-05-01T10:00:00.000Z',
+      assess: { runAt: null },
+      estimate: { runAt: null }
+    };
     vi.mocked(readFileSync).mockImplementation((p) => {
       const normalized = String(p).replace(/\\/g, '/');
-      if (normalized.endsWith('custom/context.json')) return JSON.stringify(data);
-      throw new Error('ENOENT');
+      if (normalized.endsWith('custom/context.json')) return JSON.stringify(v1);
+      throw fsError('ENOENT');
     });
 
     const result = readContext(TARGET_BASE, 'custom/context.json');
-    expect(result).toEqual(data);
 
-    const calls = vi.mocked(readFileSync).mock.calls;
-    const normalizedPath = String(calls[0][0]).replace(/\\/g, '/');
-    expect(normalizedPath.endsWith('custom/context.json')).toBe(true);
+    expect(result.ok).toBe(true);
+    expect(result.migrated).toBe(true);
+    const writeCall = vi.mocked(writeFileSync).mock.calls[0];
+    expect(String(writeCall[0]).replace(/\\/g, '/').endsWith('custom/context.json')).toBe(true);
+  });
+});
+
+// ═══════════════════════════════════════════════════
+// updatePhaseState (R-P10 helper)
+// ═══════════════════════════════════════════════════
+
+describe('updatePhaseState', () => {
+  it('sets currentPhase to the phase when status becomes running', () => {
+    const ctx = structuredClone(V2_CTX);
+
+    updatePhaseState(ctx, 'assess', { status: 'running', startedAt: '2024-01-01T12:00:00.000Z' });
+
+    expect(ctx.currentPhase).toBe('assess');
+    expect(ctx.assess.status).toBe('running');
+    expect(ctx.assess.startedAt).toBe('2024-01-01T12:00:00.000Z');
+  });
+
+  it('clears currentPhase when a phase completes', () => {
+    const ctx = structuredClone(V2_CTX);
+    ctx.currentPhase = 'estimate';
+
+    updatePhaseState(ctx, 'estimate', { status: 'completed', finishedAt: '2024-01-01T12:30:00.000Z', durationMs: 1200 });
+
+    expect(ctx.currentPhase).toBeNull();
+    expect(ctx.estimate.status).toBe('completed');
+    expect(ctx.estimate.finishedAt).toBe('2024-01-01T12:30:00.000Z');
+    expect(ctx.estimate.durationMs).toBe(1200);
+  });
+
+  it('clears currentPhase on failed', () => {
+    const ctx = structuredClone(V2_CTX);
+    ctx.currentPhase = 'assess';
+
+    updatePhaseState(ctx, 'assess', { status: 'failed', error: 'boom' });
+
+    expect(ctx.currentPhase).toBeNull();
+    expect(ctx.assess.status).toBe('failed');
+    expect(ctx.assess.error).toBe('boom');
+  });
+
+  it('clears currentPhase on skipped', () => {
+    const ctx = structuredClone(V2_CTX);
+    ctx.currentPhase = 'assess';
+
+    updatePhaseState(ctx, 'estimate', { status: 'skipped' });
+
+    expect(ctx.currentPhase).toBeNull();
+    expect(ctx.estimate.status).toBe('skipped');
+  });
+
+  it('merges patch fields without touching unrelated phase state', () => {
+    const ctx = structuredClone(V2_CTX);
+    ctx.assess.status = 'running';
+    ctx.currentPhase = 'assess';
+
+    updatePhaseState(ctx, 'assess', { runAt: '2024-01-01T12:00:00.000Z' });
+
+    expect(ctx.assess.runAt).toBe('2024-01-01T12:00:00.000Z');
+    expect(ctx.assess.status).toBe('running');
+    expect(ctx.currentPhase).toBe('assess');
   });
 });
 
@@ -94,7 +376,7 @@ describe('writeContext', () => {
   });
 
   it('writes JSON with correct indentation to docs/funky-ai/pipeline/', () => {
-    const ctx = { version: 1, name: 'test' };
+    const ctx = { version: 2, name: 'test' };
     vi.mocked(existsSync).mockReturnValue(true);
     writeContext(TARGET_BASE, ctx);
 
@@ -106,7 +388,7 @@ describe('writeContext', () => {
   });
 
   it('writes to custom contextPath when provided', () => {
-    const ctx = { version: 1, name: 'test' };
+    const ctx = { version: 2, name: 'test' };
     vi.mocked(existsSync).mockReturnValue(true);
     writeContext(TARGET_BASE, ctx, 'custom/context.json');
 
