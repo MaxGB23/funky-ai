@@ -27,16 +27,27 @@ Como paso final del pipeline, después de `assess`. El flag `--context` integra 
 | architecture-decisions.md | `docs/funky-ai/assess/architecture-decisions.md` | No (advierte si falta) |
 | Template: pricing-guide-template.md | `funky-cli/src/templates/estimate/pricing-guide-template.md` | Interno |
 | Template: pricing-decisions-template.md | `funky-cli/src/templates/estimate/pricing-decisions-template.md` | Interno |
+| Template: brief-questions-template.md | `funky-cli/src/templates/estimate/brief-questions-template.md` | Interno (sección `--brief`) |
+| Templates: topics/*.md | `funky-cli/src/templates/estimate/topics/` | Interno (6 secciones opcionales editables, R14) |
+| Template: team-cost-reference-template.md | `funky-cli/src/templates/estimate/team-cost-reference-template.md` | Interno (sección `--pricing-team`) |
 
 Si los canvases contienen secciones sin completar (`[Responde aquí]`), se muestra una advertencia indicando cuántas están pendientes.
+
+## Sugerencias
+
+`funky estimate` detecta señales de tópicos (roles, multi-tenant, transacciones, seguridad, concurrencia, integraciones) en los canvases y en las decisiones arquitectónicas. Por cada tópico con señal detectada cuyo flag NO se pasó, imprime en consola una sugerencia como:
+
+`💡 Se detectó Seguridad (jwt). Considerá --security para incluir su sección en la guía.`
+
+Las sugerencias son SOLO de consola: nunca agregan secciones a la guía automáticamente. Para incluir una sección hay que pasar su flag explícitamente.
 
 ## Outputs
 
 | Output | Ruta | Descripción |
 |---|---|---|
-| pricing-guide.md | `docs/funky-ai/estimate/pricing-guide.md` | Guía de discusión con contexto del proyecto, factores de costo y estructura de sesión. Artefacto derivado: se regenera (sobrescribe) en cada ejecución. |
+| pricing-guide.md | `docs/funky-ai/estimate/pricing-guide.md` | Guía de discusión con contexto del proyecto, factores de costo y estructura de sesión. Incluye SIEMPRE la ficha de alcance ("¿Aplica en esta fase?") con el estado de los 6 tópicos. Las secciones opcionales (brief, tópicos, referencia de costos de equipo) se incluyen solo cuando se pasan sus flags. Artefacto derivado: se regenera (sobrescribe) en cada ejecución. |
 | pricing-decisions.md | `docs/funky-ai/estimate/pricing-decisions.md` | Template para documentar acuerdos de pricing durante la sesión colaborativa. Doc vivo del equipo: no se sobrescribe si ya existe. |
-| stdout | Consola | Prompt completo para la IA (banner + cuerpo + footer) más resumen con rutas generadas y próximos pasos. |
+| stdout | Consola | Prompt completo para la IA (banner + cuerpo + footer), resumen con rutas generadas y secciones incluidas, y sugerencias de tópicos detectados (R11). |
 
 Con `--context`, además actualiza `docs/funky-ai/pipeline/context.json` registrando el timestamp de ejecución en `estimate.runAt`.
 
@@ -91,6 +102,16 @@ Con `--context`, además actualiza `docs/funky-ai/pipeline/context.json` registr
 | Flag | Tipo | Descripción |
 |---|---|---|
 | `--context`, `-c` | `<path>` | Ruta a `context.json` para integración con pipeline. Activa lectura de ruta de decisiones desde el contexto y registro del timestamp de ejecución. |
+| `--brief` | `[path]` | Sin valor: embebe el checklist de preguntas del brief funcional. Con valor: embebe el contenido de ese archivo. Si el archivo no existe, advierte y usa el checklist de todas formas. |
+| `--roles` | boolean | Incluye la sección "Roles del equipo" en la guía. |
+| `--multi-tenant` | boolean | Incluye la sección "Multi-tenant" en la guía. |
+| `--transactions` | boolean | Incluye la sección "Transacciones" en la guía. |
+| `--security` | boolean | Incluye la sección "Seguridad" en la guía. |
+| `--concurrency` | boolean | Incluye la sección "Concurrencia" en la guía. |
+| `--integrations` | boolean | Incluye la sección "Integraciones" en la guía. |
+| `--pricing-team` | boolean | Incluye la referencia de costos de equipo (rol × seniority × dedicación × duración). Solo referencia, no es una calculadora. |
+
+La ficha de alcance ("¿Aplica en esta fase?") se incluye SIEMPRE en la guía, sin flag: no es configurable desde la CLI. Las secciones opcionales (brief, tópicos, referencia de costos) solo se incluyen cuando se pasan sus flags.
 
 ## Próximos pasos
 
