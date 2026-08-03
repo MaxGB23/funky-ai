@@ -4,15 +4,15 @@ import { runAssess } from './assess.js';
 import { runEstimate } from './estimate.js';
 
 export const pipelineCommand = new Command('pipeline')
-  .description('Orchestrate the funky pipeline: init → assess → estimate');
+  .description('Orquesta el pipeline funky: init → assess → estimate');
 
 pipelineCommand
   .command('assess')
-  .description('Run assess with shared pipeline context')
+  .description('Ejecuta assess con el contexto compartido del pipeline')
   .action(() => {
     const targetBase = process.cwd();
 
-    // Init context if missing
+    // Inicializa el context si falta
     let ctx = readContext(targetBase);
     if (!ctx) {
       ctx = initContext();
@@ -26,21 +26,21 @@ pipelineCommand
 
 pipelineCommand
   .command('estimate')
-  .description('Run estimate with shared pipeline context')
+  .description('Ejecuta estimate con el contexto compartido del pipeline')
   .action(() => {
     const targetBase = process.cwd();
 
-    // Validate context exists
+    // Valida que exista el context
     const ctx = readContext(targetBase);
     if (!ctx) {
-      console.error('❌ Pipeline context not found. Run "funky pipeline assess" first.');
+      console.error('❌ Contexto de pipeline no encontrado. Ejecuta "funky pipeline assess" primero.');
       process.exit(1);
       return;
     }
 
-    // Validate assess has been run
+    // Valida que assess ya se haya ejecutado
     if (!ctx.assess?.runAt) {
-      console.error('❌ Assess has not been run yet. Run "funky pipeline assess" first.');
+      console.error('❌ Assess aún no se ha ejecutado. Ejecuta "funky pipeline assess" primero.');
       process.exit(1);
       return;
     }
@@ -52,33 +52,33 @@ pipelineCommand
 
 pipelineCommand
   .command('all')
-  .description('Run full pipeline: assess → estimate')
+  .description('Ejecuta el pipeline completo: assess → estimate')
   .action(() => {
     const targetBase = process.cwd();
 
-    // Init context if missing
+    // Inicializa el context si falta
     let ctx = readContext(targetBase);
     if (!ctx) {
       ctx = initContext();
       writeContext(targetBase, ctx);
     }
 
-    // Run assess
+    // Ejecuta assess
     try {
       runAssess(targetBase, { context: true });
-      console.log('\n✅ Assess complete. Running estimate...\n');
+      console.log('\n✅ Assess completado. Ejecutando estimate...\n');
     } catch (err) {
-      console.error('❌ Assess failed:', err.message);
+      console.error('❌ Assess falló:', err.message);
       process.exit(1);
       return;
     }
 
-    // Run estimate (only if assess succeeded)
+    // Ejecuta estimate (solo si assess tuvo éxito)
     try {
       runEstimate(targetBase, { context: true });
-      console.log('\n✅ Pipeline complete!');
+      console.log('\n✅ Pipeline completado.');
     } catch (err) {
-      console.error('❌ Estimate failed:', err.message);
+      console.error('❌ Estimate falló:', err.message);
       process.exit(1);
       return;
     }
@@ -89,46 +89,46 @@ pipelineCommand
 
 pipelineCommand
   .command('status')
-  .description('Show current pipeline status')
+  .description('Muestra el estado actual del pipeline')
   .action(() => {
     const targetBase = process.cwd();
     const ctx = readContext(targetBase);
 
     if (!ctx) {
-      console.log('📋 Pipeline not started.');
-      console.log('Run "funky pipeline assess" to begin.');
+      console.log('📋 Pipeline no iniciado.');
+      console.log('Ejecuta "funky pipeline assess" para comenzar.');
       process.exit(0);
       return;
     }
 
-    console.log('📋 Pipeline Status');
-    console.log('──────────────────');
-    console.log(`Created: ${ctx.createdAt}`);
+    console.log('📋 Estado del Pipeline');
+    console.log('──────────────────────');
+    console.log(`Creado: ${ctx.createdAt}`);
     console.log('');
 
-    // Assess state
+    // Estado de assess
     console.log('🔍 Assess:');
-    console.log(`  ${ctx.assess?.runAt ? 'Completed: ' + ctx.assess.runAt : '⏳ Not run yet'}`);
+    console.log(`  ${ctx.assess?.runAt ? 'Completado: ' + ctx.assess.runAt : '⏳ Aún no ejecutado'}`);
     if (ctx.assess?.dynamicQuestions?.length) {
-      console.log(`  Dynamic questions: ${ctx.assess.dynamicQuestions.length}`);
+      console.log(`  Preguntas dinámicas: ${ctx.assess.dynamicQuestions.length}`);
     }
     console.log('');
 
-    // Estimate state
+    // Estado de estimate
     console.log('💰 Estimate:');
-    console.log(`  ${ctx.estimate?.runAt ? 'Completed: ' + ctx.estimate.runAt : '⏳ Not run yet'}`);
+    console.log(`  ${ctx.estimate?.runAt ? 'Completado: ' + ctx.estimate.runAt : '⏳ Aún no ejecutado'}`);
     console.log('');
 
-    // Pipeline progress
-    console.log('📊 Progress:');
+    // Progreso del pipeline
+    console.log('📊 Progreso:');
     const completed = ctx.pipeline?.completed || [];
     if (completed.length > 0) {
       completed.forEach(s => console.log(`  ✅ ${s}`));
     } else if (ctx.assess?.runAt) {
       console.log('  ✅ assess');
-      console.log('  ⏳ estimate — pending');
+      console.log('  ⏳ estimate — pendiente');
     } else {
-      console.log('  ⏳ Not started');
+      console.log('  ⏳ No iniciado');
     }
 
     process.exit(0);

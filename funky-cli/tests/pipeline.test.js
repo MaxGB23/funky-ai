@@ -100,7 +100,7 @@ describe('pipeline estimate', () => {
     expect(exitSpy).toHaveBeenCalledWith(1);
 
     const errMsgs = errorSpy.mock.calls.map(c => String(c));
-    expect(errMsgs.some(m => m.includes('context not found'))).toBe(true);
+    expect(errMsgs.some(m => m.includes('Contexto de pipeline no encontrado'))).toBe(true);
 
     errorSpy.mockRestore();
   });
@@ -120,7 +120,7 @@ describe('pipeline estimate', () => {
     expect(exitSpy).toHaveBeenCalledWith(1);
 
     const errMsgs = errorSpy.mock.calls.map(c => String(c));
-    expect(errMsgs.some(m => m.includes('not been run yet'))).toBe(true);
+    expect(errMsgs.some(m => m.includes('aún no se ha ejecutado'))).toBe(true);
 
     errorSpy.mockRestore();
   });
@@ -184,7 +184,7 @@ describe('pipeline all', () => {
     expect(exitSpy).toHaveBeenCalledWith(1);
 
     const errMsgs = errorSpy.mock.calls.map(c => String(c));
-    expect(errMsgs.some(m => m.includes('Assess failed'))).toBe(true);
+    expect(errMsgs.some(m => m.includes('Assess falló'))).toBe(true);
 
     errorSpy.mockRestore();
   });
@@ -217,7 +217,7 @@ describe('pipeline status', () => {
     expect(exitSpy).toHaveBeenCalledWith(0);
 
     const logMsgs = logSpy.mock.calls.map(c => String(c));
-    expect(logMsgs.some(m => m.includes('Pipeline not started'))).toBe(true);
+    expect(logMsgs.some(m => m.includes('Pipeline no iniciado'))).toBe(true);
 
     logSpy.mockRestore();
   });
@@ -238,10 +238,10 @@ describe('pipeline status', () => {
     expect(exitSpy).toHaveBeenCalledWith(0);
 
     const logMsgs = logSpy.mock.calls.map(c => String(c));
-    expect(logMsgs.some(m => m.includes('Pipeline Status'))).toBe(true);
-    expect(logMsgs.some(m => m.includes('Completed: 2024-01-01T12:00:00.000Z'))).toBe(true);
-    expect(logMsgs.some(m => m.includes('Not run yet'))).toBe(true);
-    expect(logMsgs.some(m => m.includes('estimate — pending'))).toBe(true);
+    expect(logMsgs.some(m => m.includes('Estado del Pipeline'))).toBe(true);
+    expect(logMsgs.some(m => m.includes('Completado: 2024-01-01T12:00:00.000Z'))).toBe(true);
+    expect(logMsgs.some(m => m.includes('Aún no ejecutado'))).toBe(true);
+    expect(logMsgs.some(m => m.includes('estimate — pendiente'))).toBe(true);
 
     logSpy.mockRestore();
   });
