@@ -172,6 +172,13 @@ pipelineCommand
 
     if (!readResult.ok) {
       if (readResult.reason === 'missing') {
+        if (json) {
+          // R-P11: --json siempre emite exactamente un objeto JSON en stdout.
+          // Sin contexto, se emite el shape v2 not-started (fases pending).
+          process.stdout.write(JSON.stringify(statusJson(initContext()), null, 2) + '\n');
+          process.exit(0);
+          return;
+        }
         console.log('📋 Pipeline no iniciado.');
         console.log('Ejecuta "funky pipeline assess" para comenzar.');
         process.exit(0);

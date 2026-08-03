@@ -476,6 +476,25 @@ describe('pipeline status', () => {
     expect(logMsgs.some(m => m.includes('Pipeline no iniciado'))).toBe(true);
   });
 
+  it('status --json with no context — single JSON not-started shape, exit 0, no human text on stdout (R-P11)', () => {
+    missingRead();
+    initContext.mockReturnValue(v2Context());
+
+    pipelineCommand.parse(['status', '--json'], { from: 'user' });
+
+    const writes = spies.stdoutWriteSpy.mock.calls.map(c => String(c));
+    expect(writes.length).toBe(1);
+    const parsed = JSON.parse(writes[0]);
+    expect(parsed.version).toBe(2);
+    expect(parsed.currentPhase).toBeNull();
+    expect(parsed.assess.status).toBe('pending');
+    expect(parsed.estimate.status).toBe('pending');
+    expect(parsed.run).toBeUndefined();
+    expect(spies.exitSpy).toHaveBeenCalledWith(0);
+    const logMsgs = spies.logSpy.mock.calls.map(c => String(c));
+    expect(logMsgs.some(m => m.includes('Pipeline no iniciado'))).toBe(false);
+  });
+
   it('human status — per-phase status, runAt, surfacedPatterns; no pipeline.completed', () => {
     okRead(v2Context({
       assess: {
