@@ -72,13 +72,14 @@ The generated release notes (step 2) are the release body. Publish them with the
 ```bash
 gh auth status                      # Verify authenticated before creating
 gh release create vX.Y.Z \
-  --title "{{project_name}} vX.Y.Z" \
+  --title "vX.Y.Z" \
   --notes-file docs/funky-ai/releases/vX.Y.Z-release.md
 ```
 
 - The release is named after the TAG (`vX.Y.Z`); the commit message is never used as the release name.
+- The release title is the bare version (`vX.Y.Z`), without the project name.
 - `--notes-file` publishes the exact markdown file generated in step 2. Do NOT use `--generate-notes` here — the curated notes are the source of truth.
-- If the release already exists (e.g. tag pushed earlier), update it instead: `gh release edit vX.Y.Z --notes-file docs/funky-ai/releases/vX.Y.Z-release.md`
+- If the release already exists (e.g. tag pushed earlier), update it instead: `gh release edit vX.Y.Z --title "vX.Y.Z" --notes-file docs/funky-ai/releases/vX.Y.Z-release.md`
 - If `gh` is not installed or not authenticated, STOP and surface that to the user — do not skip the GitHub release.
 
 ### 7. Verify
