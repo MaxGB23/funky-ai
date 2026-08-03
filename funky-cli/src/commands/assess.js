@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { surfaceRiskPatterns } from '../utils/assessRules.js';
-import { readContext, writeContext, findCanvases, countUnfilledSections } from '../utils/context.js';
+import { readContext, writeContext, findCanvases, countUnfilledSections, updatePhaseState } from '../utils/context.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,16 +35,28 @@ function getTodayDate() {
 }
 
 export function runAssess(targetBase, opts = {}) {
+  const startedAt = Date.now();
+  const warnings = [];
+  const json = opts.json === true;
+  const warn = (msg) => {
+    warnings.push(msg);
+    console.warn(msg);
+  };
+  const log = (msg) => {
+    if (!json) console.log(msg);
+  };
+
   // ── 1. Canvas Discovery ──
   let ctx = null;
 
   const contextArg = typeof opts.context === 'string' ? opts.context : (typeof opts.contextPath === 'string' ? opts.contextPath : null);
   if (opts.context || opts.contextPath) {
-    ctx = readContext(targetBase, contextArg || undefined);
-    if (!ctx) {
+    const readResult = readContext(targetBase, contextArg || undefined);
+    if (!readResult.ok) {
       console.error('❌ No se pudo leer context.json. Asegurate de haber ejecutado "funky pipeline assess" primero.');
-      return;
+      return { phase: 'assess', status: 'failed', artifacts: [], durationMs: Date.now() - startedAt, warnings };
     }
+    ctx = readResult.ctx;
   }
 
   const canvases = findCanvases(targetBase);
@@ -53,18 +65,18 @@ export function runAssess(targetBase, opts = {}) {
   let unfilledCount = canvases.unfilledCount;
 
   if (!projectCanvas) {
-    console.warn('⚠️  No se encontró PROJECT-CANVAS.md en docs/funky-ai/canvas/. Usando placeholder.');
+    warn('⚠️  No se encontró PROJECT-CANVAS.md en docs/funky-ai/canvas/. Usando placeholder.');
     projectCanvas = 'Canvas no disponible';
   }
 
   if (!infraCanvas) {
-    console.warn('⚠️  No se encontró INFRA-CANVAS.md en docs/funky-ai/canvas/. Usando placeholder.');
+    warn('⚠️  No se encontró INFRA-CANVAS.md en docs/funky-ai/canvas/. Usando placeholder.');
     infraCanvas = 'Canvas no disponible';
   }
 
   // ── 2. Canvas Validation ──
   if (unfilledCount > 0) {
-    console.warn(`⚠️  Se detectaron ${unfilledCount} secciones sin completar ("[Responde aquí]") en los canvases. La discusión se basará en datos parciales.`);
+    warn(`⚠️  Se detectaron ${unfilledCount} secciones sin completar ("[Responde aquí]") en los canvases. La discusión se basará en datos parciales.`);
   }
 
   // ── 3. Surface Risk Patterns ──
@@ -78,13 +90,13 @@ export function runAssess(targetBase, opts = {}) {
       const patternsContent = fs.readFileSync(patternsTemplatePath, 'utf8');
       fs.mkdirSync(path.dirname(patternsDestPath), { recursive: true });
       fs.writeFileSync(patternsDestPath, patternsContent, 'utf8');
-      console.log('📄 Patrones de riesgo de referencia creados en docs/funky-ai/assess/risk-patterns.md (edítalos según tu contexto).');
+      log('📄 Patrones de riesgo de referencia creados en docs/funky-ai/assess/risk-patterns.md (edítalos según tu contexto).');
     } catch (err) {
       const msg = err.code === 'EACCES' ? `Error de permisos al crear "${patternsDestPath}". Verifica que tengas permisos de escritura.` : err.message;
-      console.warn('⚠️  No se pudo crear docs/funky-ai/assess/risk-patterns.md:', msg);
+      warn('⚠️  No se pudo crear docs/funky-ai/assess/risk-patterns.md:', msg);
     }
   } else {
-    console.log('ℹ️  docs/funky-ai/assess/risk-patterns.md ya existe — no se modificó.');
+    log('ℹ️  docs/funky-ai/assess/risk-patterns.md ya existe — no se modificó.');
   }
 
   let surfaceResult;
@@ -92,7 +104,7 @@ export function runAssess(targetBase, opts = {}) {
     const patternsTemplateContent = fs.readFileSync(patternsTemplatePath, 'utf8');
     surfaceResult = surfaceRiskPatterns(targetBase, patternsTemplateContent);
   } catch (err) {
-    console.warn('⚠️  Error al superficiar patrones de riesgo:', err.message);
+    warn('⚠️  Error al superficiar patrones de riesgo:', err.message);
     surfaceResult = { content: '', patterns: [] };
   }
 
@@ -119,7 +131,7 @@ export function runAssess(targetBase, opts = {}) {
     fs.mkdirSync(assessDir, { recursive: true });
   } catch (err) {
     const msg = err.code === 'EACCES' ? `Error de permisos al crear el directorio "${assessDir}". Verifica que tengas permisos de escritura.` : err.message;
-    console.warn('⚠️  No se pudo crear el directorio docs/funky-ai/assess/:', msg);
+    warn('⚠️  No se pudo crear el directorio docs/funky-ai/assess/:', msg);
   }
 
   const outputPath = path.join(assessDir, 'architecture-review.md');
@@ -127,7 +139,7 @@ export function runAssess(targetBase, opts = {}) {
     fs.writeFileSync(outputPath, outputContent, 'utf8');
   } catch (err) {
     const msg = err.code === 'EACCES' ? `Error de permisos al escribir "${outputPath}". Verifica que tengas permisos de escritura.` : err.message;
-    console.warn('⚠️  No se pudo escribir el archivo de guía:', msg);
+    warn('⚠️  No se pudo escribir el archivo de guía:', msg);
   }
 
   // ── 6. Decisions Template ──
@@ -140,42 +152,67 @@ export function runAssess(targetBase, opts = {}) {
       decisionsContent = decisionsContent.replace(/{{DATE}}/g, getTodayDate());
       fs.mkdirSync(path.dirname(decisionsDestPath), { recursive: true });
       fs.writeFileSync(decisionsDestPath, decisionsContent, 'utf8');
-      console.log('📄 Template de decisiones creado en docs/funky-ai/assess/architecture-decisions.md');
+      log('📄 Template de decisiones creado en docs/funky-ai/assess/architecture-decisions.md');
     } catch (err) {
       const msg = err.code === 'EACCES' ? `Error de permisos al crear "${decisionsDestPath}". Verifica que tengas permisos de escritura.` : err.message;
-      console.warn('⚠️  No se pudo crear docs/funky-ai/assess/architecture-decisions.md:', msg);
+      warn('⚠️  No se pudo crear docs/funky-ai/assess/architecture-decisions.md:', msg);
     }
   } else {
-    console.log('ℹ️  docs/funky-ai/assess/architecture-decisions.md ya existe — no se modificó.');
+    log('ℹ️  docs/funky-ai/assess/architecture-decisions.md ya existe — no se modificó.');
   }
 
   // ── 7. Write Context (if applicable) ──
+  const artifacts = [
+    {
+      name: 'architecture-review.md',
+      path: path.relative(targetBase, outputPath).split(path.sep).join('/'),
+      kind: 'generated'
+    }
+  ];
   if (ctx) {
-    ctx.assess.runAt = new Date().toISOString();
-    ctx.assess.dynamicQuestions = surfaceResult.patterns || [];
+    const finishedAt = new Date().toISOString();
     // Ruta real (relativa al targetBase, con separadores "/") del archivo de
     // decisiones que assess usó; estimate con --context la lee para no caer al
     // default. Se normalizan los separadores para portabilidad Windows/POSIX.
-    ctx.assess.decisionsFile = path.relative(targetBase, decisionsDestPath).split(path.sep).join('/');
+    updatePhaseState(ctx, 'assess', {
+      status: 'completed',
+      startedAt: ctx.assess.startedAt ?? new Date(startedAt).toISOString(),
+      finishedAt,
+      durationMs: Date.now() - startedAt,
+      artifacts,
+      runAt: finishedAt,
+      surfacedPatterns: surfaceResult.patterns || [],
+      decisionsFile: path.relative(targetBase, decisionsDestPath).split(path.sep).join('/')
+    });
     writeContext(targetBase, ctx, contextArg || undefined);
   }
 
   // ── 8. Summary ──
-  console.log('\n✅ Guía de discusión generada exitosamente.');
-  console.log(`   📝 Guía: ${path.relative(targetBase, outputPath)}`);
-  console.log('   📝 Patrones de riesgo: docs/funky-ai/assess/risk-patterns.md');
-  console.log(`   📝 Decisiones: docs/funky-ai/assess/architecture-decisions.md`);
-  console.log('\n📋 Próximos pasos:');
-  console.log(`   1. Abre una sesión de chat con la IA.`);
-  console.log(`   2. Arrastra el archivo ${path.relative(targetBase, outputPath)} a la conversación.`);
-  console.log('   3. Sigue las 6 fases de la guía para discutir la arquitectura.');
-  console.log('   4. Documenta los acuerdos en docs/funky-ai/assess/architecture-decisions.md durante la discusión.\n');
+  if (!json) {
+    console.log('\n✅ Guía de discusión generada exitosamente.');
+    console.log(`   📝 Guía: ${path.relative(targetBase, outputPath)}`);
+    console.log('   📝 Patrones de riesgo: docs/funky-ai/assess/risk-patterns.md');
+    console.log(`   📝 Decisiones: docs/funky-ai/assess/architecture-decisions.md`);
+    console.log('\n📋 Próximos pasos:');
+    console.log(`   1. Abre una sesión de chat con la IA.`);
+    console.log(`   2. Arrastra el archivo ${path.relative(targetBase, outputPath)} a la conversación.`);
+    console.log('   3. Sigue las 6 fases de la guía para discutir la arquitectura.');
+    console.log('   4. Documenta los acuerdos en docs/funky-ai/assess/architecture-decisions.md durante la discusión.\n');
+  }
+
+  return {
+    phase: 'assess',
+    status: 'completed',
+    artifacts,
+    durationMs: Date.now() - startedAt,
+    warnings
+  };
 }
 
 export const assessCommand = new Command('assess')
   .description('Genera guía de discusión arquitectónica a partir de los canvases del proyecto')
   .option('-c, --context <path>', 'Path to context.json for pipeline integration')
   .action((opts) => {
-    runAssess(process.cwd(), opts);
-    process.exit(0);
+    const result = runAssess(process.cwd(), opts);
+    process.exit(result.status === 'failed' ? 1 : 0);
   });

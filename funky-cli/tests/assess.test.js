@@ -103,6 +103,25 @@ function addContextJson(mf, data) {
   mf[path.join(CWD, 'docs', 'funky-ai', 'pipeline', 'context.json')] = JSON.stringify(data);
 }
 
+// Seed de context v2 (R-P8) con override por fase; status 'pending' por defecto.
+function v2Context(overrides = {}) {
+  return {
+    version: 2,
+    createdAt: '2024-01-01T00:00:00.000Z',
+    currentPhase: null,
+    assess: {
+      status: 'pending', startedAt: null, finishedAt: null, durationMs: null,
+      error: null, artifacts: [], runAt: null, surfacedPatterns: [], decisionsFile: null,
+      ...(overrides.assess || {})
+    },
+    estimate: {
+      status: 'pending', startedAt: null, finishedAt: null, durationMs: null,
+      error: null, artifacts: [], runAt: null,
+      ...(overrides.estimate || {})
+    }
+  };
+}
+
 function addCanvas(mockFiles, name, content) {
   mockFiles[path.join(CANVAS_DIR, name)] = content;
 }
@@ -387,6 +406,23 @@ describe('assess Command - action flow', () => {
     expect(writtenContent).not.toContain('Con un solo nodo, cualquier deploy');
     expect(writtenContent).not.toContain('El equipo es principalmente Junior');
   });
+
+  it('exits 1 when --context file is missing (R-A1)', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    // No context.json
+    applyMocks(mf);
+
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    assessCommand.parse(['node', 'assess', '--context', 'missing.json'], { from: 'user' });
+
+    // El exit(1) proviene del result status 'failed' (no del parseo de Commander).
+    const errMsgs = errorSpy.mock.calls.map(c => String(c));
+    expect(errMsgs.some(m => m.includes('No se pudo leer context.json'))).toBe(true);
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    errorSpy.mockRestore();
+  });
 });
 
 // ── --context flag tests ──
@@ -401,14 +437,16 @@ describe('--context flag', () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
-    addContextJson(mf, {
-      assess: { runAt: null, dynamicQuestions: [] },
-      estimate: { runAt: null },
-      pipeline: { lastCommand: null, completed: [] }
-    });
+    addContextJson(mf, v2Context());
     applyMocks(mf);
 
-    runAssess(CWD, { context: true });
+    const result = runAssess(CWD, { context: true });
+
+    // R-P12: devuelve result object
+    expect(result.phase).toBe('assess');
+    expect(result.status).toBe('completed');
+    expect(typeof result.durationMs).toBe('number');
+    expect(Array.isArray(result.warnings)).toBe(true);
 
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const reviewCall = writeCalls.find(c => String(c[0]).includes('architecture-review.md'));
@@ -428,9 +466,13 @@ describe('--context flag', () => {
 
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    runAssess(CWD, { context: true });
+    const result = runAssess(CWD, { context: true });
 
     expect(errorSpy).toHaveBeenCalled();
+    // R-P12: resultado failed, sin artifacts
+    expect(result.status).toBe('failed');
+    expect(result.phase).toBe('assess');
+    expect(result.artifacts).toEqual([]);
     // Should NOT have written context.json (early return)
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const contextCall = writeCalls.find(c => String(c[0]).endsWith('context.json'));
@@ -443,11 +485,7 @@ describe('--context flag', () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
-    addContextJson(mf, {
-      assess: { runAt: null, dynamicQuestions: [] },
-      estimate: { runAt: null },
-      pipeline: { lastCommand: null, completed: [] }
-    });
+    addContextJson(mf, v2Context());
     applyMocks(mf);
 
     runAssess(CWD, { context: true });
@@ -458,18 +496,22 @@ describe('--context flag', () => {
     expect(contextCall).toBeTruthy();
     const writtenData = JSON.parse(contextCall[1]);
     expect(writtenData.assess.runAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
-    expect(Array.isArray(writtenData.assess.dynamicQuestions)).toBe(true);
+    expect(Array.isArray(writtenData.assess.surfacedPatterns)).toBe(true);
+    // R-A1: estado completed + artifacts vía updatePhaseState
+    expect(writtenData.assess.status).toBe('completed');
+    expect(writtenData.assess.finishedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+    expect(typeof writtenData.assess.durationMs).toBe('number');
+    expect(Array.isArray(writtenData.assess.artifacts)).toBe(true);
+    expect(writtenData.currentPhase).toBeNull();
+    // dynamicQuestions NO debe escribirse (rename → surfacedPatterns)
+    expect(writtenData.assess.dynamicQuestions).toBeUndefined();
   });
 
   it('writes the real decisions file path to assess.decisionsFile', () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
-    addContextJson(mf, {
-      assess: { runAt: null, dynamicQuestions: [] },
-      estimate: { runAt: null },
-      pipeline: { lastCommand: null, completed: [] }
-    });
+    addContextJson(mf, v2Context());
     applyMocks(mf);
 
     runAssess(CWD, { context: true });
@@ -481,35 +523,30 @@ describe('--context flag', () => {
     expect(writtenData.assess.decisionsFile).toBe('docs/funky-ai/assess/architecture-decisions.md');
   });
 
-  it('writes the surfaced risk pattern names to assess.dynamicQuestions', () => {
+  it('writes the surfaced risk pattern names to assess.surfacedPatterns', () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
-    addContextJson(mf, {
-      assess: { runAt: null, dynamicQuestions: [] },
-      estimate: { runAt: null },
-      pipeline: { lastCommand: null, completed: [] }
-    });
+    addContextJson(mf, v2Context());
     mf[RISK_PATTERNS_DEST_PATH] = '# Patrones del Equipo\n\n## Microservicios\n## Cola Síncrona';
     applyMocks(mf);
 
-    runAssess(CWD, { context: true });
+    const result = runAssess(CWD, { context: true });
 
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const contextCall = writeCalls.find(c => String(c[0]).endsWith('context.json'));
     const writtenData = JSON.parse(contextCall[1]);
-    expect(writtenData.assess.dynamicQuestions).toEqual(['Microservicios', 'Cola Síncrona']);
+    expect(writtenData.assess.surfacedPatterns).toEqual(['Microservicios', 'Cola Síncrona']);
+    // R-P12: artifacts en el result object (guía generada)
+    expect(result.artifacts.some(a => a.name === 'architecture-review.md' && a.kind === 'generated')).toBe(true);
+    expect(result.artifacts.every(a => typeof a.path === 'string' && !a.path.startsWith('/'))).toBe(true);
   });
 
   it('honors a custom context path', () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
-    mf[path.join(CWD, 'custom', 'context.json')] = JSON.stringify({
-      assess: { runAt: null, dynamicQuestions: [] },
-      estimate: { runAt: null },
-      pipeline: { lastCommand: null, completed: [] }
-    });
+    mf[path.join(CWD, 'custom', 'context.json')] = JSON.stringify(v2Context());
     applyMocks(mf);
 
     runAssess(CWD, { context: 'custom/context.json' });
@@ -519,6 +556,26 @@ describe('--context flag', () => {
     expect(contextCall).toBeTruthy();
     const writtenData = JSON.parse(contextCall[1]);
     expect(writtenData.assess.runAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
-    expect(Array.isArray(writtenData.assess.dynamicQuestions)).toBe(true);
+    expect(Array.isArray(writtenData.assess.surfacedPatterns)).toBe(true);
+    expect(writtenData.assess.status).toBe('completed');
+  });
+
+  it('suppresses summary console.log when json:true (R-P11)', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    addContextJson(mf, v2Context());
+    applyMocks(mf);
+
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+    const result = runAssess(CWD, { context: true, json: true });
+
+    expect(result.status).toBe('completed');
+    const logMsgs = logSpy.mock.calls.map(c => String(c));
+    expect(logMsgs.some(m => m.includes('Guía de discusión generada'))).toBe(false);
+    expect(logMsgs.some(m => m.includes('Próximos pasos'))).toBe(false);
+
+    logSpy.mockRestore();
   });
 });

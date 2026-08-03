@@ -129,6 +129,25 @@ function addContextJson(mf, data) {
   mf[path.join(CONTEXT_DIR, 'context.json')] = JSON.stringify(data);
 }
 
+// Seed de context v2 (R-P8) con override por fase; status 'pending' por defecto.
+function v2Context(overrides = {}) {
+  return {
+    version: 2,
+    createdAt: '2024-01-01T00:00:00.000Z',
+    currentPhase: null,
+    assess: {
+      status: 'pending', startedAt: null, finishedAt: null, durationMs: null,
+      error: null, artifacts: [], runAt: null, surfacedPatterns: [], decisionsFile: null,
+      ...(overrides.assess || {})
+    },
+    estimate: {
+      status: 'pending', startedAt: null, finishedAt: null, durationMs: null,
+      error: null, artifacts: [], runAt: null,
+      ...(overrides.estimate || {})
+    }
+  };
+}
+
 // ═══════════════════════════════════════════════════
 // Fase 3.3: generatePricingGuide
 // ═══════════════════════════════════════════════════
@@ -347,6 +366,23 @@ describe('estimateCommand — integration', () => {
     warnSpy.mockRestore();
   });
 
+  it('exits 1 when --context file is missing (R-E1)', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    // No context.json
+    applyMocks(mf);
+
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    estimateCommand.parse(['node', 'estimate', '--context', 'missing.json'], { from: 'user' });
+
+    // El exit(1) proviene del result status 'failed' (no del parseo de Commander).
+    const errMsgs = errorSpy.mock.calls.map(c => String(c));
+    expect(errMsgs.some(m => m.includes('No se pudo leer context.json'))).toBe(true);
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    errorSpy.mockRestore();
+  });
+
   it('writes pricing-guide.md and pricing-decisions-template.md', () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
@@ -430,9 +466,13 @@ describe('--context flag', () => {
 
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    runEstimate(CWD, { context: true });
+    const result = runEstimate(CWD, { context: true });
 
     expect(errorSpy).toHaveBeenCalled();
+    // R-P12: resultado failed, sin artifacts
+    expect(result.status).toBe('failed');
+    expect(result.phase).toBe('estimate');
+    expect(result.artifacts).toEqual([]);
     // Should NOT have written output (early return)
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const guideCall = writeCalls.find(c => String(c[0]).includes('pricing-guide.md'));
@@ -445,15 +485,17 @@ describe('--context flag', () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
-    addContextJson(mf, {
-      assess: { decisionsFile: null, runAt: null, dynamicQuestions: [] },
-      estimate: { runAt: null },
-      pipeline: { lastCommand: null, completed: [] }
-    });
+    addContextJson(mf, v2Context());
     addDecisions(mf, DECISIONS_CONTENT);
     applyMocks(mf);
 
-    runEstimate(CWD, { context: true });
+    const result = runEstimate(CWD, { context: true });
+
+    // R-P12: result object
+    expect(result.phase).toBe('estimate');
+    expect(result.status).toBe('completed');
+    expect(typeof result.durationMs).toBe('number');
+    expect(Array.isArray(result.warnings)).toBe(true);
 
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const guideCall = writeCalls.find(c => String(c[0]).includes('pricing-guide.md'));
@@ -468,14 +510,14 @@ describe('--context flag', () => {
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     // Ruta custom de decisiones (no la default) registrada por assess en context.json
     mf[path.join(DECISIONS_DIR, 'custom-decisions.md')] = '# Decisiones custom\n- Stack: Vue';
-    addContextJson(mf, {
-      assess: { decisionsFile: 'docs/funky-ai/assess/custom-decisions.md', runAt: '2024-01-01T00:00:00.000Z', dynamicQuestions: [] },
-      estimate: { runAt: null },
-      pipeline: { lastCommand: null, completed: [] }
-    });
+    addContextJson(mf, v2Context({
+      assess: { decisionsFile: 'docs/funky-ai/assess/custom-decisions.md', runAt: '2024-01-01T00:00:00.000Z', status: 'completed', finishedAt: '2024-01-01T00:00:01.000Z', durationMs: 1000 }
+    }));
     applyMocks(mf);
 
-    runEstimate(CWD, { context: true });
+    const result = runEstimate(CWD, { context: true });
+
+    expect(result.status).toBe('completed');
 
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const guideCall = writeCalls.find(c => String(c[0]).includes('pricing-guide.md'));
@@ -486,25 +528,30 @@ describe('--context flag', () => {
     expect(guideContent).not.toContain('DB: PostgreSQL');
   });
 
-  it('writes estimate timestamp to context.json', () => {
+  it('writes estimate timestamp and completed state to context.json', () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     addDecisions(mf, DECISIONS_CONTENT);
-    addContextJson(mf, {
-      assess: { runAt: null, dynamicQuestions: [] },
-      estimate: { runAt: null },
-      pipeline: { lastCommand: null, completed: [] }
-    });
+    addContextJson(mf, v2Context());
     applyMocks(mf);
 
-    runEstimate(CWD, { context: true });
+    const result = runEstimate(CWD, { context: true });
 
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const contextCall = writeCalls.find(c => String(c[0]).endsWith('context.json'));
     expect(contextCall).toBeTruthy();
     const writtenData = JSON.parse(contextCall[1]);
     expect(writtenData.estimate.runAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+    // R-P12/R-P10: estado completed + artifacts
+    expect(writtenData.estimate.status).toBe('completed');
+    expect(writtenData.estimate.finishedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+    expect(typeof writtenData.estimate.durationMs).toBe('number');
+    expect(Array.isArray(writtenData.estimate.artifacts)).toBe(true);
+    expect(writtenData.currentPhase).toBeNull();
+    // R-P12: artifacts en el result object (guía generada)
+    expect(result.artifacts.some(a => a.name === 'pricing-guide.md' && a.kind === 'generated')).toBe(true);
+    expect(result.artifacts.every(a => typeof a.path === 'string' && !a.path.startsWith('/'))).toBe(true);
   });
 
   it('honors a custom context path', () => {
@@ -512,20 +559,38 @@ describe('--context flag', () => {
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     addDecisions(mf, DECISIONS_CONTENT);
-    mf[path.join(CWD, 'custom', 'context.json')] = JSON.stringify({
-      assess: { decisionsFile: null, runAt: null, dynamicQuestions: [] },
-      estimate: { runAt: null },
-      pipeline: { lastCommand: null, completed: [] }
-    });
+    mf[path.join(CWD, 'custom', 'context.json')] = JSON.stringify(v2Context());
     applyMocks(mf);
 
-    runEstimate(CWD, { context: 'custom/context.json' });
+    const result = runEstimate(CWD, { context: 'custom/context.json' });
 
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const contextCall = writeCalls.find(c => String(c[0]).replace(/\\/g, '/').endsWith('custom/context.json'));
     expect(contextCall).toBeTruthy();
     const writtenData = JSON.parse(contextCall[1]);
     expect(writtenData.estimate.runAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+    expect(writtenData.estimate.status).toBe('completed');
+    expect(result.status).toBe('completed');
+  });
+
+  it('suppresses summary console.log when json:true (R-P11)', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    addDecisions(mf, DECISIONS_CONTENT);
+    addContextJson(mf, v2Context());
+    applyMocks(mf);
+
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+    const result = runEstimate(CWD, { context: true, json: true });
+
+    expect(result.status).toBe('completed');
+    const logMsgs = logSpy.mock.calls.map(c => String(c));
+    expect(logMsgs.some(m => m.includes('Material de pricing generado'))).toBe(false);
+    expect(logMsgs.some(m => m.includes('PROMPT'))).toBe(false);
+
+    logSpy.mockRestore();
   });
 });
 

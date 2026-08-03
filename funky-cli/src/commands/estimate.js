@@ -2,7 +2,7 @@ import { Command } from 'commander';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { loadDecisions, findCanvases, readContext, writeContext } from '../utils/context.js';
+import { loadDecisions, findCanvases, readContext, writeContext, updatePhaseState } from '../utils/context.js';
 import { generatePricingGuide, generateDecisionsTemplate, generateIAPrompt, generateIAPromptBanner, generateIAPromptFooter } from '../utils/estimateDomain.js';
 import { TOPICS, DISPLAY_NAMES, STATUS, surfaceEstimateTopics } from '../utils/estimateTopics.js';
 
@@ -19,36 +19,48 @@ function flagValue(opts, topic) {
 }
 
 export function runEstimate(targetBase, opts = {}) {
+  const startedAt = Date.now();
+  const warnings = [];
+  const json = opts.json === true;
+  const warn = (msg) => {
+    warnings.push(msg);
+    console.warn(msg);
+  };
+  const log = (msg) => {
+    if (!json) console.log(msg);
+  };
+
   try {
     // ── Context (if applicable) ──
     let ctx = null;
 
     const contextArg = typeof opts.context === 'string' ? opts.context : (typeof opts.contextPath === 'string' ? opts.contextPath : null);
     if (opts.context || opts.contextPath) {
-      ctx = readContext(targetBase, contextArg || undefined);
-      if (!ctx) {
+      const readResult = readContext(targetBase, contextArg || undefined);
+      if (!readResult.ok) {
         console.error('❌ No se pudo leer context.json. Asegurate de haber ejecutado "funky pipeline assess" primero.');
-        return;
+        return { phase: 'estimate', status: 'failed', artifacts: [], durationMs: Date.now() - startedAt, warnings };
       }
+      ctx = readResult.ctx;
     }
 
     // ── 1. Load Decisions ──
     const decisionsPath = ctx?.assess?.decisionsFile || null;
     const decisions = loadDecisions(targetBase, decisionsPath);
     if (!decisions) {
-      console.warn('⚠️  No se encontró docs/funky-ai/assess/architecture-decisions.md. Generando guía con contenido parcial.');
+      warn('⚠️  No se encontró docs/funky-ai/assess/architecture-decisions.md. Generando guía con contenido parcial.');
     }
 
     // ── 2. Canvas Discovery ──
     const canvases = findCanvases(targetBase);
     if (!canvases.projectCanvas) {
-      console.warn('⚠️  No se encontró PROJECT-CANVAS.md en docs/funky-ai/canvas/. Usando placeholder.');
+      warn('⚠️  No se encontró PROJECT-CANVAS.md en docs/funky-ai/canvas/. Usando placeholder.');
     }
     if (!canvases.infraCanvas) {
-      console.warn('⚠️  No se encontró INFRA-CANVAS.md en docs/funky-ai/canvas/. Usando placeholder.');
+      warn('⚠️  No se encontró INFRA-CANVAS.md en docs/funky-ai/canvas/. Usando placeholder.');
     }
     if (canvases.unfilledCount > 0) {
-      console.warn(`⚠️  Se detectaron ${canvases.unfilledCount} secciones sin completar ("[Responde aquí]") en los canvases. La discusión se basará en datos parciales.`);
+      warn(`⚠️  Se detectaron ${canvases.unfilledCount} secciones sin completar ("[Responde aquí]") en los canvases. La discusión se basará en datos parciales.`);
     }
 
     // ── 2b. Sugerencias de consola (R11) ──
@@ -61,7 +73,7 @@ export function runEstimate(targetBase, opts = {}) {
     );
     for (const signal of signals) {
       if (signal.status === STATUS.APPLIES && flagValue(opts, signal.topic) !== true) {
-        console.log(`💡 Se detectó ${DISPLAY_NAMES[signal.topic]} (${signal.evidence}). Considerá --${signal.topic} para incluir su sección en la guía.`);
+        log(`💡 Se detectó ${DISPLAY_NAMES[signal.topic]} (${signal.evidence}). Considerá --${signal.topic} para incluir su sección en la guía.`);
       }
     }
 
@@ -71,7 +83,7 @@ export function runEstimate(targetBase, opts = {}) {
       fs.mkdirSync(estimateDir, { recursive: true });
     } catch (err) {
       const msg = err.code === 'EACCES' ? `Error de permisos al crear el directorio "${estimateDir}". Verifica que tengas permisos de escritura.` : err.message;
-      console.warn('⚠️  No se pudo crear el directorio docs/funky-ai/estimate/:', msg);
+      warn('⚠️  No se pudo crear el directorio docs/funky-ai/estimate/:', msg);
     }
 
     // Mapeo Commander → opts del dominio (Interfaces/Contracts del design).
@@ -90,7 +102,7 @@ export function runEstimate(targetBase, opts = {}) {
     if (typeof guideOpts.brief === 'string') {
       const briefResolved = path.resolve(targetBase, guideOpts.brief);
       if (!fs.existsSync(briefResolved)) {
-        console.warn(`⚠️  No se encontró el archivo de brief "${guideOpts.brief}". Se usó el checklist de preguntas en su lugar.`);
+        warn(`⚠️  No se encontró el archivo de brief "${guideOpts.brief}". Se usó el checklist de preguntas en su lugar.`);
       }
     }
 
@@ -98,7 +110,7 @@ export function runEstimate(targetBase, opts = {}) {
     try {
       pricingGuide = generatePricingGuide(decisions, canvases.projectCanvas, canvases.infraCanvas, guideOpts);
     } catch (err) {
-      console.warn('⚠️  Error al generar la guía de pricing:', err.message);
+      warn('⚠️  Error al generar la guía de pricing:', err.message);
       pricingGuide = 'Error al generar la guía de pricing.';
     }
 
@@ -109,7 +121,7 @@ export function runEstimate(targetBase, opts = {}) {
       fs.writeFileSync(pricingGuidePath, pricingGuide, 'utf8');
     } catch (err) {
       const msg = err.code === 'EACCES' ? `Error de permisos al escribir "${pricingGuidePath}". Verifica que tengas permisos de escritura.` : err.message;
-      console.warn('⚠️  No se pudo escribir pricing-guide.md:', msg);
+      warn('⚠️  No se pudo escribir pricing-guide.md:', msg);
     }
 
     // ── 4. Generate Decisions Template ──
@@ -117,7 +129,7 @@ export function runEstimate(targetBase, opts = {}) {
     try {
       decisionsTemplate = generateDecisionsTemplate();
     } catch (err) {
-      console.warn('⚠️  Error al generar el template de decisiones:', err.message);
+      warn('⚠️  Error al generar el template de decisiones:', err.message);
       decisionsTemplate = 'Error al generar el template de decisiones.';
     }
 
@@ -125,19 +137,34 @@ export function runEstimate(targetBase, opts = {}) {
     // (create-if-not-exists), nunca se sobrescribe.
     const decisionsTemplatePath = path.join(estimateDir, 'pricing-decisions.md');
     if (fs.existsSync(decisionsTemplatePath)) {
-      console.warn(`⚠️  "${decisionsTemplatePath}" ya existe. No se sobrescribió.`);
+      warn(`⚠️  "${decisionsTemplatePath}" ya existe. No se sobrescribió.`);
     } else {
       try {
         fs.writeFileSync(decisionsTemplatePath, decisionsTemplate, 'utf8');
       } catch (err) {
         const msg = err.code === 'EACCES' ? `Error de permisos al escribir "${decisionsTemplatePath}". Verifica que tengas permisos de escritura.` : err.message;
-        console.warn('⚠️  No se pudo escribir pricing-decisions.md:', msg);
+        warn('⚠️  No se pudo escribir pricing-decisions.md:', msg);
       }
     }
 
     // ── 5. Update Context ──
+    const artifacts = [
+      {
+        name: 'pricing-guide.md',
+        path: path.relative(targetBase, pricingGuidePath).split(path.sep).join('/'),
+        kind: 'generated'
+      }
+    ];
     if (ctx) {
-      ctx.estimate.runAt = new Date().toISOString();
+      const finishedAt = new Date().toISOString();
+      updatePhaseState(ctx, 'estimate', {
+        status: 'completed',
+        startedAt: ctx.estimate.startedAt ?? new Date(startedAt).toISOString(),
+        finishedAt,
+        durationMs: Date.now() - startedAt,
+        artifacts,
+        runAt: finishedAt
+      });
       writeContext(targetBase, ctx, contextArg || undefined);
     }
 
@@ -149,32 +176,45 @@ export function runEstimate(targetBase, opts = {}) {
     // ── 7. Summary ──
     // Secciones incluidas en la guía: la ficha de alcance siempre está (R9);
     // brief, tópicos (orden canónico) y referencia de costos solo con sus flags.
-    const includedSections = ['ficha de alcance'];
-    if (guideOpts.brief !== undefined && guideOpts.brief !== false) {
-      includedSections.push('brief funcional');
-    }
-    for (const topic of guideOpts.topics) {
-      includedSections.push(DISPLAY_NAMES[topic].toLowerCase());
-    }
-    if (guideOpts.pricingTeam === true) {
-      includedSections.push('referencia de costos de equipo');
-    }
-    console.log('\n✅ Material de pricing generado exitosamente.');
-    console.log(`   📝 Guía de pricing: ${path.relative(targetBase, pricingGuidePath)}`);
-    console.log(`   📝 Template de decisiones: ${path.relative(targetBase, decisionsTemplatePath)}`);
-    console.log(`   📋 Secciones incluidas en la guía: ${includedSections.join(', ')}.`);
-    console.log('\n📋 Próximos pasos:');
-    console.log('   1. Copie el prompt de abajo y péguelo en la sesión de IA del proyecto.');
-    console.log('   2. La IA leerá los archivos referenciados (pricing-guide.md y pricing-decisions.md) para guiar la discusión.');
-    console.log('   3. Documente los acuerdos en docs/funky-ai/estimate/pricing-decisions.md durante la discusión.\n');
+    if (!json) {
+      const includedSections = ['ficha de alcance'];
+      if (guideOpts.brief !== undefined && guideOpts.brief !== false) {
+        includedSections.push('brief funcional');
+      }
+      for (const topic of guideOpts.topics) {
+        includedSections.push(DISPLAY_NAMES[topic].toLowerCase());
+      }
+      if (guideOpts.pricingTeam === true) {
+        includedSections.push('referencia de costos de equipo');
+      }
+      console.log('\n✅ Material de pricing generado exitosamente.');
+      console.log(`   📝 Guía de pricing: ${path.relative(targetBase, pricingGuidePath)}`);
+      console.log(`   📝 Template de decisiones: ${path.relative(targetBase, decisionsTemplatePath)}`);
+      console.log(`   📋 Secciones incluidas en la guía: ${includedSections.join(', ')}.`);
+      console.log('\n📋 Próximos pasos:');
+      console.log('   1. Copie el prompt de abajo y péguelo en la sesión de IA del proyecto.');
+      console.log('   2. La IA leerá los archivos referenciados (pricing-guide.md y pricing-decisions.md) para guiar la discusión.');
+      console.log('   3. Documente los acuerdos en docs/funky-ai/estimate/pricing-decisions.md durante la discusión.\n');
 
-    console.log(iaBanner);
-    console.log('');
-    console.log(iaPrompt);
-    console.log('');
-    console.log(iaFooter);
+      console.log(iaBanner);
+      console.log('');
+      console.log(iaPrompt);
+      console.log('');
+      console.log(iaFooter);
+    }
+
+    return {
+      phase: 'estimate',
+      status: 'completed',
+      artifacts,
+      durationMs: Date.now() - startedAt,
+      warnings
+    };
   } catch (err) {
-    console.warn('⚠️  Error inesperado:', err.message);
+    const msg = `⚠️  Error inesperado: ${err.message}`;
+    warnings.push(msg);
+    console.warn(msg);
+    return { phase: 'estimate', status: 'failed', artifacts: [], durationMs: Date.now() - startedAt, warnings };
   }
 }
 
@@ -190,6 +230,6 @@ export const estimateCommand = new Command('estimate')
   .option('--integrations', 'Include integrations section')
   .option('--pricing-team', 'Include team-cost reference (no calculator)')
   .action((opts) => {
-    runEstimate(process.cwd(), opts);
-    process.exit(0);
+    const result = runEstimate(process.cwd(), opts);
+    process.exit(result.status === 'failed' ? 1 : 0);
   });
