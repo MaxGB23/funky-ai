@@ -59,7 +59,7 @@ The system MUST call `runEstimate(targetBase, { contextPath })` where `contextPa
 
 - GIVEN `context.json` has `assess.runAt` set to null
 - WHEN `funky pipeline estimate` executes
-- THEN an error is printed: "Assess has not been run yet. Run 'funky pipeline assess' first."
+- THEN an error is printed: "Assess aún no se ha ejecutado. Ejecuta 'funky pipeline assess' primero."
 - AND exit code is 1
 
 #### Scenario: context.json missing — estimate blocked
@@ -104,7 +104,7 @@ The system MUST read `./context.json` and display: canvas state (found sources +
 
 - GIVEN `context.json` does not exist
 - WHEN `funky pipeline status` executes
-- THEN output shows "Pipeline not started" message
+- THEN output shows "Pipeline no iniciado" message
 - AND exit code is 0
 
 ### R-P6: context.json initialization
@@ -115,7 +115,7 @@ The system MUST initialize `context.json` at `./context.json` (project root) on 
 
 - GIVEN `initContext()` is called
 - WHEN it returns the initial state
-- THEN the object MUST have `{ version: 1, createdAt: "<ISO>", canvases: { projectCanvas: null, projectSource: null, infraCanvas: null, infraSource: null, unfilledCount: 0 }, assess: { runAt: null, dynamicQuestions: [] }, estimate: { runAt: null }, pipeline: { lastCommand: null, completed: [] } }`
+- THEN the object MUST have `{ version: 1, createdAt: "<ISO>", assess: { runAt: null, dynamicQuestions: [], decisionsFile: null }, estimate: { runAt: null }, pipeline: { lastCommand: null, completed: [] } }`
 
 ### R-P7: Exit codes
 
@@ -169,21 +169,19 @@ The pipeline MUST exit with code 0 on success and code 1 on any failure (assess 
 
 ### R-C4: `findCanvases(targetBase)`
 
-`findCanvases(targetBase)` MUST search for `PROJECT-CANVAS.md` and `INFRA-CANVAS.md` in the project root first, then `docs/` fallback. MUST return `{ projectCanvas: string|null, projectSource: string|null, infraCanvas: string|null, infraSource: string|null, unfilledCount: number }`. Content fields contain file content or null if not found. Source fields contain `"root"`, `"docs"`, or null. `unfilledCount` counts `[Responde aquí]` occurrences across both canvases.
+`findCanvases(targetBase)` MUST search for `PROJECT-CANVAS.md` and `INFRA-CANVAS.md` in the canonical directory `docs/funky-ai/canvas/` (`{targetBase}/docs/funky-ai/canvas/`). MUST return `{ projectCanvas: string|null, infraCanvas: string|null, unfilledCount: number }`. Content fields contain file content or null if not found. `unfilledCount` counts `[Responde aquí]` occurrences across both canvases.
 
-#### Scenario: Both in root
+#### Scenario: Both in canonical directory
 
-- GIVEN both canvases exist at project root
+- GIVEN both canvases exist in `docs/funky-ai/canvas/`
 - WHEN `findCanvases(targetBase)` is called
 - THEN both content fields have file contents
-- AND sources are `"root"`
 
 #### Scenario: Canvas missing
 
 - GIVEN only PROJECT-CANVAS.md exists
 - WHEN `findCanvases(targetBase)` is called
 - THEN `projectCanvas` has content, `infraCanvas` is null
-- AND `infraSource` is null
 
 ### R-C5: `countUnfilledSections(markdown)`
 

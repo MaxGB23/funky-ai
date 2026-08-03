@@ -153,6 +153,10 @@ export function runAssess(targetBase, opts = {}) {
   if (ctx) {
     ctx.assess.runAt = new Date().toISOString();
     ctx.assess.dynamicQuestions = surfaceResult.patterns || [];
+    // Ruta real (relativa al targetBase, con separadores "/") del archivo de
+    // decisiones que assess usó; estimate con --context la lee para no caer al
+    // default. Se normalizan los separadores para portabilidad Windows/POSIX.
+    ctx.assess.decisionsFile = path.relative(targetBase, decisionsDestPath).split(path.sep).join('/');
     writeContext(targetBase, ctx, contextArg || undefined);
   }
 

@@ -461,6 +461,26 @@ describe('--context flag', () => {
     expect(Array.isArray(writtenData.assess.dynamicQuestions)).toBe(true);
   });
 
+  it('writes the real decisions file path to assess.decisionsFile', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    addContextJson(mf, {
+      assess: { runAt: null, dynamicQuestions: [] },
+      estimate: { runAt: null },
+      pipeline: { lastCommand: null, completed: [] }
+    });
+    applyMocks(mf);
+
+    runAssess(CWD, { context: true });
+
+    const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
+    const contextCall = writeCalls.find(c => String(c[0]).endsWith('context.json'));
+    const writtenData = JSON.parse(contextCall[1]);
+    // Ruta relativa al targetBase, igual que las demás rutas del context
+    expect(writtenData.assess.decisionsFile).toBe('docs/funky-ai/assess/architecture-decisions.md');
+  });
+
   it('writes the surfaced risk pattern names to assess.dynamicQuestions', () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);

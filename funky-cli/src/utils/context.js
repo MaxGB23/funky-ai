@@ -22,7 +22,8 @@ export function initContext() {
     createdAt: new Date().toISOString(),
     assess: {
       runAt: null,
-      dynamicQuestions: []
+      dynamicQuestions: [],
+      decisionsFile: null
     },
     estimate: {
       runAt: null

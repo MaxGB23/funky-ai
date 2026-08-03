@@ -34,8 +34,8 @@ Si los canvases contienen secciones sin completar (`[Responde aquí]`), se muest
 
 | Output | Ruta | Descripción |
 |---|---|---|
-| pricing-guide.md | `docs/funky-ai/estimate/pricing-guide.md` | Guía de discusión con contexto del proyecto, factores de costo y estructura de sesión. No se sobrescribe si ya existe. |
-| pricing-decisions.md | `docs/funky-ai/estimate/pricing-decisions.md` | Template para documentar acuerdos de pricing durante la sesión colaborativa. No se sobrescribe si ya existe. |
+| pricing-guide.md | `docs/funky-ai/estimate/pricing-guide.md` | Guía de discusión con contexto del proyecto, factores de costo y estructura de sesión. Artefacto derivado: se regenera (sobrescribe) en cada ejecución. |
+| pricing-decisions.md | `docs/funky-ai/estimate/pricing-decisions.md` | Template para documentar acuerdos de pricing durante la sesión colaborativa. Doc vivo del equipo: no se sobrescribe si ya existe. |
 | stdout | Consola | Prompt completo para la IA (banner + cuerpo + footer) más resumen con rutas generadas y próximos pasos. |
 
 Con `--context`, además actualiza `docs/funky-ai/pipeline/context.json` registrando el timestamp de ejecución en `estimate.runAt`.
@@ -71,7 +71,8 @@ Con `--context`, además actualiza `docs/funky-ai/pipeline/context.json` registr
                                │
                     ┌──────────▼───────────┐
                     │  Escribir archivos   │
-                    │  (no sobrescribe)    │
+                    │  guía: sobrescribe   │
+                    │  decisiones: no      │
                     └──────────┬───────────┘
                                │
                     ┌──────────▼───────────┐

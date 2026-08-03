@@ -14,32 +14,25 @@ El comando `funky assess` facilita una sesión de discusión arquitectónica ent
 
 ### R1: Canvas Discovery
 
-The system MUST locate PROJECT-CANVAS.md and INFRA-CANVAS.md searching the project root (`./`) first, then falling back to `docs/` (`./docs/`). If a canvas is not found in either location, the system SHOULD warn the user but MUST continue generating the discussion guide with placeholder content.
+The system MUST locate PROJECT-CANVAS.md and INFRA-CANVAS.md in the canonical directory `docs/funky-ai/canvas/` (`{targetBase}/docs/funky-ai/canvas/`). If a canvas is not found there, the system SHOULD warn the user but MUST continue generating the discussion guide with placeholder content.
 
-#### Scenario: Both canvases exist in root
+#### Scenario: Both canvases exist in the canonical directory
 
-- GIVEN `./PROJECT-CANVAS.md` and `./INFRA-CANVAS.md` exist
+- GIVEN `./docs/funky-ai/canvas/PROJECT-CANVAS.md` and `./docs/funky-ai/canvas/INFRA-CANVAS.md` exist
 - WHEN `funky assess` executes
-- THEN both files are read without fallback
+- THEN both files are read from `docs/funky-ai/canvas/`
 - AND no missing-canvas warning is printed
-
-#### Scenario: Canvases in docs/ fallback
-
-- GIVEN only `./docs/PROJECT-CANVAS.md` and `./docs/INFRA-CANVAS.md` exist (not in root)
-- WHEN `funky assess` executes
-- THEN both files are read from `docs/`
-- AND a notice about fallback location MAY be printed
 
 #### Scenario: One canvas missing
 
-- GIVEN only PROJECT-CANVAS.md exists (INFRA-CANVAS.md missing in root and docs/)
+- GIVEN only PROJECT-CANVAS.md exists (INFRA-CANVAS.md missing in `docs/funky-ai/canvas/`)
 - WHEN `funky assess` executes
 - THEN a warning is printed indicating INFRA-CANVAS is missing
 - BUT the guide is still generated with "Canvas no disponible" for the missing canvas
 
 #### Scenario: Both canvases missing
 
-- GIVEN neither PROJECT-CANVAS.md nor INFRA-CANVAS.md exist in root or docs/
+- GIVEN neither PROJECT-CANVAS.md nor INFRA-CANVAS.md exist in `docs/funky-ai/canvas/`
 - WHEN `funky assess` executes
 - THEN a warning is printed indicating both canvases are missing
 - BUT exit code is 0 and the guide is still generated

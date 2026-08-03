@@ -368,6 +368,47 @@ describe('estimateCommand — integration', () => {
     expect(guideContent).toContain('Guía de Discusión de Pricing');
     expect(decisionsContent).toContain('Decisiones de Pricing');
   });
+
+  it('overwrites pricing-guide.md when it already exists (derived artifact)', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    addDecisions(mf, DECISIONS_CONTENT);
+    mf[path.join(CWD, 'docs', 'funky-ai', 'estimate', 'pricing-guide.md')] = '# Guía obsoleta previa';
+    applyMocks(mf);
+
+    estimateCommand.parse(['node', 'estimate'], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
+    const guideCall = writeCalls.find(c => String(c[0]).includes('pricing-guide.md'));
+    expect(guideCall).toBeTruthy();
+    const guideContent = String(guideCall[1]);
+    expect(guideContent).toContain('Guía de Discusión de Pricing');
+    expect(guideContent).not.toContain('Guía obsoleta previa');
+  });
+
+  it('does NOT overwrite an existing pricing-decisions.md (team living doc)', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    addDecisions(mf, DECISIONS_CONTENT);
+    mf[path.join(CWD, 'docs', 'funky-ai', 'estimate', 'pricing-decisions.md')] = '# Acuerdos previos del equipo';
+    applyMocks(mf);
+
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    estimateCommand.parse(['node', 'estimate'], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
+    const decisionsCall = writeCalls.find(c => String(c[0]).includes('pricing-decisions.md'));
+    expect(decisionsCall).toBeFalsy();
+    const warnMsgs = warnSpy.mock.calls.map(c => String(c));
+    expect(warnMsgs.some(m => m.includes('pricing-decisions.md') && m.includes('ya existe'))).toBe(true);
+
+    warnSpy.mockRestore();
+  });
 });
 
 // ═══════════════════════════════════════════════════
@@ -418,6 +459,30 @@ describe('--context flag', () => {
     expect(guideCall).toBeTruthy();
     const guideContent = String(guideCall[1]);
     expect(guideContent).toContain('Next.js');  // from DECISIONS_CONTENT
+  });
+
+  it('reads decisions from ctx.assess.decisionsFile when --context provides a custom path', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    // Ruta custom de decisiones (no la default) registrada por assess en context.json
+    mf[path.join(DECISIONS_DIR, 'custom-decisions.md')] = '# Decisiones custom\n- Stack: Vue';
+    addContextJson(mf, {
+      assess: { decisionsFile: 'docs/funky-ai/assess/custom-decisions.md', runAt: '2024-01-01T00:00:00.000Z', dynamicQuestions: [] },
+      estimate: { runAt: null },
+      pipeline: { lastCommand: null, completed: [] }
+    });
+    applyMocks(mf);
+
+    runEstimate(CWD, { context: true });
+
+    const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
+    const guideCall = writeCalls.find(c => String(c[0]).includes('pricing-guide.md'));
+    expect(guideCall).toBeTruthy();
+    const guideContent = String(guideCall[1]);
+    // Se leyeron las decisiones desde la ruta custom (no el default)
+    expect(guideContent).toContain('Vue');
+    expect(guideContent).not.toContain('DB: PostgreSQL');
   });
 
   it('writes estimate timestamp to context.json', () => {

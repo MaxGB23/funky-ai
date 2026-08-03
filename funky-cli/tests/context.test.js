@@ -28,7 +28,7 @@ describe('initContext', () => {
     const ctx = initContext();
     expect(ctx.version).toBe(1);
     expect(typeof ctx.createdAt).toBe('string');
-    expect(ctx.assess).toEqual({ runAt: null, dynamicQuestions: [] });
+    expect(ctx.assess).toEqual({ runAt: null, dynamicQuestions: [], decisionsFile: null });
     expect(ctx.estimate).toEqual({ runAt: null });
     expect(ctx.pipeline).toEqual({ lastCommand: null, completed: [] });
   });

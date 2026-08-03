@@ -30,9 +30,9 @@ El sistema DEBE verificar que `docs/funky-ai/assess/architecture-decisions.md` e
 
 ### R2: Canvas Discovery + Placeholders
 
-El sistema DEBE localizar PROJECT-CANVAS.md e INFRA-CANVAS.md (root → `docs/`). DEBE detectar `[Responde aquí]` en el contenido. Siempre CONTINUAR con contenido parcial. El comportamiento es idéntico al R1/R2 del spec de assess.
+El sistema DEBE localizar PROJECT-CANVAS.md e INFRA-CANVAS.md en el directorio canónico `docs/funky-ai/canvas/`. DEBE detectar `[Responde aquí]` en el contenido. Siempre CONTINUAR con contenido parcial. El comportamiento es idéntico al R1/R2 del spec de assess.
 
-- GIVEN ambos canvases en root
+- GIVEN ambos canvases en `docs/funky-ai/canvas/`
 - WHEN `funky estimate` se ejecuta
 - THEN se leen sin fallback
 - AND no hay warning
@@ -44,7 +44,7 @@ El sistema DEBE localizar PROJECT-CANVAS.md e INFRA-CANVAS.md (root → `docs/`)
 
 ### R3: Generación de guía de pricing
 
-El sistema DEBE generar `docs/funky-ai/estimate/pricing-guide.md` con: decisiones arquitectónicas (o "Sin decisiones documentadas"), contenido de ambos canvases, y estructura de discusión (contexto de pricing, factores de costo, referencia de infra, acuerdos). DEBE sobrescribir si existe.
+El sistema DEBE generar `docs/funky-ai/estimate/pricing-guide.md` con: decisiones arquitectónicas (o "Sin decisiones documentadas"), contenido de ambos canvases, y estructura de discusión (contexto de pricing, factores de costo, referencia de infra, acuerdos). Es un artefacto DERIVADO de los inputs actuales: DEBE regenerarse (sobrescribir) en cada ejecución.
 
 - GIVEN canvases completos y decisions existen
 - WHEN `funky estimate` se ejecuta
@@ -53,15 +53,21 @@ El sistema DEBE generar `docs/funky-ai/estimate/pricing-guide.md` con: decisione
 
 - GIVEN `docs/funky-ai/estimate/pricing-guide.md` ya existe
 - WHEN `funky estimate` se ejecuta
-- THEN se sobrescribe sin respaldo
+- THEN se sobrescribe con el contenido regenerado de los inputs actuales
+- AND no se imprime warning por existir
 
 ### R4: Template de decisiones de pricing
 
-El sistema DEBE crear `docs/funky-ai/estimate/pricing-decisions.md` con secciones: decisión, justificación, impacto en presupuesto, alternativas, fecha. DEBE sobrescribir si existe.
+El sistema DEBE crear `docs/funky-ai/estimate/pricing-decisions.md` con secciones: decisión, justificación, impacto en presupuesto, alternativas, fecha. Es un doc VIVO del equipo: DEBE crearse solo si no existe (create-if-not-exists) y NUNCA debe sobrescribir un archivo existente.
 
-- GIVEN `funky estimate` se ejecuta
-- WHEN se genera el template
-- THEN `docs/funky-ai/estimate/pricing-decisions.md` se crea/sobrescribe con la estructura estándar
+- GIVEN `docs/funky-ai/estimate/pricing-decisions.md` no existe
+- WHEN `funky estimate` se ejecuta
+- THEN el template se crea con la estructura estándar
+
+- GIVEN `docs/funky-ai/estimate/pricing-decisions.md` ya existe (con acuerdos previos)
+- WHEN `funky estimate` se ejecuta
+- THEN el archivo NO se modifica
+- AND se imprime un aviso indicando que ya existe
 
 ### R5: Prompt IA en español neutro
 

@@ -58,16 +58,14 @@ export function runEstimate(targetBase, opts = {}) {
       pricingGuide = 'Error al generar la guía de pricing.';
     }
 
+    // pricing-guide.md es un artefacto DERIVADO de los inputs actuales (decisiones +
+    // canvases): se regenera (sobrescribe) en cada ejecución.
     const pricingGuidePath = path.join(estimateDir, 'pricing-guide.md');
-    if (fs.existsSync(pricingGuidePath)) {
-      console.warn(`⚠️  "${pricingGuidePath}" ya existe. No se sobrescribió.`);
-    } else {
-      try {
-        fs.writeFileSync(pricingGuidePath, pricingGuide, 'utf8');
-      } catch (err) {
-        const msg = err.code === 'EACCES' ? `Error de permisos al escribir "${pricingGuidePath}". Verifica que tengas permisos de escritura.` : err.message;
-        console.warn('⚠️  No se pudo escribir pricing-guide.md:', msg);
-      }
+    try {
+      fs.writeFileSync(pricingGuidePath, pricingGuide, 'utf8');
+    } catch (err) {
+      const msg = err.code === 'EACCES' ? `Error de permisos al escribir "${pricingGuidePath}". Verifica que tengas permisos de escritura.` : err.message;
+      console.warn('⚠️  No se pudo escribir pricing-guide.md:', msg);
     }
 
     // ── 4. Generate Decisions Template ──
@@ -79,6 +77,8 @@ export function runEstimate(targetBase, opts = {}) {
       decisionsTemplate = 'Error al generar el template de decisiones.';
     }
 
+    // pricing-decisions.md es un doc VIVO del equipo: se crea solo si no existe
+    // (create-if-not-exists), nunca se sobrescribe.
     const decisionsTemplatePath = path.join(estimateDir, 'pricing-decisions.md');
     if (fs.existsSync(decisionsTemplatePath)) {
       console.warn(`⚠️  "${decisionsTemplatePath}" ya existe. No se sobrescribió.`);
