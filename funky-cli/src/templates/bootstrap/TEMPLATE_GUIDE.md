@@ -18,7 +18,7 @@ Una vez que has ejecutado `funky scaffold` y tienes los archivos base, el Orques
 Ejecuta la evaluación arquitectónica inicial y el canvas del proyecto. Este proceso arrojará requerimientos explícitos (NFRs, stack, integraciones).
 
 ### 2. Mutación de `tasks.md`
-El archivo `tasks.md` base es un esqueleto con una Fase 0 genérica y el protocolo de release. Debe ser expandido inyectando invariantes (reglas que se aplican a todas las fases) basados en las decisiones arquitectónicas:
+El archivo `tasks.md` base es un esqueleto con una Fase 0 genérica y el protocolo de release-checklist.md. Debe ser expandido inyectando invariantes (reglas que se aplican a todas las fases) basados en las decisiones arquitectónicas:
 
 * **Ejemplo - Linter/Formateo:**
   * **Decisión:** "El proyecto requiere linting estricto (ESLint/Prettier)."
