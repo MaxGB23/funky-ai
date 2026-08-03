@@ -87,7 +87,7 @@ pipelineCommand
       else console.log(msg);
     };
 
-    const ctx = ensureContext(targetBase);
+    let ctx = ensureContext(targetBase);
     if (!ctx) return;
 
     const results = {};
@@ -130,12 +130,25 @@ pipelineCommand
     };
 
     const phaseOpts = { context: true, json };
+    // Las fases persisten su propia completion con un ctx re-leído de disco
+    // (readContext dentro de assess/estimate); el ctx en memoria del pipeline
+    // quedó en el mark 'running'. Se refresca desde el archivo (fuente de
+    // verdad) para que runJson emita el estado REAL, no el running-mark.
+    const refreshCtx = () => {
+      const fresh = readContext(targetBase);
+      if (fresh.ok) {
+        ctx = fresh.ctx;
+      }
+    };
+
     const assessOk = runPhase('assess', runAssess, phaseOpts);
     if (!assessOk) return;
+    refreshCtx();
 
     log('\n✅ Assess completado. Ejecutando estimate...\n');
     const estimateOk = runPhase('estimate', runEstimate, phaseOpts);
     if (!estimateOk) return;
+    refreshCtx();
 
     if (json) {
       // R-P11: un único JSON en stdout, ANTES de process.exit; el pipeline

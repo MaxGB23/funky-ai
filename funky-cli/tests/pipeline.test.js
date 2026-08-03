@@ -2,12 +2,27 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // ── Module-level mocks ──
 
-vi.mock('../src/utils/context.js', () => ({
-  initContext: vi.fn(),
-  readContext: vi.fn(),
-  writeContext: vi.fn(),
-  updatePhaseState: vi.fn()
-}));
+vi.mock('../src/utils/context.js', () => {
+  const mocks = {
+    initContext: vi.fn(),
+    readContext: vi.fn(),
+    writeContext: vi.fn(),
+    // Réplica mínima del helper real: muta ctx[phase] y es dueño de currentPhase.
+    // Sin esto, el ctx en memoria del pipeline quedaría 'running' y el bug del
+    // estado stale en all --json pasaría desapercibido (lo detectó el smoke E2E).
+    updatePhaseState: vi.fn((ctx, phase, patch) => {
+      if (ctx && ctx[phase]) {
+        Object.assign(ctx[phase], patch);
+        if (patch.status === 'running') {
+          ctx.currentPhase = phase;
+        } else if (['completed', 'failed', 'skipped'].includes(patch.status)) {
+          ctx.currentPhase = null;
+        }
+      }
+    })
+  };
+  return mocks;
+});
 
 vi.mock('../src/commands/assess.js', () => ({
   runAssess: vi.fn()
@@ -23,6 +38,10 @@ import { runEstimate } from '../src/commands/estimate.js';
 import { pipelineCommand } from '../src/commands/pipeline.js';
 
 // ── Helpers ──
+
+// ctx compartido entre okRead() y persistPhaseResult(): replica el flujo real
+// donde el pipeline y las fases operan sobre el estado persistido en disco.
+let sharedCtx = null;
 
 // Seed de context v2 (R-P8) — el contrato typed de readContext devuelve
 // { ok:true, ctx } o { ok:false, reason }.
@@ -45,14 +64,17 @@ function v2Context(overrides = {}) {
 }
 
 function okRead(ctx) {
+  sharedCtx = ctx;
   readContext.mockReturnValue({ ok: true, ctx });
 }
 
 function missingRead() {
+  sharedCtx = null;
   readContext.mockReturnValue({ ok: false, reason: 'missing' });
 }
 
 function invalidRead(message = 'Unsupported context version: 99') {
+  sharedCtx = null;
   readContext.mockReturnValue({ ok: false, reason: 'invalid', message });
 }
 
@@ -64,6 +86,25 @@ function completedResult(phase) {
     durationMs: 12,
     warnings: []
   };
+}
+
+// Simula que la fase PERSISTIÓ su completion en el ctx compartido (como hace
+// el módulo real con su propio ctx re-leído de disco).
+function persistPhaseResult(phase, result) {
+  updatePhaseState(sharedCtx, phase, {
+    status: result.status,
+    finishedAt: '2024-01-01T14:00:00.000Z',
+    durationMs: result.durationMs,
+    artifacts: result.artifacts
+  });
+}
+
+function mockPhase(phase, result) {
+  const fn = phase === 'assess' ? runAssess : runEstimate;
+  fn.mockImplementation(() => {
+    persistPhaseResult(phase, result);
+    return result;
+  });
 }
 
 function setupActionFlow() {
@@ -223,10 +264,12 @@ describe('pipeline all', () => {
   });
 
   it('completes full flow — assess then estimate, exit 0', () => {
+    const ctx = v2Context();
     missingRead();
-    initContext.mockReturnValue(v2Context());
-    runAssess.mockReturnValue(completedResult('assess'));
-    runEstimate.mockReturnValue(completedResult('estimate'));
+    initContext.mockReturnValue(ctx);
+    sharedCtx = ctx;
+    mockPhase('assess', completedResult('assess'));
+    mockPhase('estimate', completedResult('estimate'));
 
     pipelineCommand.parse(['all'], { from: 'user' });
 
@@ -238,8 +281,8 @@ describe('pipeline all', () => {
 
   it('marks assess running + currentPhase and persists BEFORE assess executes (R-P10)', () => {
     okRead(v2Context());
-    runAssess.mockReturnValue(completedResult('assess'));
-    runEstimate.mockReturnValue(completedResult('estimate'));
+    mockPhase('assess', completedResult('assess'));
+    mockPhase('estimate', completedResult('estimate'));
 
     pipelineCommand.parse(['all'], { from: 'user' });
 
@@ -255,8 +298,8 @@ describe('pipeline all', () => {
 
   it('marks estimate running before estimate executes (R-P10)', () => {
     okRead(v2Context());
-    runAssess.mockReturnValue(completedResult('assess'));
-    runEstimate.mockReturnValue(completedResult('estimate'));
+    mockPhase('assess', completedResult('assess'));
+    mockPhase('estimate', completedResult('estimate'));
 
     pipelineCommand.parse(['all'], { from: 'user' });
 
@@ -294,8 +337,8 @@ describe('pipeline all', () => {
       assess: { status: 'completed', runAt: '2024-01-01T12:00:00.000Z' },
       estimate: { status: 'running', startedAt: '2024-01-01T13:00:00.000Z', finishedAt: null }
     }));
-    runAssess.mockReturnValue(completedResult('assess'));
-    runEstimate.mockReturnValue(completedResult('estimate'));
+    mockPhase('assess', completedResult('assess'));
+    mockPhase('estimate', completedResult('estimate'));
 
     pipelineCommand.parse(['all'], { from: 'user' });
 
@@ -318,12 +361,12 @@ describe('pipeline all', () => {
 
   it('all --json — single JSON on stdout with run detail, exit 0 (R-P11)', () => {
     okRead(v2Context());
-    runAssess.mockReturnValue({
+    mockPhase('assess', {
       phase: 'assess', status: 'completed',
       artifacts: [{ name: 'a.md', path: 'docs/funky-ai/assess/a.md', kind: 'generated' }],
       durationMs: 5, warnings: ['⚠️  canvas faltante']
     });
-    runEstimate.mockReturnValue(completedResult('estimate'));
+    mockPhase('estimate', completedResult('estimate'));
 
     pipelineCommand.parse(['all', '--json'], { from: 'user' });
 
@@ -332,16 +375,56 @@ describe('pipeline all', () => {
     const parsed = JSON.parse(writes[0]);
     expect(parsed.version).toBe(2);
     expect(parsed.currentPhase).toBeNull();
+    // El bloque de estado top-level refleja el estado PERSISTIDO (completed),
+    // no el running-mark del pipeline en memoria (regresión detectada en smoke).
+    expect(parsed.assess.status).toBe('completed');
+    expect(parsed.estimate.status).toBe('completed');
     expect(parsed.run.assess.status).toBe('completed');
     expect(parsed.run.assess.warnings).toEqual(['⚠️  canvas faltante']);
     expect(parsed.run.estimate.status).toBe('completed');
     expect(spies.exitSpy).toHaveBeenCalledWith(0);
   });
 
+  it('all --json — top-level reflects PERSISTED state after refresh, not the running-mark (regresión smoke E2E)', () => {
+    // Simula el flujo real: las fases persisten su completion en un ctx distinto
+    // (el que ellas leen de disco); el ctx en memoria del pipeline queda con el
+    // running-mark. pipeline debe refrescar desde disco antes de emitir JSON.
+    const initial = v2Context();
+    const persisted = v2Context({
+      assess: {
+        status: 'completed', runAt: '2024-01-01T14:00:00.000Z',
+        finishedAt: '2024-01-01T14:00:00.000Z', durationMs: 5,
+        artifacts: [{ name: 'a.md', path: 'docs/funky-ai/assess/a.md', kind: 'generated' }],
+        surfacedPatterns: ['Microservicios']
+      },
+      estimate: {
+        status: 'completed', runAt: '2024-01-01T14:01:00.000Z',
+        finishedAt: '2024-01-01T14:01:00.000Z', durationMs: 3,
+        artifacts: [{ name: 'e.md', path: 'docs/funky-ai/estimate/e.md', kind: 'generated' }]
+      }
+    });
+    readContext.mockReturnValueOnce({ ok: true, ctx: initial }); // ensureContext
+    readContext.mockReturnValue({ ok: true, ctx: persisted });   // refreshes tras cada fase
+    sharedCtx = persisted;
+    mockPhase('assess', completedResult('assess'));
+    mockPhase('estimate', completedResult('estimate'));
+
+    pipelineCommand.parse(['all', '--json'], { from: 'user' });
+
+    const parsed = JSON.parse(String(spies.stdoutWriteSpy.mock.calls[0]));
+    expect(parsed.assess.status).toBe('completed');
+    expect(parsed.assess.surfacedPatterns).toEqual(['Microservicios']);
+    expect(parsed.estimate.status).toBe('completed');
+    expect(parsed.currentPhase).toBeNull();
+    expect(parsed.run.assess.status).toBe('completed');
+    expect(parsed.run.estimate.status).toBe('completed');
+    expect(spies.exitSpy).toHaveBeenCalledWith(0);
+  });
+
   it('all --json — human inter-phase text goes to stderr, NOT stdout', () => {
     okRead(v2Context());
-    runAssess.mockReturnValue(completedResult('assess'));
-    runEstimate.mockReturnValue(completedResult('estimate'));
+    mockPhase('assess', completedResult('assess'));
+    mockPhase('estimate', completedResult('estimate'));
 
     pipelineCommand.parse(['all', '--json'], { from: 'user' });
 
