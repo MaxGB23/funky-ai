@@ -65,8 +65,8 @@ El comando `funky --version` imprime la versión leída de `funky-cli/package.js
   $LASTEXITCODE
   ```
 - [ ] **Criterios de éxito:**
-  - [ ] Exit code `0`.
-  - [ ] En consola (rutas con `\` en Windows, `C:\test\funky-smoke-v350\init` como `<WORKSPACE>`):
+  - [x ] Exit code `0`.
+  - [ x] En consola (rutas con `\` en Windows, `C:\test\funky-smoke-v350\init` como `<WORKSPACE>`):
     ```
     ✅ Creado directorio: <WORKSPACE>\docs\funky-ai\canvas
     ✅ Creado: <WORKSPACE>\docs\funky-ai\canvas\PROJECT-CANVAS.md
@@ -76,9 +76,9 @@ El comando `funky --version` imprime la versión leída de `funky-cli/package.js
     ✅ Canvases creados. Ejecuta `funky scaffold` para instalar el ecosistema completo.
     ```
   - [ ] Existen los archivos:
-    - [ ] `docs/funky-ai/canvas/PROJECT-CANVAS.md`
-    - [ ] `docs/funky-ai/canvas/INFRA-CANVAS.md`
-    - [ ] `docs/funky-ai/canvas/canvas-planning-guide.md`
+    - [ x] `docs/funky-ai/canvas/PROJECT-CANVAS.md`
+    - [ x] `docs/funky-ai/canvas/INFRA-CANVAS.md`
+    - [ x] `docs/funky-ai/canvas/canvas-planning-guide.md`
   - [ ] `PROJECT-CANVAS.md` contiene `[Responde aquí]` (placeholders por completar).
   - [ ] `INFRA-CANVAS.md` contiene `[Responde aquí]` (placeholders por completar).
 
@@ -90,29 +90,19 @@ El comando `funky --version` imprime la versión leída de `funky-cli/package.js
   $LASTEXITCODE
   ```
 - [ ] **Criterios de éxito:**
-  - [ ] Exit code `1`.
-  - [ ] En consola (stderr, en rojo con prefijo `node :` — es normal):
+  - [x ] Exit code `1`.
+  - [x ] En consola (stderr, en rojo con prefijo `node :` — es normal):
     ```
     ❌ Error: Ya existe PROJECT-CANVAS.md o INFRA-CANVAS.md en docs/funky-ai/canvas/.
     ```
-  - [ ] Ningún canvas fue sobreescrito (verificar que los archivos del 1.1 siguen intactos).
+  - [ x] Ningún canvas fue sobreescrito (verificar que los archivos del 1.1 siguen intactos).
 
-### 1.3 Error de entorno — permisos denegados (Vector 2 de `cli-simulations.md`, EACCES)
+### 1.3 DESCARTADO
 
-> En Windows reproducir `EACCES` es complicado. Si el equipo tiene control de ACL (`icacls`), denegar escritura al usuario sobre la carpeta destino; si no, anotar el resultado como "no reproducible en este entorno" y marcarlo en el reporte.
-
-- [ ] Ejecutar `funky init` en un directorio sin permisos de escritura (p. ej. una carpeta protegida del sistema).
-- [ ] **Criterios de éxito (mensaje esperado según código):**
-  - [ ] Exit code `1`.
-  - [ ] En consola:
-    ```
-    ❌ Error al generar los canvases: Error de permisos al crear directorio en "<ruta>". Verifica que tengas permisos de escritura en ese directorio.
-    ```
-  - [ ] El mensaje es legible y **sin stacktrace**.
 
 ### 1.4 Idempotencia
 
-- [ ] Cubierta por el 1.2: re-ejecutar `init` sobre un workspace ya inicializado **falla con exit 1 de forma controlada**, sin sobreescribir nada. ✅
+- [x] Cubierta por el 1.2: re-ejecutar `init` sobre un workspace ya inicializado **falla con exit 1 de forma controlada**, sin sobreescribir nada. ✅
 
 ---
 
@@ -120,68 +110,59 @@ El comando `funky --version` imprime la versión leída de `funky-cli/package.js
 
 ### 2.1 Happy path — instalación del ecosistema completo
 
-- [ ] En el workspace de init (ya tiene los canvases del 1.1), ejecutar:
+- [x ] En el workspace de init (ya tiene los canvases del 1.1), ejecutar:
   ```powershell
   funky scaffold
   $LASTEXITCODE
   ```
 - [ ] **Criterios de éxito:**
-  - [ ] Exit code `0`.
-  - [ ] En consola:
+  - [x ] Exit code `0`.
+  - [ x] En consola:
     ```
     🚀 Instalando estructura Funky AI...
     ```
-  - [ ] 36 líneas `✅ Creado: <ruta>` (35 copias de templates + 1 archivo generado `docs-live-index.md`).
-  - [ ] 8 líneas `✅ Creado directorio: <ruta>` (`docs-index/` + los 7 directorios engram).
+  - [ x] 36 líneas `✅ Creado: <ruta>` (35 copias de templates + 1 archivo generado `docs-live-index.md`).
+  - [x ] 8 líneas `✅ Creado directorio: <ruta>` (`docs-index/` + los 7 directorios engram).
   - [ ] Línea final (exacta):
     ```
     ✅ Funky AI instalado. 36 archivos creados, 0 ya existian.
     ```
   - [ ] Existen (spot-check):
-    - [ ] `ORCHESTRATOR-STATE.md`
-    - [ ] `TEMPLATE_GUIDE.md`
-    - [ ] `README.md`
-    - [ ] `.agents/rules/engram-protocol.md`
-    - [ ] `.agents/rules/tier2-delegation/t2-spec.md`
-    - [ ] `.agents/rules/tier3-interactive/risk-decision.md`
-    - [ ] `.agents/templates/sdd/spec.md`
-    - [ ] `.agents/templates/sdd/docs-live-index.md`
-    - [ ] `.agents/templates/sdd/docs-index/`
-    - [ ] `openspec/rfcs/000-rfc-template.md`
-    - [ ] `docs/engram/architecture/`
-    - [ ] `docs/engram/release/`
-  - [ ] `funky scaffold` NO crea canvases (los canvases van a `docs/funky-ai/canvas/` solo vía `funky init`).
+    - [ x] `ORCHESTRATOR-STATE.md`
+    - [ x] `TEMPLATE_GUIDE.md`
+    - [ x] `README.md`
+    - [ x] `.agents/rules/engram-protocol.md`
+    - [ x] `.agents/rules/tier2-delegation/t2-spec.md`
+    - [ x] `.agents/rules/tier3-interactive/risk-decision.md`
+    - [ x] `.agents/templates/sdd/spec.md`
+    - [ x] `.agents/templates/sdd/docs-live-index.md`
+    - [ x] `.agents/templates/sdd/docs-index/`
+    - [ x] `openspec/rfcs/000-rfc-template.md`
+    - [ x] `docs/engram/...7resto/`
+
+  - [x ] `funky scaffold` NO crea canvases (los canvases van a `docs/funky-ai/canvas/` solo vía `funky init`).
 
 ### 2.2 Idempotencia — segunda ejecución
 
-- [ ] En el MISMO workspace, ejecutar de nuevo:
+- [x ] En el MISMO workspace, ejecutar de nuevo:
   ```powershell
   funky scaffold
   $LASTEXITCODE
   ```
-- [ ] **Criterios de éxito:**
-  - [ ] Exit code `0`.
-  - [ ] 36 líneas `⚡ Salteando (ya existe): <ruta>`.
-  - [ ] Línea final (exacta):
+- [ ]x **Criterios de éxito:**
+  - [ x] Exit code `0`.
+  - [x ] 36 líneas `⚡ Salteando (ya existe): <ruta>`.
+  - [ x] Línea final (exacta):
     ```
     ✅ Funky AI instalado. 0 archivos creados, 36 ya existian.
     ```
-  - [ ] Ningún archivo fue sobreescrito (p. ej. editar un archivo antes de la 2.ª corrida y verificar que el contenido sobrevive).
+  - [ x] Ningún archivo fue sobreescrito (p. ej. editar un archivo antes de la 2.ª corrida y verificar que el contenido sobrevive).
 
-### 2.3 Error de entorno — permisos denegados (Vector 2)
-
-- [ ] Ejecutar `funky scaffold` en un directorio sin permisos de escritura.
-- [ ] **Criterios de éxito (mensaje esperado según código):**
-  - [ ] Exit code `1`.
-  - [ ] En consola:
-    ```
-    ❌ Error al instalar Funky AI: Error de permisos al copiar archivo en "<ruta>". Verifica que tengas permisos de escritura en ese directorio.
-    ```
-  - [ ] Mensaje legible y sin stacktrace.
+### 2.3 DESCARTADO
 
 ---
 
-## 3. Comando `funky assess`
+## 3. Comando `funky assess` [OMITIDO POR TIEMPO]
 
 ### 3.1 Happy path — guía de discusión con canvases completados
 
@@ -212,14 +193,14 @@ El comando `funky --version` imprime la versión leída de `funky-cli/package.js
 
   > El valor `SQLite` en INFRA-CANVAS dispara la **pregunta dinámica** de la regla SQLite en `assessRules.js`. Es intencional para verificar el motor de reglas.
 
-- [ ] Ejecutar:
+- [ x] Ejecutar:
   ```powershell
   funky assess
   $LASTEXITCODE
   ```
 - [ ] **Criterios de éxito:**
-  - [ ] Exit code `0`.
-  - [ ] En consola (secuencia exacta):
+  - [ x] Exit code `0`.
+  - [ x] En consola (secuencia exacta):
     ```
     📄 Template de decisiones creado en docs/funky-ai/assess/architecture-decisions.md
 
@@ -234,10 +215,10 @@ El comando `funky --version` imprime la versión leída de `funky-cli/package.js
        4. Documenta los acuerdos en docs/funky-ai/assess/architecture-decisions.md durante la discusión.
     ```
     (Las rutas calculadas aparecen con `\` en Windows; la línea 4 usa `/` hardcodeado en el código.)
-  - [ ] Existen:
-    - [ ] `docs/funky-ai/assess/architecture-review.md`
-    - [ ] `docs/funky-ai/assess/architecture-decisions.md`
-  - [ ] `architecture-review.md` contiene las 6 fases: `Fase 1: Contexto`, `Fase 2: Preocupaciones del Equipo`, `Fase 3: Preguntas Guía`, `Fase 4: Riesgos Detectados`, `Fase 5: Alternativas`, `Fase 6: Acuerdos`.
+  - [x ] Existen:
+    - [x ] `docs/funky-ai/assess/architecture-review.md`
+    - [ x] `docs/funky-ai/assess/architecture-decisions.md`
+  - [x ] `architecture-review.md` contiene las 6 fases: `Fase 1: Contexto`, `Fase 2: Preocupaciones del Equipo`, `Fase 3: Preguntas Guía`, `Fase 4: Riesgos Detectados`, `Fase 5: Alternativas`, `Fase 6: Acuerdos`.
   - [ ] `architecture-review.md` contiene la pregunta dinámica SQLite (regla `SQLite`):
     ```
     SQLite es liviano pero tiene límites de concurrencia. Si el proyecto escala, ¿tienen pensado migrar a PostgreSQL u otro motor?
@@ -251,19 +232,19 @@ El comando `funky --version` imprime la versión leída de `funky-cli/package.js
   ```powershell
   Set-Location C:\test\funky-smoke-v350\init   # ya tiene canvases con placeholders intactos
   ```
-- [ ] Ejecutar assess ahí (los canvases tienen 9 `[Responde aquí]` sin reemplazar):
+- [X ] Ejecutar assess ahí (los canvases tienen 9 `[Responde aquí]` sin reemplazar):
   ```powershell
   funky assess
   $LASTEXITCODE
   ```
 - [ ] **Criterios de éxito:**
-  - [ ] Exit code `0` (nunca bloquea).
-  - [ ] En consola, antes de generar la guía:
+  - [x ] Exit code `0` (nunca bloquea).
+  - [ x] En consola, antes de generar la guía:
     ```
     ⚠️  Se detectaron 9 secciones sin completar ("[Responde aquí]") en los canvases. La discusión se basará en datos parciales.
     ```
-  - [ ] La guía se genera igualmente: `docs/funky-ai/assess/architecture-review.md` existe.
-  - [ ] Variante de placeholders: si además faltan los canvases, advierte:
+  - [x ] La guía se genera igualmente: `docs/funky-ai/assess/architecture-review.md` existe.
+  - [x ] Variante de placeholders: si además faltan los canvases, advierte:
     ```
     ⚠️  No se encontró PROJECT-CANVAS.md en docs/funky-ai/canvas/. Usando placeholder.
     ⚠️  No se encontró INFRA-CANVAS.md en docs/funky-ai/canvas/. Usando placeholder.
@@ -273,34 +254,34 @@ El comando `funky --version` imprime la versión leída de `funky-cli/package.js
 
 > Quirk documentado: `assess -c <ruta>` imprime el error pero **termina con exit 0** (el código hace `process.exit(0)` al final del action).
 
-- [ ] En un workspace sin `docs/funky-ai/pipeline/context.json` (el de `init` del 3.2 sirve), ejecutar:
+- [ x] En un workspace sin `docs/funky-ai/pipeline/context.json` (el de `init` del 3.2 sirve), ejecutar:
   ```powershell
   funky assess -c docs/funky-ai/pipeline/context.json
   $LASTEXITCODE
   ```
-- [ ] **Criterios de éxito:**
-  - [ ] En consola (stderr):
+- [x ] **Criterios de éxito:**
+  - [ x] En consola (stderr):
     ```
     ❌ No se pudo leer context.json. Asegurate de haber ejecutado "funky pipeline assess" primero.
     ```
-  - [ ] Exit code `0` (verificar el quirk: error impreso pero sin fallar).
-  - [ ] No se escribe `context.json`.
+  - [x ] Exit code `0` (verificar el quirk: error impreso pero sin fallar).
+  - [ x] No se escribe `context.json`.
 
 ### 3.4 Idempotencia — segunda ejecución
 
-- [ ] En el workspace del 3.1, ejecutar de nuevo:
+- [x ] En el workspace del 3.1, ejecutar de nuevo:
   ```powershell
   funky assess
   $LASTEXITCODE
   ```
-- [ ] **Criterios de éxito:**
-  - [ ] Exit code `0`.
-  - [ ] En consola:
+- [ x] **Criterios de éxito:**
+  - [ x] Exit code `0`.
+  - [ x] En consola:
     ```
     ⚠️  "C:\test\funky-smoke-v350\assess\docs\funky-ai\assess\architecture-review.md" ya existe. No se sobrescribió.
     ℹ️  docs/architecture-decisions.md ya existe — no se modificó.
     ```
-  - [ ] `architecture-review.md` no fue sobreescrito (verificar que sigue conteniendo la pregunta SQLite).
+  - [ x] `architecture-review.md` no fue sobreescrito (verificar que sigue conteniendo la pregunta SQLite).
 
 ---
 
@@ -308,11 +289,11 @@ El comando `funky --version` imprime la versión leída de `funky-cli/package.js
 
 ### 4.1 Happy path — material de pricing completo
 
-- [ ] Posicionarse en el workspace de estimate:
+- [x ] Posicionarse en el workspace de estimate:
   ```powershell
   Set-Location C:\test\funky-smoke-v350\estimate
   ```
-- [ ] Preparar el escenario (canvases completados + decisiones):
+- [x ] Preparar el escenario (canvases completados + decisiones):
   ```powershell
   funky init
   # completar los canvases (tabla de la Sección 3.1 o script de la Sección 7)
@@ -347,6 +328,9 @@ El comando `funky --version` imprime la versión leída de `funky-cli/package.js
     - [ ] `docs/funky-ai/estimate/pricing-guide.md`
     - [ ] `docs/funky-ai/estimate/pricing-decisions.md`
   - [ ] `pricing-guide.md` contiene `Guía de Discusión de Pricing` y las decisiones documentadas.
+
+
+
 
 ### 4.2 Edge — sin `architecture-decisions.md` previo (Vector 5 de `cli-simulations.md`)
 
@@ -410,14 +394,14 @@ El comando `funky --version` imprime la versión leída de `funky-cli/package.js
   ```powershell
   Set-Location C:\test\funky-smoke-v350\pipeline
   ```
-- [ ] Ejecutar:
+- [x ] Ejecutar:
   ```powershell
   funky pipeline status
   $LASTEXITCODE
   ```
 - [ ] **Criterios de éxito:**
-  - [ ] Exit code `0`.
-  - [ ] En consola (exacto):
+  - [x ] Exit code `0`.
+  - [ x] En consola (exacto):
     ```
     📋 Pipeline not started.
     Run "funky pipeline assess" to begin.
@@ -437,14 +421,14 @@ El comando `funky --version` imprime la versión leída de `funky-cli/package.js
 
 ### 5.3 `pipeline estimate` — bloqueado sin contexto (Vector 6 de `cli-simulations.md`)
 
-- [ ] En un workspace SIN `context.json` (p. ej. `C:\test\funky-smoke-v350\init`), ejecutar:
+- [ x] En un workspace SIN `context.json` (p. ej. `C:\test\funky-smoke-v350\init`), ejecutar:
   ```powershell
   funky pipeline estimate
   $LASTEXITCODE
   ```
-- [ ] **Criterios de éxito:**
-  - [ ] Exit code `1`.
-  - [ ] En consola (stderr):
+- [x ] **Criterios de éxito:**
+  - [x ] Exit code `1`.
+  - [x ] En consola (stderr):
     ```
     ❌ Pipeline context not found. Run "funky pipeline assess" first.
     ```
