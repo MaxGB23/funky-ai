@@ -19,7 +19,7 @@ const sharedFsMock = vi.hoisted(() => ({
 vi.mock('fs', () => ({ ...sharedFsMock, default: sharedFsMock }));
 vi.mock('node:fs', () => ({ ...sharedFsMock, default: sharedFsMock }));
 
-import { generatePricingGuide, generateDecisionsTemplate, generateIAPrompt, generateIAPromptBanner, generateIAPromptFooter } from '../src/utils/estimateDomain.js';
+import { generatePricingGuide, generateBriefSection, generateTopicFragments, generateTeamCostReference, generateScopeExclusionTable, generateDecisionsTemplate, generateIAPrompt, generateIAPromptBanner, generateIAPromptFooter } from '../src/utils/estimateDomain.js';
 import { estimateCommand, runEstimate } from '../src/commands/estimate.js';
 import { surfaceEstimateTopics, TOPICS, DISPLAY_NAMES, STATUS } from '../src/utils/estimateTopics.js';
 
@@ -50,7 +50,7 @@ const DEFAULT_GUIDE_TEMPLATE = `# Guía de Discusión de Pricing
 
 ### INFRA-CANVAS
 {{INFRA_CANVAS_CONTENT}}
-
+{{OPTIONAL_SECTIONS}}
 ## Estructura de Discusión
 
 ### 1. Contexto de Pricing (5 min)
@@ -795,5 +795,305 @@ describe('surfaceEstimateTopics', () => {
       NEUTRAL_DECISIONS
     );
     expect(result.signals.find((s) => s.topic === 'transactions').status).toBe(STATUS.INDETERMINATE);
+  });
+});
+
+// ═══════════════════════════════════════════════════
+// PR 2 (estimate-redesign): opts + helpers + marker (R7-R10, R12-R14)
+// ═══════════════════════════════════════════════════
+
+const CHECKLIST_TEMPLATE = `## Brief Funcional
+
+**Producto**
+- ¿Qué problema resuelve el producto?`;
+
+const TOPIC_FRAGMENT_ROLES = `## Roles del equipo
+
+Impacto en costos:
+- La composición del equipo domina el presupuesto.`;
+
+const TOPIC_FRAGMENT_SECURITY = `## Seguridad
+
+Impacto en costos:
+- Auth y cumplimiento agregan esfuerzo recurrente.`;
+
+const TEAM_COST_TEMPLATE = `## Referencia de Costos de Equipo
+
+### Fórmula de referencia
+Costo por rol = rol × seniority × dedicación × duración`;
+
+function addOptionalTemplates(mf) {
+  mf[path.join(TPL_DIR, 'brief-questions-template.md')] = CHECKLIST_TEMPLATE;
+  mf[path.join(TPL_DIR, 'topics', 'roles.md')] = TOPIC_FRAGMENT_ROLES;
+  mf[path.join(TPL_DIR, 'topics', 'security.md')] = TOPIC_FRAGMENT_SECURITY;
+  mf[path.join(TPL_DIR, 'team-cost-reference-template.md')] = TEAM_COST_TEMPLATE;
+}
+
+// Salida legacy esperada: template sin marcador + los 3 replaces (R12). El
+// marcador {{OPTIONAL_SECTIONS}} debe desaparecer sin dejar rastro: con
+// sections === '' la línea se elimina y la salida 3-arg es byte-idéntica.
+const LEGACY_GUIDE = `# Guía de Discusión de Pricing
+
+> Generado por \`funky estimate\`. Use este documento para su sesión de pricing colaborativa.
+
+## Contexto del Proyecto
+
+### Decisiones Arquitectónicas
+${DECISIONS_CONTENT}
+
+### PROJECT-CANVAS
+${CANVAS_PROJECT_CONTENT}
+
+### INFRA-CANVAS
+${CANVAS_INFRA_CONTENT}
+
+## Estructura de Discusión
+
+### 1. Contexto de Pricing (5 min)
+Revisar decisiones arquitectónicas y canvases para entender el alcance del proyecto.
+
+### 2. Factores de Costo (10 min)
+- Infraestructura: hosting, servicios, herramientas
+- Complejidad técnica: stack, integraciones, deuda técnica
+- Equipo: seniority, tamaño, dedicación
+- Timeline: urgencia, hitos, mantenimiento post-lanzamiento
+
+### 3. Referencia de Infraestructura (10 min)
+Costos estimados de los servicios elegidos en los canvases. Investigar precios actuales de cada proveedor.
+
+### 4. Acuerdos de Pricing (15 min)
+Definir precio final usando la guía de la sesión. Documentar en pricing-decisions-template.md.
+
+## Instrucciones
+1. Revise esta guía con el equipo.
+2. Discuta cada factor de costo.
+3. Documente los acuerdos en el template de decisiones.`;
+
+describe('generatePricingGuide — R12 legacy byte-identity', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('3-arg call produce byte-identical legacy output (marker line stripped)', () => {
+    const mf = {};
+    mf[TPL_PRICING_GUIDE_PATH] = DEFAULT_GUIDE_TEMPLATE;
+    applyMocks(mf);
+
+    const result = generatePricingGuide(DECISIONS_CONTENT, CANVAS_PROJECT_CONTENT, CANVAS_INFRA_CONTENT);
+    expect(result).toBe(LEGACY_GUIDE);
+  });
+
+  it('empty opts {} produce byte-identical output to the 3-arg call', () => {
+    const mf = {};
+    mf[TPL_PRICING_GUIDE_PATH] = DEFAULT_GUIDE_TEMPLATE;
+    applyMocks(mf);
+
+    const legacy = generatePricingGuide(DECISIONS_CONTENT, CANVAS_PROJECT_CONTENT, CANVAS_INFRA_CONTENT);
+    const withEmptyOpts = generatePricingGuide(DECISIONS_CONTENT, CANVAS_PROJECT_CONTENT, CANVAS_INFRA_CONTENT, {});
+    expect(withEmptyOpts).toBe(legacy);
+    expect(withEmptyOpts).not.toContain('{{OPTIONAL_SECTIONS}}');
+  });
+});
+
+describe('generateBriefSection — R7', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('embeds the checklist template when briefPath is true', () => {
+    const mf = {};
+    addOptionalTemplates(mf);
+    applyMocks(mf);
+
+    const result = generateBriefSection(true, CWD);
+    expect(result).toEqual({ content: CHECKLIST_TEMPLATE, usedFallback: false });
+  });
+
+  it('embeds the checklist template when briefPath is undefined', () => {
+    const mf = {};
+    addOptionalTemplates(mf);
+    applyMocks(mf);
+
+    const result = generateBriefSection(undefined, CWD);
+    expect(result).toEqual({ content: CHECKLIST_TEMPLATE, usedFallback: false });
+  });
+
+  it('reads a user brief file resolved against baseDir when briefPath is a string', () => {
+    const mf = {};
+    addOptionalTemplates(mf);
+    mf[path.join(CWD, 'brief.md')] = 'BRIEF DEL USUARIO';
+    applyMocks(mf);
+
+    const result = generateBriefSection('brief.md', CWD);
+    expect(result).toEqual({ content: 'BRIEF DEL USUARIO', usedFallback: false });
+  });
+
+  it('falls back to the checklist with usedFallback: true when the file is missing', () => {
+    const mf = {};
+    addOptionalTemplates(mf);
+    applyMocks(mf);
+    const missingPath = path.join(CWD, 'missing.md');
+    vi.mocked(fs.readFileSync).mockImplementation((p) => {
+      const key = String(p);
+      if (key === missingPath) throw new Error('ENOENT');
+      if (Object.prototype.hasOwnProperty.call(mf, key)) return mf[key];
+      return '';
+    });
+
+    const result = generateBriefSection('missing.md', CWD);
+    expect(result).toEqual({ content: CHECKLIST_TEMPLATE, usedFallback: true });
+  });
+});
+
+describe('generateTopicFragments — R8', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('returns an empty string for an empty topics array', () => {
+    const mf = {};
+    addOptionalTemplates(mf);
+    applyMocks(mf);
+
+    expect(generateTopicFragments([])).toBe('');
+  });
+
+  it('returns only requested fragments in canonical order regardless of request order', () => {
+    const mf = {};
+    addOptionalTemplates(mf);
+    applyMocks(mf);
+
+    const direct = generateTopicFragments(['roles', 'security']);
+    const reversed = generateTopicFragments(['security', 'roles']);
+    expect(reversed).toBe(direct);
+    expect(direct).toContain(TOPIC_FRAGMENT_ROLES);
+    expect(direct).toContain(TOPIC_FRAGMENT_SECURITY);
+    expect(direct.indexOf(TOPIC_FRAGMENT_ROLES)).toBeLessThan(direct.indexOf(TOPIC_FRAGMENT_SECURITY));
+  });
+
+  it('throws when a fragment file is missing', () => {
+    const mf = {};
+    addOptionalTemplates(mf);
+    applyMocks(mf);
+    vi.mocked(fs.readFileSync).mockImplementation((p) => {
+      const key = String(p);
+      if (key === path.join(TPL_DIR, 'topics', 'roles.md')) throw new Error('ENOENT');
+      if (Object.prototype.hasOwnProperty.call(mf, key)) return mf[key];
+      return '';
+    });
+
+    expect(() => generateTopicFragments(['roles'])).toThrow(/roles/);
+  });
+});
+
+describe('generateTeamCostReference — R10', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('returns the team-cost reference template content', () => {
+    const mf = {};
+    addOptionalTemplates(mf);
+    applyMocks(mf);
+
+    const result = generateTeamCostReference();
+    expect(result).toBe(TEAM_COST_TEMPLATE);
+  });
+
+  it('throws when the template is missing', () => {
+    const mf = {};
+    addOptionalTemplates(mf);
+    applyMocks(mf);
+    vi.mocked(fs.readFileSync).mockImplementation(() => {
+      throw new Error('ENOENT');
+    });
+
+    expect(() => generateTeamCostReference()).toThrow(/team-cost-reference-template/);
+  });
+});
+
+describe('generateScopeExclusionTable — R9 ficha', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('renders the ficha heading, table header and 6 rows with exact status copy', () => {
+    const result = generateScopeExclusionTable(
+      { projectCanvas: projectCanvasWith(), infraCanvas: infraCanvasWith() },
+      NEUTRAL_DECISIONS
+    );
+    expect(result).toContain('## Alcance: ¿Aplica en esta fase?');
+    expect(result).toContain('| Tema | Estado |');
+    for (const topic of TOPICS) {
+      expect(result).toContain(`| ${DISPLAY_NAMES[topic]} | ${STATUS.NOT_APPLICABLE} |`);
+    }
+  });
+
+  it('maps a detected signal to Aplica with its evidence in the note', () => {
+    const canvases = {
+      projectCanvas: projectCanvasWith({ 1: 'Dedicación: full-time' }),
+      infraCanvas: infraCanvasWith(),
+    };
+    const result = generateScopeExclusionTable(canvases, NEUTRAL_DECISIONS);
+    expect(result).toContain(`| ${DISPLAY_NAMES.roles} | ${STATUS.APPLIES} |`);
+    expect(result).toContain('roles → dedicación');
+  });
+
+  it('maps an unfilled canvas section to Indeterminado (revisar)', () => {
+    const canvases = {
+      projectCanvas: projectCanvasWith(),
+      infraCanvas: infraCanvasWith({ 1: '[Responde aquí]' }),
+    };
+    const result = generateScopeExclusionTable(canvases, NEUTRAL_DECISIONS);
+    expect(result).toContain(`| ${DISPLAY_NAMES.transactions} | ${STATUS.INDETERMINATE} |`);
+  });
+
+  it('maps a missing canvas to Indeterminado (revisar) with canvas ausente in the note', () => {
+    const result = generateScopeExclusionTable({}, NEUTRAL_DECISIONS);
+    expect(result).toContain(`| ${DISPLAY_NAMES.roles} | ${STATUS.INDETERMINATE} |`);
+    expect(result).toContain('roles → canvas ausente');
+  });
+});
+
+describe('generatePricingGuide — optional sections assembly', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('inserts ficha → brief → topics → team-cost in design order at the marker', () => {
+    const mf = {};
+    mf[TPL_PRICING_GUIDE_PATH] = DEFAULT_GUIDE_TEMPLATE;
+    addOptionalTemplates(mf);
+    applyMocks(mf);
+
+    const out = generatePricingGuide(DECISIONS_CONTENT, CANVAS_PROJECT_CONTENT, CANVAS_INFRA_CONTENT, {
+      brief: true,
+      topics: ['security'],
+      pricingTeam: true,
+      scopeFicha: true,
+    });
+
+    const idx = (s) => out.indexOf(s);
+    const fichaIdx = idx('## Alcance: ¿Aplica en esta fase?');
+    const briefIdx = idx('## Brief Funcional');
+    const topicIdx = idx('## Seguridad');
+    const teamIdx = idx('## Referencia de Costos de Equipo');
+    expect(fichaIdx).toBeGreaterThan(-1);
+    expect(briefIdx).toBeGreaterThan(fichaIdx);
+    expect(topicIdx).toBeGreaterThan(briefIdx);
+    expect(teamIdx).toBeGreaterThan(topicIdx);
+    expect(out).not.toContain('{{OPTIONAL_SECTIONS}}');
+  });
+
+  it('does not include optional sections when opts is empty', () => {
+    const mf = {};
+    mf[TPL_PRICING_GUIDE_PATH] = DEFAULT_GUIDE_TEMPLATE;
+    applyMocks(mf);
+
+    const out = generatePricingGuide(DECISIONS_CONTENT, CANVAS_PROJECT_CONTENT, CANVAS_INFRA_CONTENT, {});
+    expect(out).not.toContain('## Brief Funcional');
+    expect(out).not.toContain('## Alcance: ¿Aplica en esta fase?');
+    expect(out).not.toContain('## Referencia de Costos de Equipo');
+    expect(out).not.toContain('{{OPTIONAL_SECTIONS}}');
   });
 });

@@ -12,7 +12,7 @@
 
 ### INFRA-CANVAS
 {{INFRA_CANVAS_CONTENT}}
-
+{{OPTIONAL_SECTIONS}}
 ## Estructura de Discusión
 
 ### 1. Contexto de Pricing (5 min)
