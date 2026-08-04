@@ -31,6 +31,15 @@ describe('Bases de skills (src/skills/, no dead gentle)', () => {
     expect(content).toContain('release-notes.md');
   });
 
+  it('sdd-release base: paso 2 inyecta release-notes.md desde el template si falta, rutas con / (D5, R-SK-10)', () => {
+    const releasePath = path.join(__dirname, '../src/skills/sdd-release/SKILL.md');
+    const content = fs.readFileSync(releasePath, 'utf8');
+
+    expect(content).toContain('.agents/templates/sdd/release-notes.md');
+    expect(content).not.toMatch(/\.agents\\templates\\sdd/);
+    expect(content).toMatch(/does not exist, inject it from the base template/i);
+  });
+
   it('sdd-docs-sync base: sin verificación CLI del monorepo, SSOT condicional (D2)', () => {
     const syncPath = path.join(__dirname, '../src/skills/sdd-docs-sync/SKILL.md');
     const content = fs.readFileSync(syncPath, 'utf8');
