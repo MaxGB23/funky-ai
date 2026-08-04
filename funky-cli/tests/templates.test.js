@@ -19,3 +19,44 @@ describe('Templates Validation', () => {
     expect(content.length).toBeGreaterThan(0);
   });
 });
+
+describe('Bases de skills gentle (canal base nuevo, no dead gentle)', () => {
+  it('sdd-release base: sin capa CLI del monorepo, rutas neutralizadas (D3)', () => {
+    const releasePath = path.join(__dirname, '../src/templates/gentle/skills/sdd-release/SKILL.md');
+    const content = fs.readFileSync(releasePath, 'utf8');
+
+    expect(content).not.toContain('No aplica en antigravity');
+    expect(content).not.toContain('funky-cli/bin');
+    expect(content).toContain('<ruta-docs-del-proyecto>');
+    expect(content).toContain('release-notes.md');
+  });
+
+  it('sdd-docs-sync base: sin verificación CLI del monorepo, SSOT condicional (D2)', () => {
+    const syncPath = path.join(__dirname, '../src/templates/gentle/skills/sdd-docs-sync/SKILL.md');
+    const content = fs.readFileSync(syncPath, 'utf8');
+
+    expect(content).not.toContain('funky-cli/bin');
+    expect(content).not.toMatch(/paso 4a|paso 4b|node funky-cli/);
+    expect(content).toContain('docs-live-index.md');
+    expect(content).toContain('docs-index');
+  });
+});
+
+describe('Templates de docs compartidos (bootstrap/sdd)', () => {
+  it('docs-live-index.md: fila placeholder <ruta-del-doc> (SSOT compartido)', () => {
+    const livePath = path.join(__dirname, '../src/templates/bootstrap/sdd/docs-live-index.md');
+    const content = fs.readFileSync(livePath, 'utf8');
+
+    expect(content).toContain('Índice de Docs Vivos (SSOT)');
+    expect(content).toContain('<ruta-del-doc>');
+  });
+
+  it('docs-index/template.md: formato canónico del índice seccional (R-SK-4)', () => {
+    const templatePath = path.join(__dirname, '../src/templates/bootstrap/sdd/docs-index/template.md');
+    const content = fs.readFileSync(templatePath, 'utf8');
+
+    expect(content).toMatch(/# Índice de Secciones: /);
+    expect(content).toMatch(/- \*\*1\. /);
+    expect(content).toMatch(/- \*\*2\.1 /);
+  });
+});
