@@ -97,4 +97,28 @@ describe('runScaffold() Integration', () => {
       fs.rmSync(targetDir, { recursive: true, force: true });
     }
   });
+
+  it('docs-live-index.md: bytes idénticos al template compartido (R-SK-5)', () => {
+    const intentions = runScaffold({ templatesDir, targetBase: tmpDir });
+    executeIntentions(intentions);
+
+    const livePath = path.join(tmpDir, '.agents', 'templates', 'sdd', 'docs-live-index.md');
+    expect(fs.existsSync(livePath)).toBe(true);
+
+    const actual = fs.readFileSync(livePath, 'utf8');
+    const template = fs.readFileSync(path.join(templatesDir, 'sdd/docs-live-index.md'), 'utf8');
+    expect(actual).toBe(template);
+  });
+
+  it('docs-index/template.md: copia el template canónico del índice seccional (R-SK-5)', () => {
+    const intentions = runScaffold({ templatesDir, targetBase: tmpDir });
+    executeIntentions(intentions);
+
+    const templateDestPath = path.join(tmpDir, '.agents', 'templates', 'sdd', 'docs-index', 'template.md');
+    expect(fs.existsSync(templateDestPath)).toBe(true);
+
+    const actual = fs.readFileSync(templateDestPath, 'utf8');
+    const template = fs.readFileSync(path.join(templatesDir, 'sdd/docs-index/template.md'), 'utf8');
+    expect(actual).toBe(template);
+  });
 });

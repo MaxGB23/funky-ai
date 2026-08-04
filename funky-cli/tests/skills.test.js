@@ -4,6 +4,7 @@ import path from 'path';
 vi.mock('fs', () => ({ default: {} }));
 
 import { runSkills } from '../src/commands/skills.js';
+import { runScaffold } from '../src/commands/scaffold.js';
 
 describe('runSkills()', () => {
   const fakeTemplatesDir = '/fake/templates';
@@ -71,5 +72,23 @@ describe('runSkills()', () => {
       expect(intention.src).not.toContain('.agents');
       expect(path.resolve(intention.src).startsWith(templatesPrefix)).toBe(true);
     }
+  });
+
+  it('paridad R-SK-5: runSkills y runScaffold copian docs-live-index.md desde el MISMO template', () => {
+    const templatesRoot = path.join(process.cwd(), 'src/templates');
+    const bootstrapDir = path.join(templatesRoot, 'bootstrap');
+    const targetBase = '/fake/project';
+
+    const skillsLive = runSkills({ templatesDir: templatesRoot, targetBase }).find(i =>
+      String(i.dest).replace(/\\/g, '/').endsWith('docs-live-index.md')
+    );
+    const scaffoldLive = runScaffold({ templatesDir: bootstrapDir, targetBase }).find(i =>
+      String(i.dest).replace(/\\/g, '/').endsWith('docs-live-index.md')
+    );
+
+    expect(skillsLive).toBeTruthy();
+    expect(scaffoldLive).toBeTruthy();
+    expect(scaffoldLive.action).toBe('copy');
+    expect(path.resolve(skillsLive.src)).toBe(path.resolve(scaffoldLive.src));
   });
 });
