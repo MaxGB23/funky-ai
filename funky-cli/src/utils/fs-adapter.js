@@ -24,7 +24,7 @@ function wrapFSOp(fn, fsPath, description) {
 /**
  * Ejecuta un plan de intenciones de I/O sobre el file system.
  * 
- * @param {Array<{ action: 'copy'|'create'|'mkdir', dest: string, src?: string, content?: string }>} intentions 
+ * @param {Array<{ action: 'copy'|'create'|'mkdir', dest: string, src?: string, content?: string, optional?: boolean }>} intentions 
  * @param {object} options
  * @param {boolean} [options.dryRun=false] - Si es true, no ejecuta operaciones físicas de I/O, sólo simula.
  * @returns {{ created: number, skipped: number, logs: string[] }}
@@ -53,6 +53,13 @@ export function executeIntentions(intentions, { dryRun = false } = {}) {
 
     if (fs.existsSync(dest)) {
       logs.push(`⚡ Salteando (ya existe): ${dest}`);
+      skippedCount++;
+      continue;
+    }
+
+    // R-SK-3: src opcional ausente se salta con log, nunca crashea.
+    if (action === 'copy' && intention.optional && !fs.existsSync(src)) {
+      logs.push(`⚡ Salteando (src opcional no existe): ${src}`);
       skippedCount++;
       continue;
     }

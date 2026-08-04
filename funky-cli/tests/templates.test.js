@@ -20,9 +20,9 @@ describe('Templates Validation', () => {
   });
 });
 
-describe('Bases de skills gentle (canal base nuevo, no dead gentle)', () => {
+describe('Bases de skills (src/skills/, no dead gentle)', () => {
   it('sdd-release base: sin capa CLI del monorepo, rutas neutralizadas (D3)', () => {
-    const releasePath = path.join(__dirname, '../src/templates/gentle/skills/sdd-release/SKILL.md');
+    const releasePath = path.join(__dirname, '../src/skills/sdd-release/SKILL.md');
     const content = fs.readFileSync(releasePath, 'utf8');
 
     expect(content).not.toContain('No aplica en antigravity');
@@ -32,7 +32,7 @@ describe('Bases de skills gentle (canal base nuevo, no dead gentle)', () => {
   });
 
   it('sdd-docs-sync base: sin verificación CLI del monorepo, SSOT condicional (D2)', () => {
-    const syncPath = path.join(__dirname, '../src/templates/gentle/skills/sdd-docs-sync/SKILL.md');
+    const syncPath = path.join(__dirname, '../src/skills/sdd-docs-sync/SKILL.md');
     const content = fs.readFileSync(syncPath, 'utf8');
 
     expect(content).not.toContain('funky-cli/bin');

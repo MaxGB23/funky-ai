@@ -62,6 +62,18 @@ describe('fs-adapter executeIntentions', () => {
     expect(fs.writeFileSync).toHaveBeenCalledWith('/fake/created.md', '<MANDATORY_RELEASE_PROTOCOL> content', 'utf8');
   });
 
+  it('saltea el copy si src opcional no existe (R-SK-3: nunca crashea)', () => {
+    fs.existsSync.mockImplementation((p) => p === '/fake');
+
+    const result = executeIntentions([
+      { action: 'copy', src: '/fake/src.md', dest: '/fake/dest.md', optional: true }
+    ]);
+
+    expect(result.created).toBe(0);
+    expect(result.skipped).toBe(1);
+    expect(fs.copyFileSync).not.toHaveBeenCalled();
+  });
+
   it('respeta la opción dryRun', () => {
     fs.existsSync.mockReturnValue(false);
 
