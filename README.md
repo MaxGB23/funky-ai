@@ -39,7 +39,7 @@ pnpm install
 pnpm link --global          # crea el symlink global; alternativa: npm install && npm link
 ```
 
-Prerequisitos (Node.js v20.12+, pnpm) y referencia de comandos: [`funky-cli/README.md`](funky-cli/README.md).
+Prerequisitos (Node.js v22.12+, pnpm) y referencia de comandos: [`funky-cli/README.md`](funky-cli/README.md).
 
 ### Instalar el framework agéntico
 
