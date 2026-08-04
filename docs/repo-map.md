@@ -1,6 +1,6 @@
 # Mapa Estructural del Repositorio
 
-> Última actualización: 2026-08-03
+> Última actualización: 2026-08-04
 > Propósito: Directorio de navegación del repo. Para el pitch y quick start, ver [`README.md`](../README.md).
 
 ---
@@ -24,6 +24,7 @@
 | [`src/commands/`](../funky-cli/src/commands/) | Comandos del CLI |
 | [`src/templates/`](../funky-cli/src/templates/) | Templates por comando |
 | [`src/utils/`](../funky-cli/src/utils/) | Utilidades compartidas |
+| [`src/skills/`](../funky-cli/src/skills/) | Skills base (sdd-release, sdd-docs-sync) con manifest por skill |
 
 ### Comandos
 
@@ -99,5 +100,4 @@ docs/
 | `bootstrap/` | `funky scaffold` / `funky skills` | Reglas agénticas, templates SDD, ORCHESTRATOR-STATE, docs compartidos (docs-live-index, índice seccional) |
 | `assess/` | `funky assess` | Architecture review templates |
 | `estimate/` | `funky estimate` | Pricing guide templates |
-| `skills/` | `funky skills` | Skills base (sdd-release, sdd-docs-sync) con manifest por skill |
 

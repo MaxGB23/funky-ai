@@ -35,7 +35,8 @@ src/skills/
 └── sdd-docs-sync/
     ├── SKILL.md
     └── manifest.js        # SKILL.md → .agents/skills/sdd-docs-sync/
-                           # docs-live-index.md + _indice-seccional-template.md → .agents/templates/sdd/
+                           # docs-live-index.md → .agents/templates/sdd/
+                           # docs-index/_indice-seccional-template.md → .agents/templates/sdd/docs-index/
 ```
 
 Cada entrada del manifest declara `src` (relativo a `src/` de funky-cli), `dest` (relativo al proyecto destino) y opcionalmente `optional: true`: si el src falta, la intención se salta con log y nunca crashea (R-SK-3).
