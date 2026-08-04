@@ -34,7 +34,7 @@ init/              ← LEÍDO por init.js (funcional)
 NO EXISTEN: templates/sdd/ (raíz), templates/agents-rules-*.md, scripts/sync-templates.js
 ```
 
-## Los 3 flujos (con su estado real)
+## Los 4 flujos (con su estado real)
 
 ### Flujo 1 — Sync dev-time (canónico → paquete) — ❌ ELIMINADO (2026-08-01)
 

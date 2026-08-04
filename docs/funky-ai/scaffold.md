@@ -69,7 +69,7 @@ funky scaffold
 |---|---|
 | `tier3-interactive/risk-decision.md` | Evaluación de riesgo para decisiones críticas |
 
-### `.agents/templates/sdd/` (8 + 2 generados)
+### `.agents/templates/sdd/` (8 + 2 copiados)
 
 #### Templates SDD (8 copiados)
 
@@ -84,12 +84,14 @@ funky scaffold
 | `spec.md` |
 | `tasks.md` |
 
-#### Generados en tiempo de scaffold
+#### Docs compartidos (2 copiados del template base)
 
 | Elemento | Tipo | Propósito |
 |---|---|---|
-| `docs-live-index.md` | Archivo generado (`create`) | Índice de documentación viva (SSOT) con tabla de referencias |
-| `docs-index/` | Directorio vacío (`mkdir`) | Destino para índices seccionales de los docs |
+| `docs-live-index.md` | Copiado (`add`) desde `bootstrap/sdd/` | Índice de documentación viva (SSOT) con tabla de referencias |
+| `docs-index/template.md` | Copiado (`add`) desde `bootstrap/sdd/` | Formato canónico de índice seccional |
+
+> Ambos usan el MISMO src que `funky skills` (R-SK-5): `scaffold` y `skills` producen bytes idénticos.
 
 ### `openspec/rfcs/` — Excepción de ruta
 
@@ -136,11 +138,9 @@ runScaffold({ templatesDir, targetBase })
   ├── 1 RFC template ──────────────────────── copy
   │   └── 000-rfc-template.md    →  openspec/rfcs/
   │
-  ├── docs-live-index.md ──────────────────── create
-  │   └── contenido inline       →  .agents/templates/sdd/
-  │
-  ├── docs-index/ ─────────────────────────── mkdir
-  │   └── vacío                  →  .agents/templates/sdd/
+  ├── 2 docs compartidos ──────────────────── copy
+  │   ├── docs-live-index.md      →  .agents/templates/sdd/
+  │   └── docs-index/template.md  →  .agents/templates/sdd/
   │
   └── 7 engram dirs ───────────────────────── mkdir
       ├── architecture/
@@ -158,5 +158,5 @@ La función `runScaffold()` es pura: no escribe nada directamente. Ensambla un a
 Cada intención es de uno de tres tipos:
 
 - **`copy`** — copia un archivo desde `templatesDir` hacia `targetBase` respetando la subruta relativa.
-- **`create`** — genera un archivo con `content` inline (solo `docs-live-index.md`).
+- **`create`** — genera un archivo con `content` inline (solo `README.md`, interpolando `{{project_name}}`).
 - **`mkdir`** — crea un directorio vacío si no existe.

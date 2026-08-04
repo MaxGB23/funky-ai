@@ -1,6 +1,6 @@
 # Mapa Estructural del Repositorio
 
-> Última actualización: 2026-08-01
+> Última actualización: 2026-08-03
 > Propósito: Directorio de navegación del repo. Para el pitch y quick start, ver [`README.md`](../README.md).
 
 ---
@@ -36,6 +36,7 @@
 | `funky feature` | funky-ai | [`src/commands/feature.js`](../funky-cli/src/commands/feature.js) | [`docs/funky-ai/feature.md`](../docs/funky-ai/feature.md) |
 | `funky pipeline` | forge | [`src/commands/pipeline.js`](../funky-cli/src/commands/pipeline.js) | [`docs/funky-forge/pipeline.md`](../docs/funky-forge/pipeline.md) |
 | `funky engram add` | funky-ai | [`src/commands/engram.js`](../funky-cli/src/commands/engram.js) | [`docs/funky-ai/engram.md`](../docs/funky-ai/engram.md) |
+| `funky skills` | funky-ai | [`src/commands/skills.js`](../funky-cli/src/commands/skills.js) | [`docs/funky-ai/conceptos/template-flows.md`](../docs/funky-ai/conceptos/template-flows.md) (Flujo 4) |
 
 ---
 
@@ -94,7 +95,8 @@ docs/
 | Directorio | Usado por | Propósito |
 |-----------|-----------|-----------|
 | `init/` | `funky init` | Canvases (PROJECT-CANVAS.md, INFRA-CANVAS.md) |
-| `bootstrap/` | `funky scaffold` | Reglas agénticas, templates SDD, ORCHESTRATOR-STATE |
+| `bootstrap/` | `funky scaffold` / `funky skills` | Reglas agénticas, templates SDD, ORCHESTRATOR-STATE, docs compartidos (docs-live-index, índice seccional) |
 | `assess/` | `funky assess` | Architecture review templates |
 | `estimate/` | `funky estimate` | Pricing guide templates |
+| `gentle/` | `funky skills` | Skills base gentle-ai (sdd-release, sdd-docs-sync) |
 

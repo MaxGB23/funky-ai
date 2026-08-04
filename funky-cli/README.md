@@ -29,6 +29,7 @@ pnpm link --global
 | `funky pipeline` | Orquesta el flujo unificado `assess → estimate` con estado compartido vía `context.json`. Subcomandos: `assess`, `estimate`, `all`, `status`. |
 | `funky feature <nombre>` | Inicializa el scaffolding de una feature SDD en `openspec/changes/<nombre>`. Ejecuta inquirers interactivos (Tier T1/T2/T3, docs core, tipo de release) e inyecta condicionalmente los templates según la matriz: T1 → tasks + report; T2 → tasks + report + explore + proposal + spec + (docs opcional) + release; T3 → tasks + (docs opcional) + release. |
 | `funky engram add` | Inyecta un nuevo engrama al sistema de conocimiento persistente. Soporta entrada interactiva (sin flags) y flags directos (`--tag`, `--category`, `--desc`). En modo standalone inyecta la regla `engram-protocol.md` en `.agents/rules/` si falta. |
+| `funky skills` | Inyecta las skills base de gentle-ai (`sdd-release`, `sdd-docs-sync`) en `.agents/skills/` del proyecto destino y bootstrapa los docs compartidos de SDD (`docs-live-index.md` + formato canónico de índice seccional). Idempotente: no sobrescribe archivos existentes. |
 
 ## Templates SDD Disponibles
 
