@@ -36,7 +36,7 @@
 | `funky feature` | funky-ai | [`src/commands/feature.js`](../funky-cli/src/commands/feature.js) | [`docs/funky-ai/feature.md`](../docs/funky-ai/feature.md) |
 | `funky pipeline` | forge | [`src/commands/pipeline.js`](../funky-cli/src/commands/pipeline.js) | [`docs/funky-forge/pipeline.md`](../docs/funky-forge/pipeline.md) |
 | `funky engram add` | funky-ai | [`src/commands/engram.js`](../funky-cli/src/commands/engram.js) | [`docs/funky-ai/engram.md`](../docs/funky-ai/engram.md) |
-| `funky skills` | funky-ai | [`src/commands/skills.js`](../funky-cli/src/commands/skills.js) | [`docs/funky-ai/conceptos/template-flows.md`](../docs/funky-ai/conceptos/template-flows.md) (Flujo 4) |
+| `funky skills` | funky-ai | [`src/commands/skills.js`](../funky-cli/src/commands/skills.js) | [`docs/funky-ai/skills.md`](../docs/funky-ai/skills.md) |
 
 ---
 
@@ -44,7 +44,7 @@
 
 ```
 docs/
-├── funky-ai/          ← Framework agéntico (conceptos, scaffold, feature, engram, prompts)
+├── funky-ai/          ← Framework agéntico (conceptos, scaffold, feature, engram, skills, prompts)
 ├── funky-forge/       ← Tools de planeación (init, assess, estimate, pipeline)
 ├── engram/            ← Memoria persistente del sistema
 ├── issues/            ← Issue tracker local
@@ -53,13 +53,14 @@ docs/
 └── repo-map.md        ← Este archivo
 ```
 
-### funky-ai (Framework)
+### funky-ai (Framework SDD)
 
 | Doc | Contenido |
 |-----|-----------|
 | [`scaffold.md`](../docs/funky-ai/scaffold.md) | Árbol completo de inyección del ecosistema agéntico |
 | [`feature.md`](../docs/funky-ai/feature.md) | Tiers T1/T2/T3, inyección condicional, golden vs fallback |
 | [`engram.md`](../docs/funky-ai/engram.md) | Knowledge base: categorías, flags, buenas prácticas |
+| [`skills.md`](../docs/funky-ai/skills.md) | Instalador interactivo de skills: selección, autodetección, manifests, docs compartidos |
 | [`conceptos/`](../docs/funky-ai/conceptos/) | Conceptos: arquitectura SDD, manual del orquestador, guía de equipo, flujos de templates (golden vs base), estudios |
 | [`prompts/`](../docs/funky-ai/prompts/) | Prompts globales del framework y system prompts de cada fase SDD |
 | [`operaciones/qa-governance.md`](../docs/funky-ai/operaciones/qa-governance.md) | QA governance |
@@ -98,5 +99,5 @@ docs/
 | `bootstrap/` | `funky scaffold` / `funky skills` | Reglas agénticas, templates SDD, ORCHESTRATOR-STATE, docs compartidos (docs-live-index, índice seccional) |
 | `assess/` | `funky assess` | Architecture review templates |
 | `estimate/` | `funky estimate` | Pricing guide templates |
-| `gentle/` | `funky skills` | Skills base gentle-ai (sdd-release, sdd-docs-sync) |
+| `skills/` | `funky skills` | Skills base (sdd-release, sdd-docs-sync) con manifest por skill |
 
