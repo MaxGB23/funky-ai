@@ -5,10 +5,10 @@
 ---
 
 ## 🏷️ Estado Actual
-- **Versión:** v4.0.0
+- **Versión:** v4.1.0
 - **Rama activa:** `main`
 - **Última sesión:** 2026-08-03
-- **Estado:** 🟢 Publicada. Release v4.0.0 (Movimiento 2): pipeline real state — schema v2 de `context.json`, máquina de estados con resume, salida JSON determinista y result objects.
+- **Estado:** 🟢 Publicada. Release v4.1.0 (Movimiento Final): `funky skills` inyecta las bases gentle-ai (sdd-release, sdd-docs-sync) y bootstrapa los docs compartidos de SDD; `--help` enriquecido con data viva de docs; docs compartidos como templates base (paridad scaffold ↔ skills).
 
 ---
 
@@ -41,6 +41,7 @@
 - [x] **Post-release v3.0.0:** Refactor radical de README (eliminación de clutter legacy). Prompt de handoff vs native execution agregado a reglas SDD. Wording español neutralizado.
 - [x] **v3.5.0 — Pipeline funky-forge:** Orquestador `funky pipeline` (assess/estimate/all/status) con estado compartido vía `context.json`. `funky scaffold` como comando independiente e idempotente. `funky assess` y `funky estimate` reescritos como facilitadores de sesión (guías de discusión, no templates adversariales). Canvases estáticos en `funky init`. Comandos `phase`, `gentle` y `release` eliminados. Guards de escritura (`existsSync`) y manejo amigable de EACCES. `funky --version` lee de `package.json`. Documentación reorganizada (funky-ai vs funky-forge) con docs-live-index y 14 índices seccionales. Smoke test manual end-to-end archivado. Lanzado 2026-07-31.
 - [x] **v4.0.0 — Pipeline Real State (Movimiento 2):** `context.json` a schema v2 (estado por fase, `currentPhase`, migración v1→v2 in-place, versiones desconocidas rechazadas sin escritura). `funky pipeline` como máquina de estados con reanudación de corridas interrumpidas y detención si `assess` falla. Salida JSON determinista (`status --json`/`all --json`: un objeto en stdout, texto humano a stderr). Result objects en assess/estimate persistidos vía `updatePhaseState`; `--context` metadata-only con `surfacedPatterns` (renombrado de `dynamicQuestions`). Deltas de spec R-P8..R-P12 aplicados (R-P5 removida). 248 tests / 14 archivos verdes. Lanzado 2026-08-03.
+- [x] **v4.1.0 — Movimiento Final (Skills gentle-ai):** `funky skills` inyecta las bases de gentle-ai (`sdd-release`, `sdd-docs-sync`) en `.agents/skills/` del destino y bootstrapa los docs compartidos de SDD (`docs-live-index.md` + índice seccional) con formato canónico — idempotente, no sobrescribe goldens. `--help` enriquecido con data viva de docs (degradación graciosa sin doc). Docs compartidos extraídos a templates base (`bootstrap/sdd/`) con paridad de bytes scaffold ↔ skills. Bases autoradas en `templates/gentle/skills/`. Ciclo SDD completo con 272 tests / 17 archivos verdes (7/7 requisitos, 12/12 escenarios). Lanzado 2026-08-03.
 
 ---
 
@@ -67,3 +68,4 @@
 | v3.0.0 | **MAJOR** — Subagentes Nativos + JIT Context Loading. Routers por Tier (1/2/3). Subagentes con estado Idle. Memory Polling vía Engram. 99 archivos, +3763/-685 líneas. |
 | v3.5.0 | **MINOR** — Pipeline funky-forge: `funky pipeline` con `context.json`, `scaffold` independiente e idempotente, `assess`/`estimate` reescritos como facilitadores de sesión, canvases estáticos, guards de escritura, versión desde `package.json`, docs reorganizados con 14 índices seccionales. Lanzado 2026-07-31. |
 | v4.0.0 | **MAJOR** — Pipeline Real State (Movimiento 2): schema v2 de `context.json` con estado por fase y migración v1→v2 in-place, máquina de estados con resume, salida JSON determinista (`--json` un objeto en stdout), result objects en assess/estimate, `--context` metadata-only con `surfacedPatterns`. Deltas de spec R-P8..R-P12 (R-P5 removida). 248 tests verdes. Lanzado 2026-08-03. |
+| v4.1.0 | **MINOR** — Movimiento Final: `funky skills` inyecta bases gentle-ai (sdd-release, sdd-docs-sync) + bootstrap de docs compartidos SDD, idempotente; `--help` enriquecido con data viva de docs; docs compartidos como templates base compartidos con scaffold (paridad de bytes). Bases autoradas en `templates/gentle/skills/`. 272 tests verdes. Lanzado 2026-08-03. |
