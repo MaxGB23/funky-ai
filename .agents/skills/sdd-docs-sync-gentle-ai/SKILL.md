@@ -28,8 +28,12 @@ Tras `sdd-archive`, antes de `sdd-release` (o al cerrar cualquier sesión con ca
 | Situación | Acción |
 |-----------|--------|
 | Cambió un comando/flag/fase | Actualizar su doc del SSOT + fila de comandos en repo-map si aplica |
+| Comando nuevo (`funky <cmd>` o flag nuevo) | Crear `docs/<dominio>/<comando>.md` completo + índice seccional + fila en docs-live-index.md |
+| Capability nueva (nueva área del framework) | Crear doc de la capability + índice seccional + fila SSOT |
+| Fraccionamiento de doc existente (doc crece demasiado) | Dividir el doc, crear índices de los fragmentos y actualizar SSOT/repo-map |
 | Cambió lógica de salida (exit codes, mensajes, shapes JSON) | Verificación de comportamiento (paso 4b) |
 | Doc nuevo vital | Crear índice seccional + registrar en docs-live-index.md |
+| Estructura de docs nueva | Actualizar repo-map.md + SSOT |
 | Cambió estructura (dir/archivo clave) | Actualizar repo-map.md + su fecha |
 | Solo refactor interno sin superficie de usuario | No tocar docs |
 | Doc desalineado vs CLI real | Corregir el doc para espejar el CLI |
@@ -42,7 +46,7 @@ Leer `apply-progress` / `verify-report` del change y listar qué se modificó (c
 
 ### 2. Matching contra SSOT
 
-Consultar `docs-live-index.md` y marcar cada doc cuya condición "Aplica si..." coincida. No abrir los docs destino todavía.
+Consultar `docs-live-index.md` y marcar cada doc cuya condición "Aplica si..." coincida. No abrir los docs destino todavía. Si el change introduce un comando/capability/doc sin fila en el índice, marcarlo como **doc nuevo** (regla doc-nuevo) para crearlo en el paso 6.
 
 ### 3. Cirugía por doc
 
@@ -60,7 +64,7 @@ Si cambió estructura: actualizar `docs/repo-map.md` (filas de comandos, árbole
 
 ### 6. SSOT
 
-Si hubo docs nuevos o índices modificados: crear/actualizar su índice seccional en `.agents/templates/sdd/docs-index/` y registrar en `docs-live-index.md`.
+Si hubo docs nuevos o índices modificados: crear/actualizar su índice seccional en `.agents/templates/sdd/docs-index/` (usar `.agents/templates/sdd/docs-index/_indice-seccional-template.md` como base si existe) y registrar en `docs-live-index.md`. Comando nuevo → crear `docs/<dominio>/<comando>.md` completo + su índice seccional + fila SSOT (regla doc-nuevo).
 
 ### 7. Cierre
 

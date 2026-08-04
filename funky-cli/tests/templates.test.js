@@ -49,6 +49,17 @@ describe('Bases de skills (src/skills/, no dead gentle)', () => {
     expect(content).toContain('docs-live-index.md');
     expect(content).toContain('docs-index');
   });
+
+  it('sdd-docs-sync base: regla doc-nuevo en Decision Gates y pasos (D6, R-SK-11)', () => {
+    const syncPath = path.join(__dirname, '../src/skills/sdd-docs-sync/SKILL.md');
+    const content = fs.readFileSync(syncPath, 'utf8');
+
+    expect(content).toMatch(/Comando nuevo/);
+    expect(content).toMatch(/docs\/<dominio>\/<comando>\.md/);
+    expect(content).toMatch(/Capability nueva/);
+    expect(content).toMatch(/Fraccionamiento/);
+    expect(content).toMatch(/_indice-seccional-template\.md/);
+  });
 });
 
 describe('Templates de docs compartidos (bootstrap/sdd)', () => {
