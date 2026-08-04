@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
+import fs from 'fs';
 import path from 'path';
 
-import { runSkills } from '../src/commands/skills.js';
+import { runSkills, discoverSkills } from '../src/commands/skills.js';
 import { runScaffold } from '../src/commands/scaffold.js';
 
 describe('runSkills()', () => {
@@ -90,5 +91,55 @@ describe('runSkills()', () => {
     expect(scaffoldLive).toBeTruthy();
     expect(scaffoldLive.action).toBe('copy');
     expect(path.resolve(skillsLive.src)).toBe(path.resolve(scaffoldLive.src));
+  });
+
+  it('runSkills filtra por selectedSkills: solo la skill elegida, sin I/O (R-SK-1, D3)', () => {
+    const intentions = runSkills({
+      srcDir: fakeSrcDir,
+      targetBase: fakeTargetDir,
+      selectedSkills: ['sdd-release'],
+    });
+
+    expect(intentions).toHaveLength(2);
+    const dests = intentions.map(i => String(i.dest).replace(/\\/g, '/'));
+    expect(dests[0]).toContain('.agents/skills/sdd-release/SKILL.md');
+    expect(dests[1]).toContain('.agents/templates/sdd/release-notes.md');
+  });
+
+  it('runSkills sin selectedSkills inyecta todas las skills (default, R-SK-7)', () => {
+    const intentions = runSkills({ srcDir: fakeSrcDir, targetBase: fakeTargetDir });
+
+    expect(intentions).toHaveLength(5);
+    expect(String(intentions[0].src)).toContain(path.join('skills', 'sdd-docs-sync', 'SKILL.md'));
+    expect(String(intentions[3].src)).toContain(path.join('skills', 'sdd-release', 'SKILL.md'));
+  });
+
+  it('orden determinista: sort por skill (docs-sync antes de release), luego orden del manifest (D3)', () => {
+    const intentions = runSkills({ srcDir: fakeSrcDir, targetBase: fakeTargetDir });
+
+    const srcParts = intentions.map(i => String(i.src).replace(/\\/g, '/'));
+    expect(srcParts[0]).toContain('skills/sdd-docs-sync/SKILL.md');
+    expect(srcParts[1]).toContain('templates/bootstrap/sdd/docs-live-index.md');
+    expect(srcParts[2]).toContain('templates/bootstrap/sdd/docs-index/template.md');
+    expect(srcParts[3]).toContain('skills/sdd-release/SKILL.md');
+    expect(srcParts[4]).toContain('templates/bootstrap/sdd/release-notes.md');
+  });
+
+  it('discoverSkills: dirs con SKILL.md, sort estable, excluye dirs sin SKILL.md (R-SK-7)', () => {
+    const fakeSrc = path.join(process.cwd(), '..', '.tmp', 'discover-fixture');
+    fs.rmSync(fakeSrc, { recursive: true, force: true });
+    const skillsDir = path.join(fakeSrc, 'skills');
+
+    fs.mkdirSync(path.join(skillsDir, 'z-skill'), { recursive: true });
+    fs.writeFileSync(path.join(skillsDir, 'z-skill', 'SKILL.md'), '# z');
+    fs.mkdirSync(path.join(skillsDir, 'a-no-skill'), { recursive: true }); // sin SKILL.md → excluido
+    fs.mkdirSync(path.join(skillsDir, 'm-skill'), { recursive: true });
+    fs.writeFileSync(path.join(skillsDir, 'm-skill', 'SKILL.md'), '# m');
+
+    try {
+      expect(discoverSkills(fakeSrc)).toEqual(['m-skill', 'z-skill']);
+    } finally {
+      fs.rmSync(fakeSrc, { recursive: true, force: true });
+    }
   });
 });
