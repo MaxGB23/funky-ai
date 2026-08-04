@@ -8,6 +8,7 @@ import { estimateCommand } from '../src/commands/estimate.js';
 import { engramCommand } from '../src/commands/engram.js';
 import { pipelineCommand } from '../src/commands/pipeline.js';
 import { skillsCommand } from '../src/commands/skills.js';
+import { enrichCommandHelp } from '../src/utils/help.js';
 import { readFileSync } from 'fs';
 
 const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
@@ -27,5 +28,11 @@ program.addCommand(estimateCommand);
 program.addCommand(engramCommand);
 program.addCommand(pipelineCommand);
 program.addCommand(skillsCommand);
+
+// Help enriquecido con data viva del doc del comando (R-HL-1/2): inyecta vía
+// addHelpText('after'); no-op sin doc o con placeholder <ruta-del-doc>.
+for (const cmd of program.commands) {
+  enrichCommandHelp(cmd, cmd.name());
+}
 
 program.parse(process.argv);
