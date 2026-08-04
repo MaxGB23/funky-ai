@@ -1,6 +1,10 @@
 ---
 name: sdd-release
 description: "Trigger: No aplica en antigravity. Release en opencode + gentle-ai, tag, version bump, publicar release. Post-archive release workflow: version bump, release notes, git tag, publicar release en GitHub con gh."
+license: Apache-2.0
+metadata:
+  author: "MaxGB23"
+  version: "1.0"
 ---
 
 # SDD Release
@@ -38,11 +42,19 @@ Ask the user to confirm if ambiguous.
 
 ### 2. Generate release notes
 
-Create release notes following the project's format. Use this template:
+Create release notes following the project's format. Use the template if it exists:
 
-`.agents\templates\release-notes.md`
+`.agents\templates\sdd\release-notes.md`
 
-Save to `docs/funky-ai/releases/vX.Y.Z-release.md`
+If the template is missing, derive the notes from the conventional commits since the last release:
+
+```bash
+git log --oneline <ultimo-tag-anterior>..HEAD
+```
+
+Group commits by conventional type (feat, fix, docs, refactor, chore) and summarize the user-visible changes.
+
+Save to `<ruta-docs-del-proyecto>/releases/vX.Y.Z-release.md`
 
 ### 3. Update version and root README
 

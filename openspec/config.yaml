@@ -1,0 +1,7 @@
+# Canonical SDD configuration for funky-ai.
+# Local source of truth for testing capabilities — framework syncs never touch this file.
+# Consumed by the "Strict TDD (canonical resolution)" rule in AGENTS.md.
+testing:
+  strict_tdd: true
+  command: pnpm test
+  framework: vitest
