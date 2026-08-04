@@ -28,8 +28,12 @@ Tras `sdd-archive`, antes de `sdd-release` (o al cerrar cualquier sesión con ca
 | Situación | Acción |
 |-----------|--------|
 | Cambió un comando/flag/fase | Actualizar su doc del SSOT + fila de comandos en repo-map si aplica |
+| Comando nuevo (`funky <cmd>` o flag nuevo) | Crear `docs/<dominio>/<comando>.md` completo + índice seccional + fila en docs-live-index.md |
+| Capability nueva (nueva área del framework) | Crear doc de la capability + índice seccional + fila SSOT |
+| Fraccionamiento de doc existente (doc crece demasiado) | Dividir el doc, crear índices de los fragmentos y actualizar SSOT/repo-map |
 | Cambió lógica de salida (exit codes, mensajes, shapes JSON) | Verificar contra los artefactos del change (apply-progress/verify-report) |
 | Doc nuevo vital | Crear índice seccional (formato canónico) + registrar en docs-live-index.md |
+| Estructura de docs nueva | Actualizar repo-map.md (si existe) + SSOT |
 | Cambió estructura (dir/archivo clave) | Actualizar repo-map.md + su fecha (si existe) |
 | Solo refactor interno sin superficie de usuario | No tocar docs |
 | Doc desalineado vs cambio real | Corregir el doc para espejar el change |
@@ -42,7 +46,7 @@ Leer `apply-progress` / `verify-report` del change y listar qué se modificó (c
 
 ### 2. Matching contra SSOT
 
-Si existe `docs-live-index.md`, consultarlo y marcar cada doc cuya condición "Aplica si..." coincida. No abrir los docs destino todavía. Si NO existe, inicializarlo (paso 5) antes de continuar.
+Si existe `docs-live-index.md`, consultarlo y marcar cada doc cuya condición "Aplica si..." coincida. No abrir los docs destino todavía. Si NO existe, inicializarlo (paso 5) antes de continuar. Si el change introduce un comando/capability/doc sin fila en el índice, marcarlo como **doc nuevo** (regla doc-nuevo) para crearlo en el paso 5.
 
 ### 3. Cirugía por doc
 
@@ -54,7 +58,7 @@ Si cambió estructura y existe `docs/repo-map.md`: actualizar filas de comandos/
 
 ### 5. SSOT
 
-Si hubo docs nuevos o índices modificados: crear/actualizar su índice seccional en `.agents/templates/sdd/docs-index/` con el formato canónico (`# Índice de Secciones: \`docs/<ruta>.md\`` + bullets `- **N. Título:** descripción` + anidamiento por sangría; usar `.agents/templates/sdd/docs-index/template.md` como base si existe) y registrar en `docs-live-index.md` (creándolo primero si no existe).
+Si hubo docs nuevos o índices modificados: crear/actualizar su índice seccional en `.agents/templates/sdd/docs-index/` con el formato canónico (`# Índice de Secciones: \`docs/<ruta>.md\`` + bullets `- **N. Título:** descripción` + anidamiento por sangría; usar `.agents/templates/sdd/docs-index/_indice-seccional-template.md` como base si existe) y registrar en `docs-live-index.md` (creándolo primero si no existe). Comando nuevo → crear `docs/<dominio>/<comando>.md` completo + su índice seccional + fila SSOT (regla doc-nuevo).
 
 ### 6. Cierre
 
@@ -67,5 +71,5 @@ Devolver: (1) docs modificados con ruta y cambio, (2) verificaciones realizadas 
 ## References
 
 - `.agents/templates/sdd/docs-live-index.md` — SSOT de docs vivos y condición "Aplica si..." (se crea si no existe).
-- `.agents/templates/sdd/docs-index/template.md` — formato canónico del índice seccional.
+- `.agents/templates/sdd/docs-index/_indice-seccional-template.md` — formato canónico del índice seccional.
 - `docs/repo-map.md` — mapa estructural del repo (solo si existe).

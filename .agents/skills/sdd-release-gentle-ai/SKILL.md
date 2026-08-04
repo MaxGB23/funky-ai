@@ -42,9 +42,9 @@ Ask the user to confirm if ambiguous.
 
 ### 2. Generate release notes
 
-Create release notes following the project's format. Use the template if it exists:
+Create release notes following the project's format. If `.agents/templates/sdd/release-notes.md` does not exist, inject it from the base template before generating the notes — `funky skills` installs the template and never overwrites existing files (skip-if-exists), so local edits are preserved.
 
-`.agents\templates\sdd\release-notes.md`
+`.agents/templates/sdd/release-notes.md`
 
 If the template is missing, derive the notes from the conventional commits since the last release:
 

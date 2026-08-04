@@ -20,9 +20,9 @@ describe('Templates Validation', () => {
   });
 });
 
-describe('Bases de skills gentle (canal base nuevo, no dead gentle)', () => {
+describe('Bases de skills (src/skills/, no dead gentle)', () => {
   it('sdd-release base: sin capa CLI del monorepo, rutas neutralizadas (D3)', () => {
-    const releasePath = path.join(__dirname, '../src/templates/gentle/skills/sdd-release/SKILL.md');
+    const releasePath = path.join(__dirname, '../src/skills/sdd-release/SKILL.md');
     const content = fs.readFileSync(releasePath, 'utf8');
 
     expect(content).not.toContain('No aplica en antigravity');
@@ -31,14 +31,34 @@ describe('Bases de skills gentle (canal base nuevo, no dead gentle)', () => {
     expect(content).toContain('release-notes.md');
   });
 
+  it('sdd-release base: paso 2 inyecta release-notes.md desde el template si falta, rutas con / (D5, R-SK-10)', () => {
+    const releasePath = path.join(__dirname, '../src/skills/sdd-release/SKILL.md');
+    const content = fs.readFileSync(releasePath, 'utf8');
+
+    expect(content).toContain('.agents/templates/sdd/release-notes.md');
+    expect(content).not.toMatch(/\.agents\\templates\\sdd/);
+    expect(content).toMatch(/does not exist, inject it from the base template/i);
+  });
+
   it('sdd-docs-sync base: sin verificación CLI del monorepo, SSOT condicional (D2)', () => {
-    const syncPath = path.join(__dirname, '../src/templates/gentle/skills/sdd-docs-sync/SKILL.md');
+    const syncPath = path.join(__dirname, '../src/skills/sdd-docs-sync/SKILL.md');
     const content = fs.readFileSync(syncPath, 'utf8');
 
     expect(content).not.toContain('funky-cli/bin');
     expect(content).not.toMatch(/paso 4a|paso 4b|node funky-cli/);
     expect(content).toContain('docs-live-index.md');
     expect(content).toContain('docs-index');
+  });
+
+  it('sdd-docs-sync base: regla doc-nuevo en Decision Gates y pasos (D6, R-SK-11)', () => {
+    const syncPath = path.join(__dirname, '../src/skills/sdd-docs-sync/SKILL.md');
+    const content = fs.readFileSync(syncPath, 'utf8');
+
+    expect(content).toMatch(/Comando nuevo/);
+    expect(content).toMatch(/docs\/<dominio>\/<comando>\.md/);
+    expect(content).toMatch(/Capability nueva/);
+    expect(content).toMatch(/Fraccionamiento/);
+    expect(content).toMatch(/_indice-seccional-template\.md/);
   });
 });
 
@@ -51,12 +71,13 @@ describe('Templates de docs compartidos (bootstrap/sdd)', () => {
     expect(content).toContain('<ruta-del-doc>');
   });
 
-  it('docs-index/template.md: formato canónico del índice seccional (R-SK-4)', () => {
-    const templatePath = path.join(__dirname, '../src/templates/bootstrap/sdd/docs-index/template.md');
+  it('docs-index/_indice-seccional-template.md: formato canónico del índice seccional, 3 niveles (R-SK-4)', () => {
+    const templatePath = path.join(__dirname, '../src/templates/bootstrap/sdd/docs-index/_indice-seccional-template.md');
     const content = fs.readFileSync(templatePath, 'utf8');
 
     expect(content).toMatch(/# Índice de Secciones: /);
     expect(content).toMatch(/- \*\*1\. /);
     expect(content).toMatch(/- \*\*2\.1 /);
+    expect(content).toMatch(/^### /m);
   });
 });

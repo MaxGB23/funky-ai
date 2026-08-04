@@ -89,7 +89,7 @@ funky scaffold
 | Elemento | Tipo | Propósito |
 |---|---|---|
 | `docs-live-index.md` | Copiado (`add`) desde `bootstrap/sdd/` | Índice de documentación viva (SSOT) con tabla de referencias |
-| `docs-index/template.md` | Copiado (`add`) desde `bootstrap/sdd/` | Formato canónico de índice seccional |
+| `docs-index/_indice-seccional-template.md` | Copiado (`add`) desde `bootstrap/sdd/` | Formato canónico de índice seccional |
 
 > Ambos usan el MISMO src que `funky skills` (R-SK-5): `scaffold` y `skills` producen bytes idénticos.
 
@@ -140,7 +140,7 @@ runScaffold({ templatesDir, targetBase })
   │
   ├── 2 docs compartidos ──────────────────── copy
   │   ├── docs-live-index.md      →  .agents/templates/sdd/
-  │   └── docs-index/template.md  →  .agents/templates/sdd/
+  │   └── docs-index/_indice-seccional-template.md  →  .agents/templates/sdd/
   │
   └── 7 engram dirs ───────────────────────── mkdir
       ├── architecture/

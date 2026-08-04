@@ -100,13 +100,13 @@ describe('runScaffold()', () => {
     });
   });
 
-  it('copia docs-index/template.md (formato canónico del índice seccional)', () => {
+  it('copia docs-index/_indice-seccional-template.md (formato canónico del índice seccional)', () => {
     const intentions = runScaffold({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
 
     expect(intentions).toContainEqual({
       action: 'copy',
-      src: path.join(fakeTemplatesDir, 'sdd/docs-index/template.md'),
-      dest: path.join(fakeTargetDir, '.agents', 'templates', 'sdd', 'docs-index', 'template.md'),
+      src: path.join(fakeTemplatesDir, 'sdd/docs-index/_indice-seccional-template.md'),
+      dest: path.join(fakeTargetDir, '.agents', 'templates', 'sdd', 'docs-index', '_indice-seccional-template.md'),
     });
   });
 

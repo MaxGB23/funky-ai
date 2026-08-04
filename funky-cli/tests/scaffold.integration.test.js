@@ -110,15 +110,15 @@ describe('runScaffold() Integration', () => {
     expect(actual).toBe(template);
   });
 
-  it('docs-index/template.md: copia el template canónico del índice seccional (R-SK-5)', () => {
+  it('docs-index/_indice-seccional-template.md: copia el template canónico del índice seccional (R-SK-5)', () => {
     const intentions = runScaffold({ templatesDir, targetBase: tmpDir });
     executeIntentions(intentions);
 
-    const templateDestPath = path.join(tmpDir, '.agents', 'templates', 'sdd', 'docs-index', 'template.md');
+    const templateDestPath = path.join(tmpDir, '.agents', 'templates', 'sdd', 'docs-index', '_indice-seccional-template.md');
     expect(fs.existsSync(templateDestPath)).toBe(true);
 
     const actual = fs.readFileSync(templateDestPath, 'utf8');
-    const template = fs.readFileSync(path.join(templatesDir, 'sdd/docs-index/template.md'), 'utf8');
+    const template = fs.readFileSync(path.join(templatesDir, 'sdd/docs-index/_indice-seccional-template.md'), 'utf8');
     expect(actual).toBe(template);
   });
 });
