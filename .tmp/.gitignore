@@ -1,0 +1,6 @@
+# .tmp/ — scratch space for sub-agents (sandboxes de verificación, evidencia)
+# Local to each machine, not for committing.
+# Ignore everything in .tmp/ except this file itself, so transient
+# scratch files never show up in git. Same pattern as .codegraph/.
+*
+!.gitignore

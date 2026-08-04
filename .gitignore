@@ -17,5 +17,4 @@ dist/
 # CodeGraph index — machine-local data, regenerated on demand
 .codegraph/
 # Trabajo temporal dentro del workspace (sandboxes de verificación, evidencia)
-# — NO se commitea ni indexa
-.tmp/
+# — NO se commitea ni indexa; regla interna en .tmp/.gitignore

@@ -5,7 +5,7 @@ Convenciones de proyecto para el orquestador y los sub-agentes.
 ## Directorio temporal (`.tmp/`)
 
 - Los sub-agentes (task/general/explore) **no** deben escribir en `C:\Users\cb147\AppData\Local\Temp\opencode` ni en rutas fuera del workspace: en Windows cada acceso a una ruta externa pide confirmación de permisos.
-- Cuando un sub-agente necesite scratch, sandbox o archivos temporales que el repo no debe trackear — proyectos de prueba scaffold, fixtures, reproducciones de bugs, bundles de evidencia para revisión — debe usar `M:\funky-ai\.tmp\` (dentro del workspace y gitignored, línea 21 de `.gitignore`).
+- Cuando un sub-agente necesite scratch, sandbox o archivos temporales que el repo no debe trackear — proyectos de prueba scaffold, fixtures, reproducciones de bugs, bundles de evidencia para revisión — debe usar `M:\funky-ai\.tmp\` (dentro del workspace y gitignored vía `.tmp/.gitignore` interno, mismo patrón que `.codegraph/`).
 - Excepciones que **NO** usan `.tmp/`:
   - Review: los bytes del candidato viajan por el transport del provider (árboles Git), nunca por archivos externos.
   - Worktrees: `M:\funky-ai-worktrees` (sibling del repo, con su propio índice `.codegraph`).
