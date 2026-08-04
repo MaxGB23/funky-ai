@@ -108,20 +108,9 @@ export function runScaffold({ templatesDir, targetBase }) {
   // ── Exception: rfc-template a openspec/rfcs/ ──
   add('sdd/000-rfc-template.md',  'openspec/rfcs/000-rfc-template.md');
 
-  // ── Generar docs-live-index.md en .agents/templates/sdd/ ──
-  intentions.push({
-    action: 'create',
-    dest: path.join(targetBase, '.agents', 'templates', 'sdd', 'docs-live-index.md'),
-    content: `# 📚 Índice de Docs Vivos (SSOT)
-
-| # | Doc | Cubre / Propósito | Índice Seccional | Aplica si... |
-|---|-----|-------------------|------------------|--------------|
-| 1 | \`docs/<ruta-del-doc>.md\` | Descripción breve del alcance del documento. | [.agents/templates/sdd/docs-index/<nombre_doc>.md](.agents/templates/sdd/docs-index/<nombre_doc>.md) | Condición que activa la necesidad de actualizar esta documentación. |
-`,
-  });
-
-  // ── Crear directorio docs-index para el agente ──
-  intentions.push({ action: 'mkdir', dest: path.join(targetBase, '.agents', 'templates', 'sdd', 'docs-index') });
+  // ── Docs compartidos: docs-live-index.md e índice seccional (mismo template que funky skills — R-SK-5) ──
+  add('sdd/docs-live-index.md', '.agents/templates/sdd/docs-live-index.md');
+  add('sdd/docs-index/template.md', '.agents/templates/sdd/docs-index/template.md');
 
   // ── Crear directorios sharded de engram ──
   const engramDirs = ['architecture', 'pattern', 'discovery', 'decision', 'bugfix', 'session', 'release'];

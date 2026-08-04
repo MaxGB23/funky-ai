@@ -1,6 +1,10 @@
 ---
 name: sdd-release
-description: "Trigger: No aplica en antigravity. Release en opencode + gentle-ai, tag, version bump, publicar release. Post-archive release workflow: version bump, release notes, git tag, publicar release en GitHub con gh."
+description: "Trigger: Release en opencode + gentle-ai, tag, version bump, publicar release. Post-archive release workflow: version bump, release notes, git tag, publicar release en GitHub con gh."
+license: Apache-2.0
+metadata:
+  author: "MaxGB23"
+  version: "1.0"
 ---
 
 # SDD Release
@@ -38,11 +42,19 @@ Ask the user to confirm if ambiguous.
 
 ### 2. Generate release notes
 
-Create release notes following the project's format. Use this template:
+Create release notes following the project's format. Use the template if it exists:
 
-`.agents\templates\release-notes.md`
+`.agents\templates\sdd\release-notes.md`
 
-Save to `docs/funky-ai/releases/vX.Y.Z-release.md`
+If the template is missing, derive the notes from the conventional commits since the last release:
+
+```bash
+git log --oneline <ultimo-tag-anterior>..HEAD
+```
+
+Group commits by conventional type (feat, fix, docs, refactor, chore) and summarize the user-visible changes.
+
+Save to `<ruta-docs-del-proyecto>/releases/vX.Y.Z-release.md`
 
 ### 3. Update version and root README
 
@@ -73,13 +85,13 @@ The generated release notes (step 2) are the release body. Publish them with the
 gh auth status                      # Verify authenticated before creating
 gh release create vX.Y.Z \
   --title "vX.Y.Z" \
-  --notes-file docs/funky-ai/releases/vX.Y.Z-release.md
+  --notes-file <ruta-docs-del-proyecto>/releases/vX.Y.Z-release.md
 ```
 
 - The release is named after the TAG (`vX.Y.Z`); the commit message is never used as the release name.
 - The release title is the bare version (`vX.Y.Z`), without the project name.
 - `--notes-file` publishes the exact markdown file generated in step 2. Do NOT use `--generate-notes` here — the curated notes are the source of truth.
-- If the release already exists (e.g. tag pushed earlier), update it instead: `gh release edit vX.Y.Z --title "vX.Y.Z" --notes-file docs/funky-ai/releases/vX.Y.Z-release.md`
+- If the release already exists (e.g. tag pushed earlier), update it instead: `gh release edit vX.Y.Z --title "vX.Y.Z" --notes-file <ruta-docs-del-proyecto>/releases/vX.Y.Z-release.md`
 - If `gh` is not installed or not authenticated, STOP and surface that to the user — do not skip the GitHub release.
 
 ### 7. Verify

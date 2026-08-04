@@ -14,16 +14,16 @@ describe('runScaffold()', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
-  it('crea el plan completo: 35 copy + 1 create + 8 mkdir', () => {
+  it('crea el plan completo: 37 copy + 0 create + 7 mkdir (dirs fake: README cae al copy)', () => {
     const intentions = runScaffold({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
 
     const mkdirIntentions = intentions.filter(i => i.action === 'mkdir');
     const copyIntentions = intentions.filter(i => i.action === 'copy');
     const createIntentions = intentions.filter(i => i.action === 'create');
 
-    expect(mkdirIntentions).toHaveLength(8);
-    expect(copyIntentions).toHaveLength(35);
-    expect(createIntentions).toHaveLength(1);
+    expect(mkdirIntentions).toHaveLength(7);
+    expect(copyIntentions).toHaveLength(37);
+    expect(createIntentions).toHaveLength(0);
   });
 
   it('incluye los 3 root files con rutas correctas (sin canvases — van a docs/funky-ai/canvas/)', () => {
@@ -100,23 +100,27 @@ describe('runScaffold()', () => {
     });
   });
 
-  it('crea el directorio docs-index/ vacío en .agents/templates/sdd/', () => {
+  it('copia docs-index/template.md (formato canónico del índice seccional)', () => {
     const intentions = runScaffold({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
 
     expect(intentions).toContainEqual({
-      action: 'mkdir',
-      dest: path.join(fakeTargetDir, '.agents', 'templates', 'sdd', 'docs-index'),
+      action: 'copy',
+      src: path.join(fakeTemplatesDir, 'sdd/docs-index/template.md'),
+      dest: path.join(fakeTargetDir, '.agents', 'templates', 'sdd', 'docs-index', 'template.md'),
     });
   });
 
-  it('genera docs-live-index.md en .agents/templates/sdd/ con el header correcto', () => {
+  it('copia docs-live-index.md desde el template compartido (create → copy, R-SK-5)', () => {
     const intentions = runScaffold({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
 
     expect(intentions).toContainEqual({
-      action: 'create',
+      action: 'copy',
+      src: path.join(fakeTemplatesDir, 'sdd/docs-live-index.md'),
       dest: path.join(fakeTargetDir, '.agents', 'templates', 'sdd', 'docs-live-index.md'),
-      content: expect.stringContaining('<ruta-del-doc>'),
     });
+
+    const liveIndex = intentions.find(i => String(i.dest).replace(/\\/g, '/').endsWith('.agents/templates/sdd/docs-live-index.md'));
+    expect(liveIndex.action).toBe('copy');
   });
 
 });
