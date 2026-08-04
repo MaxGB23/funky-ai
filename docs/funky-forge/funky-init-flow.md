@@ -42,7 +42,7 @@ funky scaffold
 │   ├─ Copia archivos root (ORCHESTRATOR-STATE.md, README.md, TEMPLATE_GUIDE.md)
 │   ├─ Copia reglas de agente → .agents/rules/
 │   ├─ Copia templates SDD → .agents/templates/sdd/
-│   ├─ Copia docs compartidos (docs-live-index.md, docs-index/template.md) → .agents/templates/sdd/
+│   ├─ Copia docs compartidos (docs-live-index.md, docs-index/_indice-seccional-template.md) → .agents/templates/sdd/
 │   ├─ Crea directorios engram (docs/engram/{architecture,pattern,...})
 │   └─ Cada archivo existente se saltea (idempotente)
 │

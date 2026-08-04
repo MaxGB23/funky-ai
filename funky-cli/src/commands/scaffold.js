@@ -110,7 +110,7 @@ export function runScaffold({ templatesDir, targetBase }) {
 
   // ── Docs compartidos: docs-live-index.md e índice seccional (mismo template que funky skills — R-SK-5) ──
   add('sdd/docs-live-index.md', '.agents/templates/sdd/docs-live-index.md');
-  add('sdd/docs-index/template.md', '.agents/templates/sdd/docs-index/template.md');
+  add('sdd/docs-index/_indice-seccional-template.md', '.agents/templates/sdd/docs-index/_indice-seccional-template.md');
 
   // ── Crear directorios sharded de engram ──
   const engramDirs = ['architecture', 'pattern', 'discovery', 'decision', 'bugfix', 'session', 'release'];

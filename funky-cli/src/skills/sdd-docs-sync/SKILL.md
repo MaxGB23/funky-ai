@@ -54,7 +54,7 @@ Si cambió estructura y existe `docs/repo-map.md`: actualizar filas de comandos/
 
 ### 5. SSOT
 
-Si hubo docs nuevos o índices modificados: crear/actualizar su índice seccional en `.agents/templates/sdd/docs-index/` con el formato canónico (`# Índice de Secciones: \`docs/<ruta>.md\`` + bullets `- **N. Título:** descripción` + anidamiento por sangría; usar `.agents/templates/sdd/docs-index/template.md` como base si existe) y registrar en `docs-live-index.md` (creándolo primero si no existe).
+Si hubo docs nuevos o índices modificados: crear/actualizar su índice seccional en `.agents/templates/sdd/docs-index/` con el formato canónico (`# Índice de Secciones: \`docs/<ruta>.md\`` + bullets `- **N. Título:** descripción` + anidamiento por sangría; usar `.agents/templates/sdd/docs-index/_indice-seccional-template.md` como base si existe) y registrar en `docs-live-index.md` (creándolo primero si no existe).
 
 ### 6. Cierre
 
@@ -67,5 +67,5 @@ Devolver: (1) docs modificados con ruta y cambio, (2) verificaciones realizadas 
 ## References
 
 - `.agents/templates/sdd/docs-live-index.md` — SSOT de docs vivos y condición "Aplica si..." (se crea si no existe).
-- `.agents/templates/sdd/docs-index/template.md` — formato canónico del índice seccional.
+- `.agents/templates/sdd/docs-index/_indice-seccional-template.md` — formato canónico del índice seccional.
 - `docs/repo-map.md` — mapa estructural del repo (solo si existe).

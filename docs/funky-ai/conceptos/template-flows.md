@@ -22,7 +22,7 @@ bootstrap/         ← LEÍDO por scaffold.js y skills.js (funcional)
   sdd/                     ← templates SDD del CLI (fallback de feature.js + doc compartido SDD)
     explore.md, proposal.md, spec.md, tasks.md, docs.md, report.md, release-checklist.md, release-notes.md, 000-rfc-template.md
     docs-live-index.md     ← SSOT compartido del índice vivo (scaffold y skills lo copian, R-SK-5)
-    docs-index/template.md ← formato canónico de índice seccional
+    docs-index/_indice-seccional-template.md ← formato canónico de índice seccional
 estimate/          ← templates de pricing (sin comando que los consuma en este análisis)
 gentle/            ← LEÍDO por skills.js (funcional)
   skills/
@@ -85,12 +85,12 @@ funky feature <name>
 gentle/skills/sdd-release/SKILL.md    ──► <proyecto>/.agents/skills/sdd-release/SKILL.md
 gentle/skills/sdd-docs-sync/SKILL.md  ──► <proyecto>/.agents/skills/sdd-docs-sync/SKILL.md
 bootstrap/sdd/docs-live-index.md      ──► <proyecto>/.agents/templates/sdd/docs-live-index.md
-bootstrap/sdd/docs-index/template.md  ──► <proyecto>/.agents/templates/sdd/docs-index/template.md
+bootstrap/sdd/docs-index/_indice-seccional-template.md  ──► <proyecto>/.agents/templates/sdd/docs-index/_indice-seccional-template.md
 ```
 
 - `runSkills()` es puro: 4 intentions de copia (2 skills gentle + 2 docs compartidos SDD) con `templatesDir` en la raíz `src/templates/` (fuente única base, nunca los goldens `.agents/` del repo — R-SK-2).
 - Idempotente (R-SK-3): `executeIntentions` salta destinos existentes — no sobreescribe la personalización local.
-- **Paridad (R-SK-5):** `docs-live-index.md` y `docs-index/template.md` se copian desde el MISMO src que `funky scaffold` (create-inline → `add()` extraído en 2026-08-03), garantizando bytes idénticos en ambos caminos.
+- **Paridad (R-SK-5):** `docs-live-index.md` y `docs-index/_indice-seccional-template.md` se copian desde el MISMO src que `funky scaffold` (create-inline → `add()` extraído en 2026-08-03), garantizando bytes idénticos en ambos caminos.
 - `--help` enriquecido (R-HL-1/2): `funky <cmd> --help` inyecta `docs/funky-ai/<cmd>.md` (fallback `docs/funky-forge/<cmd>.md`) vía `src/utils/help.js`; sin doc, vacío o con placeholder `<ruta-del-doc>` → no-op.
 
 ## Rol dual de `.agents/`
@@ -105,7 +105,7 @@ bootstrap/sdd/docs-index/template.md  ──► <proyecto>/.agents/templates/sdd
 | Archivo | Línea | Rol |
 |---|---|---|
 | `funky-cli/src/commands/scaffold.js` | 37-60, 62-70 | Flujo 2: lee `funky-ai-rules/` anidado + `sdd/` |
-| `funky-cli/src/commands/scaffold.js` | — | `add('sdd/docs-live-index.md', ...)` + `add('sdd/docs-index/template.md', ...)` (extraído 2026-08-03, R-SK-5) |
+| `funky-cli/src/commands/scaffold.js` | — | `add('sdd/docs-live-index.md', ...)` + `add('sdd/docs-index/_indice-seccional-template.md', ...)` (extraído 2026-08-03, R-SK-5) |
 | `funky-cli/src/commands/skills.js` | — | Flujo 4: `runSkills` 4 intentions copy + `skillsCommand` |
 | `funky-cli/src/utils/help.js` | — | R-HL-1/2: `resolveDocCandidates`/`loadCommandDoc`/`enrichCommandHelp` (help enriquecido) |
 | `funky-cli/src/commands/feature.js` | 91-92 | Golden vs fallback (`templatesToUse`) |

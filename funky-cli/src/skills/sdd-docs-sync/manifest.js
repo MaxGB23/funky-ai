@@ -4,5 +4,5 @@
 export default [
   { src: 'skills/sdd-docs-sync/SKILL.md', dest: '.agents/skills/sdd-docs-sync/SKILL.md' },
   { src: 'templates/bootstrap/sdd/docs-live-index.md', dest: '.agents/templates/sdd/docs-live-index.md' },
-  { src: 'templates/bootstrap/sdd/docs-index/template.md', dest: '.agents/templates/sdd/docs-index/template.md' },
+  { src: 'templates/bootstrap/sdd/docs-index/_indice-seccional-template.md', dest: '.agents/templates/sdd/docs-index/_indice-seccional-template.md' },
 ];

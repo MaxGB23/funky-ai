@@ -54,8 +54,8 @@ describe('runSkills()', () => {
     });
     expect(docs).toContainEqual({
       action: 'copy',
-      src: path.join(fakeSrcDir, 'templates/bootstrap/sdd/docs-index/template.md'),
-      dest: path.join(fakeTargetDir, '.agents/templates/sdd/docs-index/template.md'),
+      src: path.join(fakeSrcDir, 'templates/bootstrap/sdd/docs-index/_indice-seccional-template.md'),
+      dest: path.join(fakeTargetDir, '.agents/templates/sdd/docs-index/_indice-seccional-template.md'),
     });
     expect(docs).toContainEqual({
       action: 'copy',
@@ -120,7 +120,7 @@ describe('runSkills()', () => {
     const srcParts = intentions.map(i => String(i.src).replace(/\\/g, '/'));
     expect(srcParts[0]).toContain('skills/sdd-docs-sync/SKILL.md');
     expect(srcParts[1]).toContain('templates/bootstrap/sdd/docs-live-index.md');
-    expect(srcParts[2]).toContain('templates/bootstrap/sdd/docs-index/template.md');
+    expect(srcParts[2]).toContain('templates/bootstrap/sdd/docs-index/_indice-seccional-template.md');
     expect(srcParts[3]).toContain('skills/sdd-release/SKILL.md');
     expect(srcParts[4]).toContain('templates/bootstrap/sdd/release-notes.md');
   });

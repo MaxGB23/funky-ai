@@ -26,7 +26,7 @@ describe('runSkills() Integration', () => {
     path.join(tmpDir, '.agents/skills/sdd-release/SKILL.md'),
     path.join(tmpDir, '.agents/skills/sdd-docs-sync/SKILL.md'),
     path.join(tmpDir, '.agents/templates/sdd/docs-live-index.md'),
-    path.join(tmpDir, '.agents/templates/sdd/docs-index/template.md'),
+    path.join(tmpDir, '.agents/templates/sdd/docs-index/_indice-seccional-template.md'),
     path.join(tmpDir, '.agents/templates/sdd/release-notes.md'),
   ];
 
@@ -76,5 +76,34 @@ describe('runSkills() Integration', () => {
 
     expect(actual).toBe(template);
     expect(actual).toContain('<ruta-del-doc>');
+  });
+
+  it('docs fresh: índice seccional bytes == template distribuido por scaffold (R-SK-5)', () => {
+    const livePath = path.join(tmpDir, '.agents/templates/sdd/docs-index/_indice-seccional-template.md');
+    const templatePath = path.join(srcDir, 'templates/bootstrap/sdd/docs-index/_indice-seccional-template.md');
+
+    const actual = fs.readFileSync(livePath, 'utf8');
+    const template = fs.readFileSync(templatePath, 'utf8');
+
+    expect(actual).toBe(template);
+    expect(actual).toContain('Índice de Secciones');
+  });
+
+  it('R-SK-9: 0 referencias al nombre viejo del índice seccional en src/ y tests/', () => {
+    const roots = [path.join(process.cwd(), 'src'), path.join(process.cwd(), 'tests')];
+    const hits = [];
+    const oldIndexName = 'docs-index/' + 'template.md';
+    const walk = (dir) => {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) walk(full);
+        else if (entry.isFile() && /\.(js|md)$/.test(entry.name)) {
+          const content = fs.readFileSync(full, 'utf8');
+          if (content.includes(oldIndexName)) hits.push(full);
+        }
+      }
+    };
+    for (const root of roots) walk(root);
+    expect(hits).toEqual([]);
   });
 });

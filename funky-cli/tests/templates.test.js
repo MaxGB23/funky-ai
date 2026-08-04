@@ -51,12 +51,13 @@ describe('Templates de docs compartidos (bootstrap/sdd)', () => {
     expect(content).toContain('<ruta-del-doc>');
   });
 
-  it('docs-index/template.md: formato canónico del índice seccional (R-SK-4)', () => {
-    const templatePath = path.join(__dirname, '../src/templates/bootstrap/sdd/docs-index/template.md');
+  it('docs-index/_indice-seccional-template.md: formato canónico del índice seccional, 3 niveles (R-SK-4)', () => {
+    const templatePath = path.join(__dirname, '../src/templates/bootstrap/sdd/docs-index/_indice-seccional-template.md');
     const content = fs.readFileSync(templatePath, 'utf8');
 
     expect(content).toMatch(/# Índice de Secciones: /);
     expect(content).toMatch(/- \*\*1\. /);
     expect(content).toMatch(/- \*\*2\.1 /);
+    expect(content).toMatch(/^### /m);
   });
 });
