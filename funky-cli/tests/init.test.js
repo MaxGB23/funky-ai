@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -36,7 +36,7 @@ vi.mock('node:fs', async () => {
   return { ...mockModule, default: mockModule };
 });
 
-import { runInit } from '../src/commands/init.js';
+import { runInit, initCommand } from '../src/commands/init.js';
 
 // ── Template del brief funcional (R6) ──
 
@@ -145,5 +145,68 @@ describe('runInit()', () => {
     expect(sharedFsMock.existsSync).not.toHaveBeenCalled();
     expect(sharedFsMock.mkdirSync).not.toHaveBeenCalled();
     expect(sharedFsMock.copyFileSync).not.toHaveBeenCalled();
+  });
+});
+
+// ── Guard de existencia del action (R3/R8) ──
+
+describe('init action — guard de existencia (R3/R8)', () => {
+  const guardMessage = '❌ Error: Ya existe PROJECT-CANVAS.md o INFRA-CANVAS.md en docs/funky-ai/canvas/.';
+
+  let exitSpy;
+  let errorSpy;
+  let stderrSpy;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    // Adaptación del exitSpy de assess.test.js:189: aquí process.exit se mockea
+    // para LANZAR, porque el guard está a mitad del action. Con el exit no-throw
+    // del patrón original, el action continuaría a executeIntentions y la
+    // aserción "copyFileSync NO llamado" (R8: no se modifica ningún archivo)
+    // sería falsa. Lanzar replica la terminación real del proceso.
+    exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => {
+      throw new Error('exit');
+    });
+    stderrSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
+  });
+
+  afterEach(() => {
+    exitSpy.mockRestore();
+    errorSpy.mockRestore();
+    stderrSpy.mockRestore();
+  });
+
+  it('existsSync(PROJECT-CANVAS.md)=true → exit(1) + mensaje EXACTO, sin I/O (R3/R8)', async () => {
+    sharedFsMock.existsSync.mockImplementation(p => String(p).endsWith('PROJECT-CANVAS.md'));
+
+    await expect(initCommand.parseAsync([], { from: 'user' })).rejects.toThrow('exit');
+
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    expect(errorSpy).toHaveBeenCalledWith(guardMessage);
+    expect(sharedFsMock.copyFileSync).not.toHaveBeenCalled();
+    expect(sharedFsMock.mkdirSync).not.toHaveBeenCalled();
+  });
+
+  it('existsSync(INFRA-CANVAS.md)=true → exit(1) + mensaje EXACTO, sin I/O (R3/R8)', async () => {
+    sharedFsMock.existsSync.mockImplementation(p => String(p).endsWith('INFRA-CANVAS.md'));
+
+    await expect(initCommand.parseAsync([], { from: 'user' })).rejects.toThrow('exit');
+
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    expect(errorSpy).toHaveBeenCalledWith(guardMessage);
+    expect(sharedFsMock.copyFileSync).not.toHaveBeenCalled();
+    expect(sharedFsMock.mkdirSync).not.toHaveBeenCalled();
+  });
+
+  it('sin guard disparado → el action completa y ejecuta las copies (triangulación)', async () => {
+    sharedFsMock.existsSync.mockReturnValue(false);
+
+    await initCommand.parseAsync([], { from: 'user' });
+
+    expect(exitSpy).not.toHaveBeenCalled();
+    expect(sharedFsMock.copyFileSync).toHaveBeenCalled();
+    expect(sharedFsMock.mkdirSync).toHaveBeenCalled();
   });
 });
