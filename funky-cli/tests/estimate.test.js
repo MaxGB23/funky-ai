@@ -1401,4 +1401,74 @@ describe('estimateCommand — optional flags (R7-R11, R13-R14)', () => {
 
     logSpy.mockRestore();
   });
+
+  // ── Issue #33: auto-detección del brief de init ──
+  const INIT_BRIEF_CONTENT = '# 📋 BRIEF FUNCIONAL\n\n## 1. Nombre del Producto o Idea\n[Completar]';
+
+  it('#33: auto-detects docs/funky-ai/canvas/brief-funcional.md when it exists and no --brief is passed', () => {
+    const mf = createMockFiles();
+    addOptionalTemplates(mf);
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    addCanvas(mf, 'brief-funcional.md', INIT_BRIEF_CONTENT);
+    addDecisions(mf, DECISIONS_CONTENT);
+    applyMocks(mf);
+
+    estimateCommand.parse(['node', 'estimate'], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
+    expect(guide).toContain(INIT_BRIEF_CONTENT);
+    expect(guide).not.toContain('¿Qué problema resuelve el producto?');
+  });
+
+  it('#33: --brief <path> explicit overrides the auto-detected init brief', () => {
+    const mf = createMockFiles();
+    addOptionalTemplates(mf);
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    addCanvas(mf, 'brief-funcional.md', INIT_BRIEF_CONTENT);
+    addDecisions(mf, DECISIONS_CONTENT);
+    mf[path.join(CWD, 'custom-brief.md')] = 'BRIEF DEL USUARIO CUSTOM';
+    applyMocks(mf);
+
+    estimateCommand.parse(['node', 'estimate', '--brief', 'custom-brief.md'], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
+    expect(guide).toContain('BRIEF DEL USUARIO CUSTOM');
+    expect(guide).not.toContain(INIT_BRIEF_CONTENT);
+  });
+
+  it('#33: --brief without a value still embeds the checklist (R7) even when the init brief exists', () => {
+    const mf = createMockFiles();
+    addOptionalTemplates(mf);
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    addCanvas(mf, 'brief-funcional.md', INIT_BRIEF_CONTENT);
+    addDecisions(mf, DECISIONS_CONTENT);
+    applyMocks(mf);
+
+    estimateCommand.parse(['node', 'estimate', '--brief'], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
+    expect(guide).toContain(CHECKLIST_TEMPLATE);
+    expect(guide).not.toContain(INIT_BRIEF_CONTENT);
+  });
+
+  it('#33: no init brief and no --brief → no Brief Funcional section (fallback intacto)', () => {
+    const mf = createMockFiles();
+    addOptionalTemplates(mf);
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    addDecisions(mf, DECISIONS_CONTENT);
+    applyMocks(mf);
+
+    estimateCommand.parse(['node', 'estimate'], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
+    expect(guide).not.toContain('## Brief Funcional');
+  });
 });
