@@ -7,6 +7,28 @@ import { executeIntentions } from '../utils/fs-adapter.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+/**
+ * Plan de intenciones de `funky init`, como función pura (R8).
+ *
+ * @param {{ templatesDir: string, targetBase: string }} opts
+ * @param {string} opts.templatesDir - Directorio con las plantillas de init.
+ * @param {string} opts.targetBase   - Directorio destino (normalmente process.cwd()).
+ * @returns {Array<{action:'mkdir'|'copy', src?:string, dest:string}>}
+ */
+export function runInit({ templatesDir, targetBase }) {
+  const canvasDir = path.join(targetBase, 'docs', 'funky-ai', 'canvas');
+
+  return [
+    { action: 'mkdir', dest: canvasDir },
+    // El brief funcional va PRIMERO: define el "qué" antes del "cómo" (R7).
+    { action: 'copy', src: path.join(templatesDir, 'brief-funcional.md'), dest: path.join(canvasDir, 'brief-funcional.md') },
+    { action: 'copy', src: path.join(templatesDir, 'PROJECT-CANVAS.md'), dest: path.join(canvasDir, 'PROJECT-CANVAS.md') },
+    { action: 'copy', src: path.join(templatesDir, 'INFRA-CANVAS.md'), dest: path.join(canvasDir, 'INFRA-CANVAS.md') },
+    // La guía SIEMPRE entra al array; el skip-if-exists lo resuelve executeIntentions (D2).
+    { action: 'copy', src: path.join(templatesDir, 'canvas-planning-guide.md'), dest: path.join(canvasDir, 'canvas-planning-guide.md') },
+  ];
+}
+
 export const initCommand = new Command('init')
   .description('Genera PROJECT-CANVAS.md e INFRA-CANVAS.md para iniciar la planificacion del proyecto.')
   .action(async () => {
@@ -23,19 +45,7 @@ export const initCommand = new Command('init')
         process.exit(1);
       }
 
-      const guideDest = path.join(canvasDir, 'canvas-planning-guide.md');
-      const intentions = [
-        { action: 'mkdir', dest: canvasDir },
-        { action: 'copy', src: path.join(initDir, 'PROJECT-CANVAS.md'), dest: projectCanvasPath },
-        { action: 'copy', src: path.join(initDir, 'INFRA-CANVAS.md'), dest: infraCanvasPath },
-      ];
-
-      if (!fs.existsSync(guideDest)) {
-        const guideSrc = path.join(initDir, 'canvas-planning-guide.md');
-        intentions.push({ action: 'copy', src: guideSrc, dest: guideDest });
-      }
-
-      const { created, skipped, logs } = executeIntentions(intentions);
+      const { created, skipped, logs } = executeIntentions(runInit({ templatesDir: initDir, targetBase }));
       for (const log of logs) {
         console.log(log);
       }

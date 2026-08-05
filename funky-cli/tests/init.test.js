@@ -1,10 +1,42 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Mock parcial de fs: readFileSync se mantiene REAL (el test real-file del
+// template lee el archivo de verdad), existsSync/mkdirSync/copyFileSync son
+// spies (I/O del action/executeIntentions). Patrón assess.test.js.
+const sharedFsMock = vi.hoisted(() => ({
+  existsSync: vi.fn(),
+  mkdirSync: vi.fn(),
+  copyFileSync: vi.fn(),
+}));
+
+vi.mock('fs', async () => {
+  const actual = await vi.importActual('fs');
+  const mockModule = {
+    ...actual,
+    existsSync: sharedFsMock.existsSync,
+    mkdirSync: sharedFsMock.mkdirSync,
+    copyFileSync: sharedFsMock.copyFileSync,
+  };
+  return { ...mockModule, default: mockModule };
+});
+vi.mock('node:fs', async () => {
+  const actual = await vi.importActual('node:fs');
+  const mockModule = {
+    ...actual,
+    existsSync: sharedFsMock.existsSync,
+    mkdirSync: sharedFsMock.mkdirSync,
+    copyFileSync: sharedFsMock.copyFileSync,
+  };
+  return { ...mockModule, default: mockModule };
+});
+
+import { runInit } from '../src/commands/init.js';
 
 // ── Template del brief funcional (R6) ──
 
@@ -46,5 +78,72 @@ describe('brief-funcional.md template (R6)', () => {
     expect(content.startsWith('# 📋 BRIEF FUNCIONAL')).toBe(true);
     expect(content).toMatch(/QUÉ|qué/);
     expect(content).toMatch(/PARA QUIÉN|para quién/);
+  });
+});
+
+// ── runInit pura (R8) ──
+
+describe('runInit()', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  const fakeTemplatesDir = '/fake/templates/init';
+  const fakeTargetBase = '/fake/project';
+
+  it('la primera intención es mkdir de docs/funky-ai/canvas (R1)', () => {
+    const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetBase });
+
+    expect(intentions[0]).toEqual({
+      action: 'mkdir',
+      dest: path.join(fakeTargetBase, 'docs/funky-ai/canvas'),
+    });
+  });
+
+  it('retorna 5 intenciones: mkdir + 4 copies, sin create ni optional (R8)', () => {
+    const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetBase });
+
+    expect(intentions).toHaveLength(5);
+    expect(intentions.filter(i => i.action === 'mkdir')).toHaveLength(1);
+    expect(intentions.filter(i => i.action === 'copy')).toHaveLength(4);
+    expect(intentions.filter(i => i.action === 'create')).toHaveLength(0);
+    expect(intentions.every(i => i.optional === undefined)).toBe(true);
+  });
+
+  it('el brief se copia ANTES que PROJECT/INFRA, y la guía es la última (R7)', () => {
+    const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetBase });
+
+    const indexOf = (basename) =>
+      intentions.findIndex(i => i.action === 'copy' && path.basename(i.dest) === basename);
+
+    const briefIdx = indexOf('brief-funcional.md');
+    const projectIdx = indexOf('PROJECT-CANVAS.md');
+    const infraIdx = indexOf('INFRA-CANVAS.md');
+    const guideIdx = indexOf('canvas-planning-guide.md');
+
+    expect(briefIdx).toBeGreaterThanOrEqual(0);
+    expect(briefIdx).toBeLessThan(projectIdx);
+    expect(projectIdx).toBeLessThan(infraIdx);
+    expect(guideIdx).toBe(intentions.length - 1);
+  });
+
+  it('usa rutas correctas: template como src, canvas como dest (R1/R7)', () => {
+    const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetBase });
+
+    const brief = intentions.find(i => i.action === 'copy' && path.basename(i.dest) === 'brief-funcional.md');
+    expect(brief.src).toBe(path.join(fakeTemplatesDir, 'brief-funcional.md'));
+    expect(brief.dest).toBe(path.join(fakeTargetBase, 'docs/funky-ai/canvas', 'brief-funcional.md'));
+
+    const guide = intentions.find(i => i.action === 'copy' && path.basename(i.dest) === 'canvas-planning-guide.md');
+    expect(guide.src).toBe(path.join(fakeTemplatesDir, 'canvas-planning-guide.md'));
+    expect(guide.dest).toBe(path.join(fakeTargetBase, 'docs/funky-ai/canvas', 'canvas-planning-guide.md'));
+  });
+
+  it('NO realiza I/O: no toca existsSync/mkdirSync/copyFileSync (R8)', () => {
+    runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetBase });
+
+    expect(sharedFsMock.existsSync).not.toHaveBeenCalled();
+    expect(sharedFsMock.mkdirSync).not.toHaveBeenCalled();
+    expect(sharedFsMock.copyFileSync).not.toHaveBeenCalled();
   });
 });
