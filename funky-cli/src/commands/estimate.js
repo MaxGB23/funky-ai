@@ -106,6 +106,18 @@ export function runEstimate(targetBase, opts = {}) {
       }
     }
 
+    // Auto-detección del brief de init (issue #33): si NO se pasó --brief y existe
+    // docs/funky-ai/canvas/brief-funcional.md (generado por funky init), usarlo
+    // automáticamente como sección Brief Funcional. --brief <path> sigue siendo
+    // override explícito; --brief sin valor (true) fuerza el checklist (R7).
+    if (guideOpts.brief === undefined) {
+      const initBriefPath = path.join(targetBase, 'docs', 'funky-ai', 'canvas', 'brief-funcional.md');
+      if (fs.existsSync(initBriefPath)) {
+        guideOpts.brief = initBriefPath;
+        log('💡 Brief funcional auto-detectado desde funky init: docs/funky-ai/canvas/brief-funcional.md');
+      }
+    }
+
     let pricingGuide;
     try {
       pricingGuide = generatePricingGuide(decisions, canvases.projectCanvas, canvases.infraCanvas, guideOpts);
@@ -221,7 +233,7 @@ export function runEstimate(targetBase, opts = {}) {
 export const estimateCommand = new Command('estimate')
   .description('Genera guía de discusión de pricing a partir de decisiones arquitectónicas y canvases del proyecto')
   .option('-c, --context <path>', 'Path to context.json for pipeline integration')
-  .option('--brief [path]', 'Embed brief questions checklist (no value) or brief file content (value)')
+  .option('--brief [path]', 'Auto-detect docs/funky-ai/canvas/brief-funcional.md from funky init; pass a path to override, or no value for the questions checklist')
   .option('--roles', 'Include roles section')
   .option('--multi-tenant', 'Include multi-tenant section')
   .option('--transactions', 'Include transactions section')

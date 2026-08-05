@@ -102,7 +102,7 @@ Con `--context`, además actualiza el estado de fase v2 en `docs/funky-ai/pipeli
 | Flag | Tipo | Descripción |
 |---|---|---|
 | `--context`, `-c` | `<path>` | Ruta a `context.json` para integración con pipeline. Activa lectura de ruta de decisiones desde el contexto y la escritura del estado de fase v2 (`estimate.status`/`runAt`/`artifacts`). Si el archivo no existe, error y exit 1. |
-| `--brief` | `[path]` | Sin valor: embebe el checklist de preguntas del brief funcional. Con valor: embebe el contenido de ese archivo. Si el archivo no existe, advierte y usa el checklist de todas formas. |
+| `--brief` | `[path]` | Sin flag: auto-detecta `docs/funky-ai/canvas/brief-funcional.md` (el brief generado por `funky init`) y lo embebe si existe. Sin valor: fuerza el checklist de preguntas del brief funcional. Con valor: embebe el contenido de ese archivo. Si el archivo explícito no existe, advierte y usa el checklist de todas formas. |
 | `--roles` | boolean | Incluye la sección "Roles del equipo" en la guía. |
 | `--multi-tenant` | boolean | Incluye la sección "Multi-tenant" en la guía. |
 | `--transactions` | boolean | Incluye la sección "Transacciones" en la guía. |
@@ -111,7 +111,7 @@ Con `--context`, además actualiza el estado de fase v2 en `docs/funky-ai/pipeli
 | `--integrations` | boolean | Incluye la sección "Integraciones" en la guía. |
 | `--pricing-team` | boolean | Incluye la referencia de costos de equipo (rol × seniority × dedicación × duración). Solo referencia, no es una calculadora. |
 
-La ficha de alcance ("¿Aplica en esta fase?") se incluye SIEMPRE en la guía, sin flag: no es configurable desde la CLI. Las secciones opcionales (brief, tópicos, referencia de costos) solo se incluyen cuando se pasan sus flags.
+La ficha de alcance ("¿Aplica en esta fase?") se incluye SIEMPRE en la guía, sin flag: no es configurable desde la CLI. El brief funcional se incluye automáticamente cuando existe `docs/funky-ai/canvas/brief-funcional.md` (proyecto iniciado con `funky init`); sin ese archivo, solo se incluye al pasar `--brief`. Los tópicos y la referencia de costos solo se incluyen cuando se pasan sus flags.
 
 ## Próximos pasos
 
