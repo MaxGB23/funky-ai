@@ -2,7 +2,7 @@
 
 ## ¿Qué problema resuelve?
 
-Pasar de una idea difusa a un proyecto esbocelado. `funky init` genera dos archivos base — `PROJECT-CANVAS.md` e `INFRA-CANVAS.md` — que obligan a responder las preguntas fundamentales antes de escribir una sola línea de código.
+Pasar de una idea difusa a un proyecto esbocelado. `funky init` genera cuatro archivos base — `brief-funcional.md`, `PROJECT-CANVAS.md`, `INFRA-CANVAS.md` y `canvas-planning-guide.md` — que obligan a definir primero QUÉ se construye y para quién (el brief funcional) y luego las decisiones técnicas (los canvases), antes de escribir una sola línea de código.
 
 ## ¿Cuándo usarlo?
 
@@ -22,6 +22,7 @@ Si ya existe `PROJECT-CANVAS.md` o `INFRA-CANVAS.md` en `docs/funky-ai/canvas/`.
 
 ```
 funky-cli/src/templates/init/
+├── brief-funcional.md
 ├── PROJECT-CANVAS.md
 ├── INFRA-CANVAS.md
 └── canvas-planning-guide.md
@@ -31,6 +32,7 @@ funky-cli/src/templates/init/
 
 ```
 docs/funky-ai/canvas/
+├── brief-funcional.md          (solo si no existía previamente)
 ├── PROJECT-CANVAS.md
 ├── INFRA-CANVAS.md
 └── canvas-planning-guide.md   (solo si no existía previamente)
@@ -41,31 +43,32 @@ docs/funky-ai/canvas/
 ```
 funky init
   │
-  ├─► findCanvases
-  │     ├─ ¿Existe PROJECT-CANVAS.md?   → SÍ → ❌ exit(1)
-  │     └─ ¿Existe INFRA-CANVAS.md?     → SÍ → ❌ exit(1)
+  ├─► Guard: ¿Existe PROJECT-CANVAS.md o INFRA-CANVAS.md?
+  │     └─ SÍ → ❌ Error + exit(1)
   │
-  └─► runInit
-        ├─ Intención: mkdir docs/funky-ai/canvas/
-        ├─ Intención: copy PROJECT-CANVAS.md
-        ├─ Intención: copy INFRA-CANVAS.md
-        ├─ ¿Existe canvas-planning-guide.md?
-        │     └─ NO → Intención: copy canvas-planning-guide.md
+  └─► runInit({ templatesDir, targetBase })
+        │  Intentions (orden garantizado):
+        ├─ mkdir docs/funky-ai/canvas/
+        ├─ copy brief-funcional.md          ← primero: "qué" antes del "cómo" (R7)
+        ├─ copy PROJECT-CANVAS.md
+        ├─ copy INFRA-CANVAS.md
+        └─ copy canvas-planning-guide.md
         │
         └─► executeIntentions
               ├─ mkdir (si no existe)
-              ├─ copy cada archivo (skip si ya existe)
-              └─ muestra logs por operación
+              ├─ copy cada archivo (skip silencioso si el destino ya existe)
+              └─ logs por operación
 ```
 
-## canvas-planning-guide.md
+## canvas-planning-guide.md y brief-funcional.md
 
-Es la excepción a la regla: se copia solo si no existe. Los otros dos archivos (`PROJECT-CANVAS.md` e `INFRA-CANVAS.md`) siempre provocan un error si ya están presentes. `canvas-planning-guide.md`, en cambio, se omite silenciosamente si ya fue copiado en una ejecución anterior, permitiendo que el comando complete sin error.
+Son la excepción a la regla: se copian solo si no existen y se omiten silenciosamente si ya fueron copiados en una ejecución anterior, permitiendo que el comando complete sin error. Solo `PROJECT-CANVAS.md` e `INFRA-CANVAS.md` provocan un error si ya están presentes (el guard de `funky init`).
 
 ## Salida esperada
 
 ```
 ✅ Creado directorio: docs/funky-ai/canvas
+✅ Creado: docs/funky-ai/canvas/brief-funcional.md
 ✅ Creado: docs/funky-ai/canvas/PROJECT-CANVAS.md
 ✅ Creado: docs/funky-ai/canvas/INFRA-CANVAS.md
 ✅ Creado: docs/funky-ai/canvas/canvas-planning-guide.md
@@ -77,9 +80,12 @@ Si `canvas-planning-guide.md` ya existía de una ejecución anterior:
 
 ```
 ✅ Creado directorio: docs/funky-ai/canvas
+✅ Creado: docs/funky-ai/canvas/brief-funcional.md
 ✅ Creado: docs/funky-ai/canvas/PROJECT-CANVAS.md
 ✅ Creado: docs/funky-ai/canvas/INFRA-CANVAS.md
 ⚡ Salteando (ya existe): docs/funky-ai/canvas/canvas-planning-guide.md
 
 ✅ Canvases creados. Ejecuta `funky scaffold` para instalar el ecosistema completo.
 ```
+
+Si también `brief-funcional.md` ya existía, aparece la misma línea `⚡ Salteando (ya existe)` para el brief, antes de los canvases, y el comando completa sin error.

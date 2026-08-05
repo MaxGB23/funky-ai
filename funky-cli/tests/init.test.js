@@ -1,170 +1,212 @@
-import { describe, it, expect, vi, beforeEach, afterAll } from 'vitest';
-import path from 'path';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-import { runScaffold } from '../src/commands/scaffold.js';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-describe('runScaffold()', () => {
-  const fakeTemplatesDir = '/fake/templates';
-  const fakeTargetDir = '/fake/project';
+// Mock parcial de fs: readFileSync se mantiene REAL (el test real-file del
+// template lee el archivo de verdad), existsSync/mkdirSync/copyFileSync son
+// spies (I/O del action/executeIntentions). Patrón assess.test.js.
+const sharedFsMock = vi.hoisted(() => ({
+  existsSync: vi.fn(),
+  mkdirSync: vi.fn(),
+  copyFileSync: vi.fn(),
+}));
 
-  beforeEach(() => {
-    vi.resetAllMocks();
-    vi.spyOn(console, 'log').mockImplementation(() => {});
-    vi.spyOn(console, 'error').mockImplementation(() => {});
-  });
-
-  it('crea el plan completo: 37 copy + 0 create + 7 mkdir (dirs fake: README cae al copy)', () => {
-    const intentions = runScaffold({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
-
-    const mkdirIntentions = intentions.filter(i => i.action === 'mkdir');
-    const copyIntentions = intentions.filter(i => i.action === 'copy');
-    const createIntentions = intentions.filter(i => i.action === 'create');
-
-    expect(mkdirIntentions).toHaveLength(7);
-    expect(copyIntentions).toHaveLength(37);
-    expect(createIntentions).toHaveLength(0);
-  });
-
-  it('incluye los 3 root files con rutas correctas (sin canvases — van a docs/funky-ai/canvas/)', () => {
-    const intentions = runScaffold({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
-
-    expect(intentions).toContainEqual({
-      action: 'copy',
-      src: path.join(fakeTemplatesDir, 'ORCHESTRATOR-STATE.md'),
-      dest: path.join(fakeTargetDir, 'ORCHESTRATOR-STATE.md'),
-    });
-
-    expect(intentions).toContainEqual({
-      action: 'copy',
-      src: path.join(fakeTemplatesDir, 'README.md'),
-      dest: path.join(fakeTargetDir, 'README.md'),
-    });
-
-    expect(intentions).toContainEqual({
-      action: 'copy',
-      src: path.join(fakeTemplatesDir, 'TEMPLATE_GUIDE.md'),
-      dest: path.join(fakeTargetDir, 'TEMPLATE_GUIDE.md'),
-    });
-
-    // Canvases are NOT copied by runScaffold — they're created in docs/funky-ai/canvas/ by init command action
-    expect(intentions.filter(i => String(i.src || '').includes('PROJECT-CANVAS.md'))).toHaveLength(0);
-    expect(intentions.filter(i => String(i.src || '').includes('INFRA-CANVAS.md'))).toHaveLength(0);
-  });
-
-  it('copia funky-ai-rules/ a .agents/rules/ con rutas correctas', () => {
-    const intentions = runScaffold({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
-
-    expect(intentions).toContainEqual({
-      action: 'copy',
-      src: path.join(fakeTemplatesDir, 'funky-ai-rules/engram-protocol.md'),
-      dest: path.join(fakeTargetDir, '.agents', 'rules', 'engram-protocol.md'),
-    });
-
-    expect(intentions).toContainEqual({
-      action: 'copy',
-      src: path.join(fakeTemplatesDir, 'funky-ai-rules/tier2-delegation/t2-explore.md'),
-      dest: path.join(fakeTargetDir, '.agents', 'rules', 'tier2-delegation', 't2-explore.md'),
-    });
-
-    expect(intentions).toContainEqual({
-      action: 'copy',
-      src: path.join(fakeTemplatesDir, 'funky-ai-rules/tier3-interactive/risk-decision.md'),
-      dest: path.join(fakeTargetDir, '.agents', 'rules', 'tier3-interactive', 'risk-decision.md'),
-    });
-  });
-
-  it('copia sdd/ a .agents/templates/sdd/', () => {
-    const intentions = runScaffold({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
-
-    expect(intentions).toContainEqual({
-      action: 'copy',
-      src: path.join(fakeTemplatesDir, 'sdd/explore.md'),
-      dest: path.join(fakeTargetDir, '.agents', 'templates', 'sdd', 'explore.md'),
-    });
-
-    expect(intentions).toContainEqual({
-      action: 'copy',
-      src: path.join(fakeTemplatesDir, 'sdd/release-notes.md'),
-      dest: path.join(fakeTargetDir, '.agents', 'templates', 'sdd', 'release-notes.md'),
-    });
-  });
-
-  it('inyecta 000-rfc-template.md a openspec/rfcs/ como excepción', () => {
-    const intentions = runScaffold({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
-
-    expect(intentions).toContainEqual({
-      action: 'copy',
-      src: path.join(fakeTemplatesDir, 'sdd/000-rfc-template.md'),
-      dest: path.join(fakeTargetDir, 'openspec', 'rfcs', '000-rfc-template.md'),
-    });
-  });
-
-  it('copia docs-index/_indice-seccional-template.md (formato canónico del índice seccional)', () => {
-    const intentions = runScaffold({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
-
-    expect(intentions).toContainEqual({
-      action: 'copy',
-      src: path.join(fakeTemplatesDir, 'sdd/docs-index/_indice-seccional-template.md'),
-      dest: path.join(fakeTargetDir, '.agents', 'templates', 'sdd', 'docs-index', '_indice-seccional-template.md'),
-    });
-  });
-
-  it('copia docs-live-index.md desde el template compartido (create → copy, R-SK-5)', () => {
-    const intentions = runScaffold({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
-
-    expect(intentions).toContainEqual({
-      action: 'copy',
-      src: path.join(fakeTemplatesDir, 'sdd/docs-live-index.md'),
-      dest: path.join(fakeTargetDir, '.agents', 'templates', 'sdd', 'docs-live-index.md'),
-    });
-
-    const liveIndex = intentions.find(i => String(i.dest).replace(/\\/g, '/').endsWith('.agents/templates/sdd/docs-live-index.md'));
-    expect(liveIndex.action).toBe('copy');
-  });
-
+vi.mock('fs', async () => {
+  const actual = await vi.importActual('fs');
+  const mockModule = {
+    ...actual,
+    existsSync: sharedFsMock.existsSync,
+    mkdirSync: sharedFsMock.mkdirSync,
+    copyFileSync: sharedFsMock.copyFileSync,
+  };
+  return { ...mockModule, default: mockModule };
+});
+vi.mock('node:fs', async () => {
+  const actual = await vi.importActual('node:fs');
+  const mockModule = {
+    ...actual,
+    existsSync: sharedFsMock.existsSync,
+    mkdirSync: sharedFsMock.mkdirSync,
+    copyFileSync: sharedFsMock.copyFileSync,
+  };
+  return { ...mockModule, default: mockModule };
 });
 
-describe('runScaffold() — interpolación {{project_name}}', () => {
-  const bootstrapDir = path.join(process.cwd(), 'src/templates/bootstrap');
-  const tmpDir = path.join(process.cwd(), 'tmp-init-interpolation');
+import { runInit, initCommand } from '../src/commands/init.js';
+
+// ── Template del brief funcional (R6) ──
+
+describe('brief-funcional.md template (R6)', () => {
+  const templatePath = path.join(__dirname, '../src/templates/init/brief-funcional.md');
+  const content = fs.readFileSync(templatePath, 'utf8');
+
+  // Los 12 ítems de §13 (recomendaciones-agente.md:415-426), en orden.
+  const expectedHeaders = [
+    '1. Nombre del Producto o Idea',
+    '2. Objetivo del Sistema',
+    '3. Tipo de Usuario',
+    '4. Caso de Uso Principal',
+    '5. Funcionalidades Principales',
+    '6. Funcionalidades Secundarias / Futuras',
+    '7. Roles y Permisos',
+    '8. Requisitos de Seguridad',
+    '9. Integraciones Esperadas',
+    '10. Entregables por Fase',
+    '11. MVP vs Fase 2',
+    '12. KPI o Éxito del Producto',
+  ];
+
+  it('contiene los 12 ítems de §13 como headers `## N.` en orden (R6)', () => {
+    const headers = (content.match(/^## (\d+\. .+)$/gm) ?? []).map(h => h.replace(/^## /, ''));
+    expect(headers).toEqual(expectedHeaders);
+  });
+
+  it('cada campo usa el placeholder [Completar] (R6)', () => {
+    const completarCount = (content.match(/\[Completar\]/g) ?? []).length;
+    expect(completarCount).toBeGreaterThanOrEqual(expectedHeaders.length);
+  });
+
+  it('NO contiene [Responde aquí] (R6 — no infla countUnfilledSections)', () => {
+    expect(content).not.toContain('[Responde aquí]');
+  });
+
+  it('abre con el título `# 📋 BRIEF FUNCIONAL` y una intro que define "qué" y "para quién" (D4)', () => {
+    expect(content.startsWith('# 📋 BRIEF FUNCIONAL')).toBe(true);
+    expect(content).toMatch(/QUÉ|qué/);
+    expect(content).toMatch(/PARA QUIÉN|para quién/);
+  });
+});
+
+// ── runInit pura (R8) ──
+
+describe('runInit()', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  const fakeTemplatesDir = '/fake/templates/init';
+  const fakeTargetBase = '/fake/project';
+
+  it('la primera intención es mkdir de docs/funky-ai/canvas (R1)', () => {
+    const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetBase });
+
+    expect(intentions[0]).toEqual({
+      action: 'mkdir',
+      dest: path.join(fakeTargetBase, 'docs/funky-ai/canvas'),
+    });
+  });
+
+  it('retorna 5 intenciones: mkdir + 4 copies, sin create ni optional (R8)', () => {
+    const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetBase });
+
+    expect(intentions).toHaveLength(5);
+    expect(intentions.filter(i => i.action === 'mkdir')).toHaveLength(1);
+    expect(intentions.filter(i => i.action === 'copy')).toHaveLength(4);
+    expect(intentions.filter(i => i.action === 'create')).toHaveLength(0);
+    expect(intentions.every(i => i.optional === undefined)).toBe(true);
+  });
+
+  it('el brief se copia ANTES que PROJECT/INFRA, y la guía es la última (R7)', () => {
+    const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetBase });
+
+    const indexOf = (basename) =>
+      intentions.findIndex(i => i.action === 'copy' && path.basename(i.dest) === basename);
+
+    const briefIdx = indexOf('brief-funcional.md');
+    const projectIdx = indexOf('PROJECT-CANVAS.md');
+    const infraIdx = indexOf('INFRA-CANVAS.md');
+    const guideIdx = indexOf('canvas-planning-guide.md');
+
+    expect(briefIdx).toBeGreaterThanOrEqual(0);
+    expect(briefIdx).toBeLessThan(projectIdx);
+    expect(projectIdx).toBeLessThan(infraIdx);
+    expect(guideIdx).toBe(intentions.length - 1);
+  });
+
+  it('usa rutas correctas: template como src, canvas como dest (R1/R7)', () => {
+    const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetBase });
+
+    const brief = intentions.find(i => i.action === 'copy' && path.basename(i.dest) === 'brief-funcional.md');
+    expect(brief.src).toBe(path.join(fakeTemplatesDir, 'brief-funcional.md'));
+    expect(brief.dest).toBe(path.join(fakeTargetBase, 'docs/funky-ai/canvas', 'brief-funcional.md'));
+
+    const guide = intentions.find(i => i.action === 'copy' && path.basename(i.dest) === 'canvas-planning-guide.md');
+    expect(guide.src).toBe(path.join(fakeTemplatesDir, 'canvas-planning-guide.md'));
+    expect(guide.dest).toBe(path.join(fakeTargetBase, 'docs/funky-ai/canvas', 'canvas-planning-guide.md'));
+  });
+
+  it('NO realiza I/O: no toca existsSync/mkdirSync/copyFileSync (R8)', () => {
+    runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetBase });
+
+    expect(sharedFsMock.existsSync).not.toHaveBeenCalled();
+    expect(sharedFsMock.mkdirSync).not.toHaveBeenCalled();
+    expect(sharedFsMock.copyFileSync).not.toHaveBeenCalled();
+  });
+});
+
+// ── Guard de existencia del action (R3/R8) ──
+
+describe('init action — guard de existencia (R3/R8)', () => {
+  const guardMessage = '❌ Error: Ya existe PROJECT-CANVAS.md o INFRA-CANVAS.md en docs/funky-ai/canvas/.';
+
+  let exitSpy;
+  let errorSpy;
+  let stderrSpy;
 
   beforeEach(() => {
-    if (fs.existsSync(tmpDir)) {
-      fs.rmSync(tmpDir, { recursive: true, force: true });
-    }
-    fs.mkdirSync(tmpDir, { recursive: true });
+    vi.clearAllMocks();
+    errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    // Adaptación del exitSpy de assess.test.js:189: aquí process.exit se mockea
+    // para LANZAR, porque el guard está a mitad del action. Con el exit no-throw
+    // del patrón original, el action continuaría a executeIntentions y la
+    // aserción "copyFileSync NO llamado" (R8: no se modifica ningún archivo)
+    // sería falsa. Lanzar replica la terminación real del proceso.
+    exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => {
+      throw new Error('exit');
+    });
+    stderrSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
   });
 
-  afterAll(() => {
-    if (fs.existsSync(tmpDir)) {
-      fs.rmSync(tmpDir, { recursive: true, force: true });
-    }
+  afterEach(() => {
+    exitSpy.mockRestore();
+    errorSpy.mockRestore();
+    stderrSpy.mockRestore();
   });
 
-  const findReadme = (intentions) => {
-    return intentions.find(i => String(i.dest).replace(/\\/g, '/').endsWith('README.md'));
-  };
+  it('existsSync(PROJECT-CANVAS.md)=true → exit(1) + mensaje EXACTO, sin I/O (R3/R8)', async () => {
+    sharedFsMock.existsSync.mockImplementation(p => String(p).endsWith('PROJECT-CANVAS.md'));
 
-  it('interpola {{project_name}} con el campo name del package.json del targetBase', () => {
-    fs.writeFileSync(path.join(tmpDir, 'package.json'), JSON.stringify({ name: 'mi-proyecto' }));
+    await expect(initCommand.parseAsync([], { from: 'user' })).rejects.toThrow('exit');
 
-    const intentions = runScaffold({ templatesDir: bootstrapDir, targetBase: tmpDir });
-
-    const readme = findReadme(intentions);
-    expect(readme).toBeTruthy();
-    expect(readme.action).toBe('create');
-    expect(readme.content).toContain('mi-proyecto');
-    expect(readme.content).not.toContain('{{project_name}}');
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    expect(errorSpy).toHaveBeenCalledWith(guardMessage);
+    expect(sharedFsMock.copyFileSync).not.toHaveBeenCalled();
+    expect(sharedFsMock.mkdirSync).not.toHaveBeenCalled();
   });
 
-  it('usa basename(targetBase) como fallback cuando no hay package.json', () => {
-    const intentions = runScaffold({ templatesDir: bootstrapDir, targetBase: tmpDir });
+  it('existsSync(INFRA-CANVAS.md)=true → exit(1) + mensaje EXACTO, sin I/O (R3/R8)', async () => {
+    sharedFsMock.existsSync.mockImplementation(p => String(p).endsWith('INFRA-CANVAS.md'));
 
-    const readme = findReadme(intentions);
-    expect(readme).toBeTruthy();
-    expect(readme.action).toBe('create');
-    expect(readme.content).toContain('tmp-init-interpolation');
-    expect(readme.content).not.toContain('{{project_name}}');
+    await expect(initCommand.parseAsync([], { from: 'user' })).rejects.toThrow('exit');
+
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    expect(errorSpy).toHaveBeenCalledWith(guardMessage);
+    expect(sharedFsMock.copyFileSync).not.toHaveBeenCalled();
+    expect(sharedFsMock.mkdirSync).not.toHaveBeenCalled();
+  });
+
+  it('sin guard disparado → el action completa y ejecuta las copies (triangulación)', async () => {
+    sharedFsMock.existsSync.mockReturnValue(false);
+
+    await initCommand.parseAsync([], { from: 'user' });
+
+    expect(exitSpy).not.toHaveBeenCalled();
+    expect(sharedFsMock.copyFileSync).toHaveBeenCalled();
+    expect(sharedFsMock.mkdirSync).toHaveBeenCalled();
   });
 });
