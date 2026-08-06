@@ -199,7 +199,7 @@ describe('assess Command - action flow', () => {
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     applyMocks(mf);
 
-    assessCommand.parse(['node', 'assess'], { from: 'user' });
+    assessCommand.parse([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     expect(vi.mocked(fs.writeFileSync).mock.calls.length).toBeGreaterThan(0);
@@ -212,7 +212,7 @@ describe('assess Command - action flow', () => {
 
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-    assessCommand.parse(['node', 'assess'], { from: 'user' });
+    assessCommand.parse([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const warnMsgs = warnSpy.mock.calls.map(c => String(c));
@@ -227,7 +227,7 @@ describe('assess Command - action flow', () => {
 
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-    assessCommand.parse(['node', 'assess'], { from: 'user' });
+    assessCommand.parse([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const warnMsgs = warnSpy.mock.calls.map(c => String(c));
@@ -245,7 +245,7 @@ describe('assess Command - action flow', () => {
 
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-    assessCommand.parse(['node', 'assess'], { from: 'user' });
+    assessCommand.parse([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const warnMsgs = warnSpy.mock.calls.map(c => String(c));
@@ -260,7 +260,7 @@ describe('assess Command - action flow', () => {
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     applyMocks(mf);
 
-    assessCommand.parse(['node', 'assess'], { from: 'user' });
+    assessCommand.parse([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
 
@@ -288,7 +288,7 @@ describe('assess Command - action flow', () => {
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     applyMocks(mf);
 
-    assessCommand.parse(['node', 'assess'], { from: 'user' });
+    assessCommand.parse([], { from: 'user' });
     expect(exitSpy).toHaveBeenCalledWith(0);
 
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
@@ -306,7 +306,7 @@ describe('assess Command - action flow', () => {
 
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-    assessCommand.parse(['node', 'assess'], { from: 'user' });
+    assessCommand.parse([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const logMsgs = logSpy.mock.calls.map(c => String(c));
@@ -322,7 +322,7 @@ describe('assess Command - action flow', () => {
     mf[path.join(CWD, 'docs', 'funky-ai', 'assess', 'architecture-review.md')] = '# Previous stale content';
     applyMocks(mf);
 
-    assessCommand.parse(['node', 'assess'], { from: 'user' });
+    assessCommand.parse([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
 
@@ -342,7 +342,7 @@ describe('assess Command - action flow', () => {
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     applyMocks(mf);
 
-    assessCommand.parse(['node', 'assess'], { from: 'user' });
+    assessCommand.parse([], { from: 'user' });
 
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const patternsCall = writeCalls.find(c => String(c[0]).includes('risk-patterns.md'));
@@ -359,7 +359,7 @@ describe('assess Command - action flow', () => {
 
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-    assessCommand.parse(['node', 'assess'], { from: 'user' });
+    assessCommand.parse([], { from: 'user' });
 
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const patternsCall = writeCalls.find(c => String(c[0]).includes('risk-patterns.md'));
@@ -377,7 +377,7 @@ describe('assess Command - action flow', () => {
     mf[RISK_PATTERNS_DEST_PATH] = '# Patrones del Equipo\n\n## Microservicios\n- **Riesgo:** complejidad de deploys.';
     applyMocks(mf);
 
-    assessCommand.parse(['node', 'assess'], { from: 'user' });
+    assessCommand.parse([], { from: 'user' });
 
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const reviewCall = writeCalls.find(c => String(c[0]).includes('architecture-review.md'));
@@ -395,7 +395,7 @@ describe('assess Command - action flow', () => {
     addCanvas(mf, 'INFRA-CANVAS.md', 'Deploy en K8s cluster con SQLite en single node');
     applyMocks(mf);
 
-    assessCommand.parse(['node', 'assess'], { from: 'user' });
+    assessCommand.parse([], { from: 'user' });
 
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const reviewCall = writeCalls.find(c => String(c[0]).includes('architecture-review.md'));
@@ -415,7 +415,7 @@ describe('assess Command - action flow', () => {
     applyMocks(mf);
 
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    assessCommand.parse(['node', 'assess', '--context', 'missing.json'], { from: 'user' });
+    assessCommand.parse(['--context', 'missing.json'], { from: 'user' });
 
     // El exit(1) proviene del result status 'failed' (no del parseo de Commander).
     const errMsgs = errorSpy.mock.calls.map(c => String(c));

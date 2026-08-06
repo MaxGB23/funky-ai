@@ -291,7 +291,7 @@ describe('estimateCommand — integration', () => {
     addDecisions(mf, DECISIONS_CONTENT);
     applyMocks(mf);
 
-    estimateCommand.parse(['node', 'estimate'], { from: 'user' });
+    estimateCommand.parse([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
@@ -307,7 +307,7 @@ describe('estimateCommand — integration', () => {
 
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-    estimateCommand.parse(['node', 'estimate'], { from: 'user' });
+    estimateCommand.parse([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     expect(warnSpy).toHaveBeenCalled();
@@ -325,7 +325,7 @@ describe('estimateCommand — integration', () => {
 
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-    estimateCommand.parse(['node', 'estimate'], { from: 'user' });
+    estimateCommand.parse([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const warnMsgs = warnSpy.mock.calls.map(c => String(c));
@@ -343,7 +343,7 @@ describe('estimateCommand — integration', () => {
 
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-    estimateCommand.parse(['node', 'estimate'], { from: 'user' });
+    estimateCommand.parse([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const warnMsgs = warnSpy.mock.calls.map(c => String(c));
@@ -358,7 +358,7 @@ describe('estimateCommand — integration', () => {
 
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-    estimateCommand.parse(['node', 'estimate'], { from: 'user' });
+    estimateCommand.parse([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     expect(warnSpy).toHaveBeenCalled();
@@ -374,7 +374,7 @@ describe('estimateCommand — integration', () => {
     applyMocks(mf);
 
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    estimateCommand.parse(['node', 'estimate', '--context', 'missing.json'], { from: 'user' });
+    estimateCommand.parse(['--context', 'missing.json'], { from: 'user' });
 
     // El exit(1) proviene del result status 'failed' (no del parseo de Commander).
     const errMsgs = errorSpy.mock.calls.map(c => String(c));
@@ -390,7 +390,7 @@ describe('estimateCommand — integration', () => {
     addDecisions(mf, DECISIONS_CONTENT);
     applyMocks(mf);
 
-    estimateCommand.parse(['node', 'estimate'], { from: 'user' });
+    estimateCommand.parse([], { from: 'user' });
 
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const guideCall = writeCalls.find(c => String(c[0]).includes('pricing-guide.md'));
@@ -414,7 +414,7 @@ describe('estimateCommand — integration', () => {
     mf[path.join(CWD, 'docs', 'funky-ai', 'estimate', 'pricing-guide.md')] = '# Guía obsoleta previa';
     applyMocks(mf);
 
-    estimateCommand.parse(['node', 'estimate'], { from: 'user' });
+    estimateCommand.parse([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
@@ -435,7 +435,7 @@ describe('estimateCommand — integration', () => {
 
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-    estimateCommand.parse(['node', 'estimate'], { from: 'user' });
+    estimateCommand.parse([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
@@ -1207,7 +1207,7 @@ describe('estimateCommand — optional flags (R7-R11, R13-R14)', () => {
   it('R8: --security --roles embeds both fragments in canonical order', () => {
     standardMocks();
 
-    estimateCommand.parse(['node', 'estimate', '--security', '--roles'], { from: 'user' });
+    estimateCommand.parse(['--security', '--roles'], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
@@ -1224,7 +1224,7 @@ describe('estimateCommand — optional flags (R7-R11, R13-R14)', () => {
     addDecisions(mf, DECISIONS_CONTENT);
     applyMocks(mf);
 
-    estimateCommand.parse(['node', 'estimate'], { from: 'user' });
+    estimateCommand.parse([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
@@ -1245,7 +1245,7 @@ describe('estimateCommand — optional flags (R7-R11, R13-R14)', () => {
     addDecisions(mf, DECISIONS_CONTENT);
     applyMocks(mf);
 
-    estimateCommand.parse(['node', 'estimate', '--multi-tenant'], { from: 'user' });
+    estimateCommand.parse(['--multi-tenant'], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
@@ -1256,7 +1256,7 @@ describe('estimateCommand — optional flags (R7-R11, R13-R14)', () => {
   it('R7: --brief without a value embeds the checklist', () => {
     standardMocks();
 
-    estimateCommand.parse(['node', 'estimate', '--brief'], { from: 'user' });
+    estimateCommand.parse(['--brief'], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
@@ -1280,7 +1280,7 @@ describe('estimateCommand — optional flags (R7-R11, R13-R14)', () => {
 
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-    estimateCommand.parse(['node', 'estimate', '--brief', 'missing.md'], { from: 'user' });
+    estimateCommand.parse(['--brief', 'missing.md'], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
@@ -1294,7 +1294,7 @@ describe('estimateCommand — optional flags (R7-R11, R13-R14)', () => {
   it('R10: --pricing-team embeds the team-cost reference section', () => {
     standardMocks();
 
-    estimateCommand.parse(['node', 'estimate', '--pricing-team'], { from: 'user' });
+    estimateCommand.parse(['--pricing-team'], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
@@ -1312,7 +1312,7 @@ describe('estimateCommand — optional flags (R7-R11, R13-R14)', () => {
 
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-    estimateCommand.parse(['node', 'estimate'], { from: 'user' });
+    estimateCommand.parse([], { from: 'user' });
 
     const msgs = logSpy.mock.calls.map((c) => String(c));
     expect(msgs.some((m) => m.includes('💡 Se detectó Seguridad (jwt). Considerá --security para incluir su sección en la guía.'))).toBe(true);
@@ -1330,7 +1330,7 @@ describe('estimateCommand — optional flags (R7-R11, R13-R14)', () => {
 
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-    estimateCommand.parse(['node', 'estimate', '--security'], { from: 'user' });
+    estimateCommand.parse(['--security'], { from: 'user' });
 
     const msgs = logSpy.mock.calls.map((c) => String(c));
     expect(msgs.some((m) => m.includes('Considerá --security'))).toBe(false);
@@ -1343,13 +1343,13 @@ describe('estimateCommand — optional flags (R7-R11, R13-R14)', () => {
   it('R13: identical inputs and flags twice → byte-identical guide', () => {
     standardMocks();
 
-    estimateCommand.parse(['node', 'estimate', '--security', '--roles', '--brief', '--pricing-team'], { from: 'user' });
+    estimateCommand.parse(['--security', '--roles', '--brief', '--pricing-team'], { from: 'user' });
     const first = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
     expect(first).toContain('Guía de Discusión de Pricing');
 
     vi.mocked(fs.writeFileSync).mockClear();
 
-    estimateCommand.parse(['node', 'estimate', '--security', '--roles', '--brief', '--pricing-team'], { from: 'user' });
+    estimateCommand.parse(['--security', '--roles', '--brief', '--pricing-team'], { from: 'user' });
     const second = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
 
     expect(second).toContain('Guía de Discusión de Pricing');
@@ -1365,7 +1365,7 @@ describe('estimateCommand — optional flags (R7-R11, R13-R14)', () => {
     addDecisions(mf, DECISIONS_CONTENT);
     applyMocks(mf);
 
-    estimateCommand.parse(['node', 'estimate', '--security'], { from: 'user' });
+    estimateCommand.parse(['--security'], { from: 'user' });
 
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
     expect(guide).toContain('Editado local: auditoría externa de cumplimiento');
@@ -1377,7 +1377,7 @@ describe('estimateCommand — optional flags (R7-R11, R13-R14)', () => {
 
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-    estimateCommand.parse(['node', 'estimate', '--security', '--roles', '--brief', '--pricing-team'], { from: 'user' });
+    estimateCommand.parse(['--security', '--roles', '--brief', '--pricing-team'], { from: 'user' });
 
     const msgs = logSpy.mock.calls.map((c) => String(c));
     expect(msgs.some((m) => m.includes('Secciones incluidas en la guía: ficha de alcance, brief funcional, roles del equipo, seguridad, referencia de costos de equipo.'))).toBe(true);
@@ -1394,7 +1394,7 @@ describe('estimateCommand — optional flags (R7-R11, R13-R14)', () => {
 
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-    estimateCommand.parse(['node', 'estimate'], { from: 'user' });
+    estimateCommand.parse([], { from: 'user' });
 
     const msgs = logSpy.mock.calls.map((c) => String(c));
     expect(msgs.some((m) => m.includes('Secciones incluidas en la guía: ficha de alcance.'))).toBe(true);
@@ -1414,7 +1414,7 @@ describe('estimateCommand — optional flags (R7-R11, R13-R14)', () => {
     addDecisions(mf, DECISIONS_CONTENT);
     applyMocks(mf);
 
-    estimateCommand.parse(['node', 'estimate'], { from: 'user' });
+    estimateCommand.parse([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
@@ -1432,7 +1432,7 @@ describe('estimateCommand — optional flags (R7-R11, R13-R14)', () => {
     mf[path.join(CWD, 'custom-brief.md')] = 'BRIEF DEL USUARIO CUSTOM';
     applyMocks(mf);
 
-    estimateCommand.parse(['node', 'estimate', '--brief', 'custom-brief.md'], { from: 'user' });
+    estimateCommand.parse(['--brief', 'custom-brief.md'], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
@@ -1449,7 +1449,7 @@ describe('estimateCommand — optional flags (R7-R11, R13-R14)', () => {
     addDecisions(mf, DECISIONS_CONTENT);
     applyMocks(mf);
 
-    estimateCommand.parse(['node', 'estimate', '--brief'], { from: 'user' });
+    estimateCommand.parse(['--brief'], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
@@ -1465,7 +1465,7 @@ describe('estimateCommand — optional flags (R7-R11, R13-R14)', () => {
     addDecisions(mf, DECISIONS_CONTENT);
     applyMocks(mf);
 
-    estimateCommand.parse(['node', 'estimate'], { from: 'user' });
+    estimateCommand.parse([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
