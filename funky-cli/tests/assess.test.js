@@ -1,23 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+vi.mock('fs', () => ({ ...fsMock, default: fsMock }));
+vi.mock('node:fs', () => ({ ...fsMock, default: fsMock }));
+import { fsMock, applyMocks } from './helpers/fsMock.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
-
-// Manual mock: provide both default export (for `import fs from 'fs'`)
-// and named exports (for `import { writeFileSync } from 'fs'`)
-const sharedFsMock = vi.hoisted(() => ({
-  existsSync: vi.fn(),
-  readFileSync: vi.fn(),
-  writeFileSync: vi.fn(),
-  mkdirSync: vi.fn(),
-  copyFileSync: vi.fn(),
-  statSync: vi.fn(),
-  lstatSync: vi.fn(),
-  realpathSync: vi.fn(),
-}));
-
-vi.mock('fs', () => ({ ...sharedFsMock, default: sharedFsMock }));
-vi.mock('node:fs', () => ({ ...sharedFsMock, default: sharedFsMock }));
 
 import { parseFrontmatter, assessCommand, runAssess } from '../src/commands/assess.js';
 
@@ -124,19 +111,6 @@ function v2Context(overrides = {}) {
 
 function addCanvas(mockFiles, name, content) {
   mockFiles[path.join(CANVAS_DIR, name)] = content;
-}
-
-function applyMocks(mockFiles) {
-  vi.mocked(fs.existsSync).mockImplementation((p) => {
-    return Object.prototype.hasOwnProperty.call(mockFiles, String(p));
-  });
-  vi.mocked(fs.readFileSync).mockImplementation((p, enc) => {
-    const key = String(p);
-    if (Object.prototype.hasOwnProperty.call(mockFiles, key)) {
-      return mockFiles[key];
-    }
-    return '';
-  });
 }
 
 // ── parseFrontmatter tests (unchanged) ──

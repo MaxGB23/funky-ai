@@ -72,3 +72,13 @@ describe('math', () => {
 - **Vue component testing** → Use `vue` skill for component patterns
 - **Library testing** → Use `ts-library` skill for library patterns
 - **Vite configuration** → Use `vite` skill for shared config
+
+## Repo conventions (funky-ai)
+
+- One unit under test per file, named `{unit}.test.js` (e.g. `estimateDomain.test.js`).
+- Command/integration tests go in `{cmd}.integration.test.js` (e.g. `estimateCommand.integration.test.js`).
+- Unit test files must NOT import from `src/commands/`; keep those imports in `.integration.test.js` files.
+- Line caps: unit files ≤ 500 lines, integration files ≤ 800 lines.
+- Shared fs mocks and test helpers live in `tests/helpers/` (e.g. `tests/helpers/fsMock.js`), never duplicated across test files.
+- Enforcement: `tests/organization.test.js` (meta-test, runs with `pnpm test`) fails on rule violations; legacy debt is tracked in its `LEGACY_EXCEPTIONS` map and must be removed when a file is migrated.
+
