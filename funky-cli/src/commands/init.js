@@ -30,7 +30,7 @@ export function runInit({ templatesDir, targetBase }) {
 }
 
 export const initCommand = new Command('init')
-  .description('Genera PROJECT-CANVAS.md e INFRA-CANVAS.md para iniciar la planificacion del proyecto.')
+  .description('Genera el brief funcional, PROJECT-CANVAS.md e INFRA-CANVAS.md para iniciar la planificacion del proyecto.')
   .action(async () => {
     const initDir = path.join(__dirname, '../templates/init');
     const targetBase = process.cwd();

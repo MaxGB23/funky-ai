@@ -81,6 +81,31 @@ describe('brief-funcional.md template (R6)', () => {
   });
 });
 
+// ── Contrato de docs (R9) ──
+
+describe('docs/funky-forge/init.md (R9)', () => {
+  // Real-file: readFileSync se mantiene REAL en el mock parcial de fs.
+  const docPath = path.join(__dirname, '../../docs/funky-forge/init.md');
+  const content = fs.readFileSync(docPath, 'utf8');
+
+  it('lista los 4 outputs con brief-funcional.md PRIMERO (R9)', () => {
+    const outputBlock = content.split('### Archivos generados (outputs)')[1].split('## Diagrama de flujo')[0];
+
+    expect(outputBlock).toContain('brief-funcional.md');
+    expect(outputBlock).toContain('PROJECT-CANVAS.md');
+    expect(outputBlock).toContain('INFRA-CANVAS.md');
+    expect(outputBlock).toContain('canvas-planning-guide.md');
+    expect(outputBlock.indexOf('brief-funcional.md')).toBeLessThan(outputBlock.indexOf('PROJECT-CANVAS.md'));
+  });
+
+  it('el diagrama nombra runInit y la copia del brief (R9)', () => {
+    const diagram = content.split('## Diagrama de flujo')[1].split('## canvas-planning-guide')[0];
+
+    expect(diagram).toContain('runInit({ templatesDir, targetBase })');
+    expect(diagram).toMatch(/copy brief-funcional\.md/);
+  });
+});
+
 // ── runInit pura (R8) ──
 
 describe('runInit()', () => {

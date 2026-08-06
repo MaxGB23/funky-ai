@@ -7,7 +7,7 @@ Living spec canónico para el dominio `init`. Refleja el estado actual del coman
 
 ## Propósito
 
-`funky init` genera los canvases iniciales del proyecto (PROJECT-CANVAS.md e INFRA-CANVAS.md) en el directorio canónico `docs/funky-ai/canvas/`, para iniciar la planificación del proyecto dentro del protocolo Funky AI. Es el punto de entrada del pipeline (`init → assess → estimate`). Es headless: no pregunta nada al usuario.
+`funky init` genera los archivos base del proyecto (brief-funcional.md, PROJECT-CANVAS.md e INFRA-CANVAS.md) en el directorio canónico `docs/funky-ai/canvas/`, para iniciar la planificación del proyecto dentro del protocolo Funky AI. Es el punto de entrada del pipeline (`init → assess → estimate`). Es headless: no pregunta nada al usuario.
 
 ---
 
