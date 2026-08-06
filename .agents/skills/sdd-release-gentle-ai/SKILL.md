@@ -69,9 +69,12 @@ Save to `<ruta-docs-del-proyecto>/releases/vX.Y.Z-release.md`
 
 ### 5. Git operations
 
+Stage ONLY the release files — never `git add -A` (a dirty tree must not leak into the release commit).
+
 ```bash
-git status                          # Confirm clean
-git add -A
+git status --short              # STOP unless ONLY release files appear
+git add <release files from steps 1-4>
+git diff --cached --name-only   # HARD CHECK: must list exactly those files
 git commit -m "chore: release vX.Y.Z"
 git tag -a vX.Y.Z -m "Release vX.Y.Z"
 git push origin main --tags
