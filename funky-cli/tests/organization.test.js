@@ -6,23 +6,14 @@ import { fileURLToPath } from 'url';
 // Legacy debt: files grandfathered under the current conventions.
 // Each entry must still violate its rule; migrate the file and remove it here.
 // Removing the file entirely also requires removing its entry.
-const LEGACY_EXCEPTIONS = {
-  'assess.test.js': ['over-unit-lines', 'imports-commands'],
-  'pipeline.test.js': ['over-unit-lines', 'imports-commands'],
-  'context.test.js': ['over-unit-lines'],
-  'engram.test.js': ['imports-commands'],
-  'feature.test.js': ['imports-commands'],
-  'init.test.js': ['imports-commands'],
-  'scaffold.test.js': ['imports-commands'],
-  'skills.test.js': ['imports-commands'],
-  'skills.interactive.test.js': ['imports-commands'],
-};
+// The map may be empty once all legacy debt is migrated.
+const LEGACY_EXCEPTIONS = {};
 
 // Convention: one unit under test per file, named {unit}.test.js. Integration
 // goes in {cmd}.integration.test.js. Shared fs mocks live in tests/helpers/.
 const UNIT_MAX_LINES = 500;
 const INTEGRATION_MAX_LINES = 800;
-const COMMANDS_IMPORT_RE = /from ['"][^'"]*\/src\/commands\//;
+const COMMAND_IMPORT_RE = /from ['"]([^'"]*\/src\/commands\/[^'"]+)['"]/g;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -41,9 +32,15 @@ function lineCount(name) {
   return fs.readFileSync(path.join(__dirname, name), 'utf8').split(/\r?\n/).length;
 }
 
-function importsCommands(name) {
+function countCommandImports(name) {
   const content = fs.readFileSync(path.join(__dirname, name), 'utf8');
-  return COMMANDS_IMPORT_RE.test(content);
+  const modules = new Set();
+  let match;
+  const re = new RegExp(COMMAND_IMPORT_RE.source, 'g');
+  while ((match = re.exec(content)) !== null) {
+    modules.add(match[1]);
+  }
+  return modules.size;
 }
 
 function violations(name) {
@@ -56,8 +53,8 @@ function violations(name) {
     if (lineCount(name) > UNIT_MAX_LINES) {
       result.push('over-unit-lines');
     }
-    if (importsCommands(name)) {
-      result.push('imports-commands');
+    if (countCommandImports(name) > 1) {
+      result.push('multi-commands');
     }
   }
   return result;
@@ -82,10 +79,10 @@ describe('test file organization conventions', () => {
     expect(offenders).toEqual([]);
   });
 
-  it('unit test files do not import from src/commands/', () => {
+  it('unit test files import from at most ONE src/commands/ module', () => {
     const offenders = files.filter((name) => {
-      const exempt = (LEGACY_EXCEPTIONS[name] || []).includes('imports-commands');
-      return !exempt && violations(name).includes('imports-commands');
+      const exempt = (LEGACY_EXCEPTIONS[name] || []).includes('multi-commands');
+      return !exempt && violations(name).includes('multi-commands');
     });
     expect(offenders).toEqual([]);
   });

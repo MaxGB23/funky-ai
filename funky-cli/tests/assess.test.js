@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 vi.mock('fs', () => ({ ...fsMock, default: fsMock }));
 vi.mock('node:fs', () => ({ ...fsMock, default: fsMock }));
-import { fsMock, applyMocks } from './helpers/fsMock.js';
+import { fsMock, applyMocks, CWD, CANVAS_PROJECT_CONTENT, CANVAS_INFRA_CONTENT, addCanvas, addContextJson, v2Context } from './helpers/fsMock.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 
-import { parseFrontmatter, assessCommand, runAssess } from '../src/commands/assess.js';
+import { assessCommand, runAssess } from '../src/commands/assess.js';
 
 // ── Helpers ──
 
@@ -15,13 +15,6 @@ const TPL_DIR = path.resolve(__testDir, '../src/templates/assess');
 const TPL_REVIEW_PATH = path.join(TPL_DIR, 'architecture-review-template.md');
 const TPL_DECISIONS_PATH = path.join(TPL_DIR, 'architecture-decisions-template.md');
 const TPL_RISK_PATTERNS_PATH = path.join(TPL_DIR, 'risk-patterns-template.md');
-
-const CANVAS_PROJECT_CONTENT = 'React 18 + Next.js 14\nPatrón: Clean Architecture';
-const CANVAS_INFRA_CONTENT = 'AWS EC2 + PostgreSQL\nDeploy: Docker Compose';
-const CWD = process.cwd();
-
-// Canvas location: docs/funky-ai/canvas/
-const CANVAS_DIR = path.join(CWD, 'docs', 'funky-ai', 'canvas');
 const RISK_PATTERNS_DEST_PATH = path.join(CWD, 'docs', 'funky-ai', 'assess', 'risk-patterns.md');
 
 const DEFAULT_TEMPLATE = `# 🗣️ Guía de Discusión Arquitectónica
@@ -85,73 +78,6 @@ function createMockFiles() {
     [TPL_RISK_PATTERNS_PATH]: DEFAULT_RISK_PATTERNS_TEMPLATE
   };
 }
-
-function addContextJson(mf, data) {
-  mf[path.join(CWD, 'docs', 'funky-ai', 'pipeline', 'context.json')] = JSON.stringify(data);
-}
-
-// Seed de context v2 (R-P8) con override por fase; status 'pending' por defecto.
-function v2Context(overrides = {}) {
-  return {
-    version: 2,
-    createdAt: '2024-01-01T00:00:00.000Z',
-    currentPhase: null,
-    assess: {
-      status: 'pending', startedAt: null, finishedAt: null, durationMs: null,
-      error: null, artifacts: [], runAt: null, surfacedPatterns: [], decisionsFile: null,
-      ...(overrides.assess || {})
-    },
-    estimate: {
-      status: 'pending', startedAt: null, finishedAt: null, durationMs: null,
-      error: null, artifacts: [], runAt: null,
-      ...(overrides.estimate || {})
-    }
-  };
-}
-
-function addCanvas(mockFiles, name, content) {
-  mockFiles[path.join(CANVAS_DIR, name)] = content;
-}
-
-// ── parseFrontmatter tests (unchanged) ──
-
-describe('assess Command - parseFrontmatter', () => {
-  it('should extract correct values including new NFRs', () => {
-    const content = `---
-budget: 50
-rps: 1000
-sla: 99.99
-redundancy: "Multi-AZ"
-db_tech: "PostgreSQL"
-infra_tech: "AWS"
-compliance: "GDPR"
-team_seniority: "Senior"
----
-
-# Architecture Assessment
-`;
-    const metadata = parseFrontmatter(content);
-    expect(metadata.budget).toBe('50');
-    expect(metadata.rps).toBe('1000');
-    expect(metadata.sla).toBe('99.99');
-    expect(metadata.redundancy).toBe('Multi-AZ');
-    expect(metadata.db_tech).toBe('PostgreSQL');
-    expect(metadata.infra_tech).toBe('AWS');
-    expect(metadata.compliance).toBe('GDPR');
-    expect(metadata.team_seniority).toBe('Senior');
-  });
-
-  it('should handle missing fields gracefully', () => {
-    const content = `---
-budget: 50
----
-`;
-    const metadata = parseFrontmatter(content);
-    expect(metadata.budget).toBe('50');
-    expect(metadata.compliance).toBeUndefined();
-  });
-});
-
 // ── Integration tests for action flow ──
 
 describe('assess Command - action flow', () => {

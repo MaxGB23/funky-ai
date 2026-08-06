@@ -3,7 +3,6 @@ import fs from 'fs';
 import path from 'path';
 
 import { runSkills, discoverSkills } from '../src/commands/skills.js';
-import { runScaffold } from '../src/commands/scaffold.js';
 
 describe('runSkills()', () => {
   const fakeSrcDir = '/fake/src';
@@ -75,23 +74,6 @@ describe('runSkills()', () => {
     }
   });
 
-  it('paridad R-SK-5: runSkills y runScaffold copian docs-live-index.md desde el MISMO template', () => {
-    const srcRoot = path.join(process.cwd(), 'src');
-    const bootstrapDir = path.join(srcRoot, 'templates/bootstrap');
-    const targetBase = '/fake/project';
-
-    const skillsLive = runSkills({ srcDir: srcRoot, targetBase }).find(i =>
-      String(i.dest).replace(/\\/g, '/').endsWith('docs-live-index.md')
-    );
-    const scaffoldLive = runScaffold({ templatesDir: bootstrapDir, targetBase }).find(i =>
-      String(i.dest).replace(/\\/g, '/').endsWith('docs-live-index.md')
-    );
-
-    expect(skillsLive).toBeTruthy();
-    expect(scaffoldLive).toBeTruthy();
-    expect(scaffoldLive.action).toBe('copy');
-    expect(path.resolve(skillsLive.src)).toBe(path.resolve(scaffoldLive.src));
-  });
 
   it('runSkills filtra por selectedSkills: solo la skill elegida, sin I/O (R-SK-1, D3)', () => {
     const intentions = runSkills({

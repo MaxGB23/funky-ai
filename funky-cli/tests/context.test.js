@@ -16,41 +16,9 @@ vi.mock('node:fs', () => {
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { initContext, readContext, writeContext, migrateV1ToV2, updatePhaseState, findCanvases, countUnfilledSections, loadDecisions } from '../src/utils/context.js';
+import { V2_CTX, fsError } from './helpers/contextHelpers.js';
 
 const TARGET_BASE = '/test/project';
-
-// v2 shape (R-P8) shared across tests
-const V2_CTX = {
-  version: 2,
-  createdAt: '2024-01-01T00:00:00.000Z',
-  currentPhase: null,
-  assess: {
-    status: 'pending',
-    startedAt: null,
-    finishedAt: null,
-    durationMs: null,
-    error: null,
-    artifacts: [],
-    runAt: null,
-    surfacedPatterns: [],
-    decisionsFile: null
-  },
-  estimate: {
-    status: 'pending',
-    startedAt: null,
-    finishedAt: null,
-    durationMs: null,
-    error: null,
-    artifacts: [],
-    runAt: null
-  }
-};
-
-function fsError(code, message = code) {
-  const err = new Error(`${code}: ${message}`);
-  err.code = code;
-  return err;
-}
 
 // ═══════════════════════════════════════════════════
 // initContext (R-P8)
