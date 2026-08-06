@@ -42,7 +42,7 @@ Ask the user to confirm if ambiguous.
 
 ### 2. Generate release notes
 
-Create release notes following the project's format. If `.agents/templates/sdd/release-notes.md` does not exist, inject it from the base template before generating the notes — `funky skills` installs the template and never overwrites existing files (skip-if-exists), so local edits are preserved.
+Create release notes following the project's format. Apply to all bump types (MAJOR, MINOR, PATCH) — there is no lightweight path for PATCH; the release ceremony is the same. If `.agents/templates/sdd/release-notes.md` does not exist, inject it from the base template before generating the notes — `funky skills` installs the template and never overwrites existing files (skip-if-exists), so local edits are preserved.
 
 `.agents/templates/sdd/release-notes.md`
 
@@ -93,6 +93,7 @@ gh release create vX.Y.Z \
 - `--notes-file` publishes the exact markdown file generated in step 2. Do NOT use `--generate-notes` here — the curated notes are the source of truth.
 - If the release already exists (e.g. tag pushed earlier), update it instead: `gh release edit vX.Y.Z --title "vX.Y.Z" --notes-file docs/funky-ai/releases/vX.Y.Z-release.md`
 - If `gh` is not installed or not authenticated, STOP and surface that to the user — do not skip the GitHub release.
+- After publishing, confirm the release resolves: `gh release view vX.Y.Z` — if it fails, STOP.
 
 ### 7. Verify
 
