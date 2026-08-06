@@ -1,7 +1,7 @@
 # 📘 Flujo Interno: `funky init` y `funky scaffold`
 
 > **Versión documentada:** v3.2.0+  
-> **Ultima actualizacion:** 2026-07-29  
+> **Ultima actualizacion:** 2026-08-05  
 > **Estado:** ✅ Estable
 
 ---
@@ -10,7 +10,7 @@
 
 El CLI tiene dos comandos de inicialización:
 
-1. **`funky init`** — Genera PROJECT-CANVAS.md, INFRA-CANVAS.md y la guía de planeacion.
+1. **`funky init`** — Genera el brief funcional, PROJECT-CANVAS.md, INFRA-CANVAS.md y la guía de planeacion (el brief primero).
 2. **`funky scaffold`** — Copia toda la estructura base del ecosistema Funky AI (reglas de agentes, ORCHESTRATOR-STATE, directorios engram, plantillas SDD). No requiere canvases, pero si existen los respeta.
 
 No existen modos interactivos ni prompts. El CLI genera los archivos y termina. El equipo discute las decisiones en chat con IA, no en la terminal.
@@ -27,6 +27,7 @@ funky init
 ├─ ¿existe PROJECT-CANVAS.md o INFRA-CANVAS.md?
 │   ├─ SI  → Error: "ya existe" → process.exit(1)
 │   └─ NO  → mkdir docs/funky-ai/canvas/
+│             → copy brief-funcional.md (primero: "qué" antes del "cómo")
 │             → copy PROJECT-CANVAS.md, INFRA-CANVAS.md
 │             → copy canvas-planning-guide.md (si no existe)
 │             → "Ejecuta `funky scaffold` para instalar el ecosistema"
@@ -57,9 +58,9 @@ funky scaffold
 
 | Archivo | Rol |
 |---|---|
-| `src/commands/init.js` | Orquestador del comando `funky init`: genera canvases, verifica duplicados |
+| `src/commands/init.js` | Orquestador del comando `funky init`: expone `runInit({ templatesDir, targetBase })` (función pura que devuelve las intenciones ordenadas) y el action con guard de existencia |
 | `src/commands/scaffold.js` | Orquestador del comando `funky scaffold`: ejecuta `runScaffold()` para copiar el ecosistema |
-| `src/utils/canvas.js` | Funcion `generateCanvasMarkdown(config)`: interpola el canvas como string Markdown |
+| `src/utils/fs-adapter.js` | `executeIntentions(intentions)`: ejecuta mkdir/copy con skip-if-exists y logs |
 
 ### 3.2 Templates estáticos (copiados por `funky scaffold`)
 
@@ -77,12 +78,18 @@ Ubicación base: `src/templates/bootstrap/`
 
 > ⚠️ Todos son **estáticos**. Se copian con `fs.copyFileSync` o `fs.writeFileSync`, sin interpolación de variables. El canvas NO alimenta ninguno de estos archivos.
 
-### 3.3 Archivos dinámicos (generados por `funky init`)
+### 3.3 Archivos generados por `funky init`
 
-| Archivo | Generado por | Con datos de |
+`funky init` copia los templates estáticos de `src/templates/init/` al directorio canónico `docs/funky-ai/canvas/`, en el orden de las intenciones de `runInit`:
+
+| Archivo | Generado desde | Notas |
 |---|---|---|
-| `PROJECT-CANVAS.md` | `generateProjectCanvasMarkdown(config)` | `projectData` del canvasConfig. Por defecto vacio `{}` con placeholders guia |
-| `INFRA-CANVAS.md` | `generateInfraCanvasMarkdown(config)` | `infraData` del canvasConfig. Por defecto vacio `{}` con placeholders guia |
+| `brief-funcional.md` | `src/templates/init/brief-funcional.md` | Primer output: define el "qué" antes del "cómo" |
+| `PROJECT-CANVAS.md` | `src/templates/init/PROJECT-CANVAS.md` | Participa del guard de existencia |
+| `INFRA-CANVAS.md` | `src/templates/init/INFRA-CANVAS.md` | Participa del guard de existencia |
+| `canvas-planning-guide.md` | `src/templates/init/canvas-planning-guide.md` | Skip-if-exists |
+
+El guard dispara exit(1) si `PROJECT-CANVAS.md` o `INFRA-CANVAS.md` ya existen; el brief y la guía se omiten silenciosamente si ya están.
 
 ---
 

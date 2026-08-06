@@ -22,7 +22,7 @@ pnpm link --global
 
 | Comando | Descripción |
 |---------|-------------|
-| `funky init` | Genera PROJECT-CANVAS.md e INFRA-CANVAS.md en `docs/funky-ai/canvas/` para iniciar la planificación del proyecto. |
+| `funky init` | Genera el brief funcional, PROJECT-CANVAS.md e INFRA-CANVAS.md en `docs/funky-ai/canvas/` para iniciar la planificación del proyecto. |
 | `funky scaffold` | Copia la estructura base del ecosistema Funky AI: reglas de agentes (.agents/rules/), templates SDD (.agents/templates/sdd/), ORCHESTRATOR-STATE.md, directorios engram (docs/engram/) y el template de RFC (openspec/rfcs/). |
 | `funky assess` | Facilita una sesión de discusión arquitectónica humano+IA. Inyecta una guía de discusión basada en PROJECT-CANVAS e INFRA-CANVAS con preguntas C1/C2, más un template para documentar decisiones. Genera `docs/funky-ai/assess/architecture-review.md`. |
 | `funky estimate` | Facilita una sesión de pricing colaborativa humano+IA. Inyecta una guía de discusión basada en decisiones arquitectónicas y canvases, más un template para documentar acuerdos. Sin fórmulas hardcodeadas. Genera `docs/funky-ai/estimate/pricing-guide.md`. |
