@@ -5,10 +5,10 @@
 ---
 
 ## 🏷️ Estado Actual
-- **Versión:** v4.3.0
+- **Versión:** v4.3.1
 - **Rama activa:** `main`
 - **Última sesión:** 2026-08-05
-- **Estado:** 🟢 Publicada. Release v4.3.0 (brief-funcional-init): `funky init` genera el brief funcional como primer output y `funky estimate` lo auto-detecta (issue #33); docs alineadas con el CLI real (init-flow + README); ruido de tests por parse de commander corregido; suite limpia con vitest 4.1.10.
+- **Estado:** 🟢 Publicada. Release v4.3.1 (refactor-org-tests): suite de `funky-cli` reorganizada por unidad bajo prueba con convención + enforcement (`organization.test.js`); deuda legacy migrada con `LEGACY_EXCEPTIONS` vacío; `AGENTS.md` recortado a 26 líneas; 311 tests / 27 archivos verdes con vitest 4.1.10.
 
 ---
 
@@ -44,6 +44,7 @@
 - [x] **v4.1.0 — Movimiento Final (Skills gentle-ai):** `funky skills` inyecta las bases de gentle-ai (`sdd-release`, `sdd-docs-sync`) en `.agents/skills/` del destino y bootstrapa los docs compartidos de SDD (`docs-live-index.md` + índice seccional) con formato canónico — idempotente, no sobrescribe goldens. `--help` enriquecido con data viva de docs (degradación graciosa sin doc). Docs compartidos extraídos a templates base (`bootstrap/sdd/`) con paridad de bytes scaffold ↔ skills. Bases autoradas en `templates/gentle/skills/`. Ciclo SDD completo con 272 tests / 17 archivos verdes (7/7 requisitos, 12/12 escenarios). Lanzado 2026-08-03.
 - [x] **v4.2.0 — funky skills v2 (Instalador Interactivo):** `funky skills` descubre las skills en `src/skills/` (manifest-per-skill con bin/docs) y las instala con multiselect interactivo ("Todas", cancel limpio, selección parcial) — sin copiar a ciegas. Índice seccional a 3 niveles (`_indice-seccional-template.md` renombrado, paridad scaffold ↔ skills). `sdd-release` inyecta `release-notes.md` desde el template si falta; `sdd-docs-sync` con regla doc-nuevo → doc nuevo (golden + base). Gap de docs v4.1.0 cerrado: `docs/funky-ai/skills.md` + repo-map alineados. Ciclo SDD completo con 284 tests / 17 archivos verdes (12/12 requisitos, 17/17 escenarios). Lanzado 2026-08-04.
 - [x] **v4.3.0 — brief-funcional-init:** `funky init` genera el brief funcional como primer output y `funky estimate` lo auto-detecta si no se pasa `--brief` (issue #33, PR #34). Contrato de docs R9 protegido con test real-file de `init.md`; docs de init-flow y README alineadas con el CLI real. Fix de tests: 25 llamadas a `parse(['node', 'assess'/'estimate'], {from:'user'})` → `parse([])`/flags (commander 15 interpreta el array como args puros de usuario; el "ruido too many arguments" del verify-report #342 era un bug real de tests, no drift de lockfile). Suite limpia: 308 tests / 22 archivos verdes con vitest 4.1.10. Lanzado 2026-08-05.
+- [x] **v4.3.1 — Refactor de organización de tests:** `estimate.test.js` (1,474 líneas) partido en 4 archivos por unidad bajo prueba (`estimateDomain`, `estimateTopics`, `estimateCommand.integration`, `estimateCommand.flags.integration`) con helper compartido `tests/helpers/fsMock.js`. Meta-test `organization.test.js` enforce cohesión (unit ≤ 500, integration ≤ 800, a lo sumo UN módulo de `src/commands/` por unit) y migra la deuda legacy: `pipeline.test.js`→`pipeline.integration.test.js`, `assess` split con `assessFrontmatter.test.js`, `context` trim con `helpers/contextHelpers.js`, `skills.test.js` solo `commands/skills.js`. `LEGACY_EXCEPTIONS` vacío; convención en skill `vitest` (no en `AGENTS.md`); `AGENTS.md` recortado a 26 líneas. Suite: 311 tests / 27 archivos verdes con vitest 4.1.10. Lanzado 2026-08-05.
 
 ---
 
@@ -73,3 +74,4 @@
 | v4.1.0 | **MINOR** — Movimiento Final: `funky skills` inyecta bases gentle-ai (sdd-release, sdd-docs-sync) + bootstrap de docs compartidos SDD, idempotente; `--help` enriquecido con data viva de docs; docs compartidos como templates base compartidos con scaffold (paridad de bytes). Bases autoradas en `templates/gentle/skills/`. 272 tests verdes. Lanzado 2026-08-03. |
 | v4.2.0 | **MINOR** — funky skills v2: instalador interactivo (multiselect "Todas"/cancel, autodetección `src/skills/` por manifest-per-skill); índice seccional 3 niveles; `sdd-release` inyecta `release-notes.md`; regla doc-nuevo en `sdd-docs-sync`; gap docs v4.1.0 cerrado. 284 tests verdes. Lanzado 2026-08-04. |
 | v4.3.0 | **MINOR** — brief-funcional-init: `funky init` genera el brief funcional como primer output; `funky estimate` lo auto-detecta (issue #33); docs alineadas con el CLI real (init-flow + README); test real-file R9 en init.test.js; fix de parse de commander en tests (ruido eliminado). 308 tests verdes con vitest 4.1.10. Lanzado 2026-08-05. |
+| v4.3.1 | **PATCH** — refactor de organización de tests: `estimate.test.js` partido en 4 archivos por unidad bajo prueba; meta-test `organization.test.js` (cohesión + topes de tamaño, `LEGACY_EXCEPTIONS` vacío); deuda legacy migrada (`pipeline`→`.integration`, `assess` split, `context` trim, `skills` cohesionado); convención en skill `vitest`; `AGENTS.md` recortado a 26 líneas. 311 tests / 27 archivos verdes con vitest 4.1.10. Lanzado 2026-08-05. |
