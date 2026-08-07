@@ -2,12 +2,12 @@
 
 ## ¿Qué problema resuelve?
 
-Evalúa el stack tecnológico del proyecto, facilita la discusión arquitectónica y genera una guía para documentar decisiones. Parte del contenido de los canvases (`PROJECT-CANVAS.md`, `INFRA-CANVAS.md`) y superficia patrones de riesgo de referencia (`docs/funky-ai/assess/risk-patterns.md`) como candidatos a considerar. El análisis real de riesgos lo hace la IA durante la Fase 4 de la discusión, no el CLI.
+Evalúa el stack tecnológico del proyecto, facilita la discusión arquitectónica y genera una guía para documentar decisiones. La guía (`architecture-review.md`) es una agenda **declarativa**: referencia los archivos del proyecto (`brief-funcional.md`, `PROJECT-CANVAS.md`, `INFRA-CANVAS.md`, `risk-patterns.md`) en lugar de incrustar su contenido, y se acompaña de un prompt (`assess-prompt.md`) para pegar como primer mensaje en la sesión de IA. El análisis real de riesgos lo hace la IA durante la discusión, no el CLI.
 
 ## ¿Cuándo usarlo standalone?
 
 - Proyecto chico o exploración rápida donde se necesita una revisión arquitectónica sin encadenar con otros comandos.
-- Basta con ejecutar `funky assess` y seguir la guía generada en `docs/funky-ai/assess/architecture-review.md`.
+- Basta con ejecutar `funky assess` y seguir los próximos pasos: pegar `docs/funky-ai/assess/assess-prompt.md` como primer mensaje de la sesión con la IA.
 
 ## ¿Cuándo usarlo con pipeline?
 
@@ -18,16 +18,17 @@ Evalúa el stack tecnológico del proyecto, facilita la discusión arquitectóni
 
 - `docs/funky-ai/canvas/PROJECT-CANVAS.md` debe existir.
 - `docs/funky-ai/canvas/INFRA-CANVAS.md` debe existir.
-- Si no se encuentran, se usan placeholders y se advierte al usuario.
+- Si no se encuentran, se advierte al usuario (la guía los referencia; se pueden crear con `funky init`).
 - Instalarlos usando `funky init`.
 
 ## Inputs
 
 | Input | Fuente | Propósito |
 |---|---|---|
-| PROJECT-CANVAS.md | `docs/funky-ai/canvas/` | Contexto del proyecto, stack, equipo |
-| INFRA-CANVAS.md | `docs/funky-ai/canvas/` | Infraestructura elegida, costos, SLA |
-| architecture-review-template.md | `templates/assess/` | Esqueleto de la guía con 6 fases |
+| PROJECT-CANVAS.md | `docs/funky-ai/canvas/` | Contexto del proyecto, stack, equipo (referenciado, no incrustado) |
+| INFRA-CANVAS.md | `docs/funky-ai/canvas/` | Infraestructura elegida, costos, SLA (referenciado, no incrustado) |
+| architecture-review-template.md | `templates/assess/` | Esqueleto declarativo de la guía con 6 fases |
+| assess-prompt-template.md | `templates/assess/` | Prompt para pegar como primer mensaje en la sesión de IA |
 | architecture-decisions-template.md | `templates/assess/` | Template para documentar decisiones |
 | risk-patterns-template.md | `templates/assess/` | Template inicial de patrones de riesgo de referencia |
 
@@ -39,40 +40,49 @@ Evalúa el stack tecnológico del proyecto, facilita la discusión arquitectóni
 
 | Output | Condición | Descripción |
 |---|---|---|
-| `docs/funky-ai/assess/architecture-review.md` | Siempre (sobrescribe si existe) | Guía de discusión con canvases embebidos y patrones de riesgo a considerar |
-| `docs/funky-ai/assess/architecture-decisions.md` | Solo si no existe | Template para documentar decisiones durante la sesión |
+| `docs/funky-ai/assess/architecture-review.md` | Siempre (sobrescribe si existe) | Guía de discusión declarativa: referencia brief, canvases y `risk-patterns.md`, sin incrustar su contenido |
+| `docs/funky-ai/assess/assess-prompt.md` | Se crea si no existe; si existe, Y/N interactivo | Prompt para pegar como primer mensaje de la sesión con la IA |
+| `docs/funky-ai/assess/architecture-decisions.md` | Solo si no existe | Template para documentar decisiones durante la sesión (con `{{DATE}}` reemplazado) |
 | `docs/funky-ai/assess/risk-patterns.md` | Solo si no existe | Patrones de riesgo de referencia, editables por el equipo |
 | `docs/funky-ai/pipeline/context.json` | Solo con `--context` | Actualiza estado de fase v2: `assess.status`/`runAt`/`surfacedPatterns`/`decisionsFile`/`artifacts` |
 
+### Comportamiento por archivo (contrato de feedback)
+
+| Caso | Comportamiento | Exit |
+|---|---|---|
+| Archivo nuevo | Se crea sin preguntar | 0 |
+| Guía existente (`assess-prompt.md`) | Y/N: `y` → actualiza; `n` → no actualiza (decisión válida) | 0 |
+| Decisión existente (`risk-patterns.md`, `architecture-decisions.md`) | No pregunta, no sobrescribe; recomienda eliminar o mover con backup | 0 |
+| Error real (lectura/escritura, conflicto inesperado) | Mensaje de error | 1 |
+
+Sin terminal (CI): default `n` logueado — no se sobrescriben guías sin input humano. "El usuario decidió no actualizar" nunca es un error.
+
 ### architecture-review.md
 
-Contiene los canvases completos embebidos y una guía estructurada en 6 fases:
+Guía declarativa que **referencia** los archivos del proyecto (brief, canvases, `risk-patterns.md`) en lugar de incrustar su contenido. Se regenera en cada ejecución. Estructura en 6 fases:
 
-1. **Contexto** (5 min): Confirmar stack y NFRs.
-2. **Preocupaciones del equipo** (10 min): Riesgos percibidos por el equipo.
-3. **Preguntas guía** (15 min): Preguntas estándar + patrones de riesgo a considerar (candidatos del `risk-patterns.md`).
-4. **Riesgos detectados** (15 min): La IA analiza el stack completo y evalúa cuáles patrones aplican al proyecto concreto.
-5. **Alternativas** (10 min): Propuestas con pros/cons para cada riesgo.
-6. **Acuerdos** (5 min): Documentar decisiones finales.
+1. **Contexto y NFRs**: Confirmar stack y evaluar cada NFR explícitamente; los patrones de referencia son condicionales.
+2. **Preocupaciones del equipo**: Riesgos percibidos por el equipo.
+3. **Preguntas guía**: Preguntas estándar (presupuesto, concurrencia, SLA) a plantear cuando apliquen.
+4. **Riesgos con validación cruzada**: La IA analiza el stack completo y lo choca contra el brief para detectar incompatibilidades, sobreingeniería o un stack corto.
+5. **Alternativas**: Propuestas con pros/cons para cada riesgo.
+6. **Acuerdos**: Documentar decisiones finales.
+
+### assess-prompt.md
+
+Prompt para pegar como primer mensaje de la sesión con la IA. Instruye leer los archivos en orden (brief primero, luego canvases, `architecture-review.md` y `risk-patterns.md`), discutir un punto a la vez y anotar cada decisión aprobada en `architecture-decisions.md`. Si alguno de los archivos referenciados falta, el prompt indica señalar y preguntar al humano, jamás inventarlo.
 
 ### architecture-decisions.md
 
-Template con estructura por decisión: título, decisión, rationale, alternativas consideradas, riesgos aceptados y fecha. Se genera con `{{DATE}}` reemplazado por la fecha actual. No se sobrescribe si ya existe.
+Template con estructura por decisión: título, decisión, rationale, alternativas consideradas, riesgos aceptados y fecha. Se genera con `{{DATE}}` reemplazado por la fecha actual. No se sobrescribe si ya existe: se recomienda eliminar o mover de ubicación con backup para regenerarlo.
 
 ## Patrones de riesgo
 
-`surfaceRiskPatterns()` lee `docs/funky-ai/assess/risk-patterns.md` del proyecto y lo superficia como sección "patrones a considerar" en la guía. Si el archivo no existe, se crea una primera vez copiando el template `risk-patterns-template.md`; si ya existe, no se sobrescribe (es un documento vivo del equipo).
+`risk-patterns.md` es un **documento vivo del equipo**: se crea la primera vez copiando `risk-patterns-template.md` y, si ya existe, no se sobrescribe (recomendación de eliminar/mover con backup).
 
-El template incluye 4 patrones como ejemplos editables:
+La guía **referencia** `risk-patterns.md` como fuente de patrones de referencia; no incrusta su contenido. `surfaceRiskPatterns()` lee el archivo del proyecto y solo sus **nombres** (`patterns`) viajan a `context.json` como `assess.surfacedPatterns` (metadata para el pipeline). El contenido del documento nunca se inyecta en el review.
 
-| Patrón | Señal a buscar en los canvases | Riesgo a considerar |
-|---|---|---|
-| K8s / Kubernetes | INFRA-CANVAS menciona K8s/Kubernetes | Costos operativos del clúster vs. PaaS |
-| SQLite | INFRA-CANVAS elige SQLite | Límites de concurrencia; plan de migración |
-| Single Node | INFRA-CANVAS describe un solo nodo | Downtime en deploys o fallos de hardware |
-| Junior + Infraestructura Compleja | PROJECT-CANVAS junior + infra compleja | ¿DevOps dedicado o PaaS que abstraiga la complejidad? |
-
-Los patrones son **candidatos a evaluar, no riesgos confirmados**: se insertan en la Fase 3 de la guía dentro de `{{DYNAMIC_QUESTIONS}}` y la IA los evalúa en la Fase 4 leyendo los canvases, decidiendo junto con el equipo cuáles aplican. El CLI no detecta ni filtra patrones por regex: el análisis real vive en la Fase 4.
+Los patrones son **candidatos a evaluar, no riesgos confirmados**: la IA los evalúa en la Fase 4 leyendo los canvases, decidiendo junto con el equipo cuáles aplican. El CLI no detecta ni filtra patrones por regex: el análisis real vive en la discusión.
 
 ## Diagrama de flujo
 
@@ -95,28 +105,25 @@ Los patrones son **candidatos a evaluar, no riesgos confirmados**: se insertan e
 │  3. Canvas Validation                                       │
 │     └── unfilledCount > 0 → warning                         │
 │                                                             │
-│  4. Surface Risk Patterns                                   │
-│     ├── si docs/funky-ai/assess/risk-patterns.md no existe  │
-│     │   → copiar risk-patterns-template.md (no sobrescribe  │
-│     │     si existe)                                        │
+│  4. Plan de intenciones (executeIntentions)                 │
+│     ├── mkdir docs/funky-ai/assess/                         │
+│     ├── risk-patterns.md (kind 'decision')                  │
+│     │   └── solo si no existe; si existe → recomendación    │
+│     │       eliminar/mover con backup                       │
+│     ├── architecture-decisions.md (kind 'decision')         │
+│     │   └── solo si no existe (reemplaza {{DATE}});         │
+│     │       si existe → recomendación eliminar/mover        │
+│     └── assess-prompt.md (kind 'guide')                     │
+│         └── si existe → Y/N (TTY); sin TTY default 'n'      │
+│                                                             │
+│  5. architecture-review.md (guía GENERADA)                  │
+│     └── se escribe tal cual el template, sin interpolación  │
+│         └── Sobrescribe si existe (siempre se regenera)     │
+│                                                             │
+│  6. Surface Risk Patterns (solo metadata)                   │
 │     └── surfaceRiskPatterns(targetBase, templateContent)    │
 │         └── lee risk-patterns.md del proyecto               │
-│             └── sin regex, sin filtrado → {content,patterns}│
-│                                                             │
-│  5. Interpolate Template                                    │
-│     └── templateContent                                     │
-│         .replace('{{PROJECT_CANVAS_CONTENT}}', ...)         │
-│         .replace('{{INFRA_CANVAS_CONTENT}}', ...)           │
-│         .replace('{{DYNAMIC_QUESTIONS}}',                  │
-│                  patrones a considerar)                     │
-│                                                             │
-│  6. Write Output                                            │
-│     ├── docs/funky-ai/assess/architecture-review.md         │
-│     │   └── Sobrescribe si existe                           │
-│     ├── docs/funky-ai/assess/risk-patterns.md               │
-│     │   └── Solo si no existe (documento vivo del equipo)   │
-│     └── docs/funky-ai/assess/architecture-decisions.md      │
-│         └── Solo si no existe (reemplaza {{DATE}})          │
+│             └── {content, patterns} → solo patterns al ctx  │
 │                                                             │
 │  7. Write Context (si --context)                            │
 │     └── updatePhaseState(ctx, 'assess', {                   │
@@ -127,6 +134,7 @@ Los patrones son **candidatos a evaluar, no riesgos confirmados**: se insertan e
 │     └── writeContext(targetBase, ctx)                       │
 │                                                             │
 │  8. Summary + Próximos pasos                                │
+│     └── pegar assess-prompt.md como primer mensaje          │
 └─────────────────────────────────────────────────────────────┘
 ```
 
