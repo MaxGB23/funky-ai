@@ -10,7 +10,10 @@ import { fileURLToPath } from 'url';
 const LEGACY_EXCEPTIONS = {};
 
 // Convention: one unit under test per file, named {unit}.test.js. Integration
-// goes in {cmd}.integration.test.js. Shared fs mocks live in tests/helpers/.
+// goes in {cmd}.integration.test.js; interactive command harnesses (real prompt
+// I/O) go in {cmd}.interactive.test.js — both count as command-level files with
+// the 800-line cap and no single-command-import restriction. Shared fs mocks
+// live in tests/helpers/.
 const UNIT_MAX_LINES = 500;
 const INTEGRATION_MAX_LINES = 800;
 const COMMAND_IMPORT_RE = /from ['"]([^'"]*\/src\/commands\/[^'"]+)['"]/g;
@@ -25,7 +28,7 @@ function testFiles() {
 }
 
 function isIntegration(name) {
-  return name.endsWith('.integration.test.js');
+  return name.endsWith('.integration.test.js') || name.endsWith('.interactive.test.js');
 }
 
 function lineCount(name) {

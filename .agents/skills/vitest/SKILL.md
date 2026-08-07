@@ -77,8 +77,9 @@ describe('math', () => {
 
 - One unit under test per file, named `{unit}.test.js` (e.g. `estimateDomain.test.js`).
 - Command/integration tests go in `{cmd}.integration.test.js` (e.g. `estimateCommand.integration.test.js`).
+- Interactive command harnesses (real prompt I/O) go in `{cmd}.interactive.test.js` (e.g. `skills.interactive.test.js`) — a third, accepted category, exempt from the single-command-import rule like integration files.
 - Unit test files import from at most ONE `src/commands/` module; two or more command modules means an integration or mixed-unit file — rename it to `.integration.test.js` or split it.
-- Line caps: unit files ≤ 500 lines, integration files ≤ 800 lines.
+- Line caps: unit files ≤ 500 lines, integration/interactive files ≤ 800 lines.
 - Shared fs mocks and test helpers live in `tests/helpers/` (e.g. `tests/helpers/fsMock.js`), never duplicated across test files.
 - Enforcement: `tests/organization.test.js` (meta-test, runs with `pnpm test`) fails on rule violations; legacy debt is tracked in its `LEGACY_EXCEPTIONS` map (may be empty once debt is migrated) and must be removed when a file is migrated.
 

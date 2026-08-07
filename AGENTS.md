@@ -22,3 +22,7 @@ Tras `sdd-archive`, sugerir en orden, solo si aplica (el usuario decide; no es o
 2. `sdd-release` — feature → MINOR, breaking → MAJOR, fix significativo → PATCH.
 
 Skills: `.agents/skills/sdd-docs-sync-gentle-ai/` y `.agents/skills/sdd-release-gentle-ai/`.
+
+## Tests en `funky-cli/`
+
+Al tocar tests de funky-cli, carga la skill `vitest` antes de editar (naming, imports, límites). `tests/organization.test.js` las aplica.
