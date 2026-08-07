@@ -84,7 +84,7 @@ export function runSkills({ srcDir, targetBase, selectedSkills, manifests }) {
 }
 
 export const skillsCommand = new Command('skills')
-  .description('Instala las skills detectadas (sdd-release, sdd-docs-sync) desde sus manifests y bootstrapa los docs compartidos de SDD (docs-live-index, formato canónico de índice seccional, release-notes)')
+  .description('Instala las skills detectadas bajo src/skills/ desde sus manifests y bootstrapa los docs compartidos de SDD (docs-live-index, formato canónico de índice seccional, release-notes)')
   .action(async () => {
     const srcDir = path.join(__dirname, '..');
     const targetBase = process.cwd();
