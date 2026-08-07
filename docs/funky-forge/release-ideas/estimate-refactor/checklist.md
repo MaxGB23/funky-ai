@@ -75,8 +75,9 @@ Verificado contra el motor común `executeIntentions` (fs-adapter.js). El compor
 
 ## Pendientes arrastrados de assess (a resolver en este refactor)
 
-1. Decisión del futuro de `surfacedPatterns` / `surfaceEstimateTopics` (señales de tópicos): si se elimina la ficha de alcance automática, decidir qué queda de la detección de señales (obs 2.2 de assess: `estimate` NO usa `surfacedPatterns`; solo `pipeline status --json` lo consume). Debate junto al comando `pipeline`.
+1. **RESUELTO (verificado 2026-08-07 contra el código): `surfaceEstimateTopics` NO lo consume pipeline.** La obs 2.2 de assess ("solo pipeline status --json lo consume") era incorrecta: `pipeline status` muestra `ctx.assess.surfacedPatterns` que viene de ASSESS (`surfaceRiskPatterns` → risk-patterns.md), no de estimateTopics. `surfaceEstimateTopics` tiene 2 consumidores, ambos en estimate: (a) sugerencias de consola estimate.js:71 (se eliminan en 2.2) y (b) ficha de alcance en estimateDomain.js (se reemplaza en 1.5). **DECISIÓN del usuario (2026-08-07): eliminar** `estimateTopics.js` completo (`surfaceEstimateTopics`, `TOPIC_PATTERNS`, `TOPICS`, `DISPLAY_NAMES`, `STATUS`) con `estimateTopics.test.js` en Fase 2 — la guía corta de flags del template es la única guía para decidir flags; la IA decide con contexto, sin heurísticas de texto.
 2. Hallazgo cosmético de separadores (ya incluido como 2.7).
+3. **RIESGO NUEVO (pipeline + Y/N de pricing-guide en Fase 2):** `pipeline all --json` promete un único JSON en stdout (R-P11). Cuando pricing-guide pase a guía con Y/N (Fase 2), una actualización de template base podría disparar un confirm interactivo de @clack/prompts y ensuciar el JSON. Mitigación a definir en Fase 2: en modo `--json` estimate corre sin preguntar (default `n` logueado, como no-TTY) o el Y/N va a stderr. Anotar como sub-ítem de 2.4/2.9.
 
 ## Trazabilidad con las observaciones
 
