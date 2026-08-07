@@ -84,7 +84,7 @@ export async function executeIntentions(intentions, { dryRun = false, askConfirm
 
       if (kind === 'decision') {
         logs.push(
-          `⚡ Omitiendo (ya existe): ${basename}. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres regenerarla, elimínalo o muévelo con backup a otra ubicación.`
+          `⚡ Omitiendo (ya existe): ${basename}. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.`
         );
         skippedCount++;
         continue;

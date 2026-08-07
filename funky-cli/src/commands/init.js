@@ -1,4 +1,5 @@
 import { Command } from 'commander';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import * as p from '@clack/prompts';
@@ -54,7 +55,15 @@ export const initCommand = new Command('init')
           return !p.isCancel(answer) && answer === true;
         };
       } else {
-        console.log('⚠️ Entorno no interactivo: no se actualizan las guías existentes.');
+        // Hallazgo smoke 1: el aviso solo aporta si hay guías existentes que
+        // podrían actualizarse; en creación limpia es ruido.
+        const canvasDir = path.join(targetBase, 'docs', 'funky-ai', 'canvas');
+        const anyGuideExists = ['canvas-planning-guide.md', 'init-prompt.md'].some(name =>
+          fs.existsSync(path.join(canvasDir, name))
+        );
+        if (anyGuideExists) {
+          console.log('⚠️ Entorno no interactivo: no se actualizan las guías existentes.');
+        }
       }
 
       const { created, skipped, logs } = await executeIntentions(
@@ -64,7 +73,12 @@ export const initCommand = new Command('init')
       for (const log of logs) {
         console.log(log);
       }
-      console.log(`\n✅ Canvases creados. Ejecuta \`funky scaffold\` para instalar el ecosistema completo.`);
+      if (created === 0) {
+        // Hallazgo smoke 2: diferenciar el caso "todo existe" del éxito normal.
+        console.log('\nℹ️ Nada que crear: todos los archivos ya existen.');
+      } else {
+        console.log(`\n✅ Canvases creados. Ejecuta \`funky scaffold\` para instalar el ecosistema completo.`);
+      }
     } catch (error) {
       console.error(`❌ Error al generar los canvases: ${error.message}`);
       process.exit(1);

@@ -329,4 +329,27 @@ describe('init action — contrato de feedback por archivo (Fase 2, 2.1-2.6)', (
     expect(sharedFsMock.copyFileSync).toHaveBeenCalledTimes(5);
     expect(sharedFsMock.mkdirSync).toHaveBeenCalled();
   });
+
+  it('sin TTY + creación limpia → NO loguea "Entorno no interactivo" (no hay guías que actualizar, hallazgo smoke 1)', async () => {
+    setTTY(false);
+    sharedFsMock.existsSync.mockReturnValue(false);
+
+    await initCommand.parseAsync([], { from: 'user' });
+
+    expect(exitSpy).not.toHaveBeenCalled();
+    expect(allLogs().some(l => l.includes('Entorno no interactivo'))).toBe(false);
+    expect(sharedFsMock.copyFileSync).toHaveBeenCalledTimes(5);
+  });
+
+  it('todo existe → log final "Nada que crear" en lugar de "Canvases creados" (hallazgo smoke 2)', async () => {
+    setTTY(false);
+    sharedFsMock.existsSync.mockReturnValue(true);
+
+    await initCommand.parseAsync([], { from: 'user' });
+
+    expect(exitSpy).not.toHaveBeenCalled();
+    const logs = allLogs();
+    expect(logs.some(l => l.includes('Nada que crear'))).toBe(true);
+    expect(logs.some(l => l.includes('Canvases creados'))).toBe(false);
+  });
 });

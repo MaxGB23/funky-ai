@@ -2,7 +2,7 @@
 
 > **Propósito:** seguimiento físico del refactor de `funky init` derivado de las observaciones del smoke test. Se marca aquí, no depende del contexto de la conversación.
 > **Fuente:** `docs/funky-forge/release-ideas/smoke-test-observaciones/mejoras-sugeridas.md` (§1 INIT y §4 GENERALES)
-> **Estado:** Fase 1 completada (2026-08-06) — Fase 2 completada (2026-08-06) — Fase 3 pendiente
+> **Estado:** Fase 1 completada (2026-08-06) — Fase 2 completada (2026-08-06) — Fase 3 en curso: hallazgos del smoke corregidos (2026-08-06), falta validar Y/N interactivo en terminal real
 
 ## Contrato de feedback (referencia)
 
@@ -39,11 +39,25 @@ Sin terminal (CI): default `n` logueado — no sobrescribir guías sin input hum
 
 ## Fase 3 — Verificación
 
-- [ ] 3.1 `pnpm test` verde en `funky-cli/`.
-- [ ] 3.2 Smoke: creación limpia en `.tmp/` — 5 archivos, brief primero.
-- [ ] 3.3 Smoke: creación parcial — brief existe → se omite con recomendación; canvases se crean.
-- [ ] 3.4 Smoke: todo existe — guías con Y/N, decisiones con recomendación, exit 0.
-- [ ] 3.5 Smoke: error simulado (sin permisos de escritura) → exit 1.
+- [x] 3.1 `pnpm test` verde en `funky-cli/` (326 tests, 27 files).
+- [x] 3.2 Smoke: creación limpia en `.tmp/` — 5 archivos, brief primero. ✔ (2026-08-06)
+- [x] 3.3 Smoke: creación parcial — brief existe → se omite con recomendación; canvases se crean. ✔ (2026-08-06)
+- [x] 3.4 Smoke: todo existe sin TTY — guías omitidas, decisiones con recomendación, exit 0. ✔ (2026-08-06)
+- [x] 3.5 Smoke: error simulado (ENOTDIR bloqueando mkdir) → exit 1. ✔ (2026-08-06)
+- [x] 3.7 Correcciones de hallazgos del smoke en `init.js` y `fs-adapter.js` con tests TDD primero (328 tests, 27 files verde). ✔ (2026-08-06)
+- [ ] 3.6 PENDIENTE: validar flujo Y/N interactivo (guía existente + TTY real) en terminal del usuario.
+
+## Hallazgos del smoke (2026-08-06)
+
+1. "⚠️ Entorno no interactivo" se imprime SIEMPRE sin TTY, incluso en creación limpia sin guías existentes → ruido. Sugerencia: loguear solo si existe al menos una guía.
+2. Mensaje final "✅ Canvases creados" se muestra incluso cuando NO se creó nada (todo existía) → debería diferenciar "Nada que crear, todo existe".
+3. Redacción recomendación decisiones: "Si quieres regenerarla, elimínalo" mezcla géneros (la/lo) → pulir a neutro coherente.
+
+### Correcciones aplicadas (2026-08-06)
+
+1. Aviso no-TTY condicionado a que exista ≥1 guía (`canvas-planning-guide.md` o `init-prompt.md`): creación limpia sin TTY ya no loguea el aviso. Tests: `init.test.js` "sin TTY + creación limpia → NO loguea..." (hallazgo 1).
+2. Mensaje final diferenciado: `created === 0` → "ℹ️ Nada que crear: todos los archivos ya existen."; si no → "✅ Canvases creados...". Tests: `init.test.js` "todo existe → log final Nada que crear..." (hallazgo 2).
+3. Redacción unificada: "Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup." (hallazgo 3).
 
 ## Trazabilidad con las observaciones
 
