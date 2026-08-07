@@ -16,17 +16,15 @@ funky skills
 
 ## Selección interactiva
 
-El instalador detecta las skills disponibles bajo `src/skills/` y pregunta cuáles instalar (multiselect). La opción **Todas** instala todas las skills detectadas; si no se selecciona ninguna, termina con un mensaje y sin realizar cambios (R-SK-6). Cancelar la operación sale con código 1. El orden de instalación es determinista: alfabético por skill y luego el orden del manifest (D3).
+El instalador detecta las skills disponibles bajo `src/skills/` y pregunta qué instalar con un menú de selección única (`select`): **Todas** o una skill específica. Elegir una skill instala solo esa skill y sus docs compartidos; **Todas** instala todas las detectadas. No existe selección vacía: la operación solo se cancela explícitamente (Esc/Ctrl+C), lo que sale con código 1 sin realizar cambios (R-SK-6). El orden de instalación es determinista: alfabético por skill y luego el orden del manifest (D3).
 
 ## Autodetección de skills (R-SK-7)
 
-`discoverSkills(srcDir)` lista los directorios bajo `src/skills/` que contienen un `SKILL.md`. Agregar una skill nueva se reduce a crear `src/skills/<nombre>/SKILL.md` y su `manifest.js` — aparece automáticamente en la selección.
+`discoverSkills(srcDir)` lista los directorios bajo `src/skills/` que contienen `SKILL.md` **y** `manifest.js` con nombre exacto (case-sensitive incluso en NTFS: `skill.md` en minúsculas no cuenta). Agregar una skill nueva se reduce a crear `src/skills/<nombre>/SKILL.md` y su `manifest.js` — aparece automáticamente en la selección y es instalable desde el primer momento.
 
 ## Manifest por skill (R-SK-8)
 
-Cada skill vive en `src/skills/<skill>/`:
-
-```
+Cada skill vive en `src/skills/<skill>/`:```
 src/skills/
 ├── sdd-release/
 │   ├── SKILL.md
@@ -40,6 +38,8 @@ src/skills/
 ```
 
 Cada entrada del manifest declara `src` (relativo a `src/` de funky-cli), `dest` (relativo al proyecto destino) y opcionalmente `optional: true`: si el src falta, la intención se salta con log y nunca crashea (R-SK-3).
+
+En tiempo de instalación `runSkills()` carga el manifest de cada skill seleccionada con import dinámico (`await import(...manifest.js)`): no existe ninguna lista de manifests hardcodeada en el comando, así que una skill nueva queda instalable tan pronto como existe su carpeta con `SKILL.md` y `manifest.js` (R-SK-8).
 
 ## Docs compartidos y paridad byte a byte (R-SK-5)
 

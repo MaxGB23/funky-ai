@@ -1,6 +1,6 @@
-// Test permanente de la acción interactiva `funky skills` (R-SK-6).
+﻿// Test permanente de la acción interactiva `funky skills` (R-SK-6).
 // Deuda SUGGESTION-1 del verify report funky-skills-v2 (#318): la evidencia de
-// la capa interactiva (multiselect __all__ / p.isCancel / selección vacía) se
+// la capa interactiva (select __all__ / p.isCancel / skill específica) se
 // produjo con un harness transitorio vi.mock('@clack/prompts') que fue borrado
 // tras la verificación. Aquí queda commiteado: la única pieza con I/O real de
 // prompts del CLI queda protegida contra regresiones silenciosas.
@@ -14,9 +14,10 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import fs from 'fs';
 import path from 'path';
+import { pathToFileURL } from 'url';
 import { Command } from 'commander';
 import * as p from '@clack/prompts';
-import { skillsCommand } from '../src/commands/skills.js';
+import { skillsCommand, discoverSkills } from '../src/commands/skills.js';
 
 vi.mock('@clack/prompts', () => ({
   intro: vi.fn(),
@@ -51,7 +52,7 @@ describe('skillsCommand — acción interactiva (R-SK-6)', () => {
   let logSpy;
 
   beforeEach(() => {
-    p.multiselect.mockReset();
+    p.select.mockReset();
     p.cancel.mockReset();
 
     cwd = process.cwd();
@@ -72,16 +73,8 @@ describe('skillsCommand — acción interactiva (R-SK-6)', () => {
     logSpy.mockRestore();
   });
 
-  const skillDests = [
-    path.join('.agents/skills/sdd-release/SKILL.md'),
-    path.join('.agents/skills/sdd-docs-sync/SKILL.md'),
-    path.join('.agents/templates/sdd/docs-live-index.md'),
-    path.join('.agents/templates/sdd/docs-index/_indice-seccional-template.md'),
-    path.join('.agents/templates/sdd/release-notes.md'),
-  ];
-
   it('Cancel: p.isCancel ⇒ exit(1) sin escribir ningún archivo', async () => {
-    p.multiselect.mockResolvedValueOnce(Symbol.for('clack:cancel'));
+    p.select.mockResolvedValueOnce(Symbol.for('clack:cancel'));
 
     await program.parseAsync(['skills'], { from: 'user' });
 
@@ -90,28 +83,42 @@ describe('skillsCommand — acción interactiva (R-SK-6)', () => {
     expect(fs.existsSync(path.join(tmpDir, '.agents'))).toBe(false);
   });
 
-  it('Selección vacía: mensaje informativo, sin exit y sin I/O', async () => {
-    p.multiselect.mockResolvedValueOnce([]);
+  it('Skill específica: instala solo esa skill + sus docs compartidos', async () => {
+    p.select.mockResolvedValueOnce('sdd-release');
 
     await program.parseAsync(['skills'], { from: 'user' });
 
+    expect(fs.existsSync(path.join(tmpDir, '.agents/skills/sdd-release/SKILL.md'))).toBe(true);
+    expect(fs.existsSync(path.join(tmpDir, '.agents/templates/sdd/release-notes.md'))).toBe(true);
+    expect(fs.existsSync(path.join(tmpDir, '.agents/skills/sdd-docs-sync/SKILL.md'))).toBe(false);
     expect(logSpy).toHaveBeenCalledWith(
-      'ℹ️ No seleccionaste ninguna skill. No se realizó ningún cambio.'
+      '\n✅ Skills y docs compartidos instalados. 2 archivos creados, 0 ya existian.'
     );
     expect(exitSpy).not.toHaveBeenCalled();
-    expect(fs.existsSync(path.join(tmpDir, '.agents'))).toBe(false);
   });
 
-  it('__all__: instala las 5 archivos (2 skills + 2 docs compartidos + release-notes)', async () => {
-    p.multiselect.mockResolvedValueOnce(['__all__']);
+  it('__all__: instala todas las skills detectadas y sus recursos (R-SK-8 dinámico)', async () => {
+    p.select.mockResolvedValueOnce('__all__');
 
     await program.parseAsync(['skills'], { from: 'user' });
 
-    for (const dest of skillDests) {
-      expect(fs.existsSync(path.join(tmpDir, dest))).toBe(true);
+    // Deriva las expectativas de la detección real + manifests: el test no debe
+    // hardcodear las skills bundled (una skill nueva con SKILL.md + manifest.js
+    // debe quedar cubierta sin tocar este archivo).
+    const srcDir = path.join(__dirname, '..', 'src');
+    const available = discoverSkills(srcDir);
+    expect(available.length).toBeGreaterThanOrEqual(2);
+
+    let expectedCreated = 0;
+    for (const name of available) {
+      const mod = await import(pathToFileURL(path.join(srcDir, 'skills', name, 'manifest.js')).href);
+      for (const item of mod.default) {
+        expectedCreated++;
+        expect(fs.existsSync(path.join(tmpDir, item.dest))).toBe(true);
+      }
     }
     expect(logSpy).toHaveBeenCalledWith(
-      '\n✅ Skills y docs compartidos instalados. 5 archivos creados, 0 ya existian.'
+      `\n✅ Skills y docs compartidos instalados. ${expectedCreated} archivos creados, 0 ya existian.`
     );
     expect(exitSpy).not.toHaveBeenCalled();
   });

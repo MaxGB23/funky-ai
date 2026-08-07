@@ -1,17 +1,12 @@
 import fs from 'fs';
 import { Command } from 'commander';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import * as p from '@clack/prompts';
 import { executeIntentions } from '../utils/fs-adapter.js';
-import sddReleaseManifest from '../skills/sdd-release/manifest.js';
-import sddDocsSyncManifest from '../skills/sdd-docs-sync/manifest.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// R-SK-8: manifest = única fuente de recursos de cada skill.
-const MANIFESTS = [sddReleaseManifest, sddDocsSyncManifest];
 
 /**
  * Nombre de skill de un manifest: carpeta destino de su propio SKILL.md en .agents/skills/.
@@ -24,17 +19,22 @@ function skillNameOf(manifest) {
 }
 
 /**
- * Autodetección (R-SK-7): directorios bajo srcDir/skills/ que contienen SKILL.md.
+ * Autodetección (R-SK-7): directorios bajo srcDir/skills/ que son skills instalables,
+ * es decir que contienen SKILL.md Y manifest.js (manifest = única fuente de recursos,
+ * R-SK-8). Requiere nombre EXACTO de archivo: NTFS es case-insensitive y
+ * `existsSync('SKILL.md')` aceptaría `skill.md`; la convención es SKILL.md/manifest.js.
  * @param {string} srcDir - Raíz de src de funky-cli.
- * @returns {string[]} Nombres de skills, orden estables (sort alfabético).
+ * @returns {string[]} Nombres de skills, orden estable (sort alfabético).
  */
 export function discoverSkills(srcDir) {
   const skillsDir = path.join(srcDir, 'skills');
   return fs
     .readdirSync(skillsDir, { withFileTypes: true })
-    .filter(
-      (entry) => entry.isDirectory() && fs.existsSync(path.join(skillsDir, entry.name, 'SKILL.md'))
-    )
+    .filter((entry) => {
+      if (!entry.isDirectory()) return false;
+      const names = fs.readdirSync(path.join(skillsDir, entry.name));
+      return names.includes('SKILL.md') && names.includes('manifest.js');
+    })
     .map((entry) => entry.name)
     .sort();
 }
@@ -44,7 +44,9 @@ export function discoverSkills(srcDir) {
  * Cada skill declara sus recursos en su manifest.js (`src` relativo a srcDir,
  * `dest` relativo a targetBase, `optional` = src ausente permitido). Los docs
  * compartidos viven en templates/bootstrap/sdd/ — el MISMO src que usa
- * `funky scaffold` (paridad byte a byte, R-SK-5). NO realiza I/O; el salto por
+ * `funky scaffold` (paridad byte a byte, R-SK-5). NO realiza I/O; la carga de
+ * los manifests la hace el llamador (la acción la carga dinámicamente por skill
+ * seleccionada — R-SK-8: manifest = única fuente de recursos). El salto por
  * src opcional ausente lo resuelve executeIntentions (R-SK-3).
  *
  * Orden determinista (D3): sort por skill, luego orden del manifest.
@@ -52,11 +54,13 @@ export function discoverSkills(srcDir) {
  * @param {object} opts
  * @param {string} opts.srcDir         - Raíz de src de funky-cli (contiene skills/ y templates/).
  * @param {string} opts.targetBase     - Directorio destino (normalmente process.cwd()).
- * @param {string[]} [opts.selectedSkills] - Skills a instalar; omisión = todas.
+ * @param {Array<Array<{ src: string, dest: string, optional?: boolean }>>} opts.manifests
+ *                                     - Manifests de las skills a instalar (R-SK-8).
+ * @param {string[]} [opts.selectedSkills] - Skills a instalar; omisión = todas las de manifests.
  * @returns {Array<{ action: 'copy', src: string, dest: string, optional?: boolean }>}
  */
-export function runSkills({ srcDir, targetBase, selectedSkills }) {
-  const byName = new Map(MANIFESTS.map((manifest) => [skillNameOf(manifest), manifest]));
+export function runSkills({ srcDir, targetBase, selectedSkills, manifests }) {
+  const byName = new Map(manifests.map((manifest) => [skillNameOf(manifest), manifest]));
   const selected = selectedSkills ?? [...byName.keys()];
   const intentions = [];
 
@@ -94,13 +98,12 @@ export const skillsCommand = new Command('skills')
 
       p.intro('funky skills — instalador interactivo');
 
-      const selection = await p.multiselect({
-        message: '¿Qué skills quieres instalar?',
+      const selection = await p.select({
+        message: '¿Qué quieres instalar?',
         options: [
           { value: '__all__', label: 'Todas' },
           ...available.map((name) => ({ value: name, label: name })),
         ],
-        required: false,
       });
 
       if (p.isCancel(selection)) {
@@ -108,15 +111,21 @@ export const skillsCommand = new Command('skills')
         process.exit(1);
       }
 
-      // R-SK-6: selección vacía ⇒ mensaje y salida sin I/O.
-      const selected = selection.includes('__all__') ? available : selection;
-      if (selected.length === 0) {
-        console.log('ℹ️ No seleccionaste ninguna skill. No se realizó ningún cambio.');
-        return;
+      // R-SK-6: cancelar ⇒ exit(1) sin I/O; select no admite selección vacía.
+      const selected = selection === '__all__' ? available : [selection];
+
+      // R-SK-8: los manifests se cargan dinámicamente de cada skill seleccionada;
+      // una skill nueva con SKILL.md + manifest.js queda instalable sin tocar código.
+      const manifests = [];
+      for (const name of selected) {
+        const mod = await import(
+          pathToFileURL(path.join(srcDir, 'skills', name, 'manifest.js')).href
+        );
+        manifests.push(mod.default);
       }
 
       console.log('🚀 Instalando skills y docs compartidos SDD...');
-      const intentions = runSkills({ srcDir, targetBase, selectedSkills: selected });
+      const intentions = runSkills({ srcDir, targetBase, selectedSkills: selected, manifests });
 
       const { created, skipped, logs } = executeIntentions(intentions);
       for (const log of logs) {

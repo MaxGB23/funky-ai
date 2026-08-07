@@ -1,8 +1,12 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+﻿import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import { runSkills } from '../src/commands/skills.js';
 import { executeIntentions } from '../src/utils/fs-adapter.js';
+import sddReleaseManifest from '../src/skills/sdd-release/manifest.js';
+import sddDocsSyncManifest from '../src/skills/sdd-docs-sync/manifest.js';
+
+const MANIFESTS = [sddDocsSyncManifest, sddReleaseManifest];
 
 describe('runSkills() Integration', () => {
   const srcDir = path.join(process.cwd(), 'src');
@@ -30,8 +34,8 @@ describe('runSkills() Integration', () => {
     path.join(tmpDir, '.agents/templates/sdd/release-notes.md'),
   ];
 
-  it('1ª ejecución: crea los 5 archivos (2 skills + 2 docs compartidos + release-notes)', () => {
-    const intentions = runSkills({ srcDir, targetBase: tmpDir });
+  it('1Âª ejecuciÃ³n: crea los 5 archivos (2 skills + 2 docs compartidos + release-notes)', () => {
+    const intentions = runSkills({ srcDir, targetBase: tmpDir, manifests: MANIFESTS });
     const result = executeIntentions(intentions);
 
     expect(result.created).toBe(5);
@@ -42,12 +46,12 @@ describe('runSkills() Integration', () => {
     }
   });
 
-  it('2ª ejecución: salteados y no sobrescribe custom rules (R-SK-3)', () => {
+  it('2Âª ejecuciÃ³n: salteados y no sobrescribe custom rules (R-SK-3)', () => {
     const customPath = path.join(tmpDir, '.agents/skills/sdd-release/SKILL.md');
     const custom = '# Custom rules del proyecto\n';
     fs.writeFileSync(customPath, custom, 'utf8');
 
-    const intentions = runSkills({ srcDir, targetBase: tmpDir });
+    const intentions = runSkills({ srcDir, targetBase: tmpDir, manifests: MANIFESTS });
     const result = executeIntentions(intentions);
 
     expect(result.created).toBe(0);
@@ -59,7 +63,7 @@ describe('runSkills() Integration', () => {
     const missingPath = path.join(tmpDir, '.agents/skills/sdd-docs-sync/SKILL.md');
     fs.rmSync(missingPath, { recursive: true, force: true });
 
-    const intentions = runSkills({ srcDir, targetBase: tmpDir });
+    const intentions = runSkills({ srcDir, targetBase: tmpDir, manifests: MANIFESTS });
     const result = executeIntentions(intentions);
 
     expect(result.created).toBe(1);
@@ -107,3 +111,4 @@ describe('runSkills() Integration', () => {
     expect(hits).toEqual([]);
   });
 });
+
