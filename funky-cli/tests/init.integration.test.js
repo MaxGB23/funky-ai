@@ -11,19 +11,30 @@ describe('funky init — integración real (R1/R7)', () => {
   const originalCwd = process.cwd();
 
   const canvasDir = target => path.join(target, 'docs', 'funky-ai', 'canvas');
+  const guideFiles = ['canvas-planning-guide.md', 'init-prompt.md'];
 
-  // Red de seguridad: si el guard se disparara por error de setup, el exit
-  // lanza y el test falla ruidosamente en vez de matar el runner de vitest.
+  // Red de seguridad: si algo disparara exit por error de setup, el exit lanza
+  // y el test falla ruidosamente en vez de matar el runner de vitest.
   let exitSpy;
+  const ttyDescriptor = Object.getOwnPropertyDescriptor(process, 'stdin');
+
   beforeEach(() => {
     exitSpy = vi.spyOn(process, 'exit').mockImplementation(code => {
       throw new Error(`exit ${code}`);
     });
     vi.spyOn(console, 'log').mockImplementation(() => {});
     vi.spyOn(console, 'error').mockImplementation(() => {});
+    // Determinismo: el runner de vitest no es interactivo; forzamos no-TTY para
+    // que el contrato Fase 2 (guías sin terminal → default n) sea estable.
+    Object.defineProperty(process, 'stdin', { value: { isTTY: false }, configurable: true });
   });
   afterEach(() => {
     vi.restoreAllMocks();
+    if (ttyDescriptor) {
+      Object.defineProperty(process, 'stdin', ttyDescriptor);
+    } else {
+      delete process.stdin;
+    }
   });
 
   // Ejecuta el action real con cwd dentro del subdirectorio tmp.
@@ -53,15 +64,15 @@ describe('funky init — integración real (R1/R7)', () => {
     }
   });
 
-  it('init limpio → 4 archivos, brief PRIMERO, sin exit (exit 0)', async () => {
+  it('init limpio → 5 archivos, brief PRIMERO, sin exit (exit 0)', async () => {
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     try {
       const target = await runInitIn('clean');
       const cd = canvasDir(target);
 
       const files = fs.readdirSync(cd);
-      expect(files).toHaveLength(4);
-      for (const name of ['brief-funcional.md', 'PROJECT-CANVAS.md', 'INFRA-CANVAS.md', 'canvas-planning-guide.md']) {
+      expect(files).toHaveLength(5);
+      for (const name of ['brief-funcional.md', 'PROJECT-CANVAS.md', 'INFRA-CANVAS.md', 'canvas-planning-guide.md', 'init-prompt.md']) {
         expect(files).toContain(name);
       }
 
@@ -82,7 +93,7 @@ describe('funky init — integración real (R1/R7)', () => {
     }
   });
 
-  it('brief pre-existente → NO se sobrescribe, canvases OK, sin exit (R7)', async () => {
+  it('brief pre-existente → NO se sobrescribe + log de recomendación, resto se crea, exit 0 (2.4)', async () => {
     const target = path.join(rootTmp, 'brief-existing');
     const cd = canvasDir(target);
     const briefPath = path.join(cd, 'brief-funcional.md');
@@ -91,35 +102,77 @@ describe('funky init — integración real (R1/R7)', () => {
     fs.mkdirSync(cd, { recursive: true });
     fs.writeFileSync(briefPath, 'CONTENIDO ORIGINAL DEL USUARIO', 'utf8');
 
-    await runInitIn('brief-existing');
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    try {
+      await runInitIn('brief-existing');
 
-    expect(fs.readFileSync(briefPath, 'utf8')).toBe('CONTENIDO ORIGINAL DEL USUARIO');
-    expect(fs.existsSync(path.join(cd, 'PROJECT-CANVAS.md'))).toBe(true);
-    expect(fs.existsSync(path.join(cd, 'INFRA-CANVAS.md'))).toBe(true);
-    expect(fs.existsSync(path.join(cd, 'canvas-planning-guide.md'))).toBe(true);
-    expect(exitSpy).not.toHaveBeenCalled();
+      expect(fs.readFileSync(briefPath, 'utf8')).toBe('CONTENIDO ORIGINAL DEL USUARIO');
+      expect(fs.existsSync(path.join(cd, 'PROJECT-CANVAS.md'))).toBe(true);
+      expect(fs.existsSync(path.join(cd, 'INFRA-CANVAS.md'))).toBe(true);
+      for (const g of guideFiles) {
+        expect(fs.existsSync(path.join(cd, g))).toBe(true);
+      }
+
+      const logs = logSpy.mock.calls.map(c => String(c[0]));
+      expect(logs.some(l => l.includes('Contiene decisiones del proyecto') && l.includes('brief-funcional.md'))).toBe(true);
+      expect(exitSpy).not.toHaveBeenCalled();
+    } finally {
+      logSpy.mockRestore();
+    }
   });
 
-  it('guide pre-existente → skip sin error, canvases + brief OK (R2/D2)', async () => {
-    const target = path.join(rootTmp, 'guide-existing');
+  it('guías pre-existentes sin TTY → default n (no sobrescribe), log neutro, exit 0 (2.6)', async () => {
+    const target = path.join(rootTmp, 'guides-existing');
     const cd = canvasDir(target);
-    const guidePath = path.join(cd, 'canvas-planning-guide.md');
+    const guidePaths = guideFiles.map(g => path.join(cd, g));
 
-    // Pre-condición: la guía ya existe; canvases NO.
     fs.mkdirSync(cd, { recursive: true });
-    fs.writeFileSync(guidePath, 'GUIA ORIGINAL DEL USUARIO', 'utf8');
+    guidePaths.forEach(g => fs.writeFileSync(g, 'GUIA ORIGINAL DEL USUARIO', 'utf8'));
 
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     try {
-      await runInitIn('guide-existing');
+      await runInitIn('guides-existing');
 
-      expect(fs.readFileSync(guidePath, 'utf8')).toBe('GUIA ORIGINAL DEL USUARIO');
+      for (const g of guidePaths) {
+        expect(fs.readFileSync(g, 'utf8')).toBe('GUIA ORIGINAL DEL USUARIO');
+      }
       expect(fs.existsSync(path.join(cd, 'brief-funcional.md'))).toBe(true);
       expect(fs.existsSync(path.join(cd, 'PROJECT-CANVAS.md'))).toBe(true);
       expect(fs.existsSync(path.join(cd, 'INFRA-CANVAS.md'))).toBe(true);
 
-      const skipLogs = logSpy.mock.calls.map(c => String(c[0])).filter(l => l.includes('Salteando'));
+      const logs = logSpy.mock.calls.map(c => String(c[0]));
+      expect(logs.some(l => l.includes('Entorno no interactivo'))).toBe(true);
+      const skipLogs = logs.filter(l => l.includes('Omitiendo'));
       expect(skipLogs.some(l => l.includes('canvas-planning-guide.md'))).toBe(true);
+      expect(skipLogs.some(l => l.includes('init-prompt.md'))).toBe(true);
+      expect(exitSpy).not.toHaveBeenCalled();
+    } finally {
+      logSpy.mockRestore();
+    }
+  });
+
+  it('todo existe → decisiones con recomendación, guías con default n, "Salteando" NO aparece (2.8)', async () => {
+    const target = path.join(rootTmp, 'all-existing');
+    const cd = canvasDir(target);
+
+    fs.mkdirSync(cd, { recursive: true });
+    const allFiles = ['brief-funcional.md', 'PROJECT-CANVAS.md', 'INFRA-CANVAS.md', ...guideFiles];
+    for (const name of allFiles) {
+      fs.writeFileSync(path.join(cd, name), `ORIGINAL ${name}`, 'utf8');
+    }
+
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    try {
+      await runInitIn('all-existing');
+
+      for (const name of allFiles) {
+        expect(fs.readFileSync(path.join(cd, name), 'utf8')).toBe(`ORIGINAL ${name}`);
+      }
+
+      const logs = logSpy.mock.calls.map(c => String(c[0]));
+      expect(logs.some(l => l.includes('Entorno no interactivo'))).toBe(true);
+      expect(logs.some(l => l.includes('Contiene decisiones del proyecto'))).toBe(true);
+      expect(logs.some(l => l.includes('Salteando'))).toBe(false);
       expect(exitSpy).not.toHaveBeenCalled();
     } finally {
       logSpy.mockRestore();

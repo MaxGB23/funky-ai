@@ -131,7 +131,7 @@ export const scaffoldCommand = new Command('scaffold')
       console.log('🚀 Instalando estructura Funky AI...');
       const intentions = runScaffold({ templatesDir: bootstrapDir, targetBase });
 
-      const { created, skipped, logs } = executeIntentions(intentions);
+      const { created, skipped, logs } = await executeIntentions(intentions);
       for (const log of logs) {
         console.log(log);
       }

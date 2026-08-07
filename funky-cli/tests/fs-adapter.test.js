@@ -10,26 +10,26 @@ describe('fs-adapter executeIntentions', () => {
     vi.resetAllMocks();
   });
 
-  it('crea los directorios usando mkdirSync', () => {
+  it('crea los directorios usando mkdirSync', async () => {
     fs.existsSync.mockReturnValue(false);
-    
-    executeIntentions([{ action: 'mkdir', dest: '/fake/dir' }]);
+
+    await executeIntentions([{ action: 'mkdir', dest: '/fake/dir' }]);
 
     expect(fs.mkdirSync).toHaveBeenCalledWith('/fake/dir', { recursive: true });
   });
 
-  it('no hace nada si el directorio ya existe', () => {
+  it('no hace nada si el directorio ya existe', async () => {
     fs.existsSync.mockReturnValue(true);
-    
-    executeIntentions([{ action: 'mkdir', dest: '/fake/dir' }]);
+
+    await executeIntentions([{ action: 'mkdir', dest: '/fake/dir' }]);
 
     expect(fs.mkdirSync).not.toHaveBeenCalled();
   });
 
-  it('saltea la copia o creación si el destino ya existe (idempotency)', () => {
+  it('saltea la copia o creación si el destino ya existe (idempotency)', async () => {
     fs.existsSync.mockReturnValue(true);
 
-    const result = executeIntentions([
+    const result = await executeIntentions([
       { action: 'copy', src: '/fake/src.md', dest: '/fake/dest.md' },
       { action: 'create', dest: '/fake/created.md', content: 'test' }
     ]);
@@ -40,10 +40,10 @@ describe('fs-adapter executeIntentions', () => {
     expect(fs.writeFileSync).not.toHaveBeenCalled();
   });
 
-  it('copia archivos si no existen', () => {
+  it('copia archivos si no existen', async () => {
     fs.existsSync.mockImplementation((p) => p === '/fake' || p === '/fake/src.md');
-    
-    const result = executeIntentions([
+
+    const result = await executeIntentions([
       { action: 'copy', src: '/fake/src.md', dest: '/fake/dest.md' }
     ]);
 
@@ -51,10 +51,10 @@ describe('fs-adapter executeIntentions', () => {
     expect(fs.copyFileSync).toHaveBeenCalledWith('/fake/src.md', '/fake/dest.md');
   });
 
-  it('crea archivos si no existen', () => {
+  it('crea archivos si no existen', async () => {
     fs.existsSync.mockReturnValue(false);
-    
-    const result = executeIntentions([
+
+    const result = await executeIntentions([
       { action: 'create', dest: '/fake/created.md', content: '<MANDATORY_RELEASE_PROTOCOL> content' }
     ]);
 
@@ -62,10 +62,10 @@ describe('fs-adapter executeIntentions', () => {
     expect(fs.writeFileSync).toHaveBeenCalledWith('/fake/created.md', '<MANDATORY_RELEASE_PROTOCOL> content', 'utf8');
   });
 
-  it('saltea el copy si src opcional no existe (R-SK-3: nunca crashea)', () => {
+  it('saltea el copy si src opcional no existe (R-SK-3: nunca crashea)', async () => {
     fs.existsSync.mockImplementation((p) => p === '/fake');
 
-    const result = executeIntentions([
+    const result = await executeIntentions([
       { action: 'copy', src: '/fake/src.md', dest: '/fake/dest.md', optional: true }
     ]);
 
@@ -74,10 +74,10 @@ describe('fs-adapter executeIntentions', () => {
     expect(fs.copyFileSync).not.toHaveBeenCalled();
   });
 
-  it('respeta la opción dryRun', () => {
+  it('respeta la opción dryRun', async () => {
     fs.existsSync.mockReturnValue(false);
 
-    const result = executeIntentions([
+    const result = await executeIntentions([
       { action: 'mkdir', dest: '/fake/dir' },
       { action: 'copy', src: '/fake/src.md', dest: '/fake/dest.md' },
       { action: 'create', dest: '/fake/created.md', content: 'content' }
@@ -87,5 +87,126 @@ describe('fs-adapter executeIntentions', () => {
     expect(fs.mkdirSync).not.toHaveBeenCalled();
     expect(fs.copyFileSync).not.toHaveBeenCalled();
     expect(fs.writeFileSync).not.toHaveBeenCalled();
+  });
+
+  it('usa "Omitiendo" (no "Salteando") en los logs de skip e incluye el basename (2.8)', async () => {
+    fs.existsSync.mockReturnValue(true);
+
+    const result = await executeIntentions([
+      { action: 'copy', src: '/fake/src.md', dest: '/fake/dest.md' }
+    ]);
+
+    expect(result.logs[0]).toContain('Omitiendo');
+    expect(result.logs[0]).toContain('dest.md');
+    expect(result.logs[0]).not.toContain('Salteando');
+  });
+
+  describe('kind: guide — feedback Y/N sobre archivos existentes (2.3)', () => {
+    it('dest existe + askConfirm true → sobrescribe (Actualizada) y cuenta como creado', async () => {
+      fs.existsSync.mockReturnValue(true);
+      const askConfirm = vi.fn().mockResolvedValue(true);
+
+      const result = await executeIntentions(
+        [{ action: 'copy', kind: 'guide', src: '/fake/guide.md', dest: '/fake/guide.md' }],
+        { askConfirm }
+      );
+
+      expect(askConfirm).toHaveBeenCalledWith('/fake/guide.md', 'guide.md');
+      expect(fs.copyFileSync).toHaveBeenCalledWith('/fake/guide.md', '/fake/guide.md');
+      expect(result.created).toBe(1);
+      expect(result.logs[0]).toContain('Actualizada');
+    });
+
+    it('dest existe + askConfirm false → NO sobrescribe (decisión válida, skip)', async () => {
+      fs.existsSync.mockReturnValue(true);
+      const askConfirm = vi.fn().mockResolvedValue(false);
+
+      const result = await executeIntentions(
+        [{ action: 'copy', kind: 'guide', src: '/fake/guide.md', dest: '/fake/guide.md' }],
+        { askConfirm }
+      );
+
+      expect(fs.copyFileSync).not.toHaveBeenCalled();
+      expect(result.skipped).toBe(1);
+      expect(result.logs[0]).toContain('Omitiendo');
+    });
+
+    it('dest existe + sin askConfirm → skip por defecto (n), no sobrescribe (2.6)', async () => {
+      fs.existsSync.mockReturnValue(true);
+
+      const result = await executeIntentions([
+        { action: 'copy', kind: 'guide', src: '/fake/guide.md', dest: '/fake/guide.md' }
+      ]);
+
+      expect(fs.copyFileSync).not.toHaveBeenCalled();
+      expect(result.skipped).toBe(1);
+      expect(result.logs[0]).toContain('Omitiendo');
+    });
+
+    it('askConfirm puede ser síncrono (booleano directo)', async () => {
+      fs.existsSync.mockReturnValue(true);
+
+      const result = await executeIntentions(
+        [{ action: 'copy', kind: 'guide', src: '/fake/guide.md', dest: '/fake/guide.md' }],
+        { askConfirm: () => true }
+      );
+
+      expect(result.created).toBe(1);
+      expect(fs.copyFileSync).toHaveBeenCalled();
+    });
+
+    it('dest NO existe → crea normal sin consultar askConfirm', async () => {
+      fs.existsSync.mockImplementation((p) => p === '/fake');
+      const askConfirm = vi.fn();
+
+      const result = await executeIntentions(
+        [{ action: 'copy', kind: 'guide', src: '/fake/guide.md', dest: '/fake/dest.md' }],
+        { askConfirm }
+      );
+
+      expect(askConfirm).not.toHaveBeenCalled();
+      expect(fs.copyFileSync).toHaveBeenCalledWith('/fake/guide.md', '/fake/dest.md');
+      expect(result.created).toBe(1);
+    });
+  });
+
+  describe('kind: decision — nunca sobrescribir, solo recomendación (2.4)', () => {
+    it('dest existe → skip + log de recomendación (eliminar/mover/backup), sin copiar', async () => {
+      fs.existsSync.mockReturnValue(true);
+
+      const result = await executeIntentions([
+        { action: 'copy', kind: 'decision', src: '/fake/brief.md', dest: '/fake/brief.md' }
+      ]);
+
+      expect(fs.copyFileSync).not.toHaveBeenCalled();
+      expect(result.skipped).toBe(1);
+      expect(result.logs[0]).toContain('Omitiendo');
+      expect(result.logs[0]).toContain('brief.md');
+      expect(result.logs[0]).toContain('elimínalo');
+      expect(result.logs[0]).toContain('backup');
+    });
+
+    it('dest NO existe → crea normal', async () => {
+      fs.existsSync.mockReturnValue(false);
+
+      const result = await executeIntentions([
+        { action: 'copy', kind: 'decision', src: '/fake/brief.md', dest: '/fake/brief.md' }
+      ]);
+
+      expect(result.created).toBe(1);
+      expect(fs.copyFileSync).toHaveBeenCalled();
+    });
+
+    it('nunca consulta askConfirm aunque exista dest (las decisiones no se preguntan)', async () => {
+      fs.existsSync.mockReturnValue(true);
+      const askConfirm = vi.fn();
+
+      await executeIntentions(
+        [{ action: 'copy', kind: 'decision', src: '/fake/brief.md', dest: '/fake/brief.md' }],
+        { askConfirm }
+      );
+
+      expect(askConfirm).not.toHaveBeenCalled();
+    });
   });
 });

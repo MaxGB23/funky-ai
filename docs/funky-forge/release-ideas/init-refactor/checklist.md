@@ -2,7 +2,7 @@
 
 > **Propósito:** seguimiento físico del refactor de `funky init` derivado de las observaciones del smoke test. Se marca aquí, no depende del contexto de la conversación.
 > **Fuente:** `docs/funky-forge/release-ideas/smoke-test-observaciones/mejoras-sugeridas.md` (§1 INIT y §4 GENERALES)
-> **Estado:** Fase 1 completada (2026-08-06) — Fase 2 pendiente
+> **Estado:** Fase 1 completada (2026-08-06) — Fase 2 completada (2026-08-06) — Fase 3 pendiente
 
 ## Contrato de feedback (referencia)
 
@@ -27,15 +27,15 @@ Sin terminal (CI): default `n` logueado — no sobrescribir guías sin input hum
 
 ## Fase 2 — CLI (TDD, tests primero)
 
-- [ ] 2.1 Tests: guard por archivo — crear faltantes, omitir existentes (obs 1.1).
-- [ ] 2.2 Implementar guard por archivo reemplazando el guard grueso actual (obs 1.1).
-- [ ] 2.3 Feedback de guías: pregunta Y/N, `y` actualiza exit 0, `n` no actualiza exit 0 (obs 4).
-- [ ] 2.4 Feedback de decisiones: recomendación eliminar/mover, nunca sobrescribir, exit 0 (obs 4).
-- [ ] 2.5 Error real de I/O → mensaje claro y exit 1 (contrato).
-- [ ] 2.6 Sin TTY: default `n` logueado (CI) (contrato, propuesto).
-- [ ] 2.7 `runInit` con 5 intenciones: incluir `init-prompt.md` (obs 1.4).
-- [ ] 2.8 Mensajes de consola en español neutro (obs 3 estimate + decisión usuario).
-- [ ] 2.9 Actualizar tests existentes que asumen el guard grueso y 4 archivos: `init.test.js`, `init.integration.test.js`.
+- [x] 2.1 Tests: guard por archivo — crear faltantes, omitir existentes (obs 1.1).
+- [x] 2.2 Implementar guard por archivo reemplazando el guard grueso actual (obs 1.1).
+- [x] 2.3 Feedback de guías: pregunta Y/N, `y` actualiza exit 0, `n` no actualiza exit 0 (obs 4).
+- [x] 2.4 Feedback de decisiones: recomendación eliminar/mover, nunca sobrescribir, exit 0 (obs 4).
+- [x] 2.5 Error real de I/O → mensaje claro y exit 1 (contrato).
+- [x] 2.6 Sin TTY: default `n` logueado (CI) (contrato, propuesto).
+- [x] 2.7 `runInit` con 5 intenciones: incluir `init-prompt.md` (obs 1.4).
+- [x] 2.8 Mensajes de consola en español neutro (obs 3 estimate + decisión usuario).
+- [x] 2.9 Actualizar tests existentes que asumen el guard grueso y 4 archivos: `init.test.js`, `init.integration.test.js`.
 
 ## Fase 3 — Verificación
 

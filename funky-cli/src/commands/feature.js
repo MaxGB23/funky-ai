@@ -171,7 +171,7 @@ export const featureCommand = new Command('feature')
         console.warn(`⚠️ Warning: No se encontraron templates locales en ${goldenTemplatesDir}. Usando fallback de CLI.`);
       }
       
-      const { logs } = executeIntentions(result.intentions);
+      const { logs } = await executeIntentions(result.intentions);
       // logs can be printed here if needed or we just print the summary
       console.log(`🚀 Scaffolding de feature creado exitosamente en: ${result.path}`);
       console.log(`📄 Archivos inyectados: ${result.copiedFiles.length} — ${result.copiedFiles.join(', ')}`);

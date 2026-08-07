@@ -21,52 +21,52 @@ describe('runScaffold() Integration', () => {
     }
   });
 
-  it('NO debería copiar PROJECT-CANVAS.md desde bootstrap (va a docs/funky-ai/canvas/ via init command)', () => {
+  it('NO debería copiar PROJECT-CANVAS.md desde bootstrap (va a docs/funky-ai/canvas/ via init command)', async () => {
     const intentions = runScaffold({ templatesDir, targetBase: tmpDir });
-    const result = executeIntentions(intentions);
+    const result = await executeIntentions(intentions);
 
     const canvasPath = path.join(tmpDir, 'PROJECT-CANVAS.md');
     expect(fs.existsSync(canvasPath)).toBe(false);
     expect(result.created).toBeGreaterThan(0);
   });
 
-  it('debería copiar ORCHESTRATOR-STATE.md como root file', () => {
+  it('debería copiar ORCHESTRATOR-STATE.md como root file', async () => {
     const intentions = runScaffold({ templatesDir, targetBase: tmpDir });
-    const result = executeIntentions(intentions);
+    const result = await executeIntentions(intentions);
 
     const statePath = path.join(tmpDir, 'ORCHESTRATOR-STATE.md');
     expect(fs.existsSync(statePath)).toBe(true);
     expect(result.created + result.skipped).toBeGreaterThan(0);
   });
 
-  it('NO debería copiar la plantilla canónica worker-handoff al nuevo workspace', () => {
+  it('NO debería copiar la plantilla canónica worker-handoff al nuevo workspace', async () => {
     const intentions = runScaffold({ templatesDir, targetBase: tmpDir });
-    executeIntentions(intentions);
+    await executeIntentions(intentions);
 
     const workerHandoffPath = path.join(tmpDir, 'docs', 'funky-ai', 'workers', 'plantilla-worker-handoff.md');
     expect(fs.existsSync(workerHandoffPath)).toBe(false);
   });
 
-  it('NO debería sobreescribir ORCHESTRATOR-STATE.md si ya existe', () => {
+  it('NO debería sobreescribir ORCHESTRATOR-STATE.md si ya existe', async () => {
     const statePath = path.join(tmpDir, 'ORCHESTRATOR-STATE.md');
     fs.writeFileSync(statePath, 'CONTENIDO ORIGINAL DEL USUARIO');
 
     const intentions = runScaffold({ templatesDir, targetBase: tmpDir });
-    const result = executeIntentions(intentions);
+    const result = await executeIntentions(intentions);
 
     const content = fs.readFileSync(statePath, 'utf8');
     expect(content).toBe('CONTENIDO ORIGINAL DEL USUARIO');
     expect(result.skipped).toBeGreaterThan(0);
   });
 
-  it('debería interpolar {{project_name}} con el nombre del package.json en el README generado', () => {
+  it('debería interpolar {{project_name}} con el nombre del package.json en el README generado', async () => {
     const targetDir = path.join(process.cwd(), 'tmp-integration-pkgname');
     fs.mkdirSync(targetDir, { recursive: true });
     fs.writeFileSync(path.join(targetDir, 'package.json'), JSON.stringify({ name: 'mi-proyecto-ejemplo' }));
 
     try {
       const intentions = runScaffold({ templatesDir, targetBase: targetDir });
-      const result = executeIntentions(intentions);
+      const result = await executeIntentions(intentions);
       expect(result.created).toBeGreaterThan(0);
 
       const readmePath = path.join(targetDir, 'README.md');
@@ -79,13 +79,13 @@ describe('runScaffold() Integration', () => {
     }
   });
 
-  it('debería usar basename(targetBase) como fallback cuando no hay package.json', () => {
+  it('debería usar basename(targetBase) como fallback cuando no hay package.json', async () => {
     const targetDir = path.join(process.cwd(), 'tmp-integration-basename');
     fs.mkdirSync(targetDir, { recursive: true });
 
     try {
       const intentions = runScaffold({ templatesDir, targetBase: targetDir });
-      const result = executeIntentions(intentions);
+      const result = await executeIntentions(intentions);
       expect(result.created).toBeGreaterThan(0);
 
       const readmePath = path.join(targetDir, 'README.md');
@@ -98,9 +98,9 @@ describe('runScaffold() Integration', () => {
     }
   });
 
-  it('docs-live-index.md: bytes idénticos al template compartido (R-SK-5)', () => {
+  it('docs-live-index.md: bytes idénticos al template compartido (R-SK-5)', async () => {
     const intentions = runScaffold({ templatesDir, targetBase: tmpDir });
-    executeIntentions(intentions);
+    await executeIntentions(intentions);
 
     const livePath = path.join(tmpDir, '.agents', 'templates', 'sdd', 'docs-live-index.md');
     expect(fs.existsSync(livePath)).toBe(true);
@@ -110,9 +110,9 @@ describe('runScaffold() Integration', () => {
     expect(actual).toBe(template);
   });
 
-  it('docs-index/_indice-seccional-template.md: copia el template canónico del índice seccional (R-SK-5)', () => {
+  it('docs-index/_indice-seccional-template.md: copia el template canónico del índice seccional (R-SK-5)', async () => {
     const intentions = runScaffold({ templatesDir, targetBase: tmpDir });
-    executeIntentions(intentions);
+    await executeIntentions(intentions);
 
     const templateDestPath = path.join(tmpDir, '.agents', 'templates', 'sdd', 'docs-index', '_indice-seccional-template.md');
     expect(fs.existsSync(templateDestPath)).toBe(true);

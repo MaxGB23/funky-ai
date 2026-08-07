@@ -1,7 +1,7 @@
 import { Command } from 'commander';
-import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import * as p from '@clack/prompts';
 import { executeIntentions } from '../utils/fs-adapter.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -13,19 +13,23 @@ const __dirname = path.dirname(__filename);
  * @param {{ templatesDir: string, targetBase: string }} opts
  * @param {string} opts.templatesDir - Directorio con las plantillas de init.
  * @param {string} opts.targetBase   - Directorio destino (normalmente process.cwd()).
- * @returns {Array<{action:'mkdir'|'copy', src?:string, dest:string}>}
+ * @returns {Array<{action:'mkdir'|'copy', kind?:'decision'|'guide', src?:string, dest:string}>}
  */
 export function runInit({ templatesDir, targetBase }) {
   const canvasDir = path.join(targetBase, 'docs', 'funky-ai', 'canvas');
 
   return [
     { action: 'mkdir', dest: canvasDir },
+    // Las decisiones del proyecto (brief y canvases) NUNCA se sobrescriben
+    // automáticamente: si ya existen se omiten con recomendación (kind decision).
     // El brief funcional va PRIMERO: define el "qué" antes del "cómo" (R7).
-    { action: 'copy', src: path.join(templatesDir, 'brief-funcional.md'), dest: path.join(canvasDir, 'brief-funcional.md') },
-    { action: 'copy', src: path.join(templatesDir, 'PROJECT-CANVAS.md'), dest: path.join(canvasDir, 'PROJECT-CANVAS.md') },
-    { action: 'copy', src: path.join(templatesDir, 'INFRA-CANVAS.md'), dest: path.join(canvasDir, 'INFRA-CANVAS.md') },
-    // La guía SIEMPRE entra al array; el skip-if-exists lo resuelve executeIntentions (D2).
-    { action: 'copy', src: path.join(templatesDir, 'canvas-planning-guide.md'), dest: path.join(canvasDir, 'canvas-planning-guide.md') },
+    { action: 'copy', kind: 'decision', src: path.join(templatesDir, 'brief-funcional.md'), dest: path.join(canvasDir, 'brief-funcional.md') },
+    { action: 'copy', kind: 'decision', src: path.join(templatesDir, 'PROJECT-CANVAS.md'), dest: path.join(canvasDir, 'PROJECT-CANVAS.md') },
+    { action: 'copy', kind: 'decision', src: path.join(templatesDir, 'INFRA-CANVAS.md'), dest: path.join(canvasDir, 'INFRA-CANVAS.md') },
+    // Las guías se actualizan con confirmación Y/N si ya existen (kind guide);
+    // la guía SIEMPRE entra al array, el skip/sobrescritura lo resuelve executeIntentions (D2).
+    { action: 'copy', kind: 'guide', src: path.join(templatesDir, 'canvas-planning-guide.md'), dest: path.join(canvasDir, 'canvas-planning-guide.md') },
+    { action: 'copy', kind: 'guide', src: path.join(templatesDir, 'init-prompt.md'), dest: path.join(canvasDir, 'init-prompt.md') },
   ];
 }
 
@@ -36,22 +40,33 @@ export const initCommand = new Command('init')
     const targetBase = process.cwd();
 
     try {
-      const canvasDir = path.join(targetBase, 'docs', 'funky-ai', 'canvas');
-      const projectCanvasPath = path.join(canvasDir, 'PROJECT-CANVAS.md');
-      const infraCanvasPath = path.join(canvasDir, 'INFRA-CANVAS.md');
+      // Fase 2, 2.6: sin stdin interactivo (CI) no se pregunta; las guías se omiten.
+      const interactive = Boolean(process.stdin && process.stdin.isTTY);
+      let askConfirm;
 
-      if (fs.existsSync(projectCanvasPath) || fs.existsSync(infraCanvasPath)) {
-        console.error('❌ Error: Ya existe PROJECT-CANVAS.md o INFRA-CANVAS.md en docs/funky-ai/canvas/.');
-        process.exit(1);
+      if (interactive) {
+        askConfirm = async (dest, basename) => {
+          const answer = await p.confirm({
+            message: `Ya existe ${basename}. ¿Quieres actualizarla con la versión más reciente?`,
+            initialValue: false,
+          });
+          // isCancel se trata como "no": no sobrescribir.
+          return !p.isCancel(answer) && answer === true;
+        };
+      } else {
+        console.log('⚠️ Entorno no interactivo: no se actualizan las guías existentes.');
       }
 
-      const { created, skipped, logs } = executeIntentions(runInit({ templatesDir: initDir, targetBase }));
+      const { created, skipped, logs } = await executeIntentions(
+        runInit({ templatesDir: initDir, targetBase }),
+        { askConfirm }
+      );
       for (const log of logs) {
         console.log(log);
       }
       console.log(`\n✅ Canvases creados. Ejecuta \`funky scaffold\` para instalar el ecosistema completo.`);
     } catch (error) {
-      console.error('❌ Error al generar los canvases:', error.message);
+      console.error(`❌ Error al generar los canvases: ${error.message}`);
       process.exit(1);
     }
   });

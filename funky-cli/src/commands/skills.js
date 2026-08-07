@@ -127,7 +127,7 @@ export const skillsCommand = new Command('skills')
       console.log('🚀 Instalando skills y docs compartidos SDD...');
       const intentions = runSkills({ srcDir, targetBase, selectedSkills: selected, manifests });
 
-      const { created, skipped, logs } = executeIntentions(intentions);
+      const { created, skipped, logs } = await executeIntentions(intentions);
       for (const log of logs) {
         console.log(log);
       }

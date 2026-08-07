@@ -34,9 +34,9 @@ describe('runSkills() Integration', () => {
     path.join(tmpDir, '.agents/templates/sdd/release-notes.md'),
   ];
 
-  it('1Âª ejecuciÃ³n: crea los 5 archivos (2 skills + 2 docs compartidos + release-notes)', () => {
+  it('1ª ejecución: crea los 5 archivos (2 skills + 2 docs compartidos + release-notes)', async () => {
     const intentions = runSkills({ srcDir, targetBase: tmpDir, manifests: MANIFESTS });
-    const result = executeIntentions(intentions);
+    const result = await executeIntentions(intentions);
 
     expect(result.created).toBe(5);
     expect(result.skipped).toBe(0);
@@ -46,25 +46,25 @@ describe('runSkills() Integration', () => {
     }
   });
 
-  it('2Âª ejecuciÃ³n: salteados y no sobrescribe custom rules (R-SK-3)', () => {
+  it('2ª ejecución: salteados y no sobrescribe custom rules (R-SK-3)', async () => {
     const customPath = path.join(tmpDir, '.agents/skills/sdd-release/SKILL.md');
     const custom = '# Custom rules del proyecto\n';
     fs.writeFileSync(customPath, custom, 'utf8');
 
     const intentions = runSkills({ srcDir, targetBase: tmpDir, manifests: MANIFESTS });
-    const result = executeIntentions(intentions);
+    const result = await executeIntentions(intentions);
 
     expect(result.created).toBe(0);
     expect(result.skipped).toBe(5);
     expect(fs.readFileSync(customPath, 'utf8')).toBe(custom);
   });
 
-  it('estado parcial: skill faltante se crea, el resto se salta (R-SK-3 edge)', () => {
+  it('estado parcial: skill faltante se crea, el resto se salta (R-SK-3 edge)', async () => {
     const missingPath = path.join(tmpDir, '.agents/skills/sdd-docs-sync/SKILL.md');
     fs.rmSync(missingPath, { recursive: true, force: true });
 
     const intentions = runSkills({ srcDir, targetBase: tmpDir, manifests: MANIFESTS });
-    const result = executeIntentions(intentions);
+    const result = await executeIntentions(intentions);
 
     expect(result.created).toBe(1);
     expect(result.skipped).toBe(4);

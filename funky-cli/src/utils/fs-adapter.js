@@ -24,18 +24,19 @@ function wrapFSOp(fn, fsPath, description) {
 /**
  * Ejecuta un plan de intenciones de I/O sobre el file system.
  * 
- * @param {Array<{ action: 'copy'|'create'|'mkdir', dest: string, src?: string, content?: string, optional?: boolean }>} intentions 
+ * @param {Array<{ action: 'copy'|'create'|'mkdir', dest: string, src?: string, content?: string, optional?: boolean, kind?: 'guide'|'decision' }>} intentions 
  * @param {object} options
  * @param {boolean} [options.dryRun=false] - Si es true, no ejecuta operaciones físicas de I/O, sólo simula.
- * @returns {{ created: number, skipped: number, logs: string[] }}
+ * @param {(dest: string, basename: string) => boolean | Promise<boolean>} [options.askConfirm] - Callback de confirmación para guías existentes (kind: 'guide'). Devuelve true para sobrescribir, false para omitir.
+ * @returns {Promise<{ created: number, skipped: number, logs: string[] }>}
  */
-export function executeIntentions(intentions, { dryRun = false } = {}) {
+export async function executeIntentions(intentions, { dryRun = false, askConfirm } = {}) {
   let createdCount = 0;
   let skippedCount = 0;
   const logs = [];
 
   for (const intention of intentions) {
-    const { action, dest, src, content } = intention;
+    const { action, dest, src, content, kind } = intention;
 
     if (action === 'mkdir') {
       if (!fs.existsSync(dest)) {
@@ -52,14 +53,51 @@ export function executeIntentions(intentions, { dryRun = false } = {}) {
     }
 
     if (fs.existsSync(dest)) {
-      logs.push(`⚡ Salteando (ya existe): ${dest}`);
+      const basename = path.basename(dest);
+
+      if (kind === 'guide') {
+        const shouldUpdate = askConfirm ? await askConfirm(dest, basename) : false;
+        if (shouldUpdate) {
+          if (!dryRun) {
+            const dir = path.dirname(dest);
+            if (!fs.existsSync(dir)) {
+              wrapFSOp(
+                () => fs.mkdirSync(dir, { recursive: true }),
+                dir,
+                'crear directorio'
+              );
+            }
+            wrapFSOp(
+              () => fs.copyFileSync(src, dest),
+              dest,
+              'copiar archivo'
+            );
+          }
+          logs.push(`✅ Actualizada: ${basename}`);
+          createdCount++;
+        } else {
+          logs.push(`⚡ Omitiendo (ya existe): ${basename}`);
+          skippedCount++;
+        }
+        continue;
+      }
+
+      if (kind === 'decision') {
+        logs.push(
+          `⚡ Omitiendo (ya existe): ${basename}. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres regenerarla, elimínalo o muévelo con backup a otra ubicación.`
+        );
+        skippedCount++;
+        continue;
+      }
+
+      logs.push(`⚡ Omitiendo (ya existe): ${basename}`);
       skippedCount++;
       continue;
     }
 
     // R-SK-3: src opcional ausente se salta con log, nunca crashea.
     if (action === 'copy' && intention.optional && !fs.existsSync(src)) {
-      logs.push(`⚡ Salteando (src opcional no existe): ${src}`);
+      logs.push(`⚡ Omitiendo (src opcional no existe): ${src}`);
       skippedCount++;
       continue;
     }
