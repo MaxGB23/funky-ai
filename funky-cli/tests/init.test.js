@@ -186,11 +186,11 @@ describe('runInit()', () => {
     expect(brief.dest).toBe(path.join(fakeTargetBase, 'docs/funky-ai/canvas', 'brief-funcional.md'));
 
     const guide = intentions.find(i => i.action === 'copy' && path.basename(i.dest) === 'canvas-planning-guide.md');
-    expect(guide.src).toBe(path.join(fakeTemplatesDir, 'canvas-planning-guide.md'));
+    expect(guide.src).toBe(path.join(fakeTemplatesDir, 'canvas-planning-guide-template.md'));
     expect(guide.dest).toBe(path.join(fakeTargetBase, 'docs/funky-ai/canvas', 'canvas-planning-guide.md'));
 
     const prompt = intentions.find(i => i.action === 'copy' && path.basename(i.dest) === 'init-prompt.md');
-    expect(prompt.src).toBe(path.join(fakeTemplatesDir, 'init-prompt.md'));
+    expect(prompt.src).toBe(path.join(fakeTemplatesDir, 'init-prompt-template.md'));
     expect(prompt.dest).toBe(path.join(fakeTargetBase, 'docs/funky-ai/canvas', 'init-prompt.md'));
   });
 
@@ -351,5 +351,22 @@ describe('init action — contrato de feedback por archivo (Fase 2, 2.1-2.6)', (
     const logs = allLogs();
     expect(logs.some(l => l.includes('Nada que crear'))).toBe(true);
     expect(logs.some(l => l.includes('Canvases creados'))).toBe(false);
+  });
+
+  it('TTY + guía existente → el Y/N advierte explícitamente que actualizar REEMPLAZA el contenido actual (0.4)', async () => {
+    setTTY(true);
+    sharedFsMock.existsSync.mockReturnValue(true);
+    clackMock.confirm.mockResolvedValue(true);
+
+    await initCommand.parseAsync([], { from: 'user' });
+
+    expect(clackMock.confirm).toHaveBeenCalledTimes(2);
+    for (const call of clackMock.confirm.mock.calls) {
+      const message = call[0].message;
+      expect(message).toContain('REEMPLAZA la actual');
+      expect(message).toContain('perderás el progreso previo');
+      expect(message).toContain('respaldo');
+      expect(message).not.toContain('¿Quieres actualizarla con la versión más reciente?');
+    }
   });
 });

@@ -401,6 +401,40 @@ describe('assess Command - action flow', () => {
     expect(exitSpy).toHaveBeenCalledWith(0);
   });
 
+  it('sin TTY + guía existente → aviso no-TTY GENÉRICO, no hardcodeado a assess-prompt.md (0.3)', async () => {
+    setTTY(false);
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    mf[PROMPT_DEST_PATH] = '# Prompt viejo';
+    applyMocks(mf);
+
+    await assessCommand.parseAsync([], { from: 'user' });
+
+    const logMsgs = allLogs(logSpy);
+    expect(logMsgs.some(m => m.includes('Entorno no interactivo'))).toBe(true);
+    expect(logMsgs.some(m => m.includes('no se actualiza la guía assess-prompt.md existente'))).toBe(false);
+  });
+
+  it('TTY + guía existente → el Y/N advierte explícitamente que actualizar REEMPLAZA el contenido actual (0.4)', async () => {
+    setTTY(true);
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    mf[PROMPT_DEST_PATH] = '# Prompt viejo';
+    applyMocks(mf);
+    clackMock.confirm.mockResolvedValue(true);
+
+    await assessCommand.parseAsync([], { from: 'user' });
+
+    expect(clackMock.confirm).toHaveBeenCalledTimes(1);
+    const message = clackMock.confirm.mock.calls[0][0].message;
+    expect(message).toContain('REEMPLAZA la actual');
+    expect(message).toContain('perderás el progreso previo');
+    expect(message).toContain('respaldo');
+    expect(message).not.toContain('¿Quieres actualizarla con la versión más reciente?');
+  });
+
   it('does not generate regex-detected C2 questions from canvas content', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', 'Equipo junior con React');

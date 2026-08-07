@@ -168,7 +168,7 @@ describe('estimateCommand — integration', () => {
     expect(guideContent).not.toContain('Guía obsoleta previa');
   });
 
-  it('does NOT overwrite an existing pricing-decisions.md (team living doc)', () => {
+  it('does NOT overwrite an existing pricing-decisions.md; logs the engine backup recommendation (0.2)', () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
@@ -176,7 +176,7 @@ describe('estimateCommand — integration', () => {
     mf[path.join(CWD, 'docs', 'funky-ai', 'estimate', 'pricing-decisions.md')] = '# Acuerdos previos del equipo';
     applyMocks(mf);
 
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
     estimateCommand.parse([], { from: 'user' });
 
@@ -184,10 +184,31 @@ describe('estimateCommand — integration', () => {
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const decisionsCall = writeCalls.find(c => String(c[0]).includes('pricing-decisions.md'));
     expect(decisionsCall).toBeFalsy();
-    const warnMsgs = warnSpy.mock.calls.map(c => String(c));
-    expect(warnMsgs.some(m => m.includes('pricing-decisions.md') && m.includes('ya existe'))).toBe(true);
+    // El mensaje completo viene del motor común (kind decision): la recomendación
+    // de backup reemplaza al warning corto "No se sobrescribió" (Fase 0, 0.2).
+    const logMsgs = logSpy.mock.calls.map(c => String(c));
+    expect(logMsgs.some(m => m.includes('pricing-decisions.md') && m.includes('ya existe'))).toBe(true);
+    expect(logMsgs.some(m => m.includes('Contiene decisiones del proyecto'))).toBe(true);
+    expect(logMsgs.some(m => m.includes('elimínalo o muévelo de ubicación'))).toBe(true);
 
-    warnSpy.mockRestore();
+    logSpy.mockRestore();
+  });
+
+  it('sin TTY y sin guías en el plan → NO loguea aviso de entorno no interactivo (0.3)', () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    addDecisions(mf, DECISIONS_CONTENT);
+    applyMocks(mf);
+
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+    estimateCommand.parse([], { from: 'user' });
+
+    const logMsgs = logSpy.mock.calls.map(c => String(c));
+    expect(logMsgs.some(m => m.includes('Entorno no interactivo'))).toBe(false);
+
+    logSpy.mockRestore();
   });
 });
 

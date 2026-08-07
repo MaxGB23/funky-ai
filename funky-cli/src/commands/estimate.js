@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import { loadDecisions, findCanvases, readContext, writeContext, updatePhaseState } from '../utils/context.js';
 import { generatePricingGuide, generateDecisionsTemplate, generateIAPrompt, generateIAPromptBanner, generateIAPromptFooter } from '../utils/estimateDomain.js';
 import { TOPICS, DISPLAY_NAMES, STATUS, surfaceEstimateTopics } from '../utils/estimateTopics.js';
+import { executeIntentionsSync, existingGuides } from '../utils/fs-adapter.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -145,18 +146,29 @@ export function runEstimate(targetBase, opts = {}) {
       decisionsTemplate = 'Error al generar el template de decisiones.';
     }
 
-    // pricing-decisions.md es un doc VIVO del equipo: se crea solo si no existe
-    // (create-if-not-exists), nunca se sobrescribe.
+    // pricing-decisions.md es un doc VIVO del equipo: intención kind 'decision'
+    // (create-if-not-exists) delegada al motor común — nunca se sobrescribe y,
+    // si existe, el motor loguea la recomendación de backup completa (Fase 0, 0.2).
     const decisionsTemplatePath = path.join(estimateDir, 'pricing-decisions.md');
-    if (fs.existsSync(decisionsTemplatePath)) {
-      warn(`⚠️  "${decisionsTemplatePath}" ya existe. No se sobrescribió.`);
-    } else {
-      try {
-        fs.writeFileSync(decisionsTemplatePath, decisionsTemplate, 'utf8');
-      } catch (err) {
-        const msg = err.code === 'EACCES' ? `Error de permisos al escribir "${decisionsTemplatePath}". Verifica que tengas permisos de escritura.` : err.message;
-        warn('⚠️  No se pudo escribir pricing-decisions.md:', msg);
-      }
+    const intentions = [
+      { action: 'create', kind: 'decision', content: decisionsTemplate, dest: decisionsTemplatePath },
+    ];
+
+    // Aviso no-TTY genérico, mismo patrón que init/assess (Fase 0, 0.3):
+    // condicionado a que exista ≥1 guía del plan. En Fase 0 estimate no tiene
+    // guías (pricing-guide.md es derivado regenerable; Fase 2 lo convierte en
+    // guía con Y/N), así que el aviso no se dispara todavía.
+    const interactive = Boolean(process.stdin && process.stdin.isTTY);
+    if (!interactive && existingGuides(intentions).length > 0) {
+      log('⚠️ Entorno no interactivo: no se actualizan las guías existentes.');
+    }
+
+    // Ejecución síncrona: runEstimate es un comando síncrono (pipeline lo
+    // invoca sin await), por lo que las intenciones sin confirmación corren por
+    // executeIntentionsSync (kind decision nunca pregunta).
+    const { logs } = executeIntentionsSync(intentions);
+    for (const line of logs) {
+      log(line);
     }
 
     // ── 5. Update Context ──

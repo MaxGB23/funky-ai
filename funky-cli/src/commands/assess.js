@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import * as p from '@clack/prompts';
 import { surfaceRiskPatterns } from '../utils/assessRules.js';
 import { readContext, writeContext, findCanvases, updatePhaseState } from '../utils/context.js';
-import { executeIntentions } from '../utils/fs-adapter.js';
+import { executeIntentions, existingGuides } from '../utils/fs-adapter.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -113,21 +113,20 @@ export async function runAssess(targetBase, opts = {}) {
 
     // Confirmación Y/N solo en entorno interactivo; sin TTY el default es "n"
     // (executeIntentions lo loguea) — nunca se sobrescriben guías sin input humano.
+    // El aviso no-TTY es genérico y condicionado a que exista ≥1 guía del plan
+    // (Fase 0, 0.3 — mismo patrón que init), no hardcodeado a assess-prompt.md.
     const interactive = Boolean(process.stdin && process.stdin.isTTY);
     let askConfirm;
     if (interactive) {
       askConfirm = async (dest, basename) => {
         const answer = await p.confirm({
-          message: `Ya existe ${basename}. ¿Quieres actualizarla con la versión más reciente?`,
+          message: `Ya existe ${basename}. Actualizarla trae la versión más reciente, pero REEMPLAZA la actual: perderás el progreso previo (anotaciones, ajustes) si no tienes un respaldo. ¿Quieres actualizarla?`,
           initialValue: false,
         });
         return !p.isCancel(answer) && answer === true;
       };
-    } else {
-      const promptDest = path.join(assessDir, 'assess-prompt.md');
-      if (fs.existsSync(promptDest)) {
-        log('⚠️ Entorno no interactivo: no se actualiza la guía assess-prompt.md existente.');
-      }
+    } else if (existingGuides(intentions).length > 0) {
+      log('⚠️ Entorno no interactivo: no se actualizan las guías existentes.');
     }
 
     const { logs } = await executeIntentions(intentions, { askConfirm });

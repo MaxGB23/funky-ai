@@ -1,9 +1,8 @@
 import { Command } from 'commander';
-import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import * as p from '@clack/prompts';
-import { executeIntentions } from '../utils/fs-adapter.js';
+import { executeIntentions, existingGuides } from '../utils/fs-adapter.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -29,8 +28,8 @@ export function runInit({ templatesDir, targetBase }) {
     { action: 'copy', kind: 'decision', src: path.join(templatesDir, 'INFRA-CANVAS.md'), dest: path.join(canvasDir, 'INFRA-CANVAS.md') },
     // Las guías se actualizan con confirmación Y/N si ya existen (kind guide);
     // la guía SIEMPRE entra al array, el skip/sobrescritura lo resuelve executeIntentions (D2).
-    { action: 'copy', kind: 'guide', src: path.join(templatesDir, 'canvas-planning-guide.md'), dest: path.join(canvasDir, 'canvas-planning-guide.md') },
-    { action: 'copy', kind: 'guide', src: path.join(templatesDir, 'init-prompt.md'), dest: path.join(canvasDir, 'init-prompt.md') },
+    { action: 'copy', kind: 'guide', src: path.join(templatesDir, 'canvas-planning-guide-template.md'), dest: path.join(canvasDir, 'canvas-planning-guide.md') },
+    { action: 'copy', kind: 'guide', src: path.join(templatesDir, 'init-prompt-template.md'), dest: path.join(canvasDir, 'init-prompt.md') },
   ];
 }
 
@@ -41,6 +40,10 @@ export const initCommand = new Command('init')
     const targetBase = process.cwd();
 
     try {
+      // Plan de intenciones calculado UNA vez: lo consumen el aviso no-TTY
+      // genérico (0.3) y executeIntentions.
+      const intentions = runInit({ templatesDir: initDir, targetBase });
+
       // Fase 2, 2.6: sin stdin interactivo (CI) no se pregunta; las guías se omiten.
       const interactive = Boolean(process.stdin && process.stdin.isTTY);
       let askConfirm;
@@ -48,26 +51,20 @@ export const initCommand = new Command('init')
       if (interactive) {
         askConfirm = async (dest, basename) => {
           const answer = await p.confirm({
-            message: `Ya existe ${basename}. ¿Quieres actualizarla con la versión más reciente?`,
+            message: `Ya existe ${basename}. Actualizarla trae la versión más reciente, pero REEMPLAZA la actual: perderás el progreso previo (anotaciones, ajustes) si no tienes un respaldo. ¿Quieres actualizarla?`,
             initialValue: false,
           });
           // isCancel se trata como "no": no sobrescribir.
           return !p.isCancel(answer) && answer === true;
         };
-      } else {
+      } else if (existingGuides(intentions).length > 0) {
         // Hallazgo smoke 1: el aviso solo aporta si hay guías existentes que
         // podrían actualizarse; en creación limpia es ruido.
-        const canvasDir = path.join(targetBase, 'docs', 'funky-ai', 'canvas');
-        const anyGuideExists = ['canvas-planning-guide.md', 'init-prompt.md'].some(name =>
-          fs.existsSync(path.join(canvasDir, name))
-        );
-        if (anyGuideExists) {
-          console.log('⚠️ Entorno no interactivo: no se actualizan las guías existentes.');
-        }
+        console.log('⚠️ Entorno no interactivo: no se actualizan las guías existentes.');
       }
 
       const { created, skipped, logs } = await executeIntentions(
-        runInit({ templatesDir: initDir, targetBase }),
+        intentions,
         { askConfirm }
       );
       for (const log of logs) {

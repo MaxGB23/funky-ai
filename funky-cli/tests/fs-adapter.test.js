@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import fs from 'fs';
 import path from 'path';
-import { executeIntentions } from '../src/utils/fs-adapter.js';
+import { executeIntentions, executeIntentionsSync, existingGuides } from '../src/utils/fs-adapter.js';
 
 vi.mock('fs');
 
@@ -207,6 +207,80 @@ describe('fs-adapter executeIntentions', () => {
       );
 
       expect(askConfirm).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('executeIntentionsSync — ejecución síncrona (Fase 0 estimate)', () => {
+    it('procesa el plan de forma síncrona (devuelve resultado, no una Promise) y crea (0.2)', () => {
+      fs.existsSync.mockReturnValue(false);
+
+      const result = executeIntentionsSync([
+        { action: 'create', dest: '/fake/created.md', content: 'contenido' }
+      ]);
+
+      expect(result).not.toBeInstanceOf(Promise);
+      expect(result.created).toBe(1);
+      expect(result.skipped).toBe(0);
+      expect(Array.isArray(result.logs)).toBe(true);
+      expect(fs.writeFileSync).toHaveBeenCalledWith('/fake/created.md', 'contenido', 'utf8');
+    });
+
+    it('kind decision existente → skip + mensaje completo de backup, sin escribir (0.2)', () => {
+      fs.existsSync.mockReturnValue(true);
+
+      const result = executeIntentionsSync([
+        { action: 'create', kind: 'decision', dest: '/fake/decisions.md', content: 'x' }
+      ]);
+
+      expect(result.skipped).toBe(1);
+      expect(fs.writeFileSync).not.toHaveBeenCalled();
+      expect(result.logs[0]).toContain('Contiene decisiones del proyecto');
+      expect(result.logs[0]).toContain('elimínalo o muévelo de ubicación');
+    });
+
+    it('kind guide existente → default n (skip logueado), no sobrescribe', () => {
+      fs.existsSync.mockReturnValue(true);
+
+      const result = executeIntentionsSync([
+        { action: 'copy', kind: 'guide', src: '/fake/guide.md', dest: '/fake/guide.md' }
+      ]);
+
+      expect(result.skipped).toBe(1);
+      expect(fs.copyFileSync).not.toHaveBeenCalled();
+      expect(result.logs[0]).toContain('Omitiendo');
+    });
+
+    it('respeta la opción dryRun', () => {
+      fs.existsSync.mockReturnValue(false);
+
+      const result = executeIntentionsSync([
+        { action: 'create', dest: '/fake/created.md', content: 'x' }
+      ], { dryRun: true });
+
+      expect(result.created).toBe(1);
+      expect(fs.writeFileSync).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('existingGuides — guías reales del plan de intenciones (Fase 0, 0.3)', () => {
+    it('devuelve solo los dest de kind guide que ya existen en el filesystem', () => {
+      fs.existsSync.mockImplementation((p) => String(p).endsWith('guide-existente.md'));
+
+      const guides = existingGuides([
+        { action: 'copy', kind: 'guide', src: '/g/s.md', dest: '/g/guide-existente.md' },
+        { action: 'copy', kind: 'guide', src: '/g/s.md', dest: '/g/guide-faltante.md' },
+        { action: 'copy', kind: 'decision', src: '/g/s.md', dest: '/g/decision.md' },
+        { action: 'create', content: 'x', dest: '/g/derivado.md' },
+        { action: 'mkdir', dest: '/g' }
+      ]);
+
+      expect(guides).toEqual(['/g/guide-existente.md']);
+    });
+
+    it('devuelve [] cuando ninguna guía existe', () => {
+      fs.existsSync.mockReturnValue(false);
+
+      expect(existingGuides([{ action: 'copy', kind: 'guide', dest: '/g/x.md' }])).toEqual([]);
     });
   });
 });
