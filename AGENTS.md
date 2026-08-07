@@ -27,7 +27,7 @@ Skills: `.agents/skills/sdd-docs-sync-gentle-ai/` y `.agents/skills/sdd-release-
 
 SDD ya define su branch (la crea `sdd-apply`); esta sección es solo para trabajo no-SDD.
 
-En trabajo directo: si no es un micro-fix trivial (≤1 archivo, reversible), preguntar al usuario si se crea branch ANTES de empezar a editar.
+En trabajo directo: si no es un micro-fix trivial (≤1 archivo, reversible), preguntar si se crea branch ANTES de empezar a editar; el PR es opcional (decisión del usuario). Tras el merge, sugerir borrar la branch en el mismo turno (`gh pr merge --delete-branch` con PR, `git branch -d` sin PR).
 
 ## Tests en `funky-cli/`
 
