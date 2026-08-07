@@ -23,6 +23,12 @@ Tras `sdd-archive`, sugerir en orden, solo si aplica (el usuario decide; no es o
 
 Skills: `.agents/skills/sdd-docs-sync-gentle-ai/` y `.agents/skills/sdd-release-gentle-ai/`.
 
+## Flujo directo (branches)
+
+SDD ya define su branch (la crea `sdd-apply`); esta sección es solo para trabajo no-SDD.
+
+En trabajo directo: si no es un micro-fix trivial (≤1 archivo, reversible), preguntar al usuario si se crea branch ANTES de empezar a editar.
+
 ## Tests en `funky-cli/`
 
 Al tocar tests de funky-cli, carga la skill `vitest` antes de editar (naming, imports, límites). `tests/organization.test.js` las aplica.
