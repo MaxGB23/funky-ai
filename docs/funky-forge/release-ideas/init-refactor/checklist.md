@@ -2,7 +2,7 @@
 
 > **Propósito:** seguimiento físico del refactor de `funky init` derivado de las observaciones del smoke test. Se marca aquí, no depende del contexto de la conversación.
 > **Fuente:** `docs/funky-forge/release-ideas/smoke-test-observaciones/mejoras-sugeridas.md` (§1 INIT y §4 GENERALES)
-> **Estado:** Fase 1 completada (2026-08-06) — Fase 2 completada (2026-08-06) — Fase 3 en curso: hallazgos del smoke corregidos (2026-08-06), falta validar Y/N interactivo en terminal real
+> **Estado:** Fase 1 completada (2026-08-06) — Fase 2 completada (2026-08-06) — Fase 3 completada (2026-08-06): smoke + Y/N interactivo validado por el usuario en terminal real
 
 ## Contrato de feedback (referencia)
 
@@ -45,7 +45,7 @@ Sin terminal (CI): default `n` logueado — no sobrescribir guías sin input hum
 - [x] 3.4 Smoke: todo existe sin TTY — guías omitidas, decisiones con recomendación, exit 0. ✔ (2026-08-06)
 - [x] 3.5 Smoke: error simulado (ENOTDIR bloqueando mkdir) → exit 1. ✔ (2026-08-06)
 - [x] 3.7 Correcciones de hallazgos del smoke en `init.js` y `fs-adapter.js` con tests TDD primero (328 tests, 27 files verde). ✔ (2026-08-06)
-- [ ] 3.6 PENDIENTE: validar flujo Y/N interactivo (guía existente + TTY real) en terminal del usuario.
+- [x] 3.6 Y/N interactivo en terminal real (guía existente + TTY): `y` actualiza, `n` no toca, ambos exit 0. ✔ (2026-08-06, validado por el usuario)
 
 ## Hallazgos del smoke (2026-08-06)
 
