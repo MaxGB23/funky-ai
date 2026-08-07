@@ -81,5 +81,6 @@ describe('math', () => {
 - Unit test files import from at most ONE `src/commands/` module; two or more command modules means an integration or mixed-unit file — rename it to `.integration.test.js` or split it.
 - Line caps: unit files ≤ 500 lines, integration/interactive files ≤ 800 lines.
 - Shared fs mocks and test helpers live in `tests/helpers/` (e.g. `tests/helpers/fsMock.js`), never duplicated across test files.
+- Test names describe the behavior the system must have (`creates the required files`), never the implementation (`should call copyFile`). When a test fails, its name must say which contract broke, not which function is invoked. Semantic rule — followed by convention, cannot be enforced mechanically by `tests/organization.test.js`.
 - Enforcement: `tests/organization.test.js` (meta-test, runs with `pnpm test`) fails on rule violations; legacy debt is tracked in its `LEGACY_EXCEPTIONS` map (may be empty once debt is migrated) and must be removed when a file is migrated.
 
