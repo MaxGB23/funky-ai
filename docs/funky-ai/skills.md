@@ -2,7 +2,7 @@
 
 ## ¿Qué problema resuelve?
 
-`funky skills` instala las skills del ecosistema agéntico de gentle-ai dentro de `.agents/skills/` del proyecto destino, junto con los docs compartidos de SDD (docs-live-index, formato canónico de índice seccional y release-notes). Cada skill declara sus propios recursos en un manifest (`src/skills/<skill>/manifest.js`), que es la única fuente de qué archivos se instalan y a dónde (R-SK-8) — el comando no tiene listas hardcodeadas de recursos.
+`funky skills` instala las skills del ecosistema agéntico MaxGB23 dentro de `.agents/skills/` del proyecto destino, junto con los docs compartidos de SDD (docs-live-index, formato canónico de índice seccional y release-notes). Cada skill declara sus propios recursos en un manifest (`src/skills/<skill>/manifest.js`), que es la única fuente de qué archivos se instalan y a dónde (R-SK-8) — el comando no tiene listas hardcodeadas de recursos.
 
 Sin `funky skills` las skills base (sdd-release, sdd-docs-sync) no se distribuyen al proyecto, ni se bootstrapan los docs compartidos que el flujo SDD espera en `.agents/templates/sdd/`.
 
