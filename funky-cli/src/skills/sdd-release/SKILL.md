@@ -80,6 +80,8 @@ git tag -a vX.Y.Z -m "Release vX.Y.Z"
 git push origin main --tags
 ```
 
+**Asunción (no ejecutar borrado de branches aquí):** la release corre desde `main` tras el merge del PR. La feature branch ya fue borrada en el merge (`gh pr merge --delete-branch` o GitHub auto-delete). Si queda una branch huérfana, el residuo es del paso de PR — la skill release no la borra.
+
 ### 6. Publish GitHub release
 
 The generated release notes (step 2) are the release body. Publish them with the SAME tag used in step 5:
@@ -115,5 +117,6 @@ gh release create vX.Y.Z \
 - ALWAYS publish the GitHub release with the exact notes file generated in step 2
 - NEVER force-push tags
 - NEVER skip the git status check
+- NEVER delete feature branches from the release skill — the PR merge step owns branch cleanup
 - NEVER create a GitHub release without checking `gh auth status`
 - If user says "skip" or "no release", stop immediately
