@@ -2,6 +2,9 @@
 
 Convenciones de proyecto para el orquestador y los sub-agentes.
 
+## Idioma (conversación)
+Conversación siempre en español CDMX chilango en chat, sin argentinismos. Documentación en español neutro.
+
 ## Directorio temporal (`.tmp/`)
 - Sub-agentes NO escriben en rutas externas al workspace (en Windows cada acceso pide confirmación de permisos). Scratch/sandbox/fixtures/reproducciones → `M:\funky-ai\.tmp\` (gitignored).
 - Excepciones: Review (bytes vía árboles Git del provider), Worktrees (`M:\funky-ai-worktrees`), artefactos nativos (verify-report, receipts).
@@ -25,6 +28,7 @@ SDD ya define su branch (la crea `sdd-apply`); esta sección es solo para trabaj
 
 En trabajo directo: si no es un micro-fix trivial (≤1 archivo, reversible), preguntar si se crea branch ANTES de empezar a editar; el PR es opcional (decisión del usuario). Tras el merge, sugerir borrar la branch en el mismo turno (`gh pr merge --delete-branch` con PR, `git branch -d` sin PR).
 PR en directo: issue-first (skills `issue-creation` + `branch-pr`), igual que SDD; hotfix urgente documenta el issue tras el merge.
+Si el trabajo directo cambia un contrato (flags, comportamiento, estructura), la root spec de OpenSpec queda desincronizada: decidir conscientemente si se captura después con un change SDD o se acepta la divergencia. Micro-fix → no pensar en specs.
 
 ## Tests en `funky-cli/`
 Al tocar tests de funky-cli, carga la skill `vitest` antes de editar (naming, imports, límites). `tests/organization.test.js` las aplica. Revisar sección "Repo conventions (funky-ai)"
