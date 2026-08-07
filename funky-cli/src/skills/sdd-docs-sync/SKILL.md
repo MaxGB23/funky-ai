@@ -17,7 +17,7 @@ Tras `sdd-archive`, antes de `sdd-release` (o al cerrar cualquier sesión con ca
 
 ## Hard Rules
 
-1. **Safe-Contexting:** NUNCA leer el doc destino completo. Leer solo su `Índice Seccional` y aplicar `grep` quirúrgico sobre el doc.
+1. **Safe-Contexting:** NUNCA leer el doc destino completo. Leer solo su `Índice Seccional`, `grep` el subtítulo para localizar la sección y leer **únicamente esa sección completa** antes de editar.
 2. **SSOT condicional:** si existe `.agents/templates/sdd/docs-live-index.md`, es la fuente de verdad de qué docs existen. Si NO existe (proyecto sin `funky scaffold`/`funky skills`), inicialízalo: crea `.agents/templates/sdd/docs-live-index.md` con el header canónico (estructura de tabla SSOT de esta skill) y registra en él cada doc que esta skill cree o modifique. No editar un doc fuera del índice; registrar cualquier doc nuevo en él y crear su índice seccional.
 3. **Cambio es la verdad:** si cambió un comando, flag o fase, verificar el doc contra los artefactos del change (`apply-progress`/`verify-report`) y el estado real del repo. Corregir el DOC, nunca afirmar algo que el change no respalde.
 4. **repo-map solo por estructura:** actualizar `docs/repo-map.md` únicamente si existe y cuando cambian rutas, comandos o directorios — no por contenido. Si no existe, no crearlo.
@@ -50,7 +50,7 @@ Si existe `docs-live-index.md`, consultarlo y marcar cada doc cuya condición "A
 
 ### 3. Cirugía por doc
 
-Para cada doc aplicable: leer su índice seccional, `grep` el subtítulo exacto y aplicar el cambio mínimo.
+Para cada doc aplicable: leer su índice seccional, `grep` el subtítulo exacto para localizar la sección, leer la sección completa (del heading hasta el siguiente heading del mismo nivel) y aplicar el cambio mínimo sobre ella.
 
 ### 4. repo-map
 

@@ -17,7 +17,7 @@ Tras `sdd-archive`, antes de `sdd-release` (o al cerrar cualquier sesión con ca
 
 ## Hard Rules
 
-1. **Safe-Contexting:** NUNCA leer el doc destino completo. Leer solo su `Índice Seccional` y aplicar `grep` quirúrgico sobre el doc.
+1. **Safe-Contexting:** NUNCA leer el doc destino completo. Leer solo su `Índice Seccional`, `grep` el subtítulo para localizar la sección y leer **únicamente esa sección completa** antes de editar.
 2. **SSOT:** `.agents/templates/sdd/docs-live-index.md` es la fuente de verdad de qué docs existen. No editar un doc fuera del índice; registrar cualquier doc nuevo en él y crear su índice seccional.
 3. **CLI es la verdad:** si cambió un comando, verificar el doc contra el CLI real (superficie y comportamiento, paso 4). Corregir el DOC, nunca afirmar algo que el CLI no muestre.
 4. **repo-map solo por estructura:** actualizar `docs/repo-map.md` únicamente cuando cambian rutas, comandos o directorios — no por contenido.
@@ -50,11 +50,11 @@ Consultar `docs-live-index.md` y marcar cada doc cuya condición "Aplica si..." 
 
 ### 3. Cirugía por doc
 
-Para cada doc aplicable: leer su índice seccional, `grep` el subtítulo exacto y aplicar el cambio mínimo.
+Para cada doc aplicable: leer su índice seccional, `grep` el subtítulo exacto para localizar la sección, leer la sección completa (del heading hasta el siguiente heading del mismo nivel) y aplicar el cambio mínimo sobre ella.
 
 ### 4. Verificación CLI (dos capas)
 
-**4a. Superficie:** para cada comando modificado, ejecutar `node funky-cli/bin/funky.js <cmd> --help` y comparar flags/subcomandos con el doc. Cada subcomando de negocio del CLI debe tener su sección en el doc; los auxiliares de Commander (`help`, `--help`) no se documentan.
+**4a. Superficie:** Si se tocó comandos, para cada comando modificado, ejecutar `node funky-cli/bin/funky.js <cmd> --help` y comparar flags/subcomandos con el doc. Cada subcomando de negocio del CLI debe tener su sección en el doc; los auxiliares de Commander (`help`, `--help`) no se documentan.
 
 **4b. Comportamiento:** si cambió lógica de salida (exit codes, mensajes, shapes JSON), ejecutar los escenarios críticos que el doc afirma y comparar salida real vs afirmada. Ejemplo: `status --json` sin `context.json` → shape v2 not-started en stdout, exit 0. Ejecutar en directorio temporal de trabajo si el comando muta estado. Corregir el DOC cuando no coincida.
 
