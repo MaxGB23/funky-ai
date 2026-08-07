@@ -27,4 +27,4 @@ En trabajo directo: si no es un micro-fix trivial (≤1 archivo, reversible), pr
 PR en directo: issue-first (skills `issue-creation` + `branch-pr`), igual que SDD; hotfix urgente documenta el issue tras el merge.
 
 ## Tests en `funky-cli/`
-Al tocar tests de funky-cli, carga la skill `vitest` antes de editar (naming, imports, límites). `tests/organization.test.js` las aplica.
+Al tocar tests de funky-cli, carga la skill `vitest` antes de editar (naming, imports, límites). `tests/organization.test.js` las aplica. Revisar sección "Repo conventions (funky-ai)"
