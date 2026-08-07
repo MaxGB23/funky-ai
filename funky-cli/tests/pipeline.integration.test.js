@@ -169,7 +169,7 @@ describe('pipeline assess', () => {
     expect(spies.exitSpy).toHaveBeenCalledWith(0);
   });
 
-  it('invalid context (unknown version) — stderr + exit 1, NO init, NO runAssess, NO write', () => {
+  it('contexto inválido (versión desconocida) → error en stderr y exit 1, sin avanzar el pipeline', () => {
     invalidRead();
 
     pipelineCommand.parse(['assess'], { from: 'user' });
@@ -182,7 +182,7 @@ describe('pipeline assess', () => {
     expect(errMsgs.some(m => m.includes('context.json inválido'))).toBe(true);
   });
 
-  it('exits 1 when runAssess returns a failed result', () => {
+  it('termina con exit 1 cuando el assess falla', () => {
     okRead(v2Context());
     runAssess.mockReturnValue({ phase: 'assess', status: 'failed', artifacts: [], durationMs: 1, warnings: [] });
 

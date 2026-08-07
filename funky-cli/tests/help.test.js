@@ -98,7 +98,7 @@ describe('enrichCommandHelp()', () => {
     expect(command.addHelpText).toHaveBeenCalledWith('after', '\n# Doc real\n');
   });
 
-  it('doc ausente → no-op: no llama addHelpText y devuelve false (R-HL-2)', () => {
+  it('doc ausente → no agrega help extra y devuelve false (R-HL-2)', () => {
     fsExistsMock.mockReturnValue(false);
     const command = makeCommand();
 

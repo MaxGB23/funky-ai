@@ -144,7 +144,7 @@ describe('runEngramAdd() — unit (fs mocked)', () => {
     expect(updatedIndex).toContain('architecture/sin-index.md');
   });
 
-  it('no llama a mkdirSync si los directorios ya existen', async () => {
+  it('no crea directorios que ya existen', async () => {
     const tag = '[dir-existe]';
     const category = 'pattern';
     const desc = 'Dir ya existe';

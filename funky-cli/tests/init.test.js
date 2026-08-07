@@ -178,7 +178,7 @@ describe('runInit()', () => {
     expect(promptIdx).toBe(intentions.length - 1);
   });
 
-  it('usa rutas correctas: template como src, canvas como dest (R1/R7)', () => {
+  it('sitúa brief, guía y prompt del canvas en docs/funky-ai/canvas/ (R1/R7)', () => {
     const intentions = runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetBase });
 
     const brief = intentions.find(i => i.action === 'copy' && path.basename(i.dest) === 'brief-funcional.md');
@@ -194,7 +194,7 @@ describe('runInit()', () => {
     expect(prompt.dest).toBe(path.join(fakeTargetBase, 'docs/funky-ai/canvas', 'init-prompt.md'));
   });
 
-  it('NO realiza I/O: no toca existsSync/mkdirSync/copyFileSync (R8)', () => {
+  it('planifica la copia sin tocar el sistema de archivos (R8)', () => {
     runInit({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetBase });
 
     expect(sharedFsMock.existsSync).not.toHaveBeenCalled();

@@ -158,7 +158,7 @@ describe('runScaffold() — interpolación {{project_name}}', () => {
     expect(readme.content).not.toContain('{{project_name}}');
   });
 
-  it('usa basename(targetBase) como fallback cuando no hay package.json', () => {
+  it('usa el nombre del directorio destino como nombre de proyecto cuando no hay package.json', () => {
     const intentions = runScaffold({ templatesDir: bootstrapDir, targetBase: tmpDir });
 
     const readme = findReadme(intentions);

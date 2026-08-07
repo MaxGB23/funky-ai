@@ -21,7 +21,7 @@ describe('runScaffold() Integration', () => {
     }
   });
 
-  it('NO debería copiar PROJECT-CANVAS.md desde bootstrap (va a docs/funky-ai/canvas/ via init command)', async () => {
+  it('no debería crear PROJECT-CANVAS.md en la raíz del workspace (lo crea init en docs/funky-ai/canvas/)', async () => {
     const intentions = runScaffold({ templatesDir, targetBase: tmpDir });
     const result = await executeIntentions(intentions);
 
@@ -30,7 +30,7 @@ describe('runScaffold() Integration', () => {
     expect(result.created).toBeGreaterThan(0);
   });
 
-  it('debería copiar ORCHESTRATOR-STATE.md como root file', async () => {
+  it('debería crear ORCHESTRATOR-STATE.md en la raíz del nuevo workspace', async () => {
     const intentions = runScaffold({ templatesDir, targetBase: tmpDir });
     const result = await executeIntentions(intentions);
 
@@ -39,7 +39,7 @@ describe('runScaffold() Integration', () => {
     expect(result.created + result.skipped).toBeGreaterThan(0);
   });
 
-  it('NO debería copiar la plantilla canónica worker-handoff al nuevo workspace', async () => {
+  it('no debería incluir la plantilla worker-handoff en el nuevo workspace', async () => {
     const intentions = runScaffold({ templatesDir, targetBase: tmpDir });
     await executeIntentions(intentions);
 
@@ -79,7 +79,7 @@ describe('runScaffold() Integration', () => {
     }
   });
 
-  it('debería usar basename(targetBase) como fallback cuando no hay package.json', async () => {
+  it('debería usar el nombre del directorio destino como nombre de proyecto cuando no hay package.json', async () => {
     const targetDir = path.join(process.cwd(), 'tmp-integration-basename');
     fs.mkdirSync(targetDir, { recursive: true });
 
