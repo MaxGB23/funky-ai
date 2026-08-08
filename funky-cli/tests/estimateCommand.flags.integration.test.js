@@ -47,10 +47,10 @@ describe('estimateCommand — guía declarativa (2.1)', () => {
     return mf;
   }
 
-  it('2.1: la guía referencia los archivos del proyecto y NO incrusta su contenido', () => {
+  it('2.1: la guía referencia los archivos del proyecto y NO incrusta su contenido', async () => {
     standardMocks();
 
-    estimateCommand.parse([], { from: 'user' });
+    await estimateCommand.parseAsync([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
@@ -63,14 +63,14 @@ describe('estimateCommand — guía declarativa (2.1)', () => {
     expect(guide).not.toContain('React 18');
   });
 
-  it('2.1: sin flags no hay ficha de alcance, ni secciones de topics, ni brief embebido', () => {
+  it('2.1: sin flags no hay ficha de alcance, ni secciones de topics, ni brief embebido', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     addDecisions(mf, DECISIONS_CONTENT);
     applyMocks(mf);
 
-    estimateCommand.parse([], { from: 'user' });
+    await estimateCommand.parseAsync([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
@@ -101,7 +101,7 @@ describe('estimateCommand — terminal limpia (2.2)', () => {
     stderrSpy.mockRestore();
   });
 
-  it('2.2: no imprime sugerencias automáticas de flags (💡 Se detectó / Considerá)', () => {
+  it('2.2: no imprime sugerencias automáticas de flags (💡 Se detectó / Considerá)', async () => {
     const mf = createMockFiles();
     addOptionalTemplates(mf);
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
@@ -112,7 +112,7 @@ describe('estimateCommand — terminal limpia (2.2)', () => {
 
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-    estimateCommand.parse([], { from: 'user' });
+    await estimateCommand.parseAsync([], { from: 'user' });
 
     const msgs = logSpy.mock.calls.map((c) => String(c));
     expect(msgs.some((m) => m.includes('💡 Se detectó'))).toBe(false);
@@ -148,10 +148,10 @@ describe('estimateCommand — incrustación aditiva por marcadores (2.3, TDD red
     return mf;
   }
 
-  it('2.3a: primera corrida crea la guía con la sección del flag incrustada por marcador, sobre ## Estructura de Discusión', () => {
+  it('2.3a: primera corrida crea la guía con la sección del flag incrustada por marcador, sobre ## Estructura de Discusión', async () => {
     standardMocks();
 
-    estimateCommand.parse(['--security'], { from: 'user' });
+    await estimateCommand.parseAsync(['--security'], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
@@ -161,11 +161,11 @@ describe('estimateCommand — incrustación aditiva por marcadores (2.3, TDD red
     expect(guide.indexOf('<!-- topic:security -->')).toBeLessThan(guide.indexOf('## Estructura de Discusión'));
   });
 
-  it('2.3b: segunda corrida con otra flag incrusta la nueva sección sin preguntar, conserva la anterior y mantiene el orden canónico', () => {
+  it('2.3b: segunda corrida con otra flag incrusta la nueva sección sin preguntar, conserva la anterior y mantiene el orden canónico', async () => {
     const mf = standardMocks();
     seedEmbeddedGuide(mf, 'security', TOPIC_FRAGMENT_SECURITY);
 
-    estimateCommand.parse(['--roles'], { from: 'user' });
+    await estimateCommand.parseAsync(['--roles'], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
@@ -174,24 +174,24 @@ describe('estimateCommand — incrustación aditiva por marcadores (2.3, TDD red
     expect(guide.indexOf('<!-- topic:roles -->')).toBeLessThan(guide.indexOf('<!-- topic:security -->'));
   });
 
-  it('2.3d: repetir la misma flag es idempotente: no duplica la sección y sale 0', () => {
+  it('2.3d: repetir la misma flag es idempotente: no duplica la sección y sale 0', async () => {
     standardMocks();
 
-    estimateCommand.parse(['--security'], { from: 'user' });
+    await estimateCommand.parseAsync(['--security'], { from: 'user' });
     vi.mocked(fs.writeFileSync).mockClear();
-    estimateCommand.parse(['--security'], { from: 'user' });
+    await estimateCommand.parseAsync(['--security'], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
     expect(guide.match(/<!-- topic:security -->/g) || []).toHaveLength(1);
   });
 
-  it('2.3e: template base modificado → refresco reincrusta TODOS los topics detectados (ninguno se pierde)', () => {
+  it('2.3e: template base modificado → refresco reincrusta TODOS los topics detectados (ninguno se pierde)', async () => {
     const mf = standardMocks();
     seedEmbeddedGuide(mf, 'security', TOPIC_FRAGMENT_SECURITY);
     seedEmbeddedGuide(mf, 'roles', TOPIC_FRAGMENT_ROLES);
 
-    estimateCommand.parse(['--security', '--roles'], { from: 'user' });
+    await estimateCommand.parseAsync(['--security', '--roles'], { from: 'user' });
 
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
     expect(guide).toContain(TOPIC_FRAGMENT_ROLES);
@@ -225,10 +225,10 @@ describe('estimateCommand — estimate-prompt.md (2.8, TDD red)', () => {
     return mf;
   }
 
-  it('2.8: genera docs/funky-ai/estimate/estimate-prompt.md (intención kind guide)', () => {
+  it('2.8: genera docs/funky-ai/estimate/estimate-prompt.md (intención kind guide)', async () => {
     standardMocks();
 
-    estimateCommand.parse([], { from: 'user' });
+    await estimateCommand.parseAsync([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
@@ -237,12 +237,12 @@ describe('estimateCommand — estimate-prompt.md (2.8, TDD red)', () => {
     expect(String(promptCall[1])).toContain('facilitador');
   });
 
-  it('2.8: no imprime el prompt gigante en consola (el material vive en estimate-prompt.md)', () => {
+  it('2.8: no imprime el prompt gigante en consola (el material vive en estimate-prompt.md)', async () => {
     standardMocks();
 
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-    estimateCommand.parse([], { from: 'user' });
+    await estimateCommand.parseAsync([], { from: 'user' });
 
     const msgs = logSpy.mock.calls.map((c) => String(c));
     expect(msgs.some((m) => m.includes('PROMPT PARA INICIAR SESIÓN'))).toBe(false);
@@ -278,28 +278,28 @@ describe('estimateCommand — determinismo y resumen (R13 + 2.2)', () => {
     return mf;
   }
 
-  it('R13: identical inputs and flags twice → byte-identical guide', () => {
+  it('R13: identical inputs and flags twice → byte-identical guide', async () => {
     standardMocks();
 
-    estimateCommand.parse(['--security', '--roles'], { from: 'user' });
+    await estimateCommand.parseAsync(['--security', '--roles'], { from: 'user' });
     const first = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
     expect(first).toContain('Guía de Discusión de Pricing');
 
     vi.mocked(fs.writeFileSync).mockClear();
 
-    estimateCommand.parse(['--security', '--roles'], { from: 'user' });
+    await estimateCommand.parseAsync(['--security', '--roles'], { from: 'user' });
     const second = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
 
     expect(second).toContain('Guía de Discusión de Pricing');
     expect(second).toBe(first);
   });
 
-  it('resumen lista las secciones solicitadas sin la ficha de alcance', () => {
+  it('resumen lista las secciones solicitadas sin la ficha de alcance', async () => {
     standardMocks();
 
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-    estimateCommand.parse(['--security', '--roles', '--brief', '--pricing-team'], { from: 'user' });
+    await estimateCommand.parseAsync(['--security', '--roles', '--brief', '--pricing-team'], { from: 'user' });
 
     const msgs = logSpy.mock.calls.map((c) => String(c));
     expect(msgs.some((m) => m.includes('Secciones solicitadas en la guía: brief funcional, roles del equipo, seguridad, referencia de costos de equipo.'))).toBe(true);
@@ -308,7 +308,7 @@ describe('estimateCommand — determinismo y resumen (R13 + 2.2)', () => {
     logSpy.mockRestore();
   });
 
-  it('resumen sin flags → ninguna (guía base declarativa)', () => {
+  it('resumen sin flags → ninguna (guía base declarativa)', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
@@ -317,7 +317,7 @@ describe('estimateCommand — determinismo y resumen (R13 + 2.2)', () => {
 
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-    estimateCommand.parse([], { from: 'user' });
+    await estimateCommand.parseAsync([], { from: 'user' });
 
     const msgs = logSpy.mock.calls.map((c) => String(c));
     expect(msgs.some((m) => m.includes('Secciones solicitadas en la guía: ninguna (guía base declarativa).'))).toBe(true);
@@ -325,17 +325,17 @@ describe('estimateCommand — determinismo y resumen (R13 + 2.2)', () => {
     logSpy.mockRestore();
   });
 
-  it('acepta --brief sin valor y sale 0; la guía queda declarativa (el contenido se referencia)', () => {
+  it('acepta --brief sin valor y sale 0; la guía queda declarativa (el contenido se referencia)', async () => {
     standardMocks();
 
-    estimateCommand.parse(['--brief'], { from: 'user' });
+    await estimateCommand.parseAsync(['--brief'], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
     expect(guide).not.toContain('## Brief Funcional');
   });
 
-  it('#33: sin init brief y sin --brief → no sección de brief en la guía', () => {
+  it('#33: sin init brief y sin --brief → no sección de brief en la guía', async () => {
     const mf = createMockFiles();
     addOptionalTemplates(mf);
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
@@ -343,7 +343,7 @@ describe('estimateCommand — determinismo y resumen (R13 + 2.2)', () => {
     addDecisions(mf, DECISIONS_CONTENT);
     applyMocks(mf);
 
-    estimateCommand.parse([], { from: 'user' });
+    await estimateCommand.parseAsync([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
@@ -369,7 +369,7 @@ describe('estimateCommand — flags Commander (R8)', () => {
     stderrSpy.mockRestore();
   });
 
-  it('R8: acepta --multi-tenant (Commander camelCase) y sale 0', () => {
+  it('R8: acepta --multi-tenant (Commander camelCase) y sale 0', async () => {
     const mf = createMockFiles();
     addOptionalTemplates(mf);
     mf[path.join(TPL_DIR, 'topics', 'multi-tenant.md')] = TOPIC_FRAGMENT_MULTI_TENANT;
@@ -378,7 +378,7 @@ describe('estimateCommand — flags Commander (R8)', () => {
     addDecisions(mf, DECISIONS_CONTENT);
     applyMocks(mf);
 
-    estimateCommand.parse(['--multi-tenant'], { from: 'user' });
+    await estimateCommand.parseAsync(['--multi-tenant'], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
   });

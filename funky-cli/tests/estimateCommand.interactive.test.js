@@ -70,14 +70,14 @@ describe('estimateCommand — guías interactivas (2.3c/2.3e, 2.8 — TDD red)',
     return mf;
   }
 
-  it('2.3c: template de un topic modificado → confirma Y/N; con "n" conserva la sección actual y sale 0', () => {
+  it('2.3c: template de un topic modificado → confirma Y/N; con "n" conserva la sección actual y sale 0', async () => {
     const mf = standardMocks();
     // El template REAL del topic cambió respecto a lo incrustado en la guía.
     mf[path.join(PRICING_GUIDE_TPL_PATH, '..', 'topics', 'security.md')] = '## Seguridad\n\nImpacto en costos:\n- Nueva versión del fragmento.';
     seedGuideWithTopics(mf, [['security', '## Seguridad\n\nImpacto en costos:\n- Versión antigua.']]);
     clackMock.confirm.mockResolvedValue(false);
 
-    estimateCommand.parse(['--security'], { from: 'user' });
+    await estimateCommand.parseAsync(['--security'], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     expect(clackMock.confirm).toHaveBeenCalled();
@@ -89,14 +89,14 @@ describe('estimateCommand — guías interactivas (2.3c/2.3e, 2.8 — TDD red)',
     expect(guideContent).not.toContain('Nueva versión del fragmento');
   });
 
-  it('2.3e: template base modificado → confirma Y/N; con "n" NO toca la guía actual y sale 0', () => {
+  it('2.3e: template base modificado → confirma Y/N; con "n" NO toca la guía actual y sale 0', async () => {
     const mf = standardMocks();
     // El template base se actualizó: la guía existente está desactualizada.
     mf[PRICING_GUIDE_TPL_PATH] = DEFAULT_GUIDE_TEMPLATE + '\n\n## Sección Nueva de la Base';
     seedGuideWithTopics(mf, [['security', TOPIC_FRAGMENT_SECURITY], ['roles', TOPIC_FRAGMENT_ROLES]]);
     clackMock.confirm.mockResolvedValue(false);
 
-    estimateCommand.parse(['--security', '--roles'], { from: 'user' });
+    await estimateCommand.parseAsync(['--security', '--roles'], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     expect(clackMock.confirm).toHaveBeenCalled();
@@ -108,13 +108,13 @@ describe('estimateCommand — guías interactivas (2.3c/2.3e, 2.8 — TDD red)',
     expect(guideContent).toContain(TOPIC_FRAGMENT_ROLES);
   });
 
-  it('2.3e: con "y" reconstruye la base fresca y reincrusta TODOS los topics detectados', () => {
+  it('2.3e: con "y" reconstruye la base fresca y reincrusta TODOS los topics detectados', async () => {
     const mf = standardMocks();
     mf[PRICING_GUIDE_TPL_PATH] = DEFAULT_GUIDE_TEMPLATE + '\n\n## Base Actualizada';
     seedGuideWithTopics(mf, [['security', TOPIC_FRAGMENT_SECURITY], ['transactions', TOPIC_FRAGMENT_TRANSACTIONS]]);
     clackMock.confirm.mockResolvedValue(true);
 
-    estimateCommand.parse(['--security', '--transactions'], { from: 'user' });
+    await estimateCommand.parseAsync(['--security', '--transactions'], { from: 'user' });
 
     expect(clackMock.confirm).toHaveBeenCalled();
     const guideCall = vi.mocked(fs.writeFileSync).mock.calls.find((c) => String(c[0]).includes('pricing-guide.md'));
@@ -125,12 +125,12 @@ describe('estimateCommand — guías interactivas (2.3c/2.3e, 2.8 — TDD red)',
     expect(guideContent).toContain(TOPIC_FRAGMENT_TRANSACTIONS);
   });
 
-  it('2.8: estimate-prompt.md existente → confirma Y/N (kind guide); con "n" no lo sobrescribe y sale 0', () => {
+  it('2.8: estimate-prompt.md existente → confirma Y/N (kind guide); con "n" no lo sobrescribe y sale 0', async () => {
     const mf = standardMocks();
     mf[path.join(PRICING_GUIDE_DEST, '..', 'estimate-prompt.md')] = '# Prompt previo del equipo';
     clackMock.confirm.mockResolvedValue(false);
 
-    estimateCommand.parse([], { from: 'user' });
+    await estimateCommand.parseAsync([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     expect(clackMock.confirm).toHaveBeenCalled();

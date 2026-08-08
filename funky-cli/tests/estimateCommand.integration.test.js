@@ -27,14 +27,14 @@ describe('estimateCommand — integration', () => {
     stderrSpy.mockRestore();
   });
 
-  it('exits 0 with full flow (decisions + canvases)', () => {
+  it('exits 0 with full flow (decisions + canvases)', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     addDecisions(mf, DECISIONS_CONTENT);
     applyMocks(mf);
 
-    estimateCommand.parse([], { from: 'user' });
+    await estimateCommand.parseAsync([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
@@ -42,7 +42,7 @@ describe('estimateCommand — integration', () => {
     expect(writeCalls.some(c => String(c[0]).includes('pricing-decisions.md'))).toBe(true);
   });
 
-  it('warns when decisions are missing and exits 0', () => {
+  it('warns when decisions are missing and exits 0', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
@@ -50,7 +50,7 @@ describe('estimateCommand — integration', () => {
 
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-    estimateCommand.parse([], { from: 'user' });
+    await estimateCommand.parseAsync([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     expect(warnSpy).toHaveBeenCalled();
@@ -60,7 +60,7 @@ describe('estimateCommand — integration', () => {
     warnSpy.mockRestore();
   });
 
-  it('warns when project canvas is missing and exits 0', () => {
+  it('warns when project canvas is missing and exits 0', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     addDecisions(mf, DECISIONS_CONTENT);
@@ -68,7 +68,7 @@ describe('estimateCommand — integration', () => {
 
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-    estimateCommand.parse([], { from: 'user' });
+    await estimateCommand.parseAsync([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const warnMsgs = warnSpy.mock.calls.map(c => String(c));
@@ -77,7 +77,7 @@ describe('estimateCommand — integration', () => {
     warnSpy.mockRestore();
   });
 
-  it('warns on unfilled canvas sections and exits 0', () => {
+  it('warns on unfilled canvas sections and exits 0', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', 'Framework: [Responde aquí]');
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
@@ -86,7 +86,7 @@ describe('estimateCommand — integration', () => {
 
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-    estimateCommand.parse([], { from: 'user' });
+    await estimateCommand.parseAsync([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const warnMsgs = warnSpy.mock.calls.map(c => String(c));
@@ -95,13 +95,13 @@ describe('estimateCommand — integration', () => {
     warnSpy.mockRestore();
   });
 
-  it('exits 0 even when nothing exists (graceful degradation)', () => {
+  it('exits 0 even when nothing exists (graceful degradation)', async () => {
     const mf = createMockFiles();
     applyMocks(mf);
 
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-    estimateCommand.parse([], { from: 'user' });
+    await estimateCommand.parseAsync([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     expect(warnSpy).toHaveBeenCalled();
@@ -109,7 +109,7 @@ describe('estimateCommand — integration', () => {
     warnSpy.mockRestore();
   });
 
-  it('exits 1 when --context file is missing (R-E1)', () => {
+  it('exits 1 when --context file is missing (R-E1)', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
@@ -117,7 +117,7 @@ describe('estimateCommand — integration', () => {
     applyMocks(mf);
 
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    estimateCommand.parse(['--context', 'missing.json'], { from: 'user' });
+    await estimateCommand.parseAsync(['--context', 'missing.json'], { from: 'user' });
 
     // El exit(1) proviene del result status 'failed' (no del parseo de Commander).
     const errMsgs = errorSpy.mock.calls.map(c => String(c));
@@ -126,14 +126,14 @@ describe('estimateCommand — integration', () => {
     errorSpy.mockRestore();
   });
 
-  it('writes pricing-guide.md and pricing-decisions-template.md', () => {
+  it('writes pricing-guide.md and pricing-decisions-template.md', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     addDecisions(mf, DECISIONS_CONTENT);
     applyMocks(mf);
 
-    estimateCommand.parse([], { from: 'user' });
+    await estimateCommand.parseAsync([], { from: 'user' });
 
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const guideCall = writeCalls.find(c => String(c[0]).includes('pricing-guide.md'));
@@ -149,7 +149,7 @@ describe('estimateCommand — integration', () => {
     expect(decisionsContent).toContain('Decisiones de Pricing');
   });
 
-  it('overwrites pricing-guide.md when it already exists (derived artifact)', () => {
+  it('overwrites pricing-guide.md when it already exists (derived artifact)', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
@@ -157,7 +157,7 @@ describe('estimateCommand — integration', () => {
     mf[path.join(CWD, 'docs', 'funky-ai', 'estimate', 'pricing-guide.md')] = '# Guía obsoleta previa';
     applyMocks(mf);
 
-    estimateCommand.parse([], { from: 'user' });
+    await estimateCommand.parseAsync([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
@@ -168,7 +168,7 @@ describe('estimateCommand — integration', () => {
     expect(guideContent).not.toContain('Guía obsoleta previa');
   });
 
-  it('does NOT overwrite an existing pricing-decisions.md; logs the engine backup recommendation (0.2)', () => {
+  it('does NOT overwrite an existing pricing-decisions.md; logs the engine backup recommendation (0.2)', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
@@ -178,7 +178,7 @@ describe('estimateCommand — integration', () => {
 
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-    estimateCommand.parse([], { from: 'user' });
+    await estimateCommand.parseAsync([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
@@ -194,7 +194,7 @@ describe('estimateCommand — integration', () => {
     logSpy.mockRestore();
   });
 
-  it('sin TTY y sin guías en el plan → NO loguea aviso de entorno no interactivo (0.3)', () => {
+  it('sin TTY y sin guías en el plan → NO loguea aviso de entorno no interactivo (0.3)', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
@@ -203,7 +203,7 @@ describe('estimateCommand — integration', () => {
 
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-    estimateCommand.parse([], { from: 'user' });
+    await estimateCommand.parseAsync([], { from: 'user' });
 
     const logMsgs = logSpy.mock.calls.map(c => String(c));
     expect(logMsgs.some(m => m.includes('Entorno no interactivo'))).toBe(false);
@@ -222,7 +222,7 @@ describe('--context flag', () => {
     vi.mocked(fs.writeFileSync).mockReset();
   });
 
-  it('prints error when context file is missing', () => {
+  it('prints error when context file is missing', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
@@ -230,7 +230,7 @@ describe('--context flag', () => {
 
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    const result = runEstimate(CWD, { context: true });
+    const result = await runEstimate(CWD, { context: true });
 
     expect(errorSpy).toHaveBeenCalled();
     // R-P12: resultado failed, sin artifacts
@@ -245,7 +245,7 @@ describe('--context flag', () => {
     errorSpy.mockRestore();
   });
 
-  it('uses decisions from filesystem when --context is provided', () => {
+  it('uses decisions from filesystem when --context is provided', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
@@ -253,7 +253,7 @@ describe('--context flag', () => {
     addDecisions(mf, DECISIONS_CONTENT);
     applyMocks(mf);
 
-    const result = runEstimate(CWD, { context: true });
+    const result = await runEstimate(CWD, { context: true });
 
     // R-P12: result object
     expect(result.phase).toBe('estimate');
@@ -270,7 +270,7 @@ describe('--context flag', () => {
     expect(guideContent).not.toContain('Next.js');
   });
 
-  it('reads decisions from ctx.assess.decisionsFile when --context provides a custom path', () => {
+  it('reads decisions from ctx.assess.decisionsFile when --context provides a custom path', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
@@ -281,7 +281,7 @@ describe('--context flag', () => {
     }));
     applyMocks(mf);
 
-    const result = runEstimate(CWD, { context: true });
+    const result = await runEstimate(CWD, { context: true });
 
     expect(result.status).toBe('completed');
 
@@ -296,7 +296,7 @@ describe('--context flag', () => {
     expect(guideContent).toContain('docs/funky-ai/assess/architecture-decisions.md');
   });
 
-  it('writes estimate timestamp and completed state to context.json', () => {
+  it('writes estimate timestamp and completed state to context.json', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
@@ -304,7 +304,7 @@ describe('--context flag', () => {
     addContextJson(mf, v2Context());
     applyMocks(mf);
 
-    const result = runEstimate(CWD, { context: true });
+    const result = await runEstimate(CWD, { context: true });
 
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const contextCall = writeCalls.find(c => String(c[0]).endsWith('context.json'));
@@ -322,7 +322,7 @@ describe('--context flag', () => {
     expect(result.artifacts.every(a => typeof a.path === 'string' && !a.path.startsWith('/'))).toBe(true);
   });
 
-  it('honors a custom context path', () => {
+  it('honors a custom context path', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
@@ -330,7 +330,7 @@ describe('--context flag', () => {
     mf[path.join(CWD, 'custom', 'context.json')] = JSON.stringify(v2Context());
     applyMocks(mf);
 
-    const result = runEstimate(CWD, { context: 'custom/context.json' });
+    const result = await runEstimate(CWD, { context: 'custom/context.json' });
 
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const contextCall = writeCalls.find(c => String(c[0]).replace(/\\/g, '/').endsWith('custom/context.json'));
@@ -341,7 +341,7 @@ describe('--context flag', () => {
     expect(result.status).toBe('completed');
   });
 
-  it('suppresses summary console.log when json:true (R-P11)', () => {
+  it('suppresses summary console.log when json:true (R-P11)', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
@@ -351,7 +351,7 @@ describe('--context flag', () => {
 
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-    const result = runEstimate(CWD, { context: true, json: true });
+    const result = await runEstimate(CWD, { context: true, json: true });
 
     expect(result.status).toBe('completed');
     const logMsgs = logSpy.mock.calls.map(c => String(c));

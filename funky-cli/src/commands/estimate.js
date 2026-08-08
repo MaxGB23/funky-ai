@@ -3,8 +3,9 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { loadDecisions, findCanvases, readContext, writeContext, updatePhaseState } from '../utils/context.js';
-import { generatePricingGuide, generateDecisionsTemplate, generateIAPrompt, generateIAPromptBanner, generateIAPromptFooter, TOPICS, DISPLAY_NAMES } from '../utils/estimateDomain.js';
-import { executeIntentionsSync, existingGuides } from '../utils/fs-adapter.js';
+import { generateDecisionsTemplate, buildPricingGuide, embedTopicSections, refreshPricingGuideBase, validatePricingGuideTemplate, TOPICS, DISPLAY_NAMES } from '../utils/estimateDomain.js';
+import * as p from '@clack/prompts';
+import { executeIntentions, existingGuides } from '../utils/fs-adapter.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,7 +19,19 @@ function flagValue(opts, topic) {
   return opts[topic] ?? opts[camel];
 }
 
-export function runEstimate(targetBase, opts = {}) {
+// Drift check de la guía (2.3c/2.3e): compara la guía actual contra la que
+// producirían los templates HOY, normalizando la respiración de newline alrededor
+// de los pares de marcadores (la guía sembrada a mano y la que produce el embeder
+// normalizan igual). Solo un cambio REAL de template/fragmento (o un reordenamiento)
+// dispara la confirmación Y/N.
+const TOPIC_BLOCK_NORM_RE = /\n<!-- topic:([a-z0-9-]+) -->\r?\n([\s\S]*?)\n?<!-- \/topic:\1 -->/g;
+function normalizeEmbeddedGuide(content) {
+  return String(content)
+    .replace(TOPIC_BLOCK_NORM_RE, (m, key, body) => `\n<!-- topic:${key} -->\n${body}<!-- /topic:${key} -->`)
+    .trim();
+}
+
+export async function runEstimate(targetBase, opts = {}) {
   const startedAt = Date.now();
   const warnings = [];
   const json = opts.json === true;
@@ -109,22 +122,81 @@ export function runEstimate(targetBase, opts = {}) {
       }
     }
 
-    let pricingGuide;
-    try {
-      pricingGuide = generatePricingGuide(decisions, canvases.projectCanvas, canvases.infraCanvas, guideOpts);
-    } catch (err) {
-      warn('⚠️  Error al generar la guía de pricing:', err.message);
-      pricingGuide = 'Error al generar la guía de pricing.';
-    }
-
-    // pricing-guide.md es un artefacto DERIVADO de los inputs actuales (decisiones +
-    // canvases): se regenera (sobrescribe) en cada ejecución.
+    // ── 3b. Pricing Guide (marcadores, Fase 2 2.3) ──
+    // pricing-guide.md es una GUÍA (no un derivado regenerable): la zona
+    // `<!-- topics --> ... <!-- /topics -->` conserva los flags incrustados de
+    // forma ADITIVA. Flag nuevo solicitado → se incrusta SIN preguntar. Si el
+    // template base o un fragmento de topic cambió (drift), se confirma Y/N:
+    // "y" refresca la base y reincrusta TODOS los topics detectados; "n"
+    // conserva la guía actual. Guía legacy sin marcadores → se regenera.
     const pricingGuidePath = path.join(estimateDir, 'pricing-guide.md');
+    let guideContent;
     try {
-      fs.writeFileSync(pricingGuidePath, pricingGuide, 'utf8');
+      if (!fs.existsSync(pricingGuidePath)) {
+        guideContent = buildPricingGuide(guideOpts.topics);
+      } else {
+        const currentGuide = fs.readFileSync(pricingGuidePath, 'utf8');
+        let isMarkerGuide = true;
+        try {
+          validatePricingGuideTemplate(currentGuide);
+        } catch (err) {
+          isMarkerGuide = false;
+        }
+        if (!isMarkerGuide) {
+          guideContent = buildPricingGuide(guideOpts.topics);
+        } else {
+          guideContent = embedTopicSections(currentGuide, guideOpts.topics);
+          const refreshed = refreshPricingGuideBase(buildPricingGuide([]), guideContent);
+          if (normalizeEmbeddedGuide(refreshed) !== normalizeEmbeddedGuide(guideContent)) {
+            if (json) {
+              warn('⚠️  Template de pricing-guide actualizado: se conserva la guía actual (default n, --json).');
+            } else {
+              const updated = await p.confirm({
+                message: 'El template de la guía de pricing cambió (base o fragmento de topic). ¿Reconstruir la base y reincrustar todas las secciones detectadas? (y: refrescar / n: conservar la guía actual)',
+              });
+              if (updated === true) {
+                guideContent = refreshed;
+              } else if (updated === false || p.isCancel(updated)) {
+                log('⚡ Template de pricing-guide actualizado: se conserva la guía actual.');
+              }
+            }
+          }
+        }
+      }
+      fs.writeFileSync(pricingGuidePath, guideContent, 'utf8');
     } catch (err) {
       const msg = err.code === 'EACCES' ? `Error de permisos al escribir "${pricingGuidePath}". Verifica que tengas permisos de escritura.` : err.message;
-      warn('⚠️  No se pudo escribir pricing-guide.md:', msg);
+      warn('⚠️  No se pudo generar/escribir pricing-guide.md:', msg);
+    }
+
+    // ── 3c. estimate-prompt.md (guía kind guide, Fase 2 2.8) ──
+    // Archivo NUEVO → se crea sin preguntar. Existente → confirmación Y/N con
+    // advertencia explícita de pérdida; --json (pipeline/CI) → default "n".
+    const estimatePromptPath = path.join(estimateDir, 'estimate-prompt.md');
+    let promptWritten = false;
+    try {
+      const promptTemplate = fs.readFileSync(path.join(__dirname, '..', 'templates', 'estimate', 'estimate-prompt-template.md'), 'utf8');
+      const promptExists = fs.existsSync(estimatePromptPath);
+      if (promptExists) {
+        if (json) {
+          warn('⚠️  estimate-prompt.md ya existe: se conserva la versión actual (default n, --json).');
+        } else {
+          const overwrite = await p.confirm({
+            message: 'docs/funky-ai/estimate/estimate-prompt.md ya existe. ¿Reemplazarlo por la versión más reciente? Se pierde el progreso previo si no hay respaldo. (y: reemplazar / n: conservar la versión actual)',
+          });
+          if (overwrite === true) {
+            fs.writeFileSync(estimatePromptPath, promptTemplate, 'utf8');
+            promptWritten = true;
+          } else if (overwrite === false || p.isCancel(overwrite)) {
+            log('⚡ Omitiendo (ya existe): estimate-prompt.md');
+          }
+        }
+      } else {
+        fs.writeFileSync(estimatePromptPath, promptTemplate, 'utf8');
+        promptWritten = true;
+      }
+    } catch (err) {
+      warn('⚠️  No se pudo generar estimate-prompt.md:', err.message);
     }
 
     // ── 4. Generate Decisions Template ──
@@ -153,10 +225,10 @@ export function runEstimate(targetBase, opts = {}) {
       log('⚠️ Entorno no interactivo: no se actualizan las guías existentes.');
     }
 
-    // Ejecución síncrona: runEstimate es un comando síncrono (pipeline lo
-    // invoca sin await), por lo que las intenciones sin confirmación corren por
-    // executeIntentionsSync (kind decision nunca pregunta).
-    const { logs } = executeIntentionsSync(intentions);
+    // El plan de estimate es puro kind 'decision' (nunca pregunta): el motor
+    // async delega en el núcleo síncrono applyIntention. runEstimate es async
+    // porque la acción Commander y el pipeline (pipeline.js) lo await-ean.
+    const { logs } = await executeIntentions(intentions);
     for (const line of logs) {
       log(line);
     }
@@ -167,7 +239,10 @@ export function runEstimate(targetBase, opts = {}) {
         name: 'pricing-guide.md',
         path: path.relative(targetBase, pricingGuidePath).split(path.sep).join('/'),
         kind: 'generated'
-      }
+      },
+      ...(promptWritten
+        ? [{ name: 'estimate-prompt.md', path: path.relative(targetBase, estimatePromptPath).split(path.sep).join('/'), kind: 'guide' }]
+        : [])
     ];
     if (ctx) {
       const finishedAt = new Date().toISOString();
@@ -182,14 +257,10 @@ export function runEstimate(targetBase, opts = {}) {
       writeContext(targetBase, ctx, contextArg || undefined);
     }
 
-    // ── 6. Generate IA Prompt ──
-    const iaPrompt = generateIAPrompt(path.relative(targetBase, pricingGuidePath), path.relative(targetBase, decisionsTemplatePath));
-    const iaBanner = generateIAPromptBanner();
-    const iaFooter = generateIAPromptFooter();
-
-    // ── 7. Summary ──
-    // TODO(Fase 2, 2.4): el resumen debe listar las secciones REALMENTE incrustadas
-    // por buildPricingGuide/embedTopicSections. La ficha de alcance ya no existe
+    // ── 6. Summary (terminal limpia, 2.2/2.8) ──
+    // El material de la sesión vive en archivos (pricing-guide.md y
+    // estimate-prompt.md): la terminal referencia la guía de prompt en vez de
+    // imprimir el prompt gigante (2.8). La ficha de alcance ya no existe
     // (2.1/1.5): se lista lo solicitado, sin ficha.
     if (!json) {
       const includedSections = [];
@@ -206,19 +277,12 @@ export function runEstimate(targetBase, opts = {}) {
       console.log('\n✅ Material de pricing generado exitosamente.');
       console.log(`   📝 Guía de pricing: ${path.relative(targetBase, pricingGuidePath)}`);
       console.log(`   📝 Template de decisiones: ${path.relative(targetBase, decisionsTemplatePath)}`);
+      console.log(`   📝 Prompt de la sesión: ${path.relative(targetBase, estimatePromptPath)}`);
       console.log(`   📋 Secciones solicitadas en la guía: ${sectionsLabel}.`);
       console.log('\n📋 Próximos pasos:');
-      // TODO(Fase 2, 2.8): reemplazar la impresión del prompt gigante por la
-      // referencia a docs/funky-ai/estimate/estimate-prompt.md (guía kind guide).
-      console.log('   1. Copie el prompt de abajo y péguelo en la sesión de IA del proyecto.');
+      console.log('   1. Abra la guía de prompt en docs/funky-ai/estimate/estimate-prompt.md y úsela para iniciar la sesión de IA del proyecto.');
       console.log('   2. La IA leerá los archivos referenciados (pricing-guide.md y pricing-decisions.md) para guiar la discusión.');
       console.log('   3. Documente los acuerdos en docs/funky-ai/estimate/pricing-decisions.md durante la discusión.\n');
-
-      console.log(iaBanner);
-      console.log('');
-      console.log(iaPrompt);
-      console.log('');
-      console.log(iaFooter);
     }
 
     return {
@@ -247,7 +311,7 @@ export const estimateCommand = new Command('estimate')
   .option('--concurrency', 'Include concurrency section')
   .option('--integrations', 'Include integrations section')
   .option('--pricing-team', 'Include team-cost reference (no calculator)')
-  .action((opts) => {
-    const result = runEstimate(process.cwd(), opts);
+  .action(async (opts) => {
+    const result = await runEstimate(process.cwd(), opts);
     process.exit(result.status === 'failed' ? 1 : 0);
   });

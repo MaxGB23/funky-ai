@@ -30,7 +30,7 @@ function ensureContext(targetBase) {
 pipelineCommand
   .command('assess')
   .description('Ejecuta assess con el contexto compartido del pipeline')
-  .action(() => {
+  .action(async () => {
     const targetBase = process.cwd();
     const ctx = ensureContext(targetBase);
     if (!ctx) return;
@@ -39,7 +39,7 @@ pipelineCommand
     updatePhaseState(ctx, 'assess', { status: 'running', startedAt: nowIso() });
     writeContext(targetBase, ctx);
 
-    const result = runAssess(targetBase, { context: true });
+    const result = await runAssess(targetBase, { context: true });
     process.exit(result.status === 'failed' ? 1 : 0);
     return;
   });
@@ -47,7 +47,7 @@ pipelineCommand
 pipelineCommand
   .command('estimate')
   .description('Ejecuta estimate con el contexto compartido del pipeline')
-  .action(() => {
+  .action(async () => {
     const targetBase = process.cwd();
 
     // Valida que exista el context
@@ -69,7 +69,7 @@ pipelineCommand
     updatePhaseState(ctx, 'estimate', { status: 'running', startedAt: nowIso() });
     writeContext(targetBase, ctx);
 
-    const result = runEstimate(targetBase, { context: true });
+    const result = await runEstimate(targetBase, { context: true });
     process.exit(result.status === 'failed' ? 1 : 0);
     return;
   });
@@ -78,7 +78,7 @@ pipelineCommand
   .command('all')
   .description('Ejecuta el pipeline completo: assess → estimate')
   .option('--json', 'Emit JSON on stdout')
-  .action((opts) => {
+  .action(async (opts) => {
     const targetBase = process.cwd();
     const json = opts.json === true;
     // R-P11: en --json el texto humano va a stderr; stdout solo recibe el JSON.
@@ -95,12 +95,12 @@ pipelineCommand
     // R-P10/R-P4: persiste running+startedAt+currentPhase, ejecuta la fase
     // (que persiste su propia completion vía updatePhaseState), y ante throw
     // marca failed+error+finishedAt+durationMs; assess fallido ⇒ estimate skipped.
-    const runPhase = (phase, fn, optsJson) => {
+    const runPhase = async (phase, fn, optsJson) => {
       updatePhaseState(ctx, phase, { status: 'running', startedAt: nowIso() });
       writeContext(targetBase, ctx);
       const phaseStart = Date.now();
       try {
-        const result = fn(targetBase, optsJson);
+        const result = await fn(targetBase, optsJson);
         if (result.status === 'failed') {
           throw new Error(result.error || `Fase ${phase} falló`);
         }
@@ -141,12 +141,12 @@ pipelineCommand
       }
     };
 
-    const assessOk = runPhase('assess', runAssess, phaseOpts);
+    const assessOk = await runPhase('assess', runAssess, phaseOpts);
     if (!assessOk) return;
     refreshCtx();
 
     log('\n✅ Assess completado. Ejecutando estimate...\n');
-    const estimateOk = runPhase('estimate', runEstimate, phaseOpts);
+    const estimateOk = await runPhase('estimate', runEstimate, phaseOpts);
     if (!estimateOk) return;
     refreshCtx();
 
