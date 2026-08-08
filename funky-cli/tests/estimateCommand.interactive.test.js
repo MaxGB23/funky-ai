@@ -43,6 +43,10 @@ describe('estimateCommand — guías interactivas (2.3c/2.3e, 2.8 — TDD red)',
   let exitSpy;
   let stderrSpy;
   let logSpy;
+  // Riesgo 1: el gate `interactive` lee process.stdin.isTTY por llamada. Los
+  // tests Y/N simulan un terminal (true); el test no-TTY lo apaga (undefined).
+  // Se guarda el valor original al cargar el archivo y se restaura en afterEach.
+  const originalIsTTY = process.stdin.isTTY;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -52,9 +56,11 @@ describe('estimateCommand — guías interactivas (2.3c/2.3e, 2.8 — TDD red)',
     exitSpy = vi.spyOn(process, 'exit').mockImplementation((c) => c);
     stderrSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
     logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    process.stdin.isTTY = true;
   });
 
   afterEach(() => {
+    process.stdin.isTTY = originalIsTTY;
     exitSpy.mockRestore();
     stderrSpy.mockRestore();
     logSpy.mockRestore();
@@ -136,5 +142,23 @@ describe('estimateCommand — guías interactivas (2.3c/2.3e, 2.8 — TDD red)',
     expect(clackMock.confirm).toHaveBeenCalled();
     const promptWrite = vi.mocked(fs.writeFileSync).mock.calls.find((c) => String(c[0]).includes('estimate-prompt.md'));
     expect(promptWrite).toBeFalsy();
+  });
+
+  it('R1: sin TTY + drift de template → default n logueado: NO pregunta y conserva la guía', async () => {
+    const mf = standardMocks();
+    mf[PRICING_GUIDE_TPL_PATH] = DEFAULT_GUIDE_TEMPLATE + '\n\n## Base Actualizada';
+    seedGuideWithTopics(mf, [['security', TOPIC_FRAGMENT_SECURITY]]);
+    process.stdin.isTTY = undefined;
+
+    await estimateCommand.parseAsync(['--security'], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    expect(clackMock.confirm).not.toHaveBeenCalled();
+    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('se conserva la guía actual'));
+    const guideCall = vi.mocked(fs.writeFileSync).mock.calls.find((c) => String(c[0]).includes('pricing-guide.md'));
+    expect(guideCall).toBeTruthy();
+    const guideContent = String(guideCall[1]);
+    expect(guideContent).toContain(TOPIC_FRAGMENT_SECURITY);
+    expect(guideContent).not.toContain('## Base Actualizada');
   });
 });

@@ -35,6 +35,10 @@ export async function runEstimate(targetBase, opts = {}) {
   const startedAt = Date.now();
   const warnings = [];
   const json = opts.json === true;
+  // Entorno interactivo (TTY): sin terminal (pipes, CI, tests) NUNCA se pregunta
+  // Y/N — las confirmaciones caen a default "n" logueado (R1, Fase 0 0.3). El
+  // valor se lee por llamada (no al import), así que los tests pueden simularlo.
+  const interactive = Boolean(process.stdin && process.stdin.isTTY);
   const warn = (msg) => {
     warnings.push(msg);
     console.warn(msg);
@@ -150,6 +154,8 @@ export async function runEstimate(targetBase, opts = {}) {
           if (normalizeEmbeddedGuide(refreshed) !== normalizeEmbeddedGuide(guideContent)) {
             if (json) {
               warn('⚠️  Template de pricing-guide actualizado: se conserva la guía actual (default n, --json).');
+            } else if (!interactive) {
+              log('⚡ Template de pricing-guide actualizado: se conserva la guía actual (default n, sin terminal).');
             } else {
               const updated = await p.confirm({
                 message: 'El template de la guía de pricing cambió (base o fragmento de topic). ¿Reconstruir la base y reincrustar todas las secciones detectadas? (y: refrescar / n: conservar la guía actual)',
@@ -180,6 +186,8 @@ export async function runEstimate(targetBase, opts = {}) {
       if (promptExists) {
         if (json) {
           warn('⚠️  estimate-prompt.md ya existe: se conserva la versión actual (default n, --json).');
+        } else if (!interactive) {
+          log('⚡ estimate-prompt.md ya existe: se conserva la versión actual (default n, sin terminal).');
         } else {
           const overwrite = await p.confirm({
             message: 'docs/funky-ai/estimate/estimate-prompt.md ya existe. ¿Reemplazarlo por la versión más reciente? Se pierde el progreso previo si no hay respaldo. (y: reemplazar / n: conservar la versión actual)',
@@ -220,7 +228,6 @@ export async function runEstimate(targetBase, opts = {}) {
     // condicionado a que exista ≥1 guía del plan. En Fase 0 estimate no tiene
     // guías (pricing-guide.md es derivado regenerable; Fase 2 lo convierte en
     // guía con Y/N), así que el aviso no se dispara todavía.
-    const interactive = Boolean(process.stdin && process.stdin.isTTY);
     if (!interactive && existingGuides(intentions).length > 0) {
       log('⚠️ Entorno no interactivo: no se actualizan las guías existentes.');
     }
