@@ -16,6 +16,16 @@ function resolveContextFile(targetBase, contextPath) {
   return isAbsolute(contextPath) ? contextPath : resolve(targetBase, contextPath);
 }
 
+// Fecha local YYYY-MM-DD compartida entre comandos y dominio (DRY, Riesgo 2):
+// assess y estimateDomain usan la MISMA implementación.
+export function getTodayDate() {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 // ── Schema v2 (R-P8) ──
 
 export const PHASE_STATUSES = ['pending', 'running', 'completed', 'failed', 'skipped'];

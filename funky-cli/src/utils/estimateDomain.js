@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { getTodayDate } from './context.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,14 +35,6 @@ export const DISPLAY_NAMES = {
 // y ## Estructura de Discusión. Con sections === '' la línea desaparece y la
 // salida 3-arg queda byte-idéntica a la legacy (R12).
 const OPTIONAL_SECTIONS_RE = /^\s*\{\{OPTIONAL_SECTIONS\}\}\s*$/gm;
-
-function getTodayDate() {
-  const d = new Date();
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
 
 /**
  * Interpola pricing-guide-template.md con decisiones y contenidos de canvas.

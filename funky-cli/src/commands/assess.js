@@ -4,7 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import * as p from '@clack/prompts';
 import { surfaceRiskPatterns } from '../utils/assessRules.js';
-import { readContext, writeContext, findCanvases, updatePhaseState } from '../utils/context.js';
+import { readContext, writeContext, findCanvases, updatePhaseState, getTodayDate } from '../utils/context.js';
 import { executeIntentions, existingGuides } from '../utils/fs-adapter.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -26,14 +26,6 @@ export function parseFrontmatter(content) {
     }
   }
   return metadata;
-}
-
-function getTodayDate() {
-  const d = new Date();
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
 }
 
 export async function runAssess(targetBase, opts = {}) {
