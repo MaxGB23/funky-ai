@@ -22,6 +22,7 @@ export const CWD = process.cwd();
 export const ESTIMATE_TPL_DIR = path.resolve(__testDir, '../src/templates/estimate');
 export const PRICING_GUIDE_TPL_PATH = path.join(ESTIMATE_TPL_DIR, 'pricing-guide-template.md');
 export const PRICING_DECISIONS_TPL_PATH = path.join(ESTIMATE_TPL_DIR, 'pricing-decisions-template.md');
+export const ESTIMATE_PROMPT_TPL_PATH = path.join(ESTIMATE_TPL_DIR, 'estimate-prompt-template.md');
 
 // Canvas location: docs/funky-ai/canvas/
 export const CANVAS_DIR = path.join(CWD, 'docs', 'funky-ai', 'canvas');
@@ -29,43 +30,58 @@ export const CANVAS_DIR = path.join(CWD, 'docs', 'funky-ai', 'canvas');
 export const DECISIONS_DIR = path.join(CWD, 'docs', 'funky-ai', 'assess');
 // Context location: docs/funky-ai/pipeline/
 export const CONTEXT_DIR = path.join(CWD, 'docs', 'funky-ai', 'pipeline');
+// Estimate outputs: docs/funky-ai/estimate/
+export const ESTIMATE_DIR = path.join(CWD, 'docs', 'funky-ai', 'estimate');
+export const PRICING_GUIDE_DEST = path.join(ESTIMATE_DIR, 'pricing-guide.md');
+export const ESTIMATE_PROMPT_DEST = path.join(ESTIMATE_DIR, 'estimate-prompt.md');
 
+// Réplica del template REAL commiteado en Fase 1 (pricing-guide-template.md):
+// guía declarativa SIN placeholders que REFERENCIA los archivos, zona de
+// incrustación <!-- topics --> con los 6 pares de marcadores vacíos y header
+// ## Estructura de Discusión. Espeja 1.1/1.2 para que los tests de 2.1/2.3
+// ejerciten la misma estructura que produce el CLI real.
 export const DEFAULT_GUIDE_TEMPLATE = `# Guía de Discusión de Pricing
 
-> Generado por \`funky estimate\`. Use este documento para su sesión de pricing colaborativa.
+> Generado por \`funky estimate\`. Guía declarativa de la sesión de pricing colaborativa.
 
 ## Contexto del Proyecto
 
-### Decisiones Arquitectónicas
-{{DECISIONS_CONTENT}}
+Lee los archivos del proyecto, en este orden:
 
-### PROJECT-CANVAS
-{{PROJECT_CANVAS_CONTENT}}
+1. \`docs/funky-ai/canvas/brief-funcional.md\` — contexto de negocio.
+2. \`docs/funky-ai/canvas/PROJECT-CANVAS.md\` — decisiones de la aplicación.
+3. \`docs/funky-ai/canvas/INFRA-CANVAS.md\` — decisiones operativas.
+4. \`docs/funky-ai/assess/architecture-decisions.md\` — decisiones arquitectónicas.
 
-### INFRA-CANVAS
-{{INFRA_CANVAS_CONTENT}}
-{{OPTIONAL_SECTIONS}}
+<!-- topics -->
+## Paso Inicial: Recomienda las Flags y sus Buffers
+
+| Flag | Cuándo conviene |
+|------|-----------------|
+| \`--security\` | Si hay autenticación o datos sensibles. |
+
+<!-- topic:transactions -->
+<!-- /topic:transactions -->
+<!-- topic:security -->
+<!-- /topic:security -->
+<!-- topic:roles -->
+<!-- /topic:roles -->
+<!-- topic:multi-tenant -->
+<!-- /topic:multi-tenant -->
+<!-- topic:integrations -->
+<!-- /topic:integrations -->
+<!-- topic:concurrency -->
+<!-- /topic:concurrency -->
+<!-- /topics -->
 ## Estructura de Discusión
 
-### 1. Contexto de Pricing (5 min)
-Revisar decisiones arquitectónicas y canvases para entender el alcance del proyecto.
+La discusión se hace punto por punto.`;
 
-### 2. Factores de Costo (10 min)
-- Infraestructura: hosting, servicios, herramientas
-- Complejidad técnica: stack, integraciones, deuda técnica
-- Equipo: seniority, tamaño, dedicación
-- Timeline: urgencia, hitos, mantenimiento post-lanzamiento
+export const DEFAULT_ESTIMATE_PROMPT_TEMPLATE = `# 🗣️ Prompt de Discusión de Pricing — \`funky estimate\`
 
-### 3. Referencia de Infraestructura (10 min)
-Costos estimados de los servicios elegidos en los canvases. Investigar precios actuales de cada proveedor.
+Actúas como facilitador de la sesión de pricing del proyecto.
 
-### 4. Acuerdos de Pricing (15 min)
-Definir precio final usando la guía de la sesión. Documentar en pricing-decisions-template.md.
-
-## Instrucciones
-1. Revise esta guía con el equipo.
-2. Discuta cada factor de costo.
-3. Documente los acuerdos en el template de decisiones.`;
+Lee \`docs/funky-ai/estimate/pricing-guide.md\` primero, luego \`pricing-decisions.md\`.`;
 
 export const DEFAULT_DECISIONS_TEMPLATE = `# Decisiones de Pricing
 
@@ -80,12 +96,14 @@ export const DEFAULT_DECISIONS_TEMPLATE = `# Decisiones de Pricing
 - **Alternativas consideradas:** ...
 - **Fecha:** {{DATE}}
 
-### [Decisión 2: Título breve]
-- **Decisión:** ...
-- **Justificación:** ...
-- **Impacto en presupuesto:** ...
-- **Alternativas consideradas:** ...
-- **Fecha:** {{DATE}}`;
+## Tabla de Cotización del MVP
+
+| Componente | Monto |
+|---|---|
+| Costo Base (desarrollo del MVP) | $ |
+| Buffer de Riesgo (flags + contingencia) | $ |
+| Margen de Ganancia | $ |
+| **Precio de Venta del MVP** (Costo Base + Buffer + Margen) | **$** |`;
 
 export const CANVAS_PROJECT_CONTENT = 'React 18 + Next.js 14\nPatrón: Clean Architecture';
 export const CANVAS_INFRA_CONTENT = 'AWS EC2 + PostgreSQL\nDeploy: Docker Compose';
@@ -95,6 +113,7 @@ export function estimateMockFiles() {
   return {
     [PRICING_GUIDE_TPL_PATH]: DEFAULT_GUIDE_TEMPLATE,
     [PRICING_DECISIONS_TPL_PATH]: DEFAULT_DECISIONS_TEMPLATE,
+    [ESTIMATE_PROMPT_TPL_PATH]: DEFAULT_ESTIMATE_PROMPT_TEMPLATE,
   };
 }
 
@@ -209,6 +228,26 @@ export const TOPIC_FRAGMENT_SECURITY = `## Seguridad
 Impacto en costos:
 - Auth y cumplimiento agregan esfuerzo recurrente.`;
 
+export const TOPIC_FRAGMENT_MULTI_TENANT = `## Multi-tenant
+
+Impacto en costos:
+- Aislamiento por tenant agrega complejidad de datos y permisos.`;
+
+export const TOPIC_FRAGMENT_TRANSACTIONS = `## Transacciones
+
+Impacto en costos:
+- Pagos y saldos exigen consistencia (ACID) y conciliación.`;
+
+export const TOPIC_FRAGMENT_CONCURRENCY = `## Concurrencia
+
+Impacto en costos:
+- Colas y workers agregan complejidad de infraestructura.`;
+
+export const TOPIC_FRAGMENT_INTEGRATIONS = `## Integraciones
+
+Impacto en costos:
+- La integración con sistemas externos agrega acoplamiento y mantenimiento.`;
+
 export const TEAM_COST_TEMPLATE = `## Referencia de Costos de Equipo
 
 ### Fórmula de referencia
@@ -218,5 +257,9 @@ export function addOptionalTemplates(mf) {
   mf[path.join(ESTIMATE_TPL_DIR, 'brief-questions-template.md')] = CHECKLIST_TEMPLATE;
   mf[path.join(ESTIMATE_TPL_DIR, 'topics', 'roles.md')] = TOPIC_FRAGMENT_ROLES;
   mf[path.join(ESTIMATE_TPL_DIR, 'topics', 'security.md')] = TOPIC_FRAGMENT_SECURITY;
+  mf[path.join(ESTIMATE_TPL_DIR, 'topics', 'multi-tenant.md')] = TOPIC_FRAGMENT_MULTI_TENANT;
+  mf[path.join(ESTIMATE_TPL_DIR, 'topics', 'transactions.md')] = TOPIC_FRAGMENT_TRANSACTIONS;
+  mf[path.join(ESTIMATE_TPL_DIR, 'topics', 'concurrency.md')] = TOPIC_FRAGMENT_CONCURRENCY;
+  mf[path.join(ESTIMATE_TPL_DIR, 'topics', 'integrations.md')] = TOPIC_FRAGMENT_INTEGRATIONS;
   mf[path.join(ESTIMATE_TPL_DIR, 'team-cost-reference-template.md')] = TEAM_COST_TEMPLATE;
 }

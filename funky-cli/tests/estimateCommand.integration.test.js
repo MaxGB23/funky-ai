@@ -265,7 +265,9 @@ describe('--context flag', () => {
     const guideCall = writeCalls.find(c => String(c[0]).includes('pricing-guide.md'));
     expect(guideCall).toBeTruthy();
     const guideContent = String(guideCall[1]);
-    expect(guideContent).toContain('Next.js');  // from DECISIONS_CONTENT
+    // 2.1: la guía es declarativa — referencia las decisiones, no las incrusta.
+    expect(guideContent).toContain('docs/funky-ai/assess/architecture-decisions.md');
+    expect(guideContent).not.toContain('Next.js');
   });
 
   it('reads decisions from ctx.assess.decisionsFile when --context provides a custom path', () => {
@@ -287,9 +289,11 @@ describe('--context flag', () => {
     const guideCall = writeCalls.find(c => String(c[0]).includes('pricing-guide.md'));
     expect(guideCall).toBeTruthy();
     const guideContent = String(guideCall[1]);
-    // Se leyeron las decisiones desde la ruta custom (no el default)
-    expect(guideContent).toContain('Vue');
+    // 2.1: la guía no incrusta decisiones (se referencian). La ruta custom la
+    // consume loadDecisions para el pipeline; TODO(2.4): la guía debe señalarla.
+    expect(guideContent).not.toContain('Vue');
     expect(guideContent).not.toContain('DB: PostgreSQL');
+    expect(guideContent).toContain('docs/funky-ai/assess/architecture-decisions.md');
   });
 
   it('writes estimate timestamp and completed state to context.json', () => {

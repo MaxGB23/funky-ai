@@ -3,8 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { loadDecisions, findCanvases, readContext, writeContext, updatePhaseState } from '../utils/context.js';
-import { generatePricingGuide, generateDecisionsTemplate, generateIAPrompt, generateIAPromptBanner, generateIAPromptFooter } from '../utils/estimateDomain.js';
-import { TOPICS, DISPLAY_NAMES, STATUS, surfaceEstimateTopics } from '../utils/estimateTopics.js';
+import { generatePricingGuide, generateDecisionsTemplate, generateIAPrompt, generateIAPromptBanner, generateIAPromptFooter, TOPICS, DISPLAY_NAMES } from '../utils/estimateDomain.js';
 import { executeIntentionsSync, existingGuides } from '../utils/fs-adapter.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -64,19 +63,11 @@ export function runEstimate(targetBase, opts = {}) {
       warn(`⚠️  Se detectaron ${canvases.unfilledCount} secciones sin completar ("[Responde aquí]") en los canvases. La discusión se basará en datos parciales.`);
     }
 
-    // ── 2b. Sugerencias de consola (R11) ──
-    // Solo consola, nunca en la guía: por cada tópico con señal Aplica cuyo flag
-    // NO está seteado se sugiere incluir su sección. La ficha usa estas mismas
-    // señales dentro del dominio; acá no se toca la guía.
-    const { signals } = surfaceEstimateTopics(
-      { projectCanvas: canvases.projectCanvas, infraCanvas: canvases.infraCanvas },
-      decisions
-    );
-    for (const signal of signals) {
-      if (signal.status === STATUS.APPLIES && flagValue(opts, signal.topic) !== true) {
-        log(`💡 Se detectó ${DISPLAY_NAMES[signal.topic]} (${signal.evidence}). Considerá --${signal.topic} para incluir su sección en la guía.`);
-      }
-    }
+    // ── 2b. Sugerencias de consola (R11) — ELIMINADAS (2.2) ──
+    // TODO(Fase 2, 2.2): la terminal queda limpia para checks y warnings; ya NO
+    // se imprimen sugerencias automáticas de flags ("💡 Se detectó ... Considerá")
+    // ni el prompt gigante. surfaceEstimateTopics/estimateTopics.js fueron
+    // eliminados (Pendiente 1); la guía corta de flags del template decide.
 
     // ── 3. Generate Pricing Guide ──
     const estimateDir = path.join(targetBase, 'docs', 'funky-ai', 'estimate');
@@ -88,13 +79,12 @@ export function runEstimate(targetBase, opts = {}) {
     }
 
     // Mapeo Commander → opts del dominio (Interfaces/Contracts del design).
-    // scopeFicha: true es interno y constante: la ficha de alcance (R9) es
-    // always-on a nivel CLI; la función conserva el default legacy.
+    // TODO(Fase 2, 1.5/2.4): la ficha de alcance (scopeFicha) se eliminó junto con
+    // estimateTopics.js; la guía corta de flags vive en el template base.
     const guideOpts = {
       brief: opts.brief,                                       // true | string | undefined
       topics: TOPICS.filter((t) => flagValue(opts, t) === true), // orden canónico → R13
       pricingTeam: opts.pricingTeam === true,
-      scopeFicha: true,                                        // R9 always-on, interno
     };
 
     // Warn si --brief <path> no existe (R7): el dominio vuelve al checklist
@@ -198,10 +188,11 @@ export function runEstimate(targetBase, opts = {}) {
     const iaFooter = generateIAPromptFooter();
 
     // ── 7. Summary ──
-    // Secciones incluidas en la guía: la ficha de alcance siempre está (R9);
-    // brief, tópicos (orden canónico) y referencia de costos solo con sus flags.
+    // TODO(Fase 2, 2.4): el resumen debe listar las secciones REALMENTE incrustadas
+    // por buildPricingGuide/embedTopicSections. La ficha de alcance ya no existe
+    // (2.1/1.5): se lista lo solicitado, sin ficha.
     if (!json) {
-      const includedSections = ['ficha de alcance'];
+      const includedSections = [];
       if (guideOpts.brief !== undefined && guideOpts.brief !== false) {
         includedSections.push('brief funcional');
       }
@@ -211,11 +202,14 @@ export function runEstimate(targetBase, opts = {}) {
       if (guideOpts.pricingTeam === true) {
         includedSections.push('referencia de costos de equipo');
       }
+      const sectionsLabel = includedSections.length > 0 ? includedSections.join(', ') : 'ninguna (guía base declarativa)';
       console.log('\n✅ Material de pricing generado exitosamente.');
       console.log(`   📝 Guía de pricing: ${path.relative(targetBase, pricingGuidePath)}`);
       console.log(`   📝 Template de decisiones: ${path.relative(targetBase, decisionsTemplatePath)}`);
-      console.log(`   📋 Secciones incluidas en la guía: ${includedSections.join(', ')}.`);
+      console.log(`   📋 Secciones solicitadas en la guía: ${sectionsLabel}.`);
       console.log('\n📋 Próximos pasos:');
+      // TODO(Fase 2, 2.8): reemplazar la impresión del prompt gigante por la
+      // referencia a docs/funky-ai/estimate/estimate-prompt.md (guía kind guide).
       console.log('   1. Copie el prompt de abajo y péguelo en la sesión de IA del proyecto.');
       console.log('   2. La IA leerá los archivos referenciados (pricing-guide.md y pricing-decisions.md) para guiar la discusión.');
       console.log('   3. Documente los acuerdos en docs/funky-ai/estimate/pricing-decisions.md durante la discusión.\n');
