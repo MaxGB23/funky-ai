@@ -8,15 +8,15 @@
 
 ### ALTO — comportamiento de la sesión real
 
-- [ ] **M1 (obs 7): Flujo en 3 fases estrictas.** Reescribir la sección Fases + Inicio de `estimate-prompt-template.md` (hoy hay contradicción: Fase 3 pide "recomendar flags y buffers" pero "## Inicio" ordena "presenta el PRIMER punto de discusión (el modelo de pricing)" — el agente salta las flags) y la sección Paso Inicial de `pricing-guide-template.md`:
+- [x] **M1 (obs 7): Flujo en 3 fases estrictas.** Reescribir la sección Fases + Inicio de `estimate-prompt-template.md` (hoy hay contradicción: Fase 3 pide "recomendar flags y buffers" pero "## Inicio" ordena "presenta el PRIMER punto de discusión (el modelo de pricing)" — el agente salta las flags) y la sección Paso Inicial de `pricing-guide-template.md`:
   - Fase 1 (Preparación): leer y analizar el contexto en silencio.
   - Fase 2 (Recomendación): proponer SOLO las flags aplicables y sus buffers. **Detenerse por completo** y pedir al humano que las inyecte con `funky estimate --flag`.
   - Fase 3 (Debate): iniciar la discusión socrática (modelo de pricing primero) SOLO tras luz verde del humano.
   - Actualizar tests de templates que verifican Fases/Inicio.
 
-- [ ] **M2 (obs 6): Unificar "Contexto de entrada".** La lista de archivos a leer está duplicada en `estimate-prompt-template.md` L15-22 y `pricing-guide-template.md` L8-15. Consolidar la lista SOLO en pricing-guide (agregar `pricing-decisions.md` a su lista — hoy la guía no lo referencia como lectura, solo como destino de escritura); `estimate-prompt-template.md` instruye únicamente "lee `pricing-guide.md` y `pricing-decisions.md`".
+- [x] **M2 (obs 6): Unificar "Contexto de entrada".** La lista de archivos a leer está duplicada en `estimate-prompt-template.md` L15-22 y `pricing-guide-template.md` L8-15. Consolidar la lista SOLO en pricing-guide (agregar `pricing-decisions.md` a su lista — hoy la guía no lo referencia como lectura, solo como destino de escritura); `estimate-prompt-template.md` instruye únicamente "lee `pricing-guide.md` y `pricing-decisions.md`".
 
-- [ ] **M3 (obs 10): Quitar `--brief` de la tabla de flags de `pricing-guide-template.md` (L26).** Es un flag fantasma en la tabla: no es topic (sin marcador `topic:brief`, no se incrusta), no tiene buffer, y recomendarlo no agrega nada visible (el brief se auto-detecta). **El flag CLI NO se depreca**: conserva override de ruta (`--brief <path>`), checklist forzado (`--brief` sin valor, R7) y auto-detección (issue #33) — todo con tests (estimateCommand.flags.integration.test.js L328-338, estimateDomain.test.js L130-154).
+- [x] **M3 (obs 10): Quitar `--brief` de la tabla de flags de `pricing-guide-template.md` (L26).** Es un flag fantasma en la tabla: no es topic (sin marcador `topic:brief`, no se incrusta), no tiene buffer, y recomendarlo no agrega nada visible (el brief se auto-detecta). **El flag CLI NO se depreca**: conserva override de ruta (`--brief <path>`), checklist forzado (`--brief` sin valor, R7) y auto-detección (issue #33) — todo con tests (estimateCommand.flags.integration.test.js L328-338, estimateDomain.test.js L130-154).
 
 ### MEDIO — limpieza y UX
 

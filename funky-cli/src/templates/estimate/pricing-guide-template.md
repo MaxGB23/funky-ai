@@ -11,19 +11,21 @@ Lee los archivos del proyecto, en este orden:
 2. `docs/funky-ai/canvas/PROJECT-CANVAS.md` — decisiones de la **aplicación**: framework, patrón arquitectónico, gestión de estado, UI y testing.
 3. `docs/funky-ai/canvas/INFRA-CANVAS.md` — decisiones **operativas**: base de datos, autenticación, calidad de código y despliegue.
 4. `docs/funky-ai/assess/architecture-decisions.md` — decisiones arquitectónicas aprobadas que afectan el costo.
+5. `docs/funky-ai/estimate/pricing-decisions.md` — decisiones de pricing ya aprobadas y tabla de cotización del MVP. Solo se escribe cuando una decisión es aprobada.
 
 Si falta alguno de los archivos referenciados, señálalo y PREGUNTA el contexto al humano. Jamás lo inventes.
 
 <!-- topics -->
 ## Paso Inicial: Recomienda las Flags y sus Buffers
 
-Antes de la discusión de pricing, la IA decide PRIMERO qué flags recomienda para este proyecto y por qué, usando la guía corta de abajo. Después de cada flag recomendada, propone su **buffer de contingencia**: un porcentaje entre +10% y +25% sobre el costo base, con justificación basada en el proyecto (nunca un número fijo). Las flags son defensa contra la sobreingeniería: si una no aplica, no se recomienda ni se cotiza.
+Tras analizar el contexto en silencio (Fase 1), la IA decide PRIMERO qué flags recomienda para este proyecto y por qué, usando la guía corta de abajo. Después de cada flag recomendada, propone su **buffer de contingencia**: un porcentaje entre +10% y +25% sobre el costo base, con justificación basada en el proyecto (nunca un número fijo). Las flags son defensa contra la sobreingeniería: si una no aplica, no se recomienda ni se cotiza.
+
+**DETENTE por completo** después de proponer las flags y sus buffers: pide al humano que las inyecte con `funky estimate --flag`. NO inicies la discusión de pricing hasta que las haya inyectado y te dé luz verde (Fase 3).
 
 ### Guía corta de flags
 
 | Flag | Cuándo conviene |
 |------|-----------------|
-| `--brief` | Si el alcance no está definido: se responden las 12 preguntas del checklist en 6 grupos (producto, usuarios, MVP, complejidad, integraciones, timeline). |
 | `--roles` | Si la composición del equipo (roles, seniority, dedicación) define el presupuesto o aún no está definida. |
 | `--multi-tenant` | Si el producto aísla datos por cliente o tenant (datos, permisos, migraciones) o comparte infraestructura entre clientes. |
 | `--transactions` | Si procesa pagos o mantiene saldos que exigen consistencia (ACID), auditoría y conciliación. |

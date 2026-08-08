@@ -81,3 +81,64 @@ describe('Templates de docs compartidos (bootstrap/sdd)', () => {
     expect(content).toMatch(/^### /m);
   });
 });
+
+describe('Templates de estimate — Fase A (checklist M1/M2/M3)', () => {
+  const promptPath = path.join(__dirname, '../src/templates/estimate/estimate-prompt-template.md');
+  const guidePath = path.join(__dirname, '../src/templates/estimate/pricing-guide-template.md');
+
+  it('M1: estimate-prompt-template define el flujo estricto en 3 fases (Preparación → Recomendación → Debate)', () => {
+    const content = fs.readFileSync(promptPath, 'utf8');
+
+    expect(content).toContain('Fase 1 — Preparación');
+    expect(content).toContain('Fase 2 — Recomendación');
+    expect(content).toContain('Fase 3 — Debate');
+  });
+
+  it('M1: la Fase 2 ordena DETENERSE y pedir al humano que inyecte las flags con `funky estimate --flag`', () => {
+    const content = fs.readFileSync(promptPath, 'utf8');
+
+    expect(content).toContain('funky estimate --flag');
+    expect(content).toMatch(/DETENTE por completo/i);
+    expect(content).toMatch(/luz verde/i);
+  });
+
+  it('M1: la sección ## Inicio ya no ordena presentar el primer punto de discusión sin pasar por las flags', () => {
+    const content = fs.readFileSync(promptPath, 'utf8');
+
+    expect(content).not.toContain('presenta el PRIMER punto de discusión');
+    expect(content).toMatch(/Fase 1/);
+  });
+
+  it('M2: el Contexto de entrada del prompt solo instruye leer pricing-guide.md y pricing-decisions.md (sin lista duplicada)', () => {
+    const content = fs.readFileSync(promptPath, 'utf8');
+    const ctx = content.split('## Contexto de entrada')[1].split('## Fases')[0] || '';
+
+    expect(ctx).toContain('pricing-guide.md');
+    expect(ctx).toContain('pricing-decisions.md');
+    expect(ctx).not.toContain('PROJECT-CANVAS.md');
+    expect(ctx).not.toContain('INFRA-CANVAS.md');
+    expect(ctx).not.toContain('brief-funcional.md');
+    expect(ctx).not.toContain('architecture-decisions.md');
+  });
+
+  it('M2: pricing-guide-template lista pricing-decisions.md como lectura en su Contexto del Proyecto', () => {
+    const content = fs.readFileSync(guidePath, 'utf8');
+    const ctx = content.split('## Contexto del Proyecto')[1].split('<!-- topics -->')[0] || '';
+
+    expect(ctx).toContain('pricing-decisions.md');
+  });
+
+  it('M1: el Paso Inicial de la guía ordena detenerse y esperar la inyección de flags antes del debate', () => {
+    const content = fs.readFileSync(guidePath, 'utf8');
+
+    expect(content).toContain('funky estimate --flag');
+    expect(content).toMatch(/DETENTE|Detente/i);
+    expect(content).toMatch(/luz verde/i);
+  });
+
+  it('M3: la tabla de flags de la guía NO recomienda --brief (el flag CLI sigue vivo, fuera de la tabla)', () => {
+    const content = fs.readFileSync(guidePath, 'utf8');
+
+    expect(content).not.toMatch(/^\|\s*`--brief`/m);
+  });
+});

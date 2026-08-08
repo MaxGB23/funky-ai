@@ -52,9 +52,12 @@ Lee los archivos del proyecto, en este orden:
 2. \`docs/funky-ai/canvas/PROJECT-CANVAS.md\` — decisiones de la aplicación.
 3. \`docs/funky-ai/canvas/INFRA-CANVAS.md\` — decisiones operativas.
 4. \`docs/funky-ai/assess/architecture-decisions.md\` — decisiones arquitectónicas.
+5. \`docs/funky-ai/estimate/pricing-decisions.md\` — decisiones de pricing aprobadas.
 
 <!-- topics -->
 ## Paso Inicial: Recomienda las Flags y sus Buffers
+
+Tras analizar el contexto, la IA recomienda las flags aplicables y sus buffers, y DETENTE: pide al humano inyectarlas con \`funky estimate --flag\` antes del debate.
 
 | Flag | Cuándo conviene |
 |------|-----------------|
@@ -81,7 +84,15 @@ export const DEFAULT_ESTIMATE_PROMPT_TEMPLATE = `# 🗣️ Prompt de Discusión 
 
 Actúas como facilitador de la sesión de pricing del proyecto.
 
-Lee \`docs/funky-ai/estimate/pricing-guide.md\` primero, luego \`pricing-decisions.md\`.`;
+## Contexto de entrada
+
+Lee \`docs/funky-ai/estimate/pricing-guide.md\` primero, luego \`docs/funky-ai/estimate/pricing-decisions.md\`.
+
+## Fases
+
+1. **Fase 1 — Preparación**: lee y analiza el contexto en silencio.
+2. **Fase 2 — Recomendación**: propone las flags aplicables y sus buffers; DETENTE y pide al humano que las inyecte con \`funky estimate --flag\`.
+3. **Fase 3 — Debate**: inicia la discusión solo tras la luz verde del humano.`;
 
 export const DEFAULT_DECISIONS_TEMPLATE = `# Decisiones de Pricing
 
