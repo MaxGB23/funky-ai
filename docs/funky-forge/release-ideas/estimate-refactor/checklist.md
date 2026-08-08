@@ -66,12 +66,12 @@ Verificado contra el motor común `executeIntentions` (fs-adapter.js). El compor
 
 ## Fase 3 — Verificación
 
-- [ ] 3.1 `pnpm test` verde en `funky-cli/`.
-- [ ] 3.2 Smoke: `funky estimate --security` → pricing-guide con referencias (no copy paste), sección `## Seguridad` marcada arriba de `## Estructura de Discusión`, sin prompt gigante en consola.
-- [ ] 3.3 Smoke: segunda corrida `funky estimate --concurrency` → incrusta `## Concurrencia` SIN preguntar (aditiva), `## Seguridad` se conserva, exit 0. Tercera corrida con template base modificado → pregunta Y/N con advertencia; `n` → no cambia nada (exit 0, decisión válida); `y` → reconstruye la base y REINCRUSTA Seguridad + Concurrencia (ningún flag se pierde).
-- [ ] 3.4 Smoke: `pricing-decisions.md` existente no se sobrescribe (recomendación eliminar/mover con backup, exit 0); sin TTY → default `n` logueado.
-- [ ] 3.5 Smoke init/assess: tras Fase 0, los tres comandos responden igual al mismo escenario (guía existente Y/N, decisión existente skip+recomendación, no-TTY aviso genérico).
-- [ ] 3.6 Validación del flujo de discusión en sesión real de IA: punto por punto, modelo de pricing primero, buffers por flag, TCO separado y tabla de cotización final — anti-monólogo confirmado (patrón del 3.5 de assess).
+- [x] 3.1 `pnpm test` verde en `funky-cli/` (27 archivos, 307 tests — verificado 2026-08-07).
+- [x] 3.2 Smoke: `funky estimate --security` → pricing-guide con referencias (no copy paste), sección `## Seguridad` marcada arriba de `## Estructura de Discusión`, sin prompt gigante en consola (verificado 2026-08-07 en `.tmp/smoke-estimate-fase3`).
+- [x] 3.3 Smoke: segunda corrida `funky estimate --concurrency` → incrusta `## Concurrencia` SIN preguntar (aditiva), `## Seguridad` se conserva, exit 0. Tercera corrida con template base modificado → en no-TTY cae a default `n` logueado (no cambia nada, exit 0, decisión válida); el flujo `y` (reconstruir base + reincrustar TODOS los flags) queda cubierto por el test interactivo 2.3e (confirm=true) — la rama `y` interactiva requiere terminal real (verificado 2026-08-07).
+- [x] 3.4 Smoke: `pricing-decisions.md` existente no se sobrescribe (recomendación eliminar/mover con backup, exit 0); sin TTY → default `n` logueado tanto en estimate-prompt.md como en el drift de pricing-guide (verificado 2026-08-07).
+- [x] 3.5 Smoke assess: guía existente → default `n` + aviso no-TTY genérico; decisión existente → skip + recomendación backup; exit 0 (verificado 2026-08-07). Pendiente en terminal real: smoke interactivo de init (no-TTY no puede completar el flujo de preguntas).
+- [ ] 3.6 Validación del flujo de discusión en sesión real de IA: punto por punto, modelo de pricing primero, buffers por flag, TCO separado y tabla de cotización final — anti-monólogo confirmado (patrón del 3.5 de assess). Requiere sesión interactiva real del usuario.
 
 ## Pendientes arrastrados de assess (a resolver en este refactor)
 
