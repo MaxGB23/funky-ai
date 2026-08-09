@@ -119,11 +119,16 @@ export async function runEstimate(targetBase, opts = {}) {
     // docs/funky-ai/canvas/brief-funcional.md (generado por funky init), usarlo
     // automáticamente como sección Brief Funcional. --brief <path> sigue siendo
     // override explícito; --brief sin valor (true) fuerza el checklist (R7).
+    // M8: sin brief y sin --brief el usuario NO lo sabía (no había aviso); ahora
+    // se avisa que la IA preguntará el contexto de negocio, armonizado con M11
+    // (mismo comando correctivo que los canvases: funky init).
     if (guideOpts.brief === undefined) {
       const initBriefPath = path.join(targetBase, 'docs', 'funky-ai', 'canvas', 'brief-funcional.md');
       if (fs.existsSync(initBriefPath)) {
         guideOpts.brief = initBriefPath;
         log('💡 Brief funcional auto-detectado desde funky init: docs/funky-ai/canvas/brief-funcional.md');
+      } else {
+        warn('⚠️  No se encontró docs/funky-ai/canvas/brief-funcional.md. La IA preguntará el contexto de negocio; créalo con "funky init".');
       }
     }
 

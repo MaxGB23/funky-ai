@@ -101,6 +101,50 @@ describe('estimateCommand — integration', () => {
     warnSpy.mockRestore();
   });
 
+  it('M8: avisa cuando no hay brief de init y no se pasó --brief (la IA preguntará el contexto de negocio)', async () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    addDecisions(mf, DECISIONS_CONTENT);
+    applyMocks(mf);
+
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    await estimateCommand.parseAsync([], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    const warnMsgs = warnSpy.mock.calls.map(c => String(c));
+    // M8: el aviso menciona el archivo ausente, el contexto de negocio y el
+    // comando correctivo (funky init), armonizado con M11 (mismo patrón que canvases).
+    expect(warnMsgs.some(m => m.includes('brief-funcional.md') && m.includes('contexto de negocio'))).toBe(true);
+    expect(warnMsgs.some(m => m.includes('brief-funcional.md') && m.includes('funky init'))).toBe(true);
+
+    warnSpy.mockRestore();
+  });
+
+  it('M8: con brief-funcional.md presente NO avisa y lo auto-detecta (issue #33)', async () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    addCanvas(mf, 'brief-funcional.md', '# BRIEF FUNCIONAL\n[Completar]');
+    addDecisions(mf, DECISIONS_CONTENT);
+    applyMocks(mf);
+
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+    await estimateCommand.parseAsync([], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    const warnMsgs = warnSpy.mock.calls.map(c => String(c));
+    expect(warnMsgs.some(m => m.includes('brief-funcional.md'))).toBe(false);
+    const logMsgs = logSpy.mock.calls.map(c => String(c));
+    expect(logMsgs.some(m => m.includes('auto-detectado') && m.includes('brief-funcional.md'))).toBe(true);
+
+    warnSpy.mockRestore();
+    logSpy.mockRestore();
+  });
+
   it('warns on unfilled canvas sections and exits 0', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', 'Framework: [Responde aquí]');
