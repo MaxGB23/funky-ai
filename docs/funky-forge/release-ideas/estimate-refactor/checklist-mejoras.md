@@ -2,7 +2,7 @@
 
 > **Propósito:** seguimiento físico de las mejoras derivadas del segundo smoke test de `funky estimate` (sesión real de IA: Fixed-Price $14,040 USD, TCO ~$40/mes). Se marca aquí, no depende del contexto de la conversación.
 > **Fuente:** `smoke-test-observaciones2.md` (raíz del repo) + sugerencias del agente de esa sesión.
-> **Estado:** borrador inicial — discusión punto por punto verificada contra el código (2026-08-07).
+> **Estado:** ejecutado (2026-08-08) — todos los ítems implementados y verificados contra el código y los tests.
 
 ## Priorización
 
@@ -34,9 +34,9 @@
 
 ### BAJO — avisos y brief
 
-- [ ] **M8 (obs 5): Aviso cuando NO hay brief.** `estimate.js` L121-125 solo loguea cuando SÍ detecta el brief de init; sin `brief-funcional.md` y sin `--brief` no hay aviso ni sección (el agente termina preguntando según la guía). Agregar aviso info ("no se encontró brief-funcional.md, la IA preguntará el contexto de negocio") cuando no hay brief y no se pasó `--brief`.
+- [x] **M8 (obs 5): Aviso cuando NO hay brief.** `estimate.js` L121-125 solo loguea cuando SÍ detecta el brief de init; sin `brief-funcional.md` y sin `--brief` no hay aviso ni sección (el agente termina preguntando según la guía). Agregar aviso info ("no se encontró brief-funcional.md, la IA preguntará el contexto de negocio") cuando no hay brief y no se pasó `--brief`.
 
-- [ ] **M9 (obs 9): KPI a lana en el brief de init.** El template `brief-funcional.md` (init) ya tiene "KPI o Éxito del Producto" (L61-64) pero no su equivalente monetario. Agregar pregunta opcional: "¿Cuánto le cuesta este problema hoy al cliente (horas/dinero)?" — alimenta la variable de negocio ROI/valor del pricing-guide. Solo aplica a inits NUEVOS (brief es kind 'decision', no se sobrescribe).
+- [x] **M9 (obs 9): KPI a lana en el brief de init.** El template `brief-funcional.md` (init) ya tiene "KPI o Éxito del Producto" (L61-64) pero no su equivalente monetario. Agregar pregunta opcional: "¿Cuánto le cuesta este problema hoy al cliente (horas/dinero)?" — alimenta la variable de negocio ROI/valor del pricing-guide. Solo aplica a inits NUEVOS (brief es kind 'decision', no se sobrescribe).
 
 ## Decidido (sin acción)
 

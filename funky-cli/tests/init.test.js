@@ -53,7 +53,8 @@ describe('brief-funcional.md template (R6)', () => {
   const templatePath = path.join(__dirname, '../src/templates/init/brief-funcional.md');
   const content = fs.readFileSync(templatePath, 'utf8');
 
-  // Los 12 ítems de §13 (recomendaciones-agente.md:415-426), en orden.
+  // Los 13 ítems de §13 (recomendaciones-agente.md:415-426) + ítem 13 de M9
+  // (costo del problema para el cliente — alimenta el ROI/valor del pricing-guide), en orden.
   const expectedHeaders = [
     '1. Nombre del Producto o Idea',
     '2. Objetivo del Sistema',
@@ -67,9 +68,10 @@ describe('brief-funcional.md template (R6)', () => {
     '10. Entregables por Fase',
     '11. MVP vs Fase 2',
     '12. KPI o Éxito del Producto',
+    '13. Costo Actual del Problema para el Cliente',
   ];
 
-  it('contiene los 12 ítems de §13 como headers `## N.` en orden (R6)', () => {
+  it('contiene los 13 ítems de §13 como headers `## N.` en orden (R6, M9)', () => {
     const headers = (content.match(/^## (\d+\. .+)$/gm) ?? []).map(h => h.replace(/^## /, ''));
     expect(headers).toEqual(expectedHeaders);
   });

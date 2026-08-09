@@ -62,3 +62,8 @@
 <!-- ¿Cómo se mide el éxito del producto?
      Ej: Reducir 30% el tiempo de armado de reportes y mantener 100% de usuarios activos semanales. -->
 [Completar]
+
+## 13. Costo Actual del Problema para el Cliente
+<!-- ¿Cuánto le cuesta este problema hoy al cliente (horas/dinero)? Pregunta OPCIONAL: alimenta la variable de ROI/valor del pricing-guide (cuánto ahorra la solución antes de cotizar).
+     Ej: El armado manual de reportes toma 3 horas semanales, aproximadamente $12,000 USD al año. -->
+[Completar]
