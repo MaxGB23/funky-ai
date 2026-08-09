@@ -20,15 +20,17 @@
 
 ### MEDIO — limpieza y UX
 
-- [ ] **M4 (obs 2): Limpiar pares de marcadores vacíos.** La zona de topics trae los 6 pares y los no usados quedan como `<!-- topic:x -->\n<!-- /topic:x -->` vacíos, que confunden al agente. Opciones: (a) eliminar los pares vacíos de la salida final en el dominio; (b) sustituirlos por un comentario único de zona tipo `<!-- topics disponibles: roles, multi-tenant, transactions, security, concurrency, integrations -->`. `detectEmbeddedTopics` ya ignora pares vacíos, así que no rompe el refresco. **Decidir (a) o (b).**
+- [x] **M4 (obs 2): Limpiar pares de marcadores vacíos.** La zona de topics trae los 6 pares y los no usados quedan como `<!-- topic:x -->\n<!-- /topic:x -->` vacíos, que confunden al agente. Opciones: (a) eliminar los pares vacíos de la salida final en el dominio; (b) sustituirlos por un comentario único de zona tipo `<!-- topics disponibles: roles, multi-tenant, transactions, security, concurrency, integrations -->`. `detectEmbeddedTopics` ya ignora pares vacíos, así que no rompe el refresco. **Decidir (a) o (b).**
 
-- [ ] **M5 (obs 8): Referencia de tarifas base SIEMPRE en la guía.** El agente inventó el Costo Base ($8,000) porque sin `--pricing-team` no hay quién ni tarifa. Incluir una tabla base de tarifas por rol (Senior/Mid/Jr, USD/hora) en `pricing-guide-template.md` para que el cálculo del Costo Base use números; `--pricing-team` la enriquece con los rangos reales del equipo. **Definir rangos base por defecto** y revisar la relación con `--pricing-team` (qué aporta cada uno).
+- [x] **M5 (obs 8): Referencia de tarifas base SIEMPRE en la guía.** El agente inventó el Costo Base ($8,000) porque sin `--pricing-team` no hay quién ni tarifa. Incluir una tabla base de tarifas por rol (Senior/Mid/Jr, USD/hora) en `pricing-guide-template.md` para que el cálculo del Costo Base use números; `--pricing-team` la enriquece con los rangos reales del equipo. **Definir rangos base por defecto** y revisar la relación con `--pricing-team` (qué aporta cada uno).
 
-- [ ] **M6 (obs 1): Eliminar warnings obsoletos de `estimate.js`.** `decisions` (L66) es variable muerta: solo alimenta el warning "Generando guía con contenido parcial" que ya es FALSO post-refactor (la guía referencia archivos, no embebe contenido). Los "Usando placeholder" de canvases (L73-76) tampoco describen la realidad actual. Reescribir como avisos útiles ("archivo referenciado no existe, la IA preguntará el contexto") o eliminar. Mantener el aviso de `unfilledCount` (sí es informativo).
+- [x] **M6 (obs 1): Eliminar warnings obsoletos de `estimate.js`.** `decisions` (L66) es variable muerta: solo alimenta el warning "Generando guía con contenido parcial" que ya es FALSO post-refactor (la guía referencia archivos, no embebe contenido). Los "Usando placeholder" de canvases (L73-76) tampoco describen la realidad actual. Reescribir como avisos útiles ("archivo referenciado no existe, la IA preguntará el contexto") o eliminar. Mantener el aviso de `unfilledCount` (sí es informativo).
 
-- [ ] **M7 (obs 3): Summary con estado por archivo.** Hoy: "⚡ Omitiendo (ya existe): estimate-prompt.md" y luego "✅ Material de pricing generado exitosamente" con los 3 archivos listados sin estado. Mostrar estado por archivo (creado / conservado / omitido) o matizar el título ("listo: N creados, M conservados").
+- [x] **M7 (obs 3): Summary con estado por archivo.** Hoy: "⚡ Omitiendo (ya existe): estimate-prompt.md" y luego "✅ Material de pricing generado exitosamente" con los 3 archivos listados sin estado. Mostrar estado por archivo (creado / conservado / omitido) o matizar el título ("listo: N creados, M conservados").
 
-- [ ] **M10: Revisión rápida de limpieza y UX de `init` y `assess`.** Aplicar el mismo criterio que M6/M7 a init.js/assess.js y sus templates: warnings obsoletos o engañosos, variables muertas, mensajes contradictorios ("generado" cuando hubo omisiones), summary con estado por archivo. Solo limpieza y UX — sin cambio de comportamiento.
+- [x] **M10: Revisión rápida de limpieza y UX de `init` y `assess`.** Aplicar el mismo criterio que M6/M7 a init.js/assess.js y sus templates: warnings obsoletos o engañosos, variables muertas, mensajes contradictorios ("generado" cuando hubo omisiones), summary con estado por archivo. Solo limpieza y UX — sin cambio de comportamiento.
+
+- [x] **M11 AÑADIDO POR HUMANO EN PARALELO (análisis de arquitectura): Warns de `estimate.js` con comando correctivo.** init/assess NO son bloqueantes en flujo directo (estimate degrada con placeholders/contenido parcial), pero los warns actuales (L73-78 "Usando placeholder") no dicen cómo resolverlo — inconsistencia con `assess.js` que sí dice "créalo con `funky init`" (L61/65). Añadir el comando correctivo a los warns de estimate: canvases/brief → "ejecuta `funky init`"; `architecture-decisions.md` → "ejecuta `funky assess`". Sin cambio de comportamiento. (Evaluación `funky pipeline`: MANTENER — orquestador con estado + --json CI + 546 líneas de tests; deprecar sería change SDD con issue, no micro-cambio.)
 
 ### BAJO — avisos y brief
 
@@ -54,3 +56,4 @@
 | 9 (KPI a lana en brief) | M9 |
 | 10 (--brief flag fantasma) | M3 |
 | 4 (funcionamiento validado) | — (decidido) |
+| — (análisis flujo init→assess→estimate) | M11 |
