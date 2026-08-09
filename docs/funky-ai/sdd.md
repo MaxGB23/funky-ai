@@ -4,9 +4,7 @@
 
 `funky sdd install` copia toda la estructura base del ecosistema agéntico de funky-ai dentro del proyecto destino: reglas para agentes, archivo `ORCHESTRATOR-STATE.md`, plantillas SDD, RFC seed y directorios engram. Es el paso que materializa el framework sobre un repositorio ya inicializado.
 
-Sin `funky sdd install` el proyecto no tiene las reglas de comportamiento que los agentes necesitan para operar con el protocolo SDD, ni los templates para generar documentos, ni la estructura engram para memoria persistente.
-
-> **NOTA — Deprecación de `funky scaffold`:** `funky scaffold` queda como alias deprecado del mismo flujo: imprime siempre un warning (`⚠️ 'funky scaffold' está deprecado: usa 'funky sdd install'.`) y delega al MISMO handler (`runScaffoldCommand`). Será reemplazado en una fase 2 por un scaffold agnóstico. El nombre canónico del comando es `funky sdd install`.
+Sin `funky sdd install` el proyecto no tiene las reglas de comportamiento que los agentes necesitan para operar con el protocolo SDD, ni los templates para generar documentos, ni la estructura engram para memoria persistente. Para la base documental agnóstica (solo README, ORCHESTRATOR-STATE, release-notes y RFC), ver [`funky scaffold`](./scaffold.md).
 
 ## ¿Cuándo usarlo?
 
@@ -122,7 +120,7 @@ Cada subdirectorio se crea vacío. Son los shards donde el protocolo Engram pers
 
 ```
 funky sdd install
-  │  runScaffoldCommand()            ← handler compartido (también lo usa el alias deprecado funky scaffold)
+  │  runScaffoldCommand()            ← handler del flujo de instalación (solo lo usa funky sdd install)
   │  runScaffold({ templatesDir, targetBase })
   │
   ├── 3 root files ───────────────────────── copy

@@ -8,4 +8,4 @@
   - **`.agents/templates/sdd/` (8 + 2 copiados):** 8 templates copiados más `docs-live-index.md` y `docs-index/_indice-seccional-template.md` copiados del template base compartido (`bootstrap/sdd/`, mismo src que `funky skills` — R-SK-5).
   - **`openspec/rfcs/` — Excepción de ruta:** `000-rfc-template.md` inyectado fuera de `.agents` (dominio del proyecto).
   - **`docs/engram/` — 7 directorios:** Shards vacíos para memoria persistente por categoría.
-- **4. Diagrama de flujo:** `runScaffoldCommand()` (handler compartido con el alias deprecado `funky scaffold`) → `runScaffold()` ensambla intenciones (`copy`, `create`, `mkdir`) que procesa `executeIntentions()`.
+- **4. Diagrama de flujo:** `runScaffoldCommand()` (handler de `funky sdd install`) → `runScaffold()` ensambla intenciones (`copy`, `create`, `mkdir`) que procesa `executeIntentions()`. El scaffold agnóstico (`funky scaffold`) es un comando aparte: `runAgnosticScaffold()` (4 operaciones).

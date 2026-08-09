@@ -41,7 +41,7 @@ funky init
 
 ### `funky sdd install`
 
-> **Nota:** `funky scaffold` quedó como alias deprecado: imprime siempre un warning (`⚠️ 'funky scaffold' está deprecado: usa 'funky sdd install'.`) y delega al mismo handler `runScaffoldCommand()`.
+> **Nota:** `funky scaffold` es un comando aparte (scaffold agnóstico OpenSpec/SDD): instala solo la base documental (README, ORCHESTRATOR-STATE, release-notes, RFC) vía `runAgnosticScaffoldCommand()`. NO es un alias de `funky sdd install`. Ver [`docs/funky-ai/scaffold.md`](../funky-ai/scaffold.md).
 
 ```
 funky sdd install
@@ -67,7 +67,7 @@ funky sdd install
 |---|---|
 | `src/commands/init.js` | Orquestador del comando `funky init`: expone `runInit({ templatesDir, targetBase })` (función pura que devuelve las intenciones ordenadas, cada una con su `kind`: decision/guide) y el action que ejecuta `executeIntentions()` con confirmación Y/N para guías |
 | `src/commands/sdd.js` | Namespace del comando `funky sdd`: registra el subcomando `install` (delega en `runScaffoldCommand`) |
-| `src/commands/scaffold.js` | Handler compartido `runScaffoldCommand()` — lo usan `funky sdd install` y el alias deprecado `funky scaffold` (que además imprime el warning); expone `runScaffold()` (función pura) |
+| `src/commands/scaffold.js` | Exponen `runScaffold()` (función pura del framework completo) + `runScaffoldCommand()` (handler de `funky sdd install`) y `runAgnosticScaffold()` + `runAgnosticScaffoldCommand()` (comando `funky scaffold` agnóstico) |
 | `src/utils/fs-adapter.js` | `executeIntentions(intentions)`: ejecuta mkdir/copy con skip-if-exists y logs |
 
 ### 3.2 Templates estáticos (copiados por `funky sdd install`)

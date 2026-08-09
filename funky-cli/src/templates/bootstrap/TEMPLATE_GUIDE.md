@@ -1,6 +1,6 @@
 # 📘 Funky AI — Guía de Customización de Templates (Progressive Disclosure)
 
-> **Propósito:** Esta guía define cómo deben mutar y evolucionar los templates agnósticos (como `tasks.md`, `README.md`, etc.) generados inicialmente por `funky sdd install` (antes `funky scaffold`, alias deprecado), basándose en las decisiones del Project Canvas y el Architecture Assessment.
+> **Propósito:** Esta guía define cómo deben mutar y evolucionar los templates agnósticos (como `tasks.md`, `README.md`, etc.) generados inicialmente por `funky sdd install`, basándose en las decisiones del Project Canvas y el Architecture Assessment.
 
 ## 🌟 El Principio de Progressive Disclosure
 
