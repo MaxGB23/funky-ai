@@ -249,9 +249,10 @@ export function generateIAPromptFooter() {
 // ═══════════════════════════════════════════════════════════════════════════
 // Fase 2 (2.3): mecanismo de incrustación aditiva con marcadores XML.
 // pricing-guide.md es una GUÍA (no un derivado regenerable): la zona de
-// incrustación `<!-- topics --> ... <!-- /topics -->` envuelve los pares
-// `<!-- topic:<key> --> ... <!-- /topic:<key> -->` de los 6 topics en orden
-// canónico. El CLI detecta secciones existentes por marcador exacto (conjunto
+// incrustación `<!-- topics --> ... <!-- /topics -->` envuelve los bloques
+// `<!-- topic:<key> --> ... <!-- /topic:<key> -->` de los topics incrustados en
+// orden canónico (Fase B M4: la zona SOLO contiene topics con contenido, sin
+// pares vacíos). El CLI detecta secciones existentes por marcador exacto (conjunto
 // cerrado de 6 topics, checklist 1.2), incrusta las nuevas SIN preguntar y
 // reincrusta todas al refrescar la base (contrato de feedback, decisión 2026-08-06).
 const TOPIC_ZONE_OPEN = '<!-- topics -->';
@@ -259,8 +260,9 @@ const TOPIC_ZONE_CLOSE = '<!-- /topics -->';
 const TOPIC_BLOCK_OPEN = (key) => `<!-- topic:${key} -->`;
 const TOPIC_BLOCK_CLOSE = (key) => `<!-- /topic:${key} -->`;
 // Par de marcadores: apertura, contenido opcional y cierre. El `\n?` opcional
-// antes del cierre tolera el par VACÍO (`OPEN\nCLOSE`, un solo salto) y el par
-// con contenido (`OPEN\n<fragmento>\nCLOSE`), con o sin doble salto.
+// antes del cierre tolera el par VACÍO legacy (`OPEN\nCLOSE`, un solo salto) y el
+// par con contenido (`OPEN\n<fragmento>\nCLOSE`), con o sin doble salto. Desde la
+// Fase B M4 la zona NO emite pares vacíos; la tolerancia queda por retrocompat.
 const TOPIC_BLOCK_RE = () => /\n<!-- topic:([a-z0-9-]+) -->\r?\n([\s\S]*?)\n?<!-- \/topic:\1 -->/g;
 
 /**
@@ -290,8 +292,10 @@ export function validatePricingGuideTemplate(templateContent) {
 function parseTopicZone(zoneContent) {
   const blockRe = TOPIC_BLOCK_RE();
   const blocks = new Map();
-  let zonePrefix = '';
-  let lastEnd = 0;
+  // Sin bloques (Fase B M4: la zona no trae pares vacíos), el contenido completo
+  // es el prefijo: la zona queda intacta y los topics nuevos se agregan al final.
+  let zonePrefix = zoneContent;
+  let zoneSuffix = '';
   let match;
   let first = true;
   while ((match = blockRe.exec(zoneContent)) !== null) {
@@ -300,9 +304,9 @@ function parseTopicZone(zoneContent) {
       first = false;
     }
     blocks.set(match[1], { full: match[0], content: match[2] });
-    lastEnd = match.index + match[0].length;
+    zoneSuffix = zoneContent.slice(match.index + match[0].length);
   }
-  return { blocks, zonePrefix, zoneSuffix: zoneContent.slice(lastEnd) };
+  return { blocks, zonePrefix, zoneSuffix };
 }
 
 /**
@@ -354,9 +358,9 @@ export function embedTopicSections(guideContent, topics) {
       zoneBody.push(existing.full);
     } else if (requested.includes(key)) {
       zoneBody.push(`\n${TOPIC_BLOCK_OPEN(key)}\n${readTopicFragment(key)}${TOPIC_BLOCK_CLOSE(key)}`);
-    } else {
-      zoneBody.push(`\n${TOPIC_BLOCK_OPEN(key)}\n${TOPIC_BLOCK_CLOSE(key)}`);
     }
+    // Fase B M4: los topics no solicitados NO dejan pares de marcadores vacíos;
+    // la zona solo contiene topics con contenido.
   }
   zoneBody.push(zoneSuffix);
 
@@ -371,8 +375,8 @@ export function embedTopicSections(guideContent, topics) {
 
 /**
  * Topics presentes en la guía por marcador exacto: un topic está incrustado si su
- * par `<!-- topic:<key> -->...<!-- /topic:<key> -->` tiene contenido. Los pares
- * vacíos (template fresco) no cuentan.
+ * par `<!-- topic:<key> -->...<!-- /topic:<key> -->` tiene contenido. Los topics
+ * sin contenido (pares vacíos legacy) no cuentan.
  *
  * @param {string} guideContent
  * @returns {string[]} Topics incrustados, en orden de aparición en el archivo.

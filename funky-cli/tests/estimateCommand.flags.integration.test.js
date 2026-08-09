@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 vi.mock('fs', () => ({ ...fsMock, default: fsMock }));
 vi.mock('node:fs', () => ({ ...fsMock, default: fsMock }));
-import { fsMock, applyMocks, estimateMockFiles as createMockFiles, addCanvas, addDecisions, addOptionalTemplates, CWD, ESTIMATE_TPL_DIR as TPL_DIR, PRICING_GUIDE_DEST, CANVAS_PROJECT_CONTENT, CANVAS_INFRA_CONTENT, DECISIONS_CONTENT, DEFAULT_GUIDE_TEMPLATE, TOPIC_FRAGMENT_ROLES, TOPIC_FRAGMENT_SECURITY, TOPIC_FRAGMENT_MULTI_TENANT } from './helpers/fsMock.js';
+import { fsMock, applyMocks, estimateMockFiles as createMockFiles, addCanvas, addDecisions, addOptionalTemplates, CWD, ESTIMATE_TPL_DIR as TPL_DIR, PRICING_GUIDE_DEST, CANVAS_PROJECT_CONTENT, CANVAS_INFRA_CONTENT, DECISIONS_CONTENT, DEFAULT_GUIDE_TEMPLATE, TOPIC_FRAGMENT_ROLES, TOPIC_FRAGMENT_SECURITY, TOPIC_FRAGMENT_MULTI_TENANT, embedTopicIntoGuide } from './helpers/fsMock.js';
 import path from 'path';
 import fs from 'fs';
 import { estimateCommand } from '../src/commands/estimate.js';
@@ -16,9 +16,7 @@ function guideFromWriteCalls(writeCalls) {
 }
 
 function seedEmbeddedGuide(mf, topicKey, fragment) {
-  const marker = `<!-- topic:${topicKey} -->\n<!-- /topic:${topicKey} -->`;
-  const embedded = DEFAULT_GUIDE_TEMPLATE.replace(marker, `<!-- topic:${topicKey} -->\n${fragment}\n<!-- /topic:${topicKey} -->`);
-  mf[PRICING_GUIDE_DEST] = embedded;
+  mf[PRICING_GUIDE_DEST] = embedTopicIntoGuide(DEFAULT_GUIDE_TEMPLATE, topicKey, fragment);
 }
 
 describe('estimateCommand — guía declarativa (2.1)', () => {

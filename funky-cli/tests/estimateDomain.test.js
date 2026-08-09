@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 vi.mock('fs', () => ({ ...fsMock, default: fsMock }));
 vi.mock('node:fs', () => ({ ...fsMock, default: fsMock }));
-import { fsMock, applyMocks, CWD, ESTIMATE_TPL_DIR as TPL_DIR, PRICING_GUIDE_TPL_PATH as TPL_PRICING_GUIDE_PATH, PRICING_DECISIONS_TPL_PATH as TPL_PRICING_DECISIONS_PATH, DEFAULT_GUIDE_TEMPLATE, DEFAULT_DECISIONS_TEMPLATE, CANVAS_PROJECT_CONTENT, CANVAS_INFRA_CONTENT, DECISIONS_CONTENT, CHECKLIST_TEMPLATE, TOPIC_FRAGMENT_ROLES, TOPIC_FRAGMENT_SECURITY, TOPIC_FRAGMENT_TRANSACTIONS, TEAM_COST_TEMPLATE, addOptionalTemplates } from './helpers/fsMock.js';
+import { fsMock, applyMocks, CWD, ESTIMATE_TPL_DIR as TPL_DIR, PRICING_GUIDE_TPL_PATH as TPL_PRICING_GUIDE_PATH, PRICING_DECISIONS_TPL_PATH as TPL_PRICING_DECISIONS_PATH, DEFAULT_GUIDE_TEMPLATE, DEFAULT_DECISIONS_TEMPLATE, CANVAS_PROJECT_CONTENT, CANVAS_INFRA_CONTENT, DECISIONS_CONTENT, CHECKLIST_TEMPLATE, TOPIC_FRAGMENT_ROLES, TOPIC_FRAGMENT_SECURITY, TOPIC_FRAGMENT_TRANSACTIONS, TEAM_COST_TEMPLATE, addOptionalTemplates, embedTopicIntoGuide } from './helpers/fsMock.js';
 import path from 'path';
 import fs from 'fs';
 import { generatePricingGuide, generateBriefSection, generateTopicFragments, generateTeamCostReference, generateDecisionsTemplate, generateIAPrompt, generateIAPromptBanner, generateIAPromptFooter, TOPICS, buildPricingGuide, embedTopicSections, detectEmbeddedTopics, refreshPricingGuideBase, validatePricingGuideTemplate } from '../src/utils/estimateDomain.js';
@@ -262,6 +262,17 @@ describe('buildPricingGuide — 2.3a', () => {
     expect(guide).toContain('## Estructura de Discusión');
   });
 
+  it('M4: buildPricingGuide sin topics NO emite ningún par de marcadores en la zona', () => {
+    const mf = {};
+    mf[TPL_PRICING_GUIDE_PATH] = DEFAULT_GUIDE_TEMPLATE;
+    addOptionalTemplates(mf);
+    applyMocks(mf);
+
+    const guide = buildPricingGuide([]);
+    expect(guide).not.toMatch(/<!-- topic:[a-z0-9-]+ -->/);
+    expect(guide).not.toMatch(/<!-- \/topic:[a-z0-9-]+ -->/);
+  });
+
   it('valida el template base y lanza error de instalación claro si no tiene zona o header (1.2)', () => {
     const mf = {};
     mf[TPL_PRICING_GUIDE_PATH] = '# Guía sin zona ni header';
@@ -281,8 +292,7 @@ describe('embedTopicSections — 2.3b (aditivo, orden canónico)', () => {
     addOptionalTemplates(mf);
     applyMocks(mf);
 
-    const seeded = DEFAULT_GUIDE_TEMPLATE
-      .replace('<!-- topic:roles -->\n<!-- /topic:roles -->', '<!-- topic:roles -->\n' + TOPIC_FRAGMENT_ROLES + '\n<!-- /topic:roles -->');
+    const seeded = embedTopicIntoGuide(DEFAULT_GUIDE_TEMPLATE, 'roles', TOPIC_FRAGMENT_ROLES);
     const result = embedTopicSections(seeded, ['security']);
 
     expect(result).toContain(TOPIC_FRAGMENT_SECURITY);
@@ -314,13 +324,56 @@ describe('embedTopicSections — 2.3b (aditivo, orden canónico)', () => {
     expect(twice).toBe(once);
     expect(twice.match(/<!-- topic:roles -->/g)).toHaveLength(1);
   });
+
+  it('M4: incrusta topics sobre una base SIN pares vacíos (la zona solo lleva contenido)', () => {
+    const mf = {};
+    addOptionalTemplates(mf);
+    applyMocks(mf);
+
+    const result = embedTopicSections(DEFAULT_GUIDE_TEMPLATE, ['security']);
+
+    expect(result).toContain(TOPIC_FRAGMENT_SECURITY);
+    expect(result).toContain('<!-- topic:security -->');
+    expect(result).not.toContain('<!-- topic:roles -->');
+    expect(result.indexOf('<!-- topic:security -->')).toBeLessThan(result.indexOf('## Estructura de Discusión'));
+  });
+
+  it('M4: NO emite pares de marcadores vacíos para topics no solicitados', () => {
+    const mf = {};
+    addOptionalTemplates(mf);
+    applyMocks(mf);
+
+    const result = embedTopicSections(DEFAULT_GUIDE_TEMPLATE, ['security', 'roles']);
+
+    expect(result).toContain(TOPIC_FRAGMENT_SECURITY);
+    expect(result).toContain(TOPIC_FRAGMENT_ROLES);
+    expect(result).not.toContain('<!-- topic:transactions -->\n<!-- /topic:transactions -->');
+    expect(result).not.toContain('<!-- topic:multi-tenant -->\n<!-- /topic:multi-tenant -->');
+    expect(result).not.toContain('<!-- topic:concurrency -->\n<!-- /topic:concurrency -->');
+    expect(result).not.toContain('<!-- topic:integrations -->\n<!-- /topic:integrations -->');
+  });
+
+  it('M4: la zona NO duplica el prefijo (Paso Inicial) al incrustar sobre una base sin pares', () => {
+    const mf = {};
+    addOptionalTemplates(mf);
+    applyMocks(mf);
+
+    const result = embedTopicSections(DEFAULT_GUIDE_TEMPLATE, ['security']);
+    const zoneStart = result.indexOf('<!-- topics -->');
+    const zoneEnd = result.indexOf('<!-- /topics -->');
+    const zone = result.slice(zoneStart, zoneEnd);
+    expect(zone.match(/## Paso Inicial/g) || []).toHaveLength(1);
+    expect(zone.indexOf('## Paso Inicial')).toBeLessThan(zone.indexOf('<!-- topic:security -->'));
+  });
 });
 
 describe('detectEmbeddedTopics — 2.3', () => {
   it('detecta los topics presentes por marcador exacto', () => {
-    const guide = DEFAULT_GUIDE_TEMPLATE
-      .replace('<!-- topic:roles -->\n<!-- /topic:roles -->', '<!-- topic:roles -->\n' + TOPIC_FRAGMENT_ROLES + '\n<!-- /topic:roles -->')
-      .replace('<!-- topic:security -->\n<!-- /topic:security -->', '<!-- topic:security -->\n' + TOPIC_FRAGMENT_SECURITY + '\n<!-- /topic:security -->');
+    const guide = embedTopicIntoGuide(
+      embedTopicIntoGuide(DEFAULT_GUIDE_TEMPLATE, 'roles', TOPIC_FRAGMENT_ROLES),
+      'security',
+      TOPIC_FRAGMENT_SECURITY
+    );
 
     const result = detectEmbeddedTopics(guide);
     expect(result).toEqual(expect.arrayContaining(['roles', 'security']));
@@ -343,14 +396,30 @@ describe('refreshPricingGuideBase — 2.3e (reincrusta TODOS los topics)', () =>
     addOptionalTemplates(mf);
     applyMocks(mf);
 
-    const stale = DEFAULT_GUIDE_TEMPLATE
-      .replace('<!-- topic:roles -->\n<!-- /topic:roles -->', '<!-- topic:roles -->\n' + TOPIC_FRAGMENT_ROLES + '\n<!-- /topic:roles -->')
-      .replace('<!-- topic:transactions -->\n<!-- /topic:transactions -->', '<!-- topic:transactions -->\n' + TOPIC_FRAGMENT_TRANSACTIONS + '\n<!-- /topic:transactions -->');
+    const stale = embedTopicIntoGuide(
+      embedTopicIntoGuide(DEFAULT_GUIDE_TEMPLATE, 'roles', TOPIC_FRAGMENT_ROLES),
+      'transactions',
+      TOPIC_FRAGMENT_TRANSACTIONS
+    );
 
     const result = refreshPricingGuideBase(DEFAULT_GUIDE_TEMPLATE, stale);
     expect(result).toContain(TOPIC_FRAGMENT_ROLES);
     expect(result).toContain(TOPIC_FRAGMENT_TRANSACTIONS);
     expect(result).toContain('## Estructura de Discusión');
+  });
+
+  it('M4: refresca sobre una base SIN pares vacíos y solo reincrusta topics con contenido', () => {
+    const mf = {};
+    mf[TPL_PRICING_GUIDE_PATH] = DEFAULT_GUIDE_TEMPLATE;
+    addOptionalTemplates(mf);
+    applyMocks(mf);
+
+    const stale = embedTopicIntoGuide(DEFAULT_GUIDE_TEMPLATE, 'roles', TOPIC_FRAGMENT_ROLES);
+
+    const result = refreshPricingGuideBase(DEFAULT_GUIDE_TEMPLATE, stale);
+    expect(result).toContain(TOPIC_FRAGMENT_ROLES);
+    expect(result).not.toContain('<!-- topic:security -->');
+    expect(result).not.toContain('<!-- topic:transactions -->\n<!-- /topic:transactions -->');
   });
 });
 

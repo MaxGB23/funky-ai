@@ -13,7 +13,7 @@ vi.mock('@clack/prompts', () => clackMock);
 
 vi.mock('fs', () => ({ ...fsMock, default: fsMock }));
 vi.mock('node:fs', () => ({ ...fsMock, default: fsMock }));
-import { fsMock, applyMocks, estimateMockFiles as createMockFiles, addCanvas, addDecisions, addOptionalTemplates, PRICING_GUIDE_DEST, PRICING_GUIDE_TPL_PATH, CANVAS_PROJECT_CONTENT, CANVAS_INFRA_CONTENT, DECISIONS_CONTENT, DEFAULT_GUIDE_TEMPLATE, TOPIC_FRAGMENT_ROLES, TOPIC_FRAGMENT_SECURITY, TOPIC_FRAGMENT_TRANSACTIONS } from './helpers/fsMock.js';
+import { fsMock, applyMocks, estimateMockFiles as createMockFiles, addCanvas, addDecisions, addOptionalTemplates, PRICING_GUIDE_DEST, PRICING_GUIDE_TPL_PATH, CANVAS_PROJECT_CONTENT, CANVAS_INFRA_CONTENT, DECISIONS_CONTENT, DEFAULT_GUIDE_TEMPLATE, TOPIC_FRAGMENT_ROLES, TOPIC_FRAGMENT_SECURITY, TOPIC_FRAGMENT_TRANSACTIONS, embedTopicIntoGuide } from './helpers/fsMock.js';
 import fs from 'fs';
 import path from 'path';
 import { estimateCommand } from '../src/commands/estimate.js';
@@ -31,10 +31,7 @@ function seedGuide(mf, content) {
 function seedGuideWithTopics(mf, topics) {
   let guide = DEFAULT_GUIDE_TEMPLATE;
   for (const [key, fragment] of topics) {
-    guide = guide.replace(
-      `<!-- topic:${key} -->\n<!-- /topic:${key} -->`,
-      `<!-- topic:${key} -->\n${fragment}\n<!-- /topic:${key} -->`
-    );
+    guide = embedTopicIntoGuide(guide, key, fragment);
   }
   seedGuide(mf, guide);
 }
