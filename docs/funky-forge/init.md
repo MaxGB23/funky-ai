@@ -21,8 +21,8 @@ funky-cli/src/templates/init/
 ├── brief-funcional.md
 ├── PROJECT-CANVAS.md
 ├── INFRA-CANVAS.md
-├── canvas-planning-guide.md
-└── init-prompt.md
+├── canvas-planning-guide-template.md
+└── init-prompt-template.md
 ```
 
 ### Archivos generados (outputs)
@@ -91,14 +91,26 @@ Ejecución limpia (no existía nada):
 Si las decisiones ya existían (se omiten con recomendación) y las guías no:
 
 ```
-✅ Creado directorio: docs/funky-ai/canvas
-⚡ Omitiendo (ya existe): brief-funcional.md. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres regenerarla, elimínalo o muévelo con backup a otra ubicación.
-✅ Creado: docs/funky-ai/canvas/PROJECT-CANVAS.md
-✅ Creado: docs/funky-ai/canvas/INFRA-CANVAS.md
+⚡ Omitiendo (ya existe): brief-funcional.md. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.
+⚡ Omitiendo (ya existe): PROJECT-CANVAS.md. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.
+⚡ Omitiendo (ya existe): INFRA-CANVAS.md. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.
 ✅ Creado: docs/funky-ai/canvas/canvas-planning-guide.md
 ✅ Creado: docs/funky-ai/canvas/init-prompt.md
 
-✅ Canvases creados. Ejecuta `funky scaffold` para instalar el ecosistema completo.
+✅ Canvases listos: 2 creados, 3 conservados. Ejecuta `funky scaffold` para instalar el ecosistema completo.
 ```
 
-Con terminal, si una guía ya existe, `funky init` pregunta `Ya existe <guía>. ¿Quieres actualizarla con la versión más reciente?` y registra `✅ Actualizada: <guía>` en caso de `y`.
+Si todo ya existía (sin terminal):
+
+```
+⚠️ Entorno no interactivo: no se actualizan las guías existentes.
+⚡ Omitiendo (ya existe): brief-funcional.md. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.
+⚡ Omitiendo (ya existe): PROJECT-CANVAS.md. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.
+⚡ Omitiendo (ya existe): INFRA-CANVAS.md. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.
+⚡ Omitiendo (ya existe): canvas-planning-guide.md
+⚡ Omitiendo (ya existe): init-prompt.md
+
+ℹ️ Nada que crear: todos los archivos ya existen.
+```
+
+Con terminal, si una guía ya existe, `funky init` pregunta `Ya existe <guía>. Actualizarla trae la versión más reciente, pero REEMPLAZA la actual: perderás el progreso previo (anotaciones, ajustes) si no tienes un respaldo. ¿Quieres actualizarla?` y registra `✅ Actualizada: <guía>` en caso de `y`.

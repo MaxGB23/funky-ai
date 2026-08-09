@@ -22,8 +22,8 @@ Como paso final del pipeline, después de `assess`. El flag `--context` integra 
 
 | Input | Ruta | Requerido |
 |---|---|---|
-| PROJECT-CANVAS.md | `docs/funky-ai/canvas/PROJECT-CANVAS.md` | Sí (usa placeholder si falta) |
-| INFRA-CANVAS.md | `docs/funky-ai/canvas/INFRA-CANVAS.md` | Sí (usa placeholder si falta) |
+| PROJECT-CANVAS.md | `docs/funky-ai/canvas/PROJECT-CANVAS.md` | Sí (advierte si falta; la guía lo referencia) |
+| INFRA-CANVAS.md | `docs/funky-ai/canvas/INFRA-CANVAS.md` | Sí (advierte si falta; la guía lo referencia) |
 | architecture-decisions.md | `docs/funky-ai/assess/architecture-decisions.md` | No (advierte si falta) |
 | Template: pricing-guide-template.md | `funky-cli/src/templates/estimate/pricing-guide-template.md` | Interno |
 | Template: pricing-decisions-template.md | `funky-cli/src/templates/estimate/pricing-decisions-template.md` | Interno |
@@ -40,7 +40,7 @@ Si los canvases contienen secciones sin completar (`[Responde aquí]`), se muest
 | pricing-guide.md | `docs/funky-ai/estimate/pricing-guide.md` | Guía de discusión declarativa con contexto del proyecto (referencias a brief, canvases y decisiones), factores de costo, buffers, TCO y estructura de sesión. Las secciones de flags (tópicos) se incrustan por marcadores `<!-- topic:x -->` arriba de `## Estructura de Discusión`. Es una GUÍA (no un derivado regenerable): la incrustación es ADITIVA y conserva las secciones previas (ver contrato de feedback abajo). |
 | estimate-prompt.md | `docs/funky-ai/estimate/estimate-prompt.md` | Prompt para iniciar la sesión de IA del proyecto (guía kind guide, patrón de assess). Se copia desde el template; si ya existe, confirma Y/N antes de reemplazar (default `n` sin TTY). |
 | pricing-decisions.md | `docs/funky-ai/estimate/pricing-decisions.md` | Template para documentar acuerdos de pricing durante la sesión colaborativa. Doc vivo del equipo: no se sobrescribe si ya existe. |
-| stdout | Consola | Terminal limpia: resumen con rutas generadas y secciones incluidas, checks y warnings. NO imprime el prompt gigante (el material vive en estimate-prompt.md). |
+| stdout | Consola | Terminal limpia: resumen con estado por archivo (creado/conservado/generado), rutas y secciones incluidas, checks y warnings. Los warnings de archivos faltantes indican el comando correctivo (`funky init` para brief/canvases, `funky assess` para decisiones arquitectónicas). NO imprime el prompt gigante (el material vive en estimate-prompt.md). |
 
 Con `--context`, además actualiza el estado de fase v2 en `docs/funky-ai/pipeline/context.json`: `estimate.status: 'completed'`, `startedAt`, `finishedAt`, `durationMs`, `artifacts` y `runAt`.
 

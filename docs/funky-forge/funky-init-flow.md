@@ -1,7 +1,7 @@
 # 📘 Flujo Interno: `funky init` y `funky scaffold`
 
-> **Versión documentada:** v3.2.0+  
-> **Ultima actualizacion:** 2026-08-05  
+> **Versión documentada:** v4.3.2  
+> **Ultima actualizacion:** 2026-08-08  
 > **Estado:** ✅ Estable
 
 ---
@@ -10,10 +10,10 @@
 
 El CLI tiene dos comandos de inicialización:
 
-1. **`funky init`** — Genera el brief funcional, PROJECT-CANVAS.md, INFRA-CANVAS.md y la guía de planeacion (el brief primero).
+1. **`funky init`** — Genera el brief funcional, PROJECT-CANVAS.md, INFRA-CANVAS.md y las guías (canvas-planning-guide.md, init-prompt.md), el brief primero.
 2. **`funky scaffold`** — Copia toda la estructura base del ecosistema Funky AI (reglas de agentes, ORCHESTRATOR-STATE, directorios engram, plantillas SDD). No requiere canvases, pero si existen los respeta.
 
-No existen modos interactivos ni prompts. El CLI genera los archivos y termina. El equipo discute las decisiones en chat con IA, no en la terminal.
+No hay modos interactivos obligatorios: el CLI genera los archivos y termina. La única confirmación interactiva es la Y/N para actualizar guías existentes (ver sección 3.3); el equipo discute las decisiones en chat con IA, no en la terminal.
 
 ---
 
@@ -24,14 +24,19 @@ No existen modos interactivos ni prompts. El CLI genera los archivos y termina. 
 ```
 funky init
 │
-├─ ¿existe PROJECT-CANVAS.md o INFRA-CANVAS.md?
-│   ├─ SI  → Error: "ya existe" → process.exit(1)
-│   └─ NO  → mkdir docs/funky-ai/canvas/
-│             → copy brief-funcional.md (primero: "qué" antes del "cómo")
-│             → copy PROJECT-CANVAS.md, INFRA-CANVAS.md
-│             → copy canvas-planning-guide.md (si no existe)
-│             → "Ejecuta `funky scaffold` para instalar el ecosistema"
-│             → process.exit(0)
+└─► runInit({ templatesDir, targetBase }) → executeIntentions
+      ├─ mkdir docs/funky-ai/canvas/
+      ├─ copy brief-funcional.md                    (kind: decision — primero: "qué" antes del "cómo")
+      ├─ copy PROJECT-CANVAS.md                     (kind: decision)
+      ├─ copy INFRA-CANVAS.md                       (kind: decision)
+      ├─ copy canvas-planning-guide-template.md     (kind: guide)
+      └─ copy init-prompt-template.md               (kind: guide, última)
+            │
+            ├─ Archivo nuevo      → ✅ Creado (sin preguntar)
+            ├─ Decisión existente → ⚡ Omitiendo + recomendación (eliminar/mover con backup)
+            ├─ Guía existente + TTY  → Y/N: ✅ Actualizada / ⚡ Omitiendo
+            ├─ Guía existente sin TTY → omite (default n)
+            └─ Summary: "Canvases creados" / "Canvases listos: N creados, M conservados" / "Nada que crear"
 ```
 
 ### `funky scaffold`
@@ -58,7 +63,7 @@ funky scaffold
 
 | Archivo | Rol |
 |---|---|
-| `src/commands/init.js` | Orquestador del comando `funky init`: expone `runInit({ templatesDir, targetBase })` (función pura que devuelve las intenciones ordenadas) y el action con guard de existencia |
+| `src/commands/init.js` | Orquestador del comando `funky init`: expone `runInit({ templatesDir, targetBase })` (función pura que devuelve las intenciones ordenadas, cada una con su `kind`: decision/guide) y el action que ejecuta `executeIntentions()` con confirmación Y/N para guías |
 | `src/commands/scaffold.js` | Orquestador del comando `funky scaffold`: ejecuta `runScaffold()` para copiar el ecosistema |
 | `src/utils/fs-adapter.js` | `executeIntentions(intentions)`: ejecuta mkdir/copy con skip-if-exists y logs |
 
@@ -80,16 +85,17 @@ Ubicación base: `src/templates/bootstrap/`
 
 ### 3.3 Archivos generados por `funky init`
 
-`funky init` copia los templates estáticos de `src/templates/init/` al directorio canónico `docs/funky-ai/canvas/`, en el orden de las intenciones de `runInit`:
+`funky init` copia los templates estáticos de `src/templates/init/` (sufijo `-template` en el nombre de fuente) al directorio canónico `docs/funky-ai/canvas/`, en el orden de las intenciones de `runInit`:
 
-| Archivo | Generado desde | Notas |
+| Archivo (output) | Generado desde | Comportamiento |
 |---|---|---|
-| `brief-funcional.md` | `src/templates/init/brief-funcional.md` | Primer output: define el "qué" antes del "cómo" |
-| `PROJECT-CANVAS.md` | `src/templates/init/PROJECT-CANVAS.md` | Participa del guard de existencia |
-| `INFRA-CANVAS.md` | `src/templates/init/INFRA-CANVAS.md` | Participa del guard de existencia |
-| `canvas-planning-guide.md` | `src/templates/init/canvas-planning-guide.md` | Skip-if-exists |
+| `brief-funcional.md` | `src/templates/init/brief-funcional.md` | Primer output: define el "qué" antes del "cómo". kind `decision`: no se sobrescribe |
+| `PROJECT-CANVAS.md` | `src/templates/init/PROJECT-CANVAS.md` | kind `decision`: no se sobrescribe |
+| `INFRA-CANVAS.md` | `src/templates/init/INFRA-CANVAS.md` | kind `decision`: no se sobrescribe |
+| `canvas-planning-guide.md` | `src/templates/init/canvas-planning-guide-template.md` | kind `guide`: si existe, Y/N (sin TTY: default `n`) |
+| `init-prompt.md` | `src/templates/init/init-prompt-template.md` | kind `guide`: si existe, Y/N (sin TTY: default `n`). Última intención |
 
-El guard dispara exit(1) si `PROJECT-CANVAS.md` o `INFRA-CANVAS.md` ya existen; el brief y la guía se omiten silenciosamente si ya están.
+No existe un guard que bloquee la ejecución: cada archivo se maneja por su `kind`. Las decisiones existentes se omiten con recomendación de eliminar/mover con backup; las guías existentes solo se actualizan con confirmación Y/N (sin terminal, default `n`). El comando siempre completa con exit 0 salvo error real de I/O.
 
 ---
 
@@ -98,8 +104,8 @@ El guard dispara exit(1) si `PROJECT-CANVAS.md` o `INFRA-CANVAS.md` ya existen; 
 `funky init` y `funky scaffold` son idempotentes por diseño. Ejecutarlos múltiples veces en el mismo directorio es seguro:
 
 - Cada archivo se verifica con `fs.existsSync()` antes de copiarse o escribirse
-- Si existe → `⚠️ ... ya existe. No se sobrescribió.`
-- Si no existe → se crea
-- El `PROJECT-CANVAS.md` e `INFRA-CANVAS.md` nunca se sobreescriben
+- Decisión existente (`brief-funcional.md`, `PROJECT-CANVAS.md`, `INFRA-CANVAS.md`) → `⚡ Omitiendo (ya existe): <archivo>...` con recomendación de eliminar/mover con backup
+- Guía existente (`canvas-planning-guide.md`, `init-prompt.md`) → Y/N (con terminal) o default `n` logueado (sin terminal); nunca se sobrescribe sin input humano
+- Si todo existe → `ℹ️ Nada que crear: todos los archivos ya existen.`
 
 ---

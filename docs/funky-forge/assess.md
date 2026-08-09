@@ -134,7 +134,9 @@ Los patrones son **candidatos a evaluar, no riesgos confirmados**: la IA los eva
 │     └── writeContext(targetBase, ctx)                       │
 │                                                             │
 │  8. Summary + Próximos pasos                                │
-│     └── pegar assess-prompt.md como primer mensaje          │
+│     └── "Material de assess listo: N creados, M conservados"│
+│         + estado por archivo (generado/creado/conservado)   │
+│         + pegar assess-prompt.md como primer mensaje        │
 └─────────────────────────────────────────────────────────────┘
 ```
 
