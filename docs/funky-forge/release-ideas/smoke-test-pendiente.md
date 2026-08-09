@@ -24,7 +24,7 @@ El smoke test es 100% manual e interactivo (humano + agente IA en chat). Nada au
 
 - Repositorio de prueba en un directorio temporal (nunca en el repo real).
 - CLI instalado y ejecutable: `node funky-cli/bin/funky.js` (desde el root del repo).
-- Suite de tests verde como red de seguridad: `pnpm test` en `funky-cli/` (308 tests, 22 files).
+- Suite de tests verde como red de seguridad: `pnpm test` en `funky-cli/` (332 tests, 27 files).
 - Nada de `docs/funky-ai/canvas/`, `docs/funky-ai/assess/` ni `docs/funky-ai/estimate/` preexistente en el directorio de prueba.
 
 ---
@@ -186,23 +186,119 @@ node <ruta>/funky-cli/bin/funky.js estimate --brief
 
 **Qué validar:** la regla sobrescribe/no-sobrescribe de los artefactos de assess y estimate.
 
-### Fase E — Pipeline con `--context`
+### Fase E — Pipeline (`funky pipeline`) e integración con `context.json`
 
-#### Paso 12 — Flujo encadenado con estado compartido
+> **Nota de diseño:** esta fase valida el flujo REAL del comando `pipeline` (subcomandos `assess`, `estimate`, `all`, `status`), que orquesta las fases con estado compartido en `docs/funky-ai/pipeline/context.json` (schema v2). El flag `--context <path>` de los comandos individuales `assess`/`estimate` también se cubre, pero NO es el camino del pipeline: `pipeline` maneja el archivo por sí mismo en su ruta canónica. El smoke test original mencionaba `pipeline init`, que no existe como subcomando.
 
-**Acción del usuario (si aplica al flujo de CI):**
+#### Paso 12 — Estado inicial: `pipeline status` (sin ejecutar nada)
+
+**Acción del usuario:**
 ```bash
-node <ruta>/funky-cli/bin/funky.js pipeline init  # o crear context.json manualmente
-node <ruta>/funky-cli/bin/funky.js assess --context docs/funky-ai/pipeline/context.json
-node <ruta>/funky-cli/bin/funky.js estimate --context docs/funky-ai/pipeline/context.json
+node <ruta>/funky-cli/bin/funky.js pipeline status
 ```
 
 **Resultado esperado:**
-- `assess` actualiza `context.json`: `assess.status: 'completed'`, `runAt`, `surfacedPatterns` (nombres de patrones superfíciados), `decisionsFile`, `artifacts`.
-- `estimate` lee las rutas de decisiones desde el contexto y actualiza `estimate.status: 'completed'`, `startedAt`, `finishedAt`, `durationMs`, `artifacts`, `runAt`.
-- `--context` con archivo inexistente → error y exit 1.
+- `📋 Pipeline no iniciado.` + `Ejecuta "funky pipeline assess" para comenzar.`
+- exit 0 (NO es error; es estado not-started).
+- Con `--json`: un único JSON con shape v2 not-started en stdout (`version: 2`, ambas fases `pending`), exit 0.
 
-**Qué validar:** la integración encadenada assess → estimate con estado de fase v2 en el contexto.
+**Qué validar:** que `status` distingue "nunca iniciado" (exit 0) de "context inválido" (exit 1), y que `--json` siempre emite exactamente un objeto JSON en stdout.
+
+#### Paso 13 — Pipeline completo: `pipeline all`
+
+**Acción del usuario:**
+```bash
+node <ruta>/funky-cli/bin/funky.js pipeline all
+```
+
+**Resultado esperado:**
+- Crea `docs/funky-ai/pipeline/context.json` (v2) si no existe.
+- Ejecuta assess → estimate en secuencia, con logs `✅ Assess completado. Ejecutando estimate...` y `✅ Pipeline completado.`
+- `context.json` queda con: `assess.status: 'completed'` (`runAt`, `surfacedPatterns`, `decisionsFile`, `artifacts`), `estimate.status: 'completed'` (`runAt`, `artifacts`), `currentPhase: null` (se limpia al completar).
+- exit 0.
+
+**Qué validar:** el archivo de contexto (ruta canónica `docs/funky-ai/pipeline/context.json`), las dos fases `completed`, y que `decisionsFile` apunta a `docs/funky-ai/assess/architecture-decisions.md` (lo que estimate usará en ejecuciones posteriores).
+
+#### Paso 14 — Con `--json` en stdout limpio
+
+**Acción del usuario:**
+```bash
+node <ruta>/funky-cli/bin/funky.js pipeline all --json
+```
+
+**Resultado esperado:**
+- UN único JSON en stdout (shape `statusJson` + `run` con `status`/`durationMs`/`artifacts`/`warnings` por fase).
+- Texto humano (logs) en stderr, NO en stdout — stdout solo recibe el JSON (R-P11).
+- exit 0.
+
+**Qué validar:** parseable con `node -e "const s=JSON.parse(require('fs').readFileSync(0)); console.log(s.estimate.status)"` → `completed`, y que no haya líneas humanas mezcladas en stdout.
+
+#### Paso 15 — Estado después: `pipeline status` y `pipeline status --json`
+
+**Acción del usuario:**
+```bash
+node <ruta>/funky-cli/bin/funky.js pipeline status
+node <ruta>/funky-cli/bin/funky.js pipeline status --json
+```
+
+**Resultado esperado:**
+- Humano: `🔍 Assess:` con `Estado: completed`, `Completado: <runAt>`, `Patrones detectados: N`; `💰 Estimate:` con `Estado: completed`, `Completado: <runAt>`. Sin bloque `pipeline.completed` (eliminado en v2).
+- JSON: objeto con claves en orden determinista `version, createdAt, currentPhase, assess, estimate`; cada fase con su orden de claves fijo (`status, startedAt, finishedAt, durationMs, error, artifacts, runAt` + `surfacedPatterns, decisionsFile` en assess).
+- exit 0.
+
+**Qué validar:** que `status` refleja el estado REAL del archivo (no un cache), que `assess` muestra patrones y `estimate` no (shape distinto por fase).
+
+#### Paso 16 — Fases por separado y retomar sesión interrumpida
+
+**Acción del usuario:**
+```bash
+node <ruta>/funky-cli/bin/funky.js pipeline assess
+node <ruta>/funky-cli/bin/funky.js pipeline status --json   # assess completed, estimate pending
+node <ruta>/funky-cli/bin/funky.js pipeline estimate
+node <ruta>/funky-cli/bin/funky.js pipeline status --json   # ambas completed
+```
+
+**Resultado esperado:**
+- `pipeline assess` solo: `assess.status: 'completed'`, `estimate.status: 'pending'`.
+- `pipeline estimate` después: valida que `assess.runAt` exista, ejecuta, y deja `estimate.status: 'completed'`.
+- En el medio (después de `assess`), el JSON de status muestra `currentPhase: null` (se limpia al completar assess) y `estimate` pendiente — esto representa una sesión retomable.
+
+**Qué validar:** el guard de orden (`estimate` requiere `assess.runAt`), la retomabilidad (una fase en `running` sin `finishedAt` se re-ejecuta en el siguiente `all`), y que cada fase persiste su propia completion.
+
+#### Paso 17 — Errores esperados del pipeline
+
+**Acción del usuario:**
+```bash
+# 1. estimate SIN contexto (borrar docs/funky-ai/pipeline/context.json previamente)
+node <ruta>/funky-cli/bin/funky.js pipeline estimate
+# 2. estimate sin assess previo (crear context.json con initContext: borrar context.json y ejecutar pipeline assess? NO: borrar context.json y ejecutar pipeline estimate directo ya cubre 1; para este caso: pipeline assess borrando el archivo de decisiones no aplica — ver abajo)
+```
+
+**Resultado esperado:**
+1. Sin `context.json`: `❌ Contexto de pipeline no encontrado. Ejecuta "funky pipeline assess" primero.` → exit 1.
+2. Con `context.json` pero `assess.runAt` nulo (ejecutar `pipeline all` con `assess` fallando a propósito — p. ej. renombrar `docs/funky-ai/canvas/` a `_canvas`): `❌ Assess aún no se ha ejecutado.` → exit 1, y en `all` el archivo queda `assess.status: 'failed'` + `estimate.status: 'skipped'`.
+3. `context.json` inválido (escribir `{"version": 99}` a mano): `❌ context.json inválido` → exit 1, SIN escribir nada (validación antes de mutar).
+
+**Qué validar:** que los tres casos fallan con mensaje claro, que el fallo de `assess` corta la cadena (`estimate: skipped`), y que la validación de versión rechaza sin escribir.
+
+#### Paso 18 — Comandos individuales con `--context` (integración punto a punto)
+
+> El pipeline usa sus subcomandos y la ruta canónica; `--context <path>` es para integraciones que apuntan a un context custom. Se valida que ambos comandos individuales SÍ respetan el archivo compartido cuando se les pasa la misma ruta.
+
+**Acción del usuario:**
+```bash
+node <ruta>/funky-cli/bin/funky.js assess --context docs/funky-ai/pipeline/context.json
+node <ruta>/funky-cli/bin/funky.js estimate --context docs/funky-ai/pipeline/context.json
+node <ruta>/funky-cli/bin/funky.js pipeline status --json
+```
+
+**Resultado esperado:**
+- `assess --context`: escribe en el context canónico (`assess.status: 'completed'`, `decisionsFile` seteado).
+- `estimate --context`: lee `decisionsFile` desde el context (NO cae al default) y escribe `estimate.status: 'completed'`.
+- `status --json`: refleja ambas fases completed (mismo archivo compartido).
+- `--context` con archivo inexistente/inválido: `❌ No se pudo leer context.json. Asegúrate de haber ejecutado "funky pipeline assess" primero.` → exit 1 (en assess) / mismo error en estimate.
+
+**Qué validar:** que `--context` en comandos individuales lee/escribe el MISMO archivo que el pipeline, que estimate usa `decisionsFile` del context (no el default) y que el error de archivo inexistente es claro.
 
 ---
 
@@ -219,7 +315,11 @@ node <ruta>/funky-cli/bin/funky.js estimate --context docs/funky-ai/pipeline/con
 | C7 | `--brief` sin valor fuerza checklist | Sección con preguntas, no con el brief del canvas |
 | C8 | `pricing-guide.md` se sobrescribe, `pricing-decisions.md` no | Timestamps/contenido antes y después |
 | C9 | Sesión IA de pricing documenta acuerdos | `pricing-decisions.md` poblado con decisiones reales |
-| C10 | Pipeline `--context` encadena assess → estimate con estado v2 | `context.json` con ambas fases `completed` y `decisionsFile` |
+| C10 | `pipeline all` crea context.json v2 y completa assess + estimate | `context.json` con ambas fases `completed`, `currentPhase: null`, exit 0 |
+| C11 | `pipeline all --json` emite UN JSON en stdout (humano a stderr) | stdout parseable a JSON con `run`; sin líneas humanas mezcladas |
+| C12 | `pipeline status`/`--json` refleja el estado real del archivo | Estado humano + JSON determinista; sin `pipeline.completed` en v2 |
+| C13 | Guards de orden: estimate sin contexto/assess previo falla claro | exit 1 con mensajes `Contexto de pipeline no encontrado` / `Assess aún no se ha ejecutado`; assess fallido ⇒ estimate `skipped` |
+| C14 | `assess --context` y `estimate --context` comparten el mismo context | `decisionsFile` respetado por estimate; archivo inexistente → error claro exit 1 |
 
 ---
 
