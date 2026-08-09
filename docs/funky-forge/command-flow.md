@@ -7,12 +7,12 @@
 ## Orden recomendado
 
 ```
-funky init  →  [funky scaffold*]  →  funky assess  →  funky estimate
+funky init  →  [funky sdd install*]  →  funky assess  →  funky estimate
                                                ↓
                                       funky pipeline (opcional)
 ```
 
-> **\*** `funky scaffold` es del framework funky-ai, no de forge. Se ejecuta después de init para instalar el ecosistema agéntico.
+> **\*** `funky sdd install` es del framework funky-ai, no de forge. Se ejecuta después de init para instalar el ecosistema agéntico.
 
 ---
 
@@ -31,19 +31,19 @@ funky init  →  [funky scaffold*]  →  funky assess  →  funky estimate
 
 ### Proyecto chico / exploración rápida
 ```
-funky init → llenar canvases → funky scaffold → funky assess
+funky init → llenar canvases → funky sdd install → funky assess
 ```
 Sin estimate, sin pipeline. Solo querés explorar el stack.
 
 ### Proyecto mediano con costos
 ```
-funky init → llenar canvases → funky scaffold → funky assess → funky estimate
+funky init → llenar canvases → funky sdd install → funky assess → funky estimate
 ```
 Comandos individuales. El estimador lee las decisions de assess directamente.
 
 ### Proyecto grande / multi-fase / equipo
 ```
-funky init → llenar canvases → funky scaffold → funky pipeline all
+funky init → llenar canvases → funky sdd install → funky pipeline all
 ```
 Pipeline orquesta todo con estado en context.json. Ideal para sesiones que se retoman.
 

@@ -63,12 +63,12 @@ El comando DEBE ser seguro de re-ejecutar: la creación de directorios es idempo
 
 ### R5: Mensaje de éxito
 
-En caso de éxito, el sistema DEBE imprimir un resumen con el resultado y sugerir el siguiente paso (`funky scaffold`).
+En caso de éxito, el sistema DEBE imprimir un resumen con el resultado y sugerir el siguiente paso (`funky sdd install`).
 
 - GIVEN los canvases se crean exitosamente
 - WHEN `funky init` termina
 - THEN se imprime el mensaje de éxito
-- AND se sugiere ejecutar `funky scaffold`
+- AND se sugiere ejecutar `funky sdd install`
 
 ### R6: Template del brief funcional
 

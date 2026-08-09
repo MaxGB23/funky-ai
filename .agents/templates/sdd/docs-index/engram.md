@@ -1,7 +1,7 @@
 # Índice de Secciones: `docs/funky-ai/engram.md`
 
 - **1. ¿Qué problema resuelve?:** Captura estructurada de conocimiento con indexación automática en `docs/engram/`.
-- **2. Requisitos (Automatizados):** La regla `engram-protocol.md` se instala sola (scaffold o modo standalone).
+- **2. Requisitos (Automatizados):** La regla `engram-protocol.md` se instala sola (`sdd install` o modo standalone).
 - **3. Uso:** Modo interactivo o con flags (`--tag`, `--category`, `--desc`).
 - **4. Categorías disponibles:** `architecture`, `pattern`, `discovery`, `decision`, `bugfix`, `session` y `release`.
 - **5. Qué genera:** Archivo individual por categoría y el índice central `index.md`.

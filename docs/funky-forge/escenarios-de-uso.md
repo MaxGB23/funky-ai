@@ -54,7 +54,7 @@ funky init
 ✅ Creado: INFRA-CANVAS.md
 ✅ Creado: canvas-planning-guide.md
 
-📘 Canvases generados. Ejecuta `funky scaffold`.
+📘 Canvases generados. Ejecuta `funky sdd install`.
 ```
 
 ---
@@ -89,10 +89,10 @@ funky assess
 
 **Paso 1.5 — Inicializa el ecosistema completo**
 
-Con los Canvas llenos, ejecuta `funky scaffold` para copiar toda la estructura del ecosistema Funky AI:
+Con los Canvas llenos, ejecuta `funky sdd install` para copiar toda la estructura del ecosistema Funky AI:
 
 ```bash
-funky scaffold
+funky sdd install
 ```
 
 **Output esperado:**
@@ -146,9 +146,9 @@ funky init
 
 El CLI genera `PROJECT-CANVAS.md` e `INFRA-CANVAS.md` con placeholders guía, más `canvas-planning-guide.md` como referencia.
 
-> 💡 **Nota:** No hay prompts interactivos. `funky init` genera los canvases vacíos. Cuando estén llenos, ejecuta `funky scaffold` para copiar toda la estructura Funky AI.
+> 💡 **Nota:** No hay prompts interactivos. `funky init` genera los canvases vacíos. Cuando estén llenos, ejecuta `funky sdd install` para copiar toda la estructura Funky AI.
 
-**✅ Criterio de salida:** Tienes los canvases llenos. Ejecuta `funky scaffold` para el ecosistema completo, luego primer commit y al flujo SDD.
+**✅ Criterio de salida:** Tienes los canvases llenos. Ejecuta `funky sdd install` para el ecosistema completo, luego primer commit y al flujo SDD.
 
 ---
 
@@ -197,10 +197,10 @@ No estás decidiendo — estás documentando lo que ya existe. Cada campo del Ca
 
 **Paso 3.3 — Inicializa el ecosistema completo**
 
-Con los canvases llenos, ejecuta `funky scaffold` para copiar la estructura Funky AI sin sobrescribir archivos existentes:
+Con los canvases llenos, ejecuta `funky sdd install` para copiar la estructura Funky AI sin sobrescribir archivos existentes:
 
 ```bash
-funky scaffold
+funky sdd install
 ```
 
 **✅ Criterio de salida:** El ecosistema Funky AI está activo sobre tu repo existente. Puedes empezar a usar `funky feature` para planificar la próxima feature.
@@ -211,9 +211,9 @@ funky scaffold
 
 | Anti-patron | Por que es un problema |
 |---|---|
-| Ejecutar `funky scaffold` sin haber llenado los Canvas | ✅ Válido — instala el framework sin canvases. Si después quieres los canvases, ejecuta `funky init` y luego `funky scaffold` de nuevo (es idempotente) |
+| Ejecutar `funky sdd install` sin haber llenado los Canvas | ✅ Válido — instala el framework sin canvases. Si después quieres los canvases, ejecuta `funky init` y luego `funky sdd install` de nuevo (es idempotente) |
 | Saltear `funky init` y llenar los Canvas directamente en el editor | Sin la `canvas-planning-guide.md` como referencia, se omiten campos o se usan valores invalidos |
-| Ejecutar `funky scaffold` dos veces sin cambios | Es idempotente, no causa dano pero tampoco avanza |
+| Ejecutar `funky sdd install` dos veces sin cambios | Es idempotente, no causa dano pero tampoco avanza |
 | Ejecutar `funky estimate` sin haber corrido `funky assess` antes | El pricing no tendrá contexto de decisiones arquitectónicas — se genera igual pero con contenido parcial |
 | Ejecutar `funky assess` con canvases incompletos | El CLI advierte pero continúa — la guía se genera con contenido parcial |
 

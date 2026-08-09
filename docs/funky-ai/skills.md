@@ -43,7 +43,7 @@ En tiempo de instalación `runSkills()` carga el manifest de cada skill seleccio
 
 ## Docs compartidos y paridad byte a byte (R-SK-5)
 
-Los docs compartidos viven en `src/templates/bootstrap/sdd/` — el MISMO src que usa `funky scaffold`. Así, el índice de docs vivos (`docs-live-index.md`), el template canónico del índice seccional (`_indice-seccional-template.md`) y `release-notes.md` llegan byte a byte idénticos por `funky skills` y por `funky scaffold`; no hay dos copias que divergir.
+Los docs compartidos viven en `src/templates/bootstrap/sdd/` — el MISMO src que usa `funky sdd install`. Así, el índice de docs vivos (`docs-live-index.md`), el template canónico del índice seccional (`_indice-seccional-template.md`) y `release-notes.md` llegan byte a byte idénticos por `funky skills` y por `funky sdd install`; no hay dos copias que divergir.
 
 ## Regla doc-nuevo en sdd-docs-sync (R-SK-11)
 

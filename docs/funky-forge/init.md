@@ -85,7 +85,7 @@ Ejecución limpia (no existía nada):
 ✅ Creado: docs/funky-ai/canvas/canvas-planning-guide.md
 ✅ Creado: docs/funky-ai/canvas/init-prompt.md
 
-✅ Canvases creados. Ejecuta `funky scaffold` para instalar el ecosistema completo.
+✅ Canvases creados. Ejecuta `funky sdd install` para instalar el ecosistema completo.
 ```
 
 Si las decisiones ya existían (se omiten con recomendación) y las guías no:
@@ -97,7 +97,7 @@ Si las decisiones ya existían (se omiten con recomendación) y las guías no:
 ✅ Creado: docs/funky-ai/canvas/canvas-planning-guide.md
 ✅ Creado: docs/funky-ai/canvas/init-prompt.md
 
-✅ Canvases listos: 2 creados, 3 conservados. Ejecuta `funky scaffold` para instalar el ecosistema completo.
+✅ Canvases listos: 2 creados, 3 conservados. Ejecuta `funky sdd install` para instalar el ecosistema completo.
 ```
 
 Si todo ya existía (sin terminal):

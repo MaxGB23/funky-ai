@@ -6,7 +6,7 @@
   - **Tier 2 (Standard - Subagentes Ligeros):** Features de 3-5 archivos con delegación estricta por fases.
   - **Tier 3 (Insano - Custom Workflows):** Cambios arquitectónicos mayores con subagentes nativos aislados.
 - **🤖 Modos de Ejecución:** Modos Auto, Interactivo y Handoff (Legacy IDE) según el entorno y el nivel de confianza.
-- **🏗️ Estructura Inyectada por `funky scaffold`:** Propósito de cada directorio materializado.
+- **🏗️ Estructura Inyectada por `funky sdd install`:** Propósito de cada directorio materializado.
   - **1. `.agents/rules/`:** El "cerebro operativo" con reglas de comportamiento.
   - **2. `.agents/templates/sdd/`:** Plantillas Markdown para las fases T2/T3 e índice dinámico.
   - **3. `docs/engram/`:** Memoria persistente dividida en 7 shards.

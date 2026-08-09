@@ -46,9 +46,9 @@ Para adaptarse a distintos entornos (y niveles de confianza), el framework SDD s
 
 ---
 
-## 🏗️ Estructura Inyectada por `funky scaffold`
+## 🏗️ Estructura Inyectada por `funky sdd install`
 
-Cuando corres `funky scaffold`, se materializa la estructura necesaria para que SDD funcione. Cada directorio tiene un propósito estricto:
+Cuando corres `funky sdd install`, se materializa la estructura necesaria para que SDD funcione. Cada directorio tiene un propósito estricto:
 
 ### 1. `.agents/rules/`
 El "cerebro operativo". Contiene 23 reglas que dictan el comportamiento.
