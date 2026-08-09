@@ -1,4 +1,4 @@
-# Índice de Secciones: `funky-cli/src/templates/init/canvas-planning-guide.md`
+# Índice de Secciones: `funky-cli/src/templates/init/canvas-planning-guide-template.md`
 
 - **1. 🏗️ PROJECT-CANVAS (Core de Aplicación):** Decisiones de la aplicación: framework, patrón, estado, UI y testing.
   - **1. Framework Base:** Next.js, React + Vite, Astro o NestJS/Express según el tipo de app.

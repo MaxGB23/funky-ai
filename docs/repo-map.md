@@ -1,6 +1,6 @@
 # Mapa Estructural del Repositorio
 
-> Última actualización: 2026-08-04
+> Última actualización: 2026-08-08
 > Propósito: Directorio de navegación del repo. Para el pitch y quick start, ver [`README.md`](../README.md).
 
 ---
@@ -96,7 +96,7 @@ docs/
 
 | Directorio | Usado por | Propósito |
 |-----------|-----------|-----------|
-| `init/` | `funky init` | Canvases (PROJECT-CANVAS.md, INFRA-CANVAS.md) |
+| `init/` | `funky init` | Brief, canvases y guías (brief-funcional.md, PROJECT-CANVAS.md, INFRA-CANVAS.md, canvas-planning-guide-template.md, init-prompt-template.md) |
 | `bootstrap/` | `funky scaffold` / `funky skills` | Reglas agénticas, templates SDD, ORCHESTRATOR-STATE, docs compartidos (docs-live-index, índice seccional) |
 | `assess/` | `funky assess` | Architecture review templates |
 | `estimate/` | `funky estimate` | Pricing guide templates |
