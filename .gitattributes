@@ -1,0 +1,3 @@
+# Lockfiles: canonical LF (generated with LF by pnpm; avoids artificial diffs on Windows)
+**/pnpm-lock.yaml text=auto eol=lf
+skills-lock.json text=auto eol=lf
