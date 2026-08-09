@@ -182,15 +182,30 @@ export async function runAssess(targetBase, opts = {}) {
       writeContext(targetBase, ctx, contextArg || undefined);
     }
 
-    // ── 10. Summary ──
+    // ── 10. Summary (M10: estado por archivo; no afirmar "generado
+    // exitosamente" cuando hubo omisiones o conservados) ──
     if (!json) {
-      console.log('\n✅ Guía de discusión generada exitosamente.');
-      // Separadores normalizados a "/" para consistencia con el resto del summary
-      // (path.relative devuelve "\" en Windows).
-      console.log(`   📝 Guía: ${path.relative(targetBase, outputPath).split(path.sep).join('/')}`);
-      console.log('   📝 Prompt de discusión: docs/funky-ai/assess/assess-prompt.md');
-      console.log('   📝 Patrones de riesgo: docs/funky-ai/assess/risk-patterns.md');
-      console.log('   📝 Decisiones: docs/funky-ai/assess/architecture-decisions.md');
+      const rel = (p) => path.relative(targetBase, p).split(path.sep).join('/');
+      const riskPatternsDestPath = path.join(assessDir, 'risk-patterns.md');
+      const decisionsDestPath = path.join(assessDir, 'architecture-decisions.md');
+      const statusOf = (basename) => {
+        const line = logs.find((l) => l.includes(basename));
+        if (line && line.includes('✅ Creado')) return 'creado';
+        if (line && line.includes('✅ Actualizada')) return 'actualizado';
+        return 'conservado';
+      };
+      const rows = [
+        { label: 'Guía de discusión', path: rel(outputPath), status: 'generado' },
+        { label: 'Prompt de discusión', path: rel(promptDestPath), status: statusOf('assess-prompt.md') },
+        { label: 'Patrones de riesgo', path: rel(riskPatternsDestPath), status: statusOf('risk-patterns.md') },
+        { label: 'Decisiones', path: rel(decisionsDestPath), status: statusOf('architecture-decisions.md') },
+      ];
+      const createdCount = rows.filter((r) => r.status !== 'conservado').length;
+      const conservedCount = rows.filter((r) => r.status === 'conservado').length;
+      console.log(`\n✅ Material de assess listo: ${createdCount} creados, ${conservedCount} conservados.`);
+      for (const row of rows) {
+        console.log(`   📝 ${row.label}: ${row.path} — ${row.status}`);
+      }
       console.log('\n📋 Próximos pasos:');
       console.log('   1. Abre una sesión de chat con la IA.');
       console.log('   2. Copia el contenido de docs/funky-ai/assess/assess-prompt.md y pégalo como primer mensaje.');

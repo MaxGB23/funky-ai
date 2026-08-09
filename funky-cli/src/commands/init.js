@@ -34,7 +34,7 @@ export function runInit({ templatesDir, targetBase }) {
 }
 
 export const initCommand = new Command('init')
-  .description('Genera el brief funcional, PROJECT-CANVAS.md e INFRA-CANVAS.md para iniciar la planificacion del proyecto.')
+  .description('Genera el brief funcional, PROJECT-CANVAS.md e INFRA-CANVAS.md para iniciar la planificación del proyecto.')
   .action(async () => {
     const initDir = path.join(__dirname, '../templates/init');
     const targetBase = process.cwd();
@@ -73,6 +73,10 @@ export const initCommand = new Command('init')
       if (created === 0) {
         // Hallazgo smoke 2: diferenciar el caso "todo existe" del éxito normal.
         console.log('\nℹ️ Nada que crear: todos los archivos ya existen.');
+      } else if (skipped > 0) {
+        // M10: si hubo omisiones, el título matiza "listo: N creados, M
+        // conservados" en lugar de afirmar "Canvases creados" (sobreventa).
+        console.log(`\n✅ Canvases listos: ${created} creados, ${skipped} conservados. Ejecuta \`funky scaffold\` para instalar el ecosistema completo.`);
       } else {
         console.log(`\n✅ Canvases creados. Ejecuta \`funky scaffold\` para instalar el ecosistema completo.`);
       }

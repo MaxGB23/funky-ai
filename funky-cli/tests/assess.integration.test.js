@@ -464,6 +464,39 @@ describe('assess Command - action flow', () => {
     expect(logMsgs.some(m => m.includes('assess-prompt.md') && m.includes('primer mensaje'))).toBe(true);
   });
 
+  it('M10: summary muestra estado por archivo y matiza el título cuando hubo omisiones', async () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    // Decisiones ya existen → se conservan; risk-patterns y prompt se crean; el review siempre se regenera.
+    mf[DECISIONS_DEST_PATH] = '# Decisiones del equipo';
+    applyMocks(mf);
+
+    await assessCommand.parseAsync([], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    const msgs = allLogs(logSpy);
+    expect(msgs.some(m => m.includes('Material de assess listo: 3 creados, 1 conservados.'))).toBe(true);
+    expect(msgs.some(m => m.includes('Guía de discusión generada exitosamente'))).toBe(false);
+    expect(msgs.some(m => m.includes('architecture-review.md') && m.includes('— generado'))).toBe(true);
+    expect(msgs.some(m => m.includes('architecture-decisions.md') && m.includes('— conservado'))).toBe(true);
+    expect(msgs.some(m => m.includes('risk-patterns.md') && m.includes('— creado'))).toBe(true);
+    expect(msgs.some(m => m.includes('assess-prompt.md') && m.includes('— creado'))).toBe(true);
+  });
+
+  it('M10: en creación limpia el summary matiza "listo: 4 creados, 0 conservados"', async () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    applyMocks(mf);
+
+    await assessCommand.parseAsync([], { from: 'user' });
+
+    const msgs = allLogs(logSpy);
+    expect(msgs.some(m => m.includes('Material de assess listo: 4 creados, 0 conservados.'))).toBe(true);
+    expect(msgs.some(m => m.includes('Guía de discusión generada exitosamente'))).toBe(false);
+  });
+
   it('exits 1 when --context file is missing (R-A1), with neutral Spanish "Asegúrate" (2.5)', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);

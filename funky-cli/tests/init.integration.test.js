@@ -21,7 +21,26 @@ describe('funky init — integración real (R1/R7)', () => {
   beforeEach(() => {
     exitSpy = vi.spyOn(process, 'exit').mockImplementation(code => {
       throw new Error(`exit ${code}`);
-    });
+  it('M10: con archivos pre-existentes el título matiza "listo: N creados, M conservados" y NO dice "Canvases creados"', async () => {
+    const target = path.join(rootTmp, 'm10-mixed');
+    const cd = canvasDir(target);
+    fs.mkdirSync(cd, { recursive: true });
+    fs.writeFileSync(path.join(cd, 'brief-funcional.md'), 'ORIGINAL USER', 'utf8');
+    fs.writeFileSync(path.join(cd, 'PROJECT-CANVAS.md'), 'ORIGINAL USER', 'utf8');
+
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    try {
+      await runInitIn('m10-mixed');
+
+      const logs = logSpy.mock.calls.map(c => String(c[0]));
+      expect(logs.some(l => l.includes('Canvases listos: 3 creados, 2 conservados'))).toBe(true);
+      expect(logs.some(l => l.includes('Canvases creados'))).toBe(false);
+      expect(exitSpy).not.toHaveBeenCalled();
+    } finally {
+      logSpy.mockRestore();
+    }
+  });
+});
     vi.spyOn(console, 'log').mockImplementation(() => {});
     vi.spyOn(console, 'error').mockImplementation(() => {});
     // Determinismo: el runner de vitest no es interactivo; forzamos no-TTY para
