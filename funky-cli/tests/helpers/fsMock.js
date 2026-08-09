@@ -117,7 +117,19 @@ export const DEFAULT_DECISIONS_TEMPLATE = `# Decisiones de Pricing
 | Costo Base (desarrollo del MVP) | $ |
 | Buffer de Riesgo (flags + contingencia) | $ |
 | Margen de Ganancia | $ |
-| **Precio de Venta del MVP** (Costo Base + Buffer + Margen) | **$** |`;
+| **Precio de Venta del MVP** (Costo Base + Buffer + Margen) | **$** |
+
+### Costo Operativo Mensual (Infraestructura)
+
+| Componente | Monto Mensual |
+|---|---|
+| Hosting Frontend y API | ~$ |
+| Base de Datos | ~$ |
+| Background Jobs / Workers | ~$ |
+| Herramientas y dependencias | ~$ |
+| **Total Mensual Estimado** | **~$ / mes** |
+
+> El cliente puede pagar la infraestructura directamente a los proveedores. Este costo operativo (OpEx) no se incluye en la factura de desarrollo.`;
 
 export const CANVAS_PROJECT_CONTENT = 'React 18 + Next.js 14\nPatrón: Clean Architecture';
 export const CANVAS_INFRA_CONTENT = 'AWS EC2 + PostgreSQL\nDeploy: Docker Compose';

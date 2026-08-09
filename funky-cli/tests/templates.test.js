@@ -179,3 +179,22 @@ describe('Templates de estimate — Fase A (checklist M1/M2/M3)', () => {
     expect(teamCost).not.toContain('Tarifas base por rol');
   });
 });
+
+describe('Templates de estimate — M12 (tabla de Costo Operativo Mensual)', () => {
+  const decisionsPath = path.join(__dirname, '../src/templates/estimate/pricing-decisions-template.md');
+
+  it('M12: pricing-decisions-template incluye la tabla de Costo Operativo Mensual con Total Mensual Estimado', () => {
+    const content = fs.readFileSync(decisionsPath, 'utf8');
+
+    expect(content).toContain('### Costo Operativo Mensual (Infraestructura)');
+    expect(content).toContain('| Componente | Monto Mensual |');
+    expect(content).toContain('**Total Mensual Estimado**');
+  });
+
+  it('M12: la sección deja claro que el OpEx mensual NO suma al Precio de Venta del MVP', () => {
+    const content = fs.readFileSync(decisionsPath, 'utf8');
+
+    expect(content).toMatch(/OpEx/i);
+    expect(content).toMatch(/no se incluye en la factura de desarrollo/i);
+  });
+});

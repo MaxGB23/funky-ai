@@ -32,6 +32,8 @@
 
 - [x] **M11 AÑADIDO POR HUMANO EN PARALELO (análisis de arquitectura): Warns de `estimate.js` con comando correctivo.** init/assess NO son bloqueantes en flujo directo (estimate degrada con placeholders/contenido parcial), pero los warns actuales (L73-78 "Usando placeholder") no dicen cómo resolverlo — inconsistencia con `assess.js` que sí dice "créalo con `funky init`" (L61/65). Añadir el comando correctivo a los warns de estimate: canvases/brief → "ejecuta `funky init`"; `architecture-decisions.md` → "ejecuta `funky assess`". Sin cambio de comportamiento. (Evaluación `funky pipeline`: MANTENER — orquestador con estado + --json CI + 546 líneas de tests; deprecar sería change SDD con issue, no micro-cambio.)
 
+- [x] **M12 (añadido post-PR, revisión del autor): Tabla de Costo Operativo Mensual en `pricing-decisions-template.md`.** El smoke 2 documentó el bloque "Costo Operativo Mensual (Infraestructura)" (Vercel ~$20, Neon ~$20, Inngest $0 → ~$40/mes) pero la plantilla de decisiones solo lo mencionaba como nota al pie. Agregar la tabla con componentes y Total Mensual Estimado, dejando claro que el OpEx no se incluye en la factura de desarrollo. Fuente: `smoke-test-observaciones2.md` L59-67.
+
 ### BAJO — avisos y brief
 
 - [x] **M8 (obs 5): Aviso cuando NO hay brief.** `estimate.js` L121-125 solo loguea cuando SÍ detecta el brief de init; sin `brief-funcional.md` y sin `--brief` no hay aviso ni sección (el agente termina preguntando según la guía). Agregar aviso info ("no se encontró brief-funcional.md, la IA preguntará el contexto de negocio") cuando no hay brief y no se pasó `--brief`.
@@ -56,4 +58,5 @@
 | 9 (KPI a lana en brief) | M9 |
 | 10 (--brief flag fantasma) | M3 |
 | 4 (funcionamiento validado) | — (decidido) |
+| smoke 2 L59-67 (costo operativo mensual en tabla de cotización) | M12 |
 | — (análisis flujo init→assess→estimate) | M11 |

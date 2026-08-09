@@ -30,3 +30,15 @@
 | **Precio de Venta del MVP** (Costo Base + Buffer + Margen) | **$** |
 
 > El TCO recurrente mensual (soporte, monitoreo, límites de proveedores) es un costo operativo aparte y NO suma al Precio de Venta del MVP. Documéntalo como decisión.
+
+### Costo Operativo Mensual (Infraestructura)
+
+| Componente | Monto Mensual |
+|---|---|
+| Hosting Frontend y API | ~$ |
+| Base de Datos | ~$ |
+| Background Jobs / Workers | ~$ |
+| Herramientas y dependencias | ~$ |
+| **Total Mensual Estimado** | **~$ / mes** |
+
+> El cliente puede pagar la infraestructura directamente a los proveedores. Este costo operativo (OpEx) no se incluye en la factura de desarrollo.
