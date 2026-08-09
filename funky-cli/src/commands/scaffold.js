@@ -121,23 +121,37 @@ export function runScaffold({ templatesDir, targetBase }) {
   return intentions;
 }
 
-export const scaffoldCommand = new Command('scaffold')
-  .description('Copia toda la estructura base del ecosistema Funky AI (reglas de agentes, ORCHESTRATOR-STATE, plantillas SDD, directorios engram)')
-  .action(async () => {
-    const bootstrapDir = path.join(__dirname, '../templates/bootstrap');
-    const targetBase = process.cwd();
+/**
+ * Handler compartido del flujo de instalación del framework.
+ * Lo usan `funky sdd install` (nombre canónico) y el alias deprecado
+ * `funky scaffold` — un solo handler, cero lógica duplicada.
+ */
+export async function runScaffoldCommand() {
+  const bootstrapDir = path.join(__dirname, '../templates/bootstrap');
+  const targetBase = process.cwd();
 
-    try {
-      console.log('🚀 Instalando estructura Funky AI...');
-      const intentions = runScaffold({ templatesDir: bootstrapDir, targetBase });
+  try {
+    console.log('🚀 Instalando estructura Funky AI...');
+    const intentions = runScaffold({ templatesDir: bootstrapDir, targetBase });
 
-      const { created, skipped, logs } = await executeIntentions(intentions);
-      for (const log of logs) {
-        console.log(log);
-      }
-      console.log(`\n✅ Funky AI instalado. ${created} archivos creados, ${skipped} ya existian.`);
-    } catch (error) {
-      console.error('❌ Error al instalar Funky AI:', error.message);
-      process.exit(1);
+    const { created, skipped, logs } = await executeIntentions(intentions);
+    for (const log of logs) {
+      console.log(log);
     }
+    console.log(`\n✅ Funky AI instalado. ${created} archivos creados, ${skipped} ya existian.`);
+  } catch (error) {
+    console.error('❌ Error al instalar Funky AI:', error.message);
+    process.exit(1);
+  }
+}
+
+export const installCommand = new Command('install')
+  .description('Copia toda la estructura base del ecosistema Funky AI (reglas de agentes, ORCHESTRATOR-STATE, plantillas SDD, directorios engram)')
+  .action(runScaffoldCommand);
+
+export const scaffoldCommand = new Command('scaffold')
+  .description('Copia toda la estructura base del ecosistema Funky AI — ALIAS DEPRECADO: usa `funky sdd install`')
+  .action(async () => {
+    console.warn("⚠️ 'funky scaffold' está deprecado: usa 'funky sdd install'.");
+    return runScaffoldCommand();
   });

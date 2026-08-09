@@ -2,6 +2,7 @@
 import { Command } from 'commander';
 import { initCommand } from '../src/commands/init.js';
 import { scaffoldCommand } from '../src/commands/scaffold.js';
+import { sddCommand } from '../src/commands/sdd.js';
 import { assessCommand } from '../src/commands/assess.js';
 import { featureCommand } from '../src/commands/feature.js';
 import { estimateCommand } from '../src/commands/estimate.js';
@@ -21,6 +22,7 @@ program
   .version(pkg.version);
 
 program.addCommand(initCommand);
+program.addCommand(sddCommand);
 program.addCommand(scaffoldCommand);
 program.addCommand(assessCommand);
 program.addCommand(featureCommand);
