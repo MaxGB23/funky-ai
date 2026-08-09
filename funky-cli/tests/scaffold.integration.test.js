@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import fs from 'fs';
 import path from 'path';
-import { runScaffold } from '../src/commands/scaffold.js';
+import { runScaffold, runAgnosticScaffold } from '../src/commands/scaffold.js';
 import { executeIntentions } from '../src/utils/fs-adapter.js';
 
 describe('runScaffold() Integration', () => {
@@ -120,5 +120,26 @@ describe('runScaffold() Integration', () => {
     const actual = fs.readFileSync(templateDestPath, 'utf8');
     const template = fs.readFileSync(path.join(templatesDir, 'sdd/docs-index/_indice-seccional-template.md'), 'utf8');
     expect(actual).toBe(template);
+  });
+
+  it('runAgnosticScaffold: crea exactamente los 4 archivos del scaffold agnóstico y nada más', async () => {
+    const agnosticDir = path.join(process.cwd(), 'tmp-integration-agnostic');
+    fs.mkdirSync(agnosticDir, { recursive: true });
+
+    try {
+      const intentions = runAgnosticScaffold({ templatesDir, targetBase: agnosticDir });
+      const result = await executeIntentions(intentions);
+      expect(result.created + result.skipped).toBe(4);
+
+      expect(fs.existsSync(path.join(agnosticDir, 'README.md'))).toBe(true);
+      expect(fs.existsSync(path.join(agnosticDir, 'ORCHESTRATOR-STATE.md'))).toBe(true);
+      expect(fs.existsSync(path.join(agnosticDir, '.agents', 'templates', 'sdd', 'release-notes.md'))).toBe(true);
+      expect(fs.existsSync(path.join(agnosticDir, 'openspec', 'rfcs', '000-rfc-template.md'))).toBe(true);
+
+      expect(fs.existsSync(path.join(agnosticDir, '.agents', 'rules'))).toBe(false);
+      expect(fs.existsSync(path.join(agnosticDir, 'docs', 'engram'))).toBe(false);
+    } finally {
+      fs.rmSync(agnosticDir, { recursive: true, force: true });
+    }
   });
 });
