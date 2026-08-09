@@ -35,11 +35,11 @@ export const ESTIMATE_DIR = path.join(CWD, 'docs', 'funky-ai', 'estimate');
 export const PRICING_GUIDE_DEST = path.join(ESTIMATE_DIR, 'pricing-guide.md');
 export const ESTIMATE_PROMPT_DEST = path.join(ESTIMATE_DIR, 'estimate-prompt.md');
 
-// Réplica del template REAL commiteado en Fase 1 (pricing-guide-template.md):
+// Réplica del template REAL commiteado (pricing-guide-template.md, Fase B M4):
 // guía declarativa SIN placeholders que REFERENCIA los archivos, zona de
-// incrustación <!-- topics --> con los 6 pares de marcadores vacíos y header
-// ## Estructura de Discusión. Espeja 1.1/1.2 para que los tests de 2.1/2.3
-// ejerciten la misma estructura que produce el CLI real.
+// incrustación <!-- topics --> SIN pares de marcadores vacíos (solo se incrustan
+// topics con contenido) y header ## Estructura de Discusión. Espeja 1.1/1.2 + M4
+// para que los tests de 2.1/2.3 ejerciten la misma estructura que produce el CLI real.
 export const DEFAULT_GUIDE_TEMPLATE = `# Guía de Discusión de Pricing
 
 > Generado por \`funky estimate\`. Guía declarativa de la sesión de pricing colaborativa.
@@ -63,22 +63,25 @@ Tras analizar el contexto, la IA recomienda las flags aplicables y sus buffers, 
 |------|-----------------|
 | \`--security\` | Si hay autenticación o datos sensibles. |
 
-<!-- topic:transactions -->
-<!-- /topic:transactions -->
-<!-- topic:security -->
-<!-- /topic:security -->
-<!-- topic:roles -->
-<!-- /topic:roles -->
-<!-- topic:multi-tenant -->
-<!-- /topic:multi-tenant -->
-<!-- topic:integrations -->
-<!-- /topic:integrations -->
-<!-- topic:concurrency -->
-<!-- /topic:concurrency -->
 <!-- /topics -->
 ## Estructura de Discusión
 
-La discusión se hace punto por punto.`;
+La discusión se hace punto por punto.
+
+### 3. Factores de Costo del MVP
+
+- **Equipo**: seniority, tamaño, dedicación. Para el Costo Base usa las tarifas base por rol de la tabla de abajo; si se incluyó \`--pricing-team\`, usa los rangos reales del equipo de esa sección (reemplazan a las tarifas base).
+
+#### Tarifas base por rol (USD/hora, edición profesional)
+
+| Rol | Tarifa base (USD/h) |
+|-----|---------------------|
+| Junior | 20–35 |
+| Semi Senior / Mid | 35–55 |
+| Senior | 55–85 |
+| Lead / Arquitecto | 85–120 |
+
+> Referencia por defecto: usa estas tarifas base cuando NO se incluyó \`--pricing-team\`; con la sección se usan los rangos reales del equipo.`;
 
 export const DEFAULT_ESTIMATE_PROMPT_TEMPLATE = `# 🗣️ Prompt de Discusión de Pricing — \`funky estimate\`
 
@@ -126,6 +129,17 @@ export function estimateMockFiles() {
     [PRICING_DECISIONS_TPL_PATH]: DEFAULT_DECISIONS_TEMPLATE,
     [ESTIMATE_PROMPT_TPL_PATH]: DEFAULT_ESTIMATE_PROMPT_TEMPLATE,
   };
+}
+
+// Incrusta un topic con contenido justo antes del cierre de la zona
+// `<!-- /topics -->`. Es el equivalente funcional de lo que produce el CLI real
+// (Fase B M4: la zona solo contiene topics con contenido), para sembrar guías
+// con topics "ya incrustados" en los tests sin depender de pares vacíos.
+export function embedTopicIntoGuide(guide, topicKey, fragment) {
+  return guide.replace(
+    '<!-- /topics -->',
+    `<!-- topic:${topicKey} -->\n${fragment}\n<!-- /topic:${topicKey} -->\n<!-- /topics -->`
+  );
 }
 
 export function addCanvas(mockFiles, name, content) {
@@ -260,6 +274,8 @@ Impacto en costos:
 - La integración con sistemas externos agrega acoplamiento y mantenimiento.`;
 
 export const TEAM_COST_TEMPLATE = `## Referencia de Costos de Equipo
+
+> Sección de referencia (\`--pricing-team\`): ENRIQUECE la guía. Los rangos reales del equipo definidos acá reemplazan a las tarifas base por rol de la guía al calcular el Costo Base. Sin esta sección se usan las tarifas base de la guía.
 
 ### Fórmula de referencia
 Costo por rol = rol × seniority × dedicación × duración`;

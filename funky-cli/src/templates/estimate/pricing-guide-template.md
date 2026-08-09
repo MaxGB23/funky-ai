@@ -32,7 +32,7 @@ Tras analizar el contexto en silencio (Fase 1), la IA decide PRIMERO qué flags 
 | `--security` | Si hay autenticación, datos sensibles, cumplimiento (GDPR) o exposición pública. |
 | `--concurrency` | Si hay colas, workers, procesamiento en background o picos de carga concurrente. |
 | `--integrations` | Si se integra con sistemas externos (webhooks, APIs de terceros, CRM, ERP, pagos). |
-| `--pricing-team` | Si se necesita dimensionar el equipo y sus rangos de costo (referencia, no calculadora). |
+| `--pricing-team` | Si se necesita dimensionar el equipo y usar sus rangos de costo REALES (reemplazan las tarifas base por rol de la sección 3; referencia, no calculadora). |
 
 <!--
   Zona de incrustación de topics, gestionada por `funky estimate` (no editar a mano).
@@ -43,20 +43,9 @@ Tras analizar el contexto en silencio (Fase 1), la IA decide PRIMERO qué flags 
   por estos marcadores exactos, incrusta las secciones nuevas sin preguntar y
   reincrusta todas al refrescar la base. Los fragmentos fuente viven en
   src/templates/estimate/topics/. Formato esperado: marcador de apertura, contenido
-  del fragmento, marcador de cierre.
+  del fragmento, marcador de cierre. La zona solo contiene topics CON contenido:
+  los no incrustados no dejan pares vacíos.
 -->
-<!-- topic:transactions -->
-<!-- /topic:transactions -->
-<!-- topic:security -->
-<!-- /topic:security -->
-<!-- topic:roles -->
-<!-- /topic:roles -->
-<!-- topic:multi-tenant -->
-<!-- /topic:multi-tenant -->
-<!-- topic:integrations -->
-<!-- /topic:integrations -->
-<!-- topic:concurrency -->
-<!-- /topic:concurrency -->
 <!-- /topics -->
 ## Estructura de Discusión
 
@@ -85,8 +74,19 @@ Pregunta y aplica estas cuatro variables durante la discusión:
 
 - **Infraestructura**: hosting, servicios, herramientas.
 - **Complejidad técnica**: stack, integraciones, deuda técnica.
-- **Equipo**: seniority, tamaño, dedicación (referencia de rangos en la sección de `--pricing-team` si se incluyó).
+- **Equipo**: seniority, tamaño, dedicación. Para el Costo Base usa las tarifas base por rol de la tabla de abajo (referencia, edición profesional). Si se incluyó la sección de `--pricing-team`, usa los rangos REALES del equipo de esa sección: reemplazan a las tarifas base, no se usan ambas.
 - **Timeline**: urgencia, hitos, mantenimiento post-lanzamiento.
+
+#### Tarifas base por rol (USD/hora, edición profesional)
+
+| Rol | Tarifa base (USD/h) |
+|-----|---------------------|
+| Junior | 20–35 |
+| Semi Senior / Mid | 35–55 |
+| Senior | 55–85 |
+| Lead / Arquitecto | 85–120 |
+
+> Referencia por defecto: usa estas tarifas base para calcular el Costo Base cuando NO se incluyó la sección de `--pricing-team`. Si se incluyó, usa los rangos reales del equipo de esa sección en lugar de estas tarifas (no combines ambas).
 
 Estimar el **Costo Base** del desarrollo del MVP (suma de los factores anteriores).
 

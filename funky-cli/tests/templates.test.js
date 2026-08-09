@@ -141,4 +141,41 @@ describe('Templates de estimate — Fase A (checklist M1/M2/M3)', () => {
 
     expect(content).not.toMatch(/^\|\s*`--brief`/m);
   });
+
+  it('M4: el template base NO trae pares de marcadores vacíos en la zona de topics', () => {
+    const content = fs.readFileSync(guidePath, 'utf8');
+
+    expect(content).not.toMatch(/<!-- topic:[a-z0-9-]+ -->\s*<!-- \/topic:[a-z0-9-]+ -->/);
+    expect(content).toContain('<!-- topics -->');
+    expect(content).toContain('<!-- /topics -->');
+  });
+
+  it('M5: la guía incluye SIEMPRE la tabla base de tarifas por rol (USD/hora, edición profesional)', () => {
+    const content = fs.readFileSync(guidePath, 'utf8');
+    const costos = content.split('### 3. Factores de Costo del MVP')[1]?.split('### 4.')[0] || '';
+
+    expect(costos).toContain('Tarifas base por rol');
+    expect(costos).toContain('| Junior | 20–35 |');
+    expect(costos).toContain('| Semi Senior / Mid | 35–55 |');
+    expect(costos).toContain('| Senior | 55–85 |');
+    expect(costos).toContain('| Lead / Arquitecto | 85–120 |');
+  });
+
+  it('M5: sin la sección de --pricing-team se usan las tarifas base; con la sección se usan los rangos reales del equipo', () => {
+    const content = fs.readFileSync(guidePath, 'utf8');
+    const costos = content.split('### 3. Factores de Costo del MVP')[1]?.split('### 4.')[0] || '';
+
+    expect(costos).toMatch(/tarifas base/i);
+    expect(costos).toMatch(/rangos reales del equipo/i);
+    expect(costos).toMatch(/--pricing-team/);
+  });
+
+  it('M5: team-cost-reference enriquece la guía y NO duplica la tabla base de tarifas', () => {
+    const teamCost = fs.readFileSync(path.join(__dirname, '../src/templates/estimate/team-cost-reference-template.md'), 'utf8');
+
+    expect(teamCost).toMatch(/tarifas base/i);
+    expect(teamCost).toMatch(/rangos reales del equipo/i);
+    expect(teamCost).not.toContain('| Junior | 20–35 |');
+    expect(teamCost).not.toContain('Tarifas base por rol');
+  });
 });
