@@ -1,20 +1,17 @@
 # 🚀 {{project_name}}
 
-Bienvenido a la matriz documental de **{{project_name}}**. Este proyecto utiliza el protocolo **Funky AI** (Spec-Driven Development asíncrono) para la colaboración entre humanos y agentes LLM.
+Bienvenido a la matriz documental de **{{project_name}}**. Este proyecto coordina la colaboración humano + agentes LLM con **Spec-Driven Development (SDD)** sobre especificaciones abiertas (OpenSpec).
 
-## 🧭 Architecture Hub
+## 🧭 Punto de Entrada
 
-Este documento es el Architecture Hub del proyecto. Aquí se centralizará la documentación clave de arquitectura a medida que el proyecto evolucione.
+- **[ORCHESTRATOR-STATE.md](./ORCHESTRATOR-STATE.md)**: Estado del proyecto, tareas y contexto de recuperación de sesión. **Leer primero** al iniciar cualquier sesión.
 
-### 1. Estado del Proyecto
-*La fuente de verdad del estado actual y la memoria a corto plazo.*
-- **[ORCHESTRATOR-STATE.md](./ORCHESTRATOR-STATE.md)**: El punto de entrada obligatorio para iniciar cualquier sesión.
-- **[PROJECT-CANVAS.md](./docs/funky-ai/canvas/PROJECT-CANVAS.md)**: Definiciones de arquitectura, stack y testing.
+## 📚 Estructura Documental
 
-### 2. Memoria Persistente (Engram)
-*El cerebro del proyecto. Decisiones, bugs y lecciones.*
-- **[`docs/engram/`](./docs/engram/)**: Base de datos de conocimientos estructurada.
+- **[`docs/`](./docs/)**: Documentación del proyecto (arquitectura, decisiones, guías).
+- **[`openspec/`](./openspec/)**: Especificaciones y cambios del ciclo SDD (OpenSpec).
+- **[`.agents/`](./.agents/)**: Reglas y templates de los agentes del ecosistema.
 
-### 3. Fases SDD Activas
-*El trabajo en curso.*
-- **[`openspec/changes/`](./openspec/changes/)**: Carpeta de propuestas, tareas y reportes de agentes.
+## 🔄 Ciclo de Trabajo SDD
+
+El trabajo se planifica y ejecuta vía **cambios** en [`openspec/changes/`](./openspec/changes/): cada cambio declara intención, especificación, tareas y reporte siguiendo los templates del ecosistema. Los **RFCs** del proyecto viven en [`openspec/rfcs/`](./openspec/rfcs/).
