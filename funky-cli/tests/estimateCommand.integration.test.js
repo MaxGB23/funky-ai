@@ -56,6 +56,10 @@ describe('estimateCommand — integration', () => {
     expect(warnSpy).toHaveBeenCalled();
     const warnMsgs = warnSpy.mock.calls.map(c => String(c));
     expect(warnMsgs.some(m => m.includes('architecture-decisions'))).toBe(true);
+    // M6/M11: el aviso dice el comando correctivo (funky assess) y NO afirma
+    // "contenido parcial" (la guía referencia archivos, no incrusta contenido).
+    expect(warnMsgs.some(m => m.includes('funky assess'))).toBe(true);
+    expect(warnMsgs.some(m => m.includes('contenido parcial'))).toBe(false);
 
     warnSpy.mockRestore();
   });
@@ -73,6 +77,26 @@ describe('estimateCommand — integration', () => {
     expect(exitSpy).toHaveBeenCalledWith(0);
     const warnMsgs = warnSpy.mock.calls.map(c => String(c));
     expect(warnMsgs.some(m => m.includes('PROJECT-CANVAS'))).toBe(true);
+    // M11: el aviso de canvas faltante dice el comando correctivo (funky init).
+    expect(warnMsgs.some(m => m.includes('funky init'))).toBe(true);
+
+    warnSpy.mockRestore();
+  });
+
+  it('M6: los avisos de canvas faltante describen la referencia (no "Usando placeholder") y dicen "funky init"', async () => {
+    const mf = createMockFiles();
+    addDecisions(mf, DECISIONS_CONTENT);
+    applyMocks(mf);
+
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    await estimateCommand.parseAsync([], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    const warnMsgs = warnSpy.mock.calls.map(c => String(c));
+    expect(warnMsgs.some(m => m.includes('PROJECT-CANVAS') && m.includes('funky init'))).toBe(true);
+    expect(warnMsgs.some(m => m.includes('INFRA-CANVAS') && m.includes('funky init'))).toBe(true);
+    expect(warnMsgs.some(m => m.includes('placeholder'))).toBe(false);
 
     warnSpy.mockRestore();
   });
@@ -190,6 +214,47 @@ describe('estimateCommand — integration', () => {
     expect(logMsgs.some(m => m.includes('pricing-decisions.md') && m.includes('ya existe'))).toBe(true);
     expect(logMsgs.some(m => m.includes('Contiene decisiones del proyecto'))).toBe(true);
     expect(logMsgs.some(m => m.includes('elimínalo o muévelo de ubicación'))).toBe(true);
+
+    logSpy.mockRestore();
+  });
+
+  it('M7: summary matiza el título con conteos (N creados, M conservados) en creación limpia', async () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    addDecisions(mf, DECISIONS_CONTENT);
+    applyMocks(mf);
+
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+    await estimateCommand.parseAsync([], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    const msgs = logSpy.mock.calls.map(c => String(c));
+    expect(msgs.some(m => m.includes('Material de pricing listo: 2 creados, 0 conservados.'))).toBe(true);
+    expect(msgs.some(m => m.includes('Material de pricing generado exitosamente'))).toBe(false);
+
+    logSpy.mockRestore();
+  });
+
+  it('M7: summary muestra estado por archivo (generado / creado / conservado) cuando hubo omisiones', async () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    addDecisions(mf, DECISIONS_CONTENT);
+    // pricing-decisions.md ya existe → se conserva; la guía se regenera; el prompt se crea.
+    mf[path.join(CWD, 'docs', 'funky-ai', 'estimate', 'pricing-decisions.md')] = '# Acuerdos previos del equipo';
+    applyMocks(mf);
+
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+    await estimateCommand.parseAsync([], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    const msgs = logSpy.mock.calls.map(c => String(c));
+    expect(msgs.some(m => m.includes('pricing-guide.md') && m.includes('— generado'))).toBe(true);
+    expect(msgs.some(m => m.includes('pricing-decisions.md') && m.includes('— conservado'))).toBe(true);
+    expect(msgs.some(m => m.includes('estimate-prompt.md') && m.includes('— creado'))).toBe(true);
 
     logSpy.mockRestore();
   });
@@ -356,6 +421,7 @@ describe('--context flag', () => {
     expect(result.status).toBe('completed');
     const logMsgs = logSpy.mock.calls.map(c => String(c));
     expect(logMsgs.some(m => m.includes('Material de pricing generado'))).toBe(false);
+    expect(logMsgs.some(m => m.includes('Material de pricing listo'))).toBe(false);
     expect(logMsgs.some(m => m.includes('PROMPT'))).toBe(false);
 
     logSpy.mockRestore();

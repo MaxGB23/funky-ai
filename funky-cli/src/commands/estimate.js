@@ -61,20 +61,21 @@ export async function runEstimate(targetBase, opts = {}) {
       ctx = readResult.ctx;
     }
 
-    // ── 1. Load Decisions ──
+    // ── 1. Existencia de archivos referenciados (M6/M11) ──
+    // La guía REFERENCIA los archivos (no incrusta contenido): un archivo
+    // ausente no degrada la guía, pero el aviso dice cómo generarlo.
     const decisionsPath = ctx?.assess?.decisionsFile || null;
-    const decisions = loadDecisions(targetBase, decisionsPath);
-    if (!decisions) {
-      warn('⚠️  No se encontró docs/funky-ai/assess/architecture-decisions.md. Generando guía con contenido parcial.');
+    if (!loadDecisions(targetBase, decisionsPath)) {
+      warn('⚠️  No se encontró docs/funky-ai/assess/architecture-decisions.md. La guía lo referencia; ejecuta "funky assess" para generarlo, o la IA preguntará el contexto.');
     }
 
     // ── 2. Canvas Discovery ──
     const canvases = findCanvases(targetBase);
     if (!canvases.projectCanvas) {
-      warn('⚠️  No se encontró PROJECT-CANVAS.md en docs/funky-ai/canvas/. Usando placeholder.');
+      warn('⚠️  No se encontró PROJECT-CANVAS.md en docs/funky-ai/canvas/. La guía lo referencia; ejecuta "funky init" si aún no existe.');
     }
     if (!canvases.infraCanvas) {
-      warn('⚠️  No se encontró INFRA-CANVAS.md en docs/funky-ai/canvas/. Usando placeholder.');
+      warn('⚠️  No se encontró INFRA-CANVAS.md en docs/funky-ai/canvas/. La guía lo referencia; ejecuta "funky init" si aún no existe.');
     }
     if (canvases.unfilledCount > 0) {
       warn(`⚠️  Se detectaron ${canvases.unfilledCount} secciones sin completar ("[Responde aquí]") en los canvases. La discusión se basará en datos parciales.`);
@@ -110,7 +111,7 @@ export async function runEstimate(targetBase, opts = {}) {
     if (typeof guideOpts.brief === 'string') {
       const briefResolved = path.resolve(targetBase, guideOpts.brief);
       if (!fs.existsSync(briefResolved)) {
-        warn(`⚠️  No se encontró el archivo de brief "${guideOpts.brief}". Se usó el checklist de preguntas en su lugar.`);
+        warn(`⚠️  No se encontró el archivo de brief "${guideOpts.brief}". Se usó el checklist de preguntas en su lugar; verifica la ruta o crea el brief con "funky init".`);
       }
     }
 
@@ -264,11 +265,13 @@ export async function runEstimate(targetBase, opts = {}) {
       writeContext(targetBase, ctx, contextArg || undefined);
     }
 
-    // ── 6. Summary (terminal limpia, 2.2/2.8) ──
+    // ── 6. Summary (terminal limpia, 2.2/2.8; M7: estado por archivo) ──
     // El material de la sesión vive en archivos (pricing-guide.md y
     // estimate-prompt.md): la terminal referencia la guía de prompt en vez de
     // imprimir el prompt gigante (2.8). La ficha de alcance ya no existe
-    // (2.1/1.5): se lista lo solicitado, sin ficha.
+    // (2.1/1.5): se lista lo solicitado, sin ficha. Cada archivo muestra su
+    // estado (generado / creado / conservado) para no afirmar "generado
+    // exitosamente" cuando hubo omisiones (M7).
     if (!json) {
       const includedSections = [];
       if (guideOpts.brief !== undefined && guideOpts.brief !== false) {
@@ -281,10 +284,22 @@ export async function runEstimate(targetBase, opts = {}) {
         includedSections.push('referencia de costos de equipo');
       }
       const sectionsLabel = includedSections.length > 0 ? includedSections.join(', ') : 'ninguna (guía base declarativa)';
-      console.log('\n✅ Material de pricing generado exitosamente.');
-      console.log(`   📝 Guía de pricing: ${path.relative(targetBase, pricingGuidePath)}`);
-      console.log(`   📝 Template de decisiones: ${path.relative(targetBase, decisionsTemplatePath)}`);
-      console.log(`   📝 Prompt de la sesión: ${path.relative(targetBase, estimatePromptPath)}`);
+      const rel = (p) => path.relative(targetBase, p).split(path.sep).join('/');
+      const decisionsLine = logs.find((l) => l.includes('pricing-decisions.md'));
+      const decisionsStatus = decisionsLine && decisionsLine.includes('✅') ? 'creado' : 'conservado';
+      const promptStatus = promptWritten ? 'creado' : (fs.existsSync(estimatePromptPath) ? 'conservado' : null);
+      const rows = [
+        { label: 'Guía de pricing', path: rel(pricingGuidePath), status: 'generado' },
+        { label: 'Template de decisiones', path: rel(decisionsTemplatePath), status: decisionsStatus },
+        ...(promptStatus ? [{ label: 'Prompt de la sesión', path: rel(estimatePromptPath), status: promptStatus }] : []),
+      ];
+      const createdCount = rows.filter((r) => r.status === 'creado').length;
+      const conservedCount = rows.filter((r) => r.status === 'conservado').length;
+
+      console.log(`\n✅ Material de pricing listo: ${createdCount} creados, ${conservedCount} conservados.`);
+      for (const row of rows) {
+        console.log(`   📝 ${row.label}: ${row.path} — ${row.status}`);
+      }
       console.log(`   📋 Secciones solicitadas en la guía: ${sectionsLabel}.`);
       console.log('\n📋 Próximos pasos:');
       console.log('   1. Abra la guía de prompt en docs/funky-ai/estimate/estimate-prompt.md y úsela para iniciar la sesión de IA del proyecto.');
