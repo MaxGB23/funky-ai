@@ -1,6 +1,6 @@
 # 📘 Flujo Interno: `funky init` y `funky scaffold`
 
-> **Versión documentada:** v4.3.2  
+> **Versión documentada:** v4.4.0  
 > **Ultima actualizacion:** 2026-08-08  
 > **Estado:** ✅ Estable
 
