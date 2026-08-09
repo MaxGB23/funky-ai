@@ -2,8 +2,10 @@ import { Command } from 'commander';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import * as p from '@clack/prompts';
 import { surfaceRiskPatterns } from '../utils/assessRules.js';
-import { readContext, writeContext, findCanvases, countUnfilledSections, updatePhaseState } from '../utils/context.js';
+import { readContext, writeContext, findCanvases, updatePhaseState, getTodayDate } from '../utils/context.js';
+import { executeIntentions, existingGuides } from '../utils/fs-adapter.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,15 +28,7 @@ export function parseFrontmatter(content) {
   return metadata;
 }
 
-function getTodayDate() {
-  const d = new Date();
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
-
-export function runAssess(targetBase, opts = {}) {
+export async function runAssess(targetBase, opts = {}) {
   const startedAt = Date.now();
   const warnings = [];
   const json = opts.json === true;
@@ -46,173 +40,196 @@ export function runAssess(targetBase, opts = {}) {
     if (!json) console.log(msg);
   };
 
-  // ── 1. Canvas Discovery ──
-  let ctx = null;
+  try {
+    // ── 1. Context (opcional) ──
+    let ctx = null;
 
-  const contextArg = typeof opts.context === 'string' ? opts.context : (typeof opts.contextPath === 'string' ? opts.contextPath : null);
-  if (opts.context || opts.contextPath) {
-    const readResult = readContext(targetBase, contextArg || undefined);
-    if (!readResult.ok) {
-      console.error('❌ No se pudo leer context.json. Asegurate de haber ejecutado "funky pipeline assess" primero.');
-      return { phase: 'assess', status: 'failed', artifacts: [], durationMs: Date.now() - startedAt, warnings };
+    const contextArg = typeof opts.context === 'string' ? opts.context : (typeof opts.contextPath === 'string' ? opts.contextPath : null);
+    if (opts.context || opts.contextPath) {
+      const readResult = readContext(targetBase, contextArg || undefined);
+      if (!readResult.ok) {
+        console.error('❌ No se pudo leer context.json. Asegúrate de haber ejecutado "funky pipeline assess" primero.');
+        return { phase: 'assess', status: 'failed', artifacts: [], durationMs: Date.now() - startedAt, warnings };
+      }
+      ctx = readResult.ctx;
     }
-    ctx = readResult.ctx;
-  }
 
-  const canvases = findCanvases(targetBase);
-  let projectCanvas = canvases.projectCanvas;
-  let infraCanvas = canvases.infraCanvas;
-  let unfilledCount = canvases.unfilledCount;
+    // ── 2. Canvas Discovery ──
+    const canvases = findCanvases(targetBase);
 
-  if (!projectCanvas) {
-    warn('⚠️  No se encontró PROJECT-CANVAS.md en docs/funky-ai/canvas/. Usando placeholder.');
-    projectCanvas = 'Canvas no disponible';
-  }
+    if (!canvases.projectCanvas) {
+      warn('⚠️  No se encontró PROJECT-CANVAS.md en docs/funky-ai/canvas/. La guía lo referencia; créalo con "funky init" si aún no existe.');
+    }
 
-  if (!infraCanvas) {
-    warn('⚠️  No se encontró INFRA-CANVAS.md en docs/funky-ai/canvas/. Usando placeholder.');
-    infraCanvas = 'Canvas no disponible';
-  }
+    if (!canvases.infraCanvas) {
+      warn('⚠️  No se encontró INFRA-CANVAS.md en docs/funky-ai/canvas/. La guía lo referencia; créalo con "funky init" si aún no existe.');
+    }
 
-  // ── 2. Canvas Validation ──
-  if (unfilledCount > 0) {
-    warn(`⚠️  Se detectaron ${unfilledCount} secciones sin completar ("[Responde aquí]") en los canvases. La discusión se basará en datos parciales.`);
-  }
+    // ── 3. Canvas Validation ──
+    if (canvases.unfilledCount > 0) {
+      warn(`⚠️  Se detectaron ${canvases.unfilledCount} secciones sin completar ("[Responde aquí]") en los canvases. La discusión se basará en datos parciales.`);
+    }
 
-  // ── 3. Surface Risk Patterns ──
-  const templatesDir = path.join(__dirname, '../templates/assess');
-  const patternsTemplatePath = path.join(templatesDir, 'risk-patterns-template.md');
-  const patternsDestPath = path.join(targetBase, 'docs', 'funky-ai', 'assess', 'risk-patterns.md');
+    const templatesDir = path.join(__dirname, '../templates/assess');
+    const assessDir = path.join(targetBase, 'docs', 'funky-ai', 'assess');
 
-  // Crea risk-patterns.md solo si no existe (documento vivo del equipo, no se sobrescribe).
-  if (!fs.existsSync(patternsDestPath)) {
+    // ── 4. Template de patrones de riesgo ──
+    const patternsTemplatePath = path.join(templatesDir, 'risk-patterns-template.md');
+    let patternsTemplateContent = '';
     try {
-      const patternsContent = fs.readFileSync(patternsTemplatePath, 'utf8');
-      fs.mkdirSync(path.dirname(patternsDestPath), { recursive: true });
-      fs.writeFileSync(patternsDestPath, patternsContent, 'utf8');
-      log('📄 Patrones de riesgo de referencia creados en docs/funky-ai/assess/risk-patterns.md (edítalos según tu contexto).');
+      patternsTemplateContent = fs.readFileSync(patternsTemplatePath, 'utf8');
     } catch (err) {
-      const msg = err.code === 'EACCES' ? `Error de permisos al crear "${patternsDestPath}". Verifica que tengas permisos de escritura.` : err.message;
-      warn('⚠️  No se pudo crear docs/funky-ai/assess/risk-patterns.md:', msg);
+      warn('⚠️  Error al leer el template de patrones de riesgo:', err.message);
     }
-  } else {
-    log('ℹ️  docs/funky-ai/assess/risk-patterns.md ya existe — no se modificó.');
-  }
 
-  let surfaceResult;
-  try {
-    const patternsTemplateContent = fs.readFileSync(patternsTemplatePath, 'utf8');
-    surfaceResult = surfaceRiskPatterns(targetBase, patternsTemplateContent);
-  } catch (err) {
-    warn('⚠️  Error al superficiar patrones de riesgo:', err.message);
-    surfaceResult = { content: '', patterns: [] };
-  }
-
-  // ── 4. Interpolate Template ──
-  const reviewTemplatePath = path.join(templatesDir, 'architecture-review-template.md');
-
-  let templateContent;
-  try {
-    templateContent = fs.readFileSync(reviewTemplatePath, 'utf8');
-  } catch (err) {
-    throw new Error(`Template architecture-review-template.md no encontrado en ${reviewTemplatePath}. La instalación está corrupta.`);
-  }
-
-  const riskPatternsText = surfaceResult.content.trim();
-
-  let outputContent = templateContent
-    .replace('{{PROJECT_CANVAS_CONTENT}}', projectCanvas)
-    .replace('{{INFRA_CANVAS_CONTENT}}', infraCanvas)
-    .replace('{{DYNAMIC_QUESTIONS}}', riskPatternsText);
-
-  // ── 5. Write Output ──
-  const assessDir = path.join(targetBase, 'docs', 'funky-ai', 'assess');
-  try {
-    fs.mkdirSync(assessDir, { recursive: true });
-  } catch (err) {
-    const msg = err.code === 'EACCES' ? `Error de permisos al crear el directorio "${assessDir}". Verifica que tengas permisos de escritura.` : err.message;
-    warn('⚠️  No se pudo crear el directorio docs/funky-ai/assess/:', msg);
-  }
-
-  const outputPath = path.join(assessDir, 'architecture-review.md');
-  try {
-    fs.writeFileSync(outputPath, outputContent, 'utf8');
-  } catch (err) {
-    const msg = err.code === 'EACCES' ? `Error de permisos al escribir "${outputPath}". Verifica que tengas permisos de escritura.` : err.message;
-    warn('⚠️  No se pudo escribir el archivo de guía:', msg);
-  }
-
-  // ── 6. Decisions Template ──
-  const decisionsDir = path.join(targetBase, 'docs', 'funky-ai', 'assess');
-  const decisionsDestPath = path.join(decisionsDir, 'architecture-decisions.md');
-  if (!fs.existsSync(decisionsDestPath)) {
+    // ── 5. Template de decisiones (conserva el reemplazo {{DATE}}) ──
     const decisionsTemplatePath = path.join(templatesDir, 'architecture-decisions-template.md');
+    let decisionsContent = '';
     try {
-      let decisionsContent = fs.readFileSync(decisionsTemplatePath, 'utf8');
-      decisionsContent = decisionsContent.replace(/{{DATE}}/g, getTodayDate());
-      fs.mkdirSync(path.dirname(decisionsDestPath), { recursive: true });
-      fs.writeFileSync(decisionsDestPath, decisionsContent, 'utf8');
-      log('📄 Template de decisiones creado en docs/funky-ai/assess/architecture-decisions.md');
+      decisionsContent = fs.readFileSync(decisionsTemplatePath, 'utf8').replace(/{{DATE}}/g, getTodayDate());
     } catch (err) {
-      const msg = err.code === 'EACCES' ? `Error de permisos al crear "${decisionsDestPath}". Verifica que tengas permisos de escritura.` : err.message;
-      warn('⚠️  No se pudo crear docs/funky-ai/assess/architecture-decisions.md:', msg);
+      warn('⚠️  Error al leer el template de decisiones:', err.message);
     }
-  } else {
-    log('ℹ️  docs/funky-ai/assess/architecture-decisions.md ya existe — no se modificó.');
-  }
 
-  // ── 7. Write Context (if applicable) ──
-  const artifacts = [
-    {
-      name: 'architecture-review.md',
-      path: path.relative(targetBase, outputPath).split(path.sep).join('/'),
-      kind: 'generated'
+    // ── 6. Plan de intenciones (feedback por archivo, Fase 2) ──
+    // risk-patterns.md y architecture-decisions.md son documentos VIVOS del
+    // equipo (kind 'decision'): solo se crean la primera vez; si ya existen no
+    // se sobrescriben y se recomienda eliminar o mover con backup.
+    // assess-prompt.md es una guía (kind 'guide'): si ya existe se pregunta Y/N.
+    const intentions = [
+      { action: 'mkdir', dest: assessDir },
+      { action: 'create', kind: 'decision', content: patternsTemplateContent, dest: path.join(assessDir, 'risk-patterns.md') },
+      { action: 'create', kind: 'decision', content: decisionsContent, dest: path.join(assessDir, 'architecture-decisions.md') },
+      { action: 'copy', kind: 'guide', src: path.join(templatesDir, 'assess-prompt-template.md'), dest: path.join(assessDir, 'assess-prompt.md') },
+    ];
+
+    // Confirmación Y/N solo en entorno interactivo; sin TTY el default es "n"
+    // (executeIntentions lo loguea) — nunca se sobrescriben guías sin input humano.
+    // El aviso no-TTY es genérico y condicionado a que exista ≥1 guía del plan
+    // (Fase 0, 0.3 — mismo patrón que init), no hardcodeado a assess-prompt.md.
+    const interactive = Boolean(process.stdin && process.stdin.isTTY);
+    let askConfirm;
+    if (interactive) {
+      askConfirm = async (dest, basename) => {
+        const answer = await p.confirm({
+          message: `Ya existe ${basename}. Actualizarla trae la versión más reciente, pero REEMPLAZA la actual: perderás el progreso previo (anotaciones, ajustes) si no tienes un respaldo. ¿Quieres actualizarla?`,
+          initialValue: false,
+        });
+        return !p.isCancel(answer) && answer === true;
+      };
+    } else if (existingGuides(intentions).length > 0) {
+      log('⚠️ Entorno no interactivo: no se actualizan las guías existentes.');
     }
-  ];
-  if (ctx) {
-    const finishedAt = new Date().toISOString();
-    // Ruta real (relativa al targetBase, con separadores "/") del archivo de
-    // decisiones que assess usó; estimate con --context la lee para no caer al
-    // default. Se normalizan los separadores para portabilidad Windows/POSIX.
-    updatePhaseState(ctx, 'assess', {
+
+    const { logs } = await executeIntentions(intentions, { askConfirm });
+    for (const line of logs) {
+      log(line);
+    }
+
+    // ── 7. architecture-review.md: guía GENERADA, se regenera siempre ──
+    const reviewTemplatePath = path.join(templatesDir, 'architecture-review-template.md');
+    let templateContent;
+    try {
+      templateContent = fs.readFileSync(reviewTemplatePath, 'utf8');
+    } catch (err) {
+      throw new Error(`Template architecture-review-template.md no encontrado en ${reviewTemplatePath}. La instalación está corrupta.`);
+    }
+
+    // El review es una agenda declarativa: referencia los archivos del proyecto
+    // (brief, canvases, risk-patterns.md) sin incrustar su contenido (obs 2).
+    const outputPath = path.join(assessDir, 'architecture-review.md');
+    fs.writeFileSync(outputPath, templateContent, 'utf8');
+
+    // ── 8. Surface Risk Patterns (solo metadata para context) ──
+    let surfaceResult;
+    try {
+      surfaceResult = surfaceRiskPatterns(targetBase, patternsTemplateContent);
+    } catch (err) {
+      warn('⚠️  Error al superficiar patrones de riesgo:', err.message);
+      surfaceResult = { content: '', patterns: [] };
+    }
+
+    // ── 9. Write Context (si aplica) ──
+    const promptDestPath = path.join(assessDir, 'assess-prompt.md');
+    const artifacts = [
+      {
+        name: 'architecture-review.md',
+        path: path.relative(targetBase, outputPath).split(path.sep).join('/'),
+        kind: 'generated'
+      },
+      {
+        name: 'assess-prompt.md',
+        path: path.relative(targetBase, promptDestPath).split(path.sep).join('/'),
+        kind: 'living'
+      }
+    ];
+    if (ctx) {
+      const finishedAt = new Date().toISOString();
+      // Ruta real (relativa al targetBase, con separadores "/") del archivo de
+      // decisiones que assess usó; estimate con --context la lee para no caer al
+      // default. Se normalizan los separadores para portabilidad Windows/POSIX.
+      const decisionsDestPath = path.join(assessDir, 'architecture-decisions.md');
+      updatePhaseState(ctx, 'assess', {
+        status: 'completed',
+        startedAt: ctx.assess.startedAt ?? new Date(startedAt).toISOString(),
+        finishedAt,
+        durationMs: Date.now() - startedAt,
+        artifacts,
+        runAt: finishedAt,
+        surfacedPatterns: surfaceResult.patterns || [],
+        decisionsFile: path.relative(targetBase, decisionsDestPath).split(path.sep).join('/')
+      });
+      writeContext(targetBase, ctx, contextArg || undefined);
+    }
+
+    // ── 10. Summary (M10: estado por archivo; no afirmar "generado
+    // exitosamente" cuando hubo omisiones o conservados) ──
+    if (!json) {
+      const rel = (p) => path.relative(targetBase, p).split(path.sep).join('/');
+      const riskPatternsDestPath = path.join(assessDir, 'risk-patterns.md');
+      const decisionsDestPath = path.join(assessDir, 'architecture-decisions.md');
+      const statusOf = (basename) => {
+        const line = logs.find((l) => l.includes(basename));
+        if (line && line.includes('✅ Creado')) return 'creado';
+        if (line && line.includes('✅ Actualizada')) return 'actualizado';
+        return 'conservado';
+      };
+      const rows = [
+        { label: 'Guía de discusión', path: rel(outputPath), status: 'generado' },
+        { label: 'Prompt de discusión', path: rel(promptDestPath), status: statusOf('assess-prompt.md') },
+        { label: 'Patrones de riesgo', path: rel(riskPatternsDestPath), status: statusOf('risk-patterns.md') },
+        { label: 'Decisiones', path: rel(decisionsDestPath), status: statusOf('architecture-decisions.md') },
+      ];
+      const createdCount = rows.filter((r) => r.status !== 'conservado').length;
+      const conservedCount = rows.filter((r) => r.status === 'conservado').length;
+      console.log(`\n✅ Material de assess listo: ${createdCount} creados, ${conservedCount} conservados.`);
+      for (const row of rows) {
+        console.log(`   📝 ${row.label}: ${row.path} — ${row.status}`);
+      }
+      console.log('\n📋 Próximos pasos:');
+      console.log('   1. Abre una sesión de chat con la IA.');
+      console.log('   2. Copia el contenido de docs/funky-ai/assess/assess-prompt.md y pégalo como primer mensaje.');
+      console.log('   3. El agente lee los archivos referenciados (brief, canvases, architecture-review.md y risk-patterns.md) en el orden que marca el prompt.');
+      console.log('   4. Discute un punto a la vez y anota cada decisión aprobada en docs/funky-ai/assess/architecture-decisions.md.\n');
+    }
+
+    return {
+      phase: 'assess',
       status: 'completed',
-      startedAt: ctx.assess.startedAt ?? new Date(startedAt).toISOString(),
-      finishedAt,
-      durationMs: Date.now() - startedAt,
       artifacts,
-      runAt: finishedAt,
-      surfacedPatterns: surfaceResult.patterns || [],
-      decisionsFile: path.relative(targetBase, decisionsDestPath).split(path.sep).join('/')
-    });
-    writeContext(targetBase, ctx, contextArg || undefined);
+      durationMs: Date.now() - startedAt,
+      warnings
+    };
+  } catch (err) {
+    console.error(`❌ Error al generar los archivos de assess: ${err.message}`);
+    return { phase: 'assess', status: 'failed', artifacts: [], durationMs: Date.now() - startedAt, warnings };
   }
-
-  // ── 8. Summary ──
-  if (!json) {
-    console.log('\n✅ Guía de discusión generada exitosamente.');
-    console.log(`   📝 Guía: ${path.relative(targetBase, outputPath)}`);
-    console.log('   📝 Patrones de riesgo: docs/funky-ai/assess/risk-patterns.md');
-    console.log(`   📝 Decisiones: docs/funky-ai/assess/architecture-decisions.md`);
-    console.log('\n📋 Próximos pasos:');
-    console.log(`   1. Abre una sesión de chat con la IA.`);
-    console.log(`   2. Arrastra el archivo ${path.relative(targetBase, outputPath)} a la conversación.`);
-    console.log('   3. Sigue las 6 fases de la guía para discutir la arquitectura.');
-    console.log('   4. Documenta los acuerdos en docs/funky-ai/assess/architecture-decisions.md durante la discusión.\n');
-  }
-
-  return {
-    phase: 'assess',
-    status: 'completed',
-    artifacts,
-    durationMs: Date.now() - startedAt,
-    warnings
-  };
 }
 
 export const assessCommand = new Command('assess')
   .description('Genera guía de discusión arquitectónica a partir de los canvases del proyecto')
   .option('-c, --context <path>', 'Path to context.json for pipeline integration')
-  .action((opts) => {
-    const result = runAssess(process.cwd(), opts);
+  .action(async (opts) => {
+    const result = await runAssess(process.cwd(), opts);
     process.exit(result.status === 'failed' ? 1 : 0);
   });

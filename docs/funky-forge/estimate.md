@@ -33,23 +33,33 @@ Como paso final del pipeline, después de `assess`. El flag `--context` integra 
 
 Si los canvases contienen secciones sin completar (`[Responde aquí]`), se muestra una advertencia indicando cuántas están pendientes.
 
-## Sugerencias
-
-`funky estimate` detecta señales de tópicos (roles, multi-tenant, transacciones, seguridad, concurrencia, integraciones) en los canvases y en las decisiones arquitectónicas. Por cada tópico con señal detectada cuyo flag NO se pasó, imprime en consola una sugerencia como:
-
-`💡 Se detectó Seguridad (jwt). Considerá --security para incluir su sección en la guía.`
-
-Las sugerencias son SOLO de consola: nunca agregan secciones a la guía automáticamente. Para incluir una sección hay que pasar su flag explícitamente.
-
 ## Outputs
 
 | Output | Ruta | Descripción |
 |---|---|---|
-| pricing-guide.md | `docs/funky-ai/estimate/pricing-guide.md` | Guía de discusión con contexto del proyecto, factores de costo y estructura de sesión. Incluye SIEMPRE la ficha de alcance ("¿Aplica en esta fase?") con el estado de los 6 tópicos. Las secciones opcionales (brief, tópicos, referencia de costos de equipo) se incluyen solo cuando se pasan sus flags. Artefacto derivado: se regenera (sobrescribe) en cada ejecución. |
+| pricing-guide.md | `docs/funky-ai/estimate/pricing-guide.md` | Guía de discusión declarativa con contexto del proyecto (referencias a brief, canvases y decisiones), factores de costo, buffers, TCO y estructura de sesión. Las secciones de flags (tópicos) se incrustan por marcadores `<!-- topic:x -->` arriba de `## Estructura de Discusión`. Es una GUÍA (no un derivado regenerable): la incrustación es ADITIVA y conserva las secciones previas (ver contrato de feedback abajo). |
+| estimate-prompt.md | `docs/funky-ai/estimate/estimate-prompt.md` | Prompt para iniciar la sesión de IA del proyecto (guía kind guide, patrón de assess). Se copia desde el template; si ya existe, confirma Y/N antes de reemplazar (default `n` sin TTY). |
 | pricing-decisions.md | `docs/funky-ai/estimate/pricing-decisions.md` | Template para documentar acuerdos de pricing durante la sesión colaborativa. Doc vivo del equipo: no se sobrescribe si ya existe. |
-| stdout | Consola | Prompt completo para la IA (banner + cuerpo + footer), resumen con rutas generadas y secciones incluidas, y sugerencias de tópicos detectados (R11). |
+| stdout | Consola | Terminal limpia: resumen con rutas generadas y secciones incluidas, checks y warnings. NO imprime el prompt gigante (el material vive en estimate-prompt.md). |
 
 Con `--context`, además actualiza el estado de fase v2 en `docs/funky-ai/pipeline/context.json`: `estimate.status: 'completed'`, `startedAt`, `finishedAt`, `durationMs`, `artifacts` y `runAt`.
+
+## Contrato de feedback por archivo
+
+| Archivo | Comportamiento | Exit |
+|---|---|---|
+| `pricing-guide.md` nuevo | Se crea con las secciones de flags solicitadas incrustadas por marcador, sin preguntar (aditivo puro) | 0 |
+| `pricing-guide.md` — flag NUEVO | Incrusta solo su sección (aditiva), conserva las previas, orden canónico, sin preguntar | 0 |
+| `pricing-guide.md` — flag existente sin cambios | Idempotente: no duplica ni toca la sección | 0 |
+| `pricing-guide.md` — template base o fragmento de topic cambió | Y/N con advertencia; `y` → reconstruye la base y REINCRUSTA todos los flags detectados por marcador (ninguno se pierde); `n` → conserva la guía actual (decisión válida) | 0 |
+| `pricing-guide.md` — guía legacy sin marcadores | Se regenera con el template declarativo | 0 |
+| `estimate-prompt.md` nuevo | Se crea sin preguntar (guía kind guide) | 0 |
+| `estimate-prompt.md` existente | Y/N con advertencia de pérdida; `y` → reemplaza; `n` → conserva la versión actual (decisión válida) | 0 |
+| `pricing-decisions.md` existente | No pregunta, no sobrescribe; recomienda eliminar o mover de ubicación (backup) | 0 |
+| Sin terminal (CI) / `--json` | Incrustación aditiva corre (segura); actualizaciones con cambios → default `n` logueado, nunca Y/N en stdout de `--json` | 0 |
+| Error real (lectura/escritura, conflicto inesperado) | Mensaje de error | 1 |
+
+Regla clave: **nunca se pregunta cuando la operación no tiene nada que perder (aditiva). El Y/N existe únicamente para advertir pérdida potencial.**
 
 ## Diagrama de flujo
 
@@ -75,25 +85,38 @@ Con `--context`, además actualiza el estado de fase v2 en `docs/funky-ai/pipeli
                     └──────────┬───────────┘
                                │
                     ┌──────────▼───────────┐
-                    │  Interpolar templates│
-                    │  → pricing-guide.md  │
-                    │  → pricing-decisions │
-                    └──────────┬───────────┘
-                               │
-                    ┌──────────▼───────────┐
-                    │  Escribir archivos   │
-                    │  guía: sobrescribe   │
-                    │  decisiones: no      │
-                    └──────────┬───────────┘
-                               │
-                    ┌──────────▼───────────┐
-                    │  Actualizar context  │
-                    │  (si --context)      │
-                    └──────────┬───────────┘
-                               │
-                    ┌──────────▼───────────┐
-                    │  stdout: banner +    │
-                    │  prompt IA + footer  │
+                    │  pricing-guide.md    │
+                    │  ¿existe con zona de │
+                    │  marcadores?         │
+                    └──────┬──────┬────────┘
+                   no       │      │  sí
+                    ┌───────▼──┐   ┌▼───────────────────────────┐
+                    │ crear con│   │ incrustar flags nuevos     │
+                    │ marcadores│   │ (aditivo, sin preguntar)   │
+                    └──────┬───┘   └──────┬─────────────────────┘
+                           │              │  ¿drift base/fragmento?
+                           │              │  → Y/N (y: reincrustar
+                           │              │    todos; n: conservar)
+                           │              │
+                    ┌───────▼─────────────▼──┐
+                    │  estimate-prompt.md    │
+                    │  ¿existe? → Y/N guía   │
+                    │  (default n sin TTY)   │
+                    └───────┬───────────────┘
+                            │
+                    ┌───────▼───────────────┐
+                    │  pricing-decisions.md │
+                    │  (no sobrescribe)     │
+                    └───────┬───────────────┘
+                            │
+                    ┌───────▼───────────────┐
+                    │  Actualizar context   │
+                    │  (si --context)       │
+                    └───────┬───────────────┘
+                            │
+                    ┌───────▼───────────────┐
+                    │  stdout: resumen con  │
+                    │  rutas y secciones    │
                     └──────────────────────┘
 ```
 
@@ -111,12 +134,12 @@ Con `--context`, además actualiza el estado de fase v2 en `docs/funky-ai/pipeli
 | `--integrations` | boolean | Incluye la sección "Integraciones" en la guía. |
 | `--pricing-team` | boolean | Incluye la referencia de costos de equipo (rol × seniority × dedicación × duración). Solo referencia, no es una calculadora. |
 
-La ficha de alcance ("¿Aplica en esta fase?") se incluye SIEMPRE en la guía, sin flag: no es configurable desde la CLI. El brief funcional se incluye automáticamente cuando existe `docs/funky-ai/canvas/brief-funcional.md` (proyecto iniciado con `funky init`); sin ese archivo, solo se incluye al pasar `--brief`. Los tópicos y la referencia de costos solo se incluyen cuando se pasan sus flags.
+La guía corta de flags (cuándo conviene cada flag y su buffer) vive en el template base `pricing-guide-template.md`: la IA decide primero qué flags recomienda para el proyecto, antes de la discusión de pricing. Los tópicos se incrustan solo cuando se pasan sus flags; sin flags, la guía es base declarativa.
 
 ## Próximos pasos
 
 Después de ejecutar `funky estimate`, el usuario debe:
 
-1. Copiar el prompt de IA impreso en consola y usarlo en la sesión de IA del proyecto. El prompt referencia `docs/funky-ai/estimate/pricing-guide.md` y `docs/funky-ai/estimate/pricing-decisions.md`; la IA puede leer esos archivos directamente.
-2. La IA guía la discusión de pricing basada en los materiales generados.
-3. Documentar los acuerdos en `pricing-decisions.md` durante la discusión colaborativa.
+1. Abrir `docs/funky-ai/estimate/estimate-prompt.md` y usarlo como primer mensaje en la sesión de IA del proyecto (reemplaza al prompt impreso en consola).
+2. La IA guía la discusión de pricing basada en los materiales generados (`pricing-guide.md` con las secciones incrustadas y las decisiones documentadas).
+3. Documentar los acuerdos en `pricing-decisions.md` durante la discusión colaborativa, punto por punto.

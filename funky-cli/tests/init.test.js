@@ -53,7 +53,8 @@ describe('brief-funcional.md template (R6)', () => {
   const templatePath = path.join(__dirname, '../src/templates/init/brief-funcional.md');
   const content = fs.readFileSync(templatePath, 'utf8');
 
-  // Los 12 ítems de §13 (recomendaciones-agente.md:415-426), en orden.
+  // Los 13 ítems de §13 (recomendaciones-agente.md:415-426) + ítem 13 de M9
+  // (costo del problema para el cliente — alimenta el ROI/valor del pricing-guide), en orden.
   const expectedHeaders = [
     '1. Nombre del Producto o Idea',
     '2. Objetivo del Sistema',
@@ -67,9 +68,10 @@ describe('brief-funcional.md template (R6)', () => {
     '10. Entregables por Fase',
     '11. MVP vs Fase 2',
     '12. KPI o Éxito del Producto',
+    '13. Costo Actual del Problema para el Cliente',
   ];
 
-  it('contiene los 12 ítems de §13 como headers `## N.` en orden (R6)', () => {
+  it('contiene los 13 ítems de §13 como headers `## N.` en orden (R6, M9)', () => {
     const headers = (content.match(/^## (\d+\. .+)$/gm) ?? []).map(h => h.replace(/^## /, ''));
     expect(headers).toEqual(expectedHeaders);
   });
@@ -186,11 +188,11 @@ describe('runInit()', () => {
     expect(brief.dest).toBe(path.join(fakeTargetBase, 'docs/funky-ai/canvas', 'brief-funcional.md'));
 
     const guide = intentions.find(i => i.action === 'copy' && path.basename(i.dest) === 'canvas-planning-guide.md');
-    expect(guide.src).toBe(path.join(fakeTemplatesDir, 'canvas-planning-guide.md'));
+    expect(guide.src).toBe(path.join(fakeTemplatesDir, 'canvas-planning-guide-template.md'));
     expect(guide.dest).toBe(path.join(fakeTargetBase, 'docs/funky-ai/canvas', 'canvas-planning-guide.md'));
 
     const prompt = intentions.find(i => i.action === 'copy' && path.basename(i.dest) === 'init-prompt.md');
-    expect(prompt.src).toBe(path.join(fakeTemplatesDir, 'init-prompt.md'));
+    expect(prompt.src).toBe(path.join(fakeTemplatesDir, 'init-prompt-template.md'));
     expect(prompt.dest).toBe(path.join(fakeTargetBase, 'docs/funky-ai/canvas', 'init-prompt.md'));
   });
 
@@ -351,5 +353,22 @@ describe('init action — contrato de feedback por archivo (Fase 2, 2.1-2.6)', (
     const logs = allLogs();
     expect(logs.some(l => l.includes('Nada que crear'))).toBe(true);
     expect(logs.some(l => l.includes('Canvases creados'))).toBe(false);
+  });
+
+  it('TTY + guía existente → el Y/N advierte explícitamente que actualizar REEMPLAZA el contenido actual (0.4)', async () => {
+    setTTY(true);
+    sharedFsMock.existsSync.mockReturnValue(true);
+    clackMock.confirm.mockResolvedValue(true);
+
+    await initCommand.parseAsync([], { from: 'user' });
+
+    expect(clackMock.confirm).toHaveBeenCalledTimes(2);
+    for (const call of clackMock.confirm.mock.calls) {
+      const message = call[0].message;
+      expect(message).toContain('REEMPLAZA la actual');
+      expect(message).toContain('perderás el progreso previo');
+      expect(message).toContain('respaldo');
+      expect(message).not.toContain('¿Quieres actualizarla con la versión más reciente?');
+    }
   });
 });

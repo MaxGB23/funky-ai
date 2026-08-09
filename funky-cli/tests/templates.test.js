@@ -81,3 +81,120 @@ describe('Templates de docs compartidos (bootstrap/sdd)', () => {
     expect(content).toMatch(/^### /m);
   });
 });
+
+describe('Templates de estimate — Fase A (checklist M1/M2/M3)', () => {
+  const promptPath = path.join(__dirname, '../src/templates/estimate/estimate-prompt-template.md');
+  const guidePath = path.join(__dirname, '../src/templates/estimate/pricing-guide-template.md');
+
+  it('M1: estimate-prompt-template define el flujo estricto en 3 fases (Preparación → Recomendación → Debate)', () => {
+    const content = fs.readFileSync(promptPath, 'utf8');
+
+    expect(content).toContain('Fase 1 — Preparación');
+    expect(content).toContain('Fase 2 — Recomendación');
+    expect(content).toContain('Fase 3 — Debate');
+  });
+
+  it('M1: la Fase 2 ordena DETENERSE y pedir al humano que inyecte las flags con `funky estimate --flag`', () => {
+    const content = fs.readFileSync(promptPath, 'utf8');
+
+    expect(content).toContain('funky estimate --flag');
+    expect(content).toMatch(/DETENTE por completo/i);
+    expect(content).toMatch(/luz verde/i);
+  });
+
+  it('M1: la sección ## Inicio ya no ordena presentar el primer punto de discusión sin pasar por las flags', () => {
+    const content = fs.readFileSync(promptPath, 'utf8');
+
+    expect(content).not.toContain('presenta el PRIMER punto de discusión');
+    expect(content).toMatch(/Fase 1/);
+  });
+
+  it('M2: el Contexto de entrada del prompt solo instruye leer pricing-guide.md y pricing-decisions.md (sin lista duplicada)', () => {
+    const content = fs.readFileSync(promptPath, 'utf8');
+    const ctx = content.split('## Contexto de entrada')[1].split('## Fases')[0] || '';
+
+    expect(ctx).toContain('pricing-guide.md');
+    expect(ctx).toContain('pricing-decisions.md');
+    expect(ctx).not.toContain('PROJECT-CANVAS.md');
+    expect(ctx).not.toContain('INFRA-CANVAS.md');
+    expect(ctx).not.toContain('brief-funcional.md');
+    expect(ctx).not.toContain('architecture-decisions.md');
+  });
+
+  it('M2: pricing-guide-template lista pricing-decisions.md como lectura en su Contexto del Proyecto', () => {
+    const content = fs.readFileSync(guidePath, 'utf8');
+    const ctx = content.split('## Contexto del Proyecto')[1].split('<!-- topics -->')[0] || '';
+
+    expect(ctx).toContain('pricing-decisions.md');
+  });
+
+  it('M1: el Paso Inicial de la guía ordena detenerse y esperar la inyección de flags antes del debate', () => {
+    const content = fs.readFileSync(guidePath, 'utf8');
+
+    expect(content).toContain('funky estimate --flag');
+    expect(content).toMatch(/DETENTE|Detente/i);
+    expect(content).toMatch(/luz verde/i);
+  });
+
+  it('M3: la tabla de flags de la guía NO recomienda --brief (el flag CLI sigue vivo, fuera de la tabla)', () => {
+    const content = fs.readFileSync(guidePath, 'utf8');
+
+    expect(content).not.toMatch(/^\|\s*`--brief`/m);
+  });
+
+  it('M4: el template base NO trae pares de marcadores vacíos en la zona de topics', () => {
+    const content = fs.readFileSync(guidePath, 'utf8');
+
+    expect(content).not.toMatch(/<!-- topic:[a-z0-9-]+ -->\s*<!-- \/topic:[a-z0-9-]+ -->/);
+    expect(content).toContain('<!-- topics -->');
+    expect(content).toContain('<!-- /topics -->');
+  });
+
+  it('M5: la guía incluye SIEMPRE la tabla base de tarifas por rol (USD/hora, edición profesional)', () => {
+    const content = fs.readFileSync(guidePath, 'utf8');
+    const costos = content.split('### 3. Factores de Costo del MVP')[1]?.split('### 4.')[0] || '';
+
+    expect(costos).toContain('Tarifas base por rol');
+    expect(costos).toContain('| Junior | 20–35 |');
+    expect(costos).toContain('| Semi Senior / Mid | 35–55 |');
+    expect(costos).toContain('| Senior | 55–85 |');
+    expect(costos).toContain('| Lead / Arquitecto | 85–120 |');
+  });
+
+  it('M5: sin la sección de --pricing-team se usan las tarifas base; con la sección se usan los rangos reales del equipo', () => {
+    const content = fs.readFileSync(guidePath, 'utf8');
+    const costos = content.split('### 3. Factores de Costo del MVP')[1]?.split('### 4.')[0] || '';
+
+    expect(costos).toMatch(/tarifas base/i);
+    expect(costos).toMatch(/rangos reales del equipo/i);
+    expect(costos).toMatch(/--pricing-team/);
+  });
+
+  it('M5: team-cost-reference enriquece la guía y NO duplica la tabla base de tarifas', () => {
+    const teamCost = fs.readFileSync(path.join(__dirname, '../src/templates/estimate/team-cost-reference-template.md'), 'utf8');
+
+    expect(teamCost).toMatch(/tarifas base/i);
+    expect(teamCost).toMatch(/rangos reales del equipo/i);
+    expect(teamCost).not.toContain('| Junior | 20–35 |');
+    expect(teamCost).not.toContain('Tarifas base por rol');
+  });
+});
+
+describe('Templates de estimate — M12 (tabla de Costo Operativo Mensual)', () => {
+  const decisionsPath = path.join(__dirname, '../src/templates/estimate/pricing-decisions-template.md');
+
+  it('M12: pricing-decisions-template incluye la tabla de Costo Operativo Mensual con Total Mensual Estimado', () => {
+    const content = fs.readFileSync(decisionsPath, 'utf8');
+
+    expect(content).toContain('### Costo Operativo Mensual (Infraestructura)');
+    expect(content).toContain('| Componente | Monto Mensual |');
+    expect(content).toContain('**Total Mensual Estimado**');
+  });
+
+  it('M12: la sección deja claro que el OpEx mensual NO suma al Precio de Venta del MVP', () => {
+    const content = fs.readFileSync(decisionsPath, 'utf8');
+
+    expect(content).toMatch(/OpEx/i);
+    expect(content).toMatch(/no se incluye en la factura de desarrollo/i);
+  });
+});

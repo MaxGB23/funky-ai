@@ -1,26 +1,25 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 vi.mock('fs', () => ({ ...fsMock, default: fsMock }));
 vi.mock('node:fs', () => ({ ...fsMock, default: fsMock }));
-import { fsMock, applyMocks, estimateMockFiles as createMockFiles, addCanvas, addDecisions, addOptionalTemplates, CWD, ESTIMATE_TPL_DIR as TPL_DIR, CANVAS_PROJECT_CONTENT, CANVAS_INFRA_CONTENT, DECISIONS_CONTENT, NEUTRAL_DECISIONS, projectCanvasWith, infraCanvasWith, CHECKLIST_TEMPLATE, TOPIC_FRAGMENT_ROLES, TOPIC_FRAGMENT_SECURITY } from './helpers/fsMock.js';
+import { fsMock, applyMocks, estimateMockFiles as createMockFiles, addCanvas, addDecisions, addOptionalTemplates, CWD, ESTIMATE_TPL_DIR as TPL_DIR, PRICING_GUIDE_DEST, CANVAS_PROJECT_CONTENT, CANVAS_INFRA_CONTENT, DECISIONS_CONTENT, DEFAULT_GUIDE_TEMPLATE, TOPIC_FRAGMENT_ROLES, TOPIC_FRAGMENT_SECURITY, TOPIC_FRAGMENT_MULTI_TENANT, embedTopicIntoGuide } from './helpers/fsMock.js';
 import path from 'path';
 import fs from 'fs';
 import { estimateCommand } from '../src/commands/estimate.js';
 
 // ═══════════════════════════════════════════════════
-// PR 3 (estimate-redesign): CLI flags + suggestions + summary (R7-R11, R13-R14)
+// PR 3 (estimate-redesign) + Fase 2 (2.1/2.2 verdes, 2.3/2.8 TDD red)
 // ═══════════════════════════════════════════════════
-
-const TOPIC_FRAGMENT_MULTI_TENANT = `## Multi-tenant
-
-Impacto en costos:
-- Aislamiento por tenant agrega complejidad de datos y permisos.`;
 
 function guideFromWriteCalls(writeCalls) {
   const call = writeCalls.find((c) => String(c[0]).includes('pricing-guide.md'));
   return call ? String(call[1]) : null;
 }
 
-describe('estimateCommand — optional flags (R7-R11, R13-R14)', () => {
+function seedEmbeddedGuide(mf, topicKey, fragment) {
+  mf[PRICING_GUIDE_DEST] = embedTopicIntoGuide(DEFAULT_GUIDE_TEMPLATE, topicKey, fragment);
+}
+
+describe('estimateCommand — guía declarativa (2.1)', () => {
   let exitSpy;
   let stderrSpy;
 
@@ -28,7 +27,6 @@ describe('estimateCommand — optional flags (R7-R11, R13-R14)', () => {
     vi.clearAllMocks();
     vi.mocked(fs.writeFileSync).mockReset();
     exitSpy = vi.spyOn(process, 'exit').mockImplementation((c) => c);
-    // Silence Commander.js stderr noise ("unknown option")
     stderrSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
   });
 
@@ -47,39 +45,329 @@ describe('estimateCommand — optional flags (R7-R11, R13-R14)', () => {
     return mf;
   }
 
-  it('R8: --security --roles embeds both fragments in canonical order', () => {
+  it('2.1: la guía referencia los archivos del proyecto y NO incrusta su contenido', async () => {
     standardMocks();
 
-    estimateCommand.parse(['--security', '--roles'], { from: 'user' });
+    await estimateCommand.parseAsync([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
-    expect(guide).toContain('Guía de Discusión de Pricing');
-    expect(guide).toContain(TOPIC_FRAGMENT_ROLES);
-    expect(guide).toContain(TOPIC_FRAGMENT_SECURITY);
-    expect(guide.indexOf(TOPIC_FRAGMENT_ROLES)).toBeLessThan(guide.indexOf(TOPIC_FRAGMENT_SECURITY));
+    expect(guide).toContain('docs/funky-ai/canvas/brief-funcional.md');
+    expect(guide).toContain('docs/funky-ai/canvas/PROJECT-CANVAS.md');
+    expect(guide).toContain('docs/funky-ai/canvas/INFRA-CANVAS.md');
+    expect(guide).toContain('docs/funky-ai/assess/architecture-decisions.md');
+    expect(guide).not.toContain('Next.js');
+    expect(guide).not.toContain('AWS EC2');
+    expect(guide).not.toContain('React 18');
   });
 
-  it('R8/R9: no topic flags → no topic sections, but the scope ficha is always present', () => {
+  it('2.1: sin flags no hay ficha de alcance, ni secciones de topics, ni brief embebido', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     addDecisions(mf, DECISIONS_CONTENT);
     applyMocks(mf);
 
-    estimateCommand.parse([], { from: 'user' });
+    await estimateCommand.parseAsync([], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
-    expect(guide).toContain('## Alcance: ¿Aplica en esta fase?');
-    expect(guide).toContain('| Tema | Estado |');
+    expect(guide).not.toContain('## Alcance: ¿Aplica en esta fase?');
+    expect(guide).not.toContain('| Tema | Estado |');
     expect(guide).not.toContain('## Roles del equipo');
     expect(guide).not.toContain('## Seguridad');
     expect(guide).not.toContain('## Brief Funcional');
     expect(guide).not.toContain('## Referencia de Costos de Equipo');
+    expect(guide).not.toContain('{{OPTIONAL_SECTIONS}}');
+    expect(guide).toContain('## Estructura de Discusión');
+  });
+});
+
+describe('estimateCommand — terminal limpia (2.2)', () => {
+  let exitSpy;
+  let stderrSpy;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(fs.writeFileSync).mockReset();
+    exitSpy = vi.spyOn(process, 'exit').mockImplementation((c) => c);
+    stderrSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
   });
 
-  it('R8: accepts --multi-tenant (Commander camelCase) and embeds its fragment', () => {
+  afterEach(() => {
+    exitSpy.mockRestore();
+    stderrSpy.mockRestore();
+  });
+
+  it('2.2: no imprime sugerencias automáticas de flags (💡 Se detectó / Considerá)', async () => {
+    const mf = createMockFiles();
+    addOptionalTemplates(mf);
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    // Señal clara de seguridad en el canvas: la terminal DEBE quedar igual limpia.
+    addCanvas(mf, 'INFRA-CANVAS.md', '# INFRA CANVAS\n\n## 2. Autenticación\nLogin con JWT');
+    addDecisions(mf, DECISIONS_CONTENT);
+    applyMocks(mf);
+
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+    await estimateCommand.parseAsync([], { from: 'user' });
+
+    const msgs = logSpy.mock.calls.map((c) => String(c));
+    expect(msgs.some((m) => m.includes('💡 Se detectó'))).toBe(false);
+    expect(msgs.some((m) => m.includes('Considerá --'))).toBe(false);
+
+    logSpy.mockRestore();
+  });
+});
+
+describe('estimateCommand — incrustación aditiva por marcadores (2.3, TDD red)', () => {
+  let exitSpy;
+  let stderrSpy;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(fs.writeFileSync).mockReset();
+    exitSpy = vi.spyOn(process, 'exit').mockImplementation((c) => c);
+    stderrSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
+  });
+
+  afterEach(() => {
+    exitSpy.mockRestore();
+    stderrSpy.mockRestore();
+  });
+
+  function standardMocks() {
+    const mf = createMockFiles();
+    addOptionalTemplates(mf);
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    addDecisions(mf, DECISIONS_CONTENT);
+    applyMocks(mf);
+    return mf;
+  }
+
+  it('2.3a: primera corrida crea la guía con la sección del flag incrustada por marcador, sobre ## Estructura de Discusión', async () => {
+    standardMocks();
+
+    await estimateCommand.parseAsync(['--security'], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
+    expect(guide).toContain('<!-- topic:security -->');
+    expect(guide).toContain(TOPIC_FRAGMENT_SECURITY);
+    expect(guide).toContain('<!-- /topic:security -->');
+    expect(guide.indexOf('<!-- topic:security -->')).toBeLessThan(guide.indexOf('## Estructura de Discusión'));
+  });
+
+  it('2.3b: segunda corrida con otra flag incrusta la nueva sección sin preguntar, conserva la anterior y mantiene el orden canónico', async () => {
+    const mf = standardMocks();
+    seedEmbeddedGuide(mf, 'security', TOPIC_FRAGMENT_SECURITY);
+
+    await estimateCommand.parseAsync(['--roles'], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
+    expect(guide).toContain(TOPIC_FRAGMENT_ROLES);
+    expect(guide).toContain(TOPIC_FRAGMENT_SECURITY);
+    expect(guide.indexOf('<!-- topic:roles -->')).toBeLessThan(guide.indexOf('<!-- topic:security -->'));
+  });
+
+  it('2.3d: repetir la misma flag es idempotente: no duplica la sección y sale 0', async () => {
+    standardMocks();
+
+    await estimateCommand.parseAsync(['--security'], { from: 'user' });
+    vi.mocked(fs.writeFileSync).mockClear();
+    await estimateCommand.parseAsync(['--security'], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
+    expect(guide.match(/<!-- topic:security -->/g) || []).toHaveLength(1);
+  });
+
+  it('2.3e: template base modificado → refresco reincrusta TODOS los topics detectados (ninguno se pierde)', async () => {
+    const mf = standardMocks();
+    seedEmbeddedGuide(mf, 'security', TOPIC_FRAGMENT_SECURITY);
+    seedEmbeddedGuide(mf, 'roles', TOPIC_FRAGMENT_ROLES);
+
+    await estimateCommand.parseAsync(['--security', '--roles'], { from: 'user' });
+
+    const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
+    expect(guide).toContain(TOPIC_FRAGMENT_ROLES);
+    expect(guide).toContain(TOPIC_FRAGMENT_SECURITY);
+  });
+});
+
+describe('estimateCommand — estimate-prompt.md (2.8, TDD red)', () => {
+  let exitSpy;
+  let stderrSpy;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(fs.writeFileSync).mockReset();
+    exitSpy = vi.spyOn(process, 'exit').mockImplementation((c) => c);
+    stderrSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
+  });
+
+  afterEach(() => {
+    exitSpy.mockRestore();
+    stderrSpy.mockRestore();
+  });
+
+  function standardMocks() {
+    const mf = createMockFiles();
+    addOptionalTemplates(mf);
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    addDecisions(mf, DECISIONS_CONTENT);
+    applyMocks(mf);
+    return mf;
+  }
+
+  it('2.8: genera docs/funky-ai/estimate/estimate-prompt.md (intención kind guide)', async () => {
+    standardMocks();
+
+    await estimateCommand.parseAsync([], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
+    const promptCall = writeCalls.find((c) => String(c[0]).includes('estimate-prompt.md'));
+    expect(promptCall).toBeTruthy();
+    expect(String(promptCall[1])).toContain('facilitador');
+  });
+
+  it('2.8: no imprime el prompt gigante en consola (el material vive en estimate-prompt.md)', async () => {
+    standardMocks();
+
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+    await estimateCommand.parseAsync([], { from: 'user' });
+
+    const msgs = logSpy.mock.calls.map((c) => String(c));
+    expect(msgs.some((m) => m.includes('PROMPT PARA INICIAR SESIÓN'))).toBe(false);
+    expect(msgs.some((m) => m.includes('Material de análisis'))).toBe(false);
+
+    logSpy.mockRestore();
+  });
+});
+
+describe('estimateCommand — determinismo y resumen (R13 + 2.2)', () => {
+  let exitSpy;
+  let stderrSpy;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(fs.writeFileSync).mockReset();
+    exitSpy = vi.spyOn(process, 'exit').mockImplementation((c) => c);
+    stderrSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
+  });
+
+  afterEach(() => {
+    exitSpy.mockRestore();
+    stderrSpy.mockRestore();
+  });
+
+  function standardMocks() {
+    const mf = createMockFiles();
+    addOptionalTemplates(mf);
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    addDecisions(mf, DECISIONS_CONTENT);
+    applyMocks(mf);
+    return mf;
+  }
+
+  it('R13: identical inputs and flags twice → byte-identical guide', async () => {
+    standardMocks();
+
+    await estimateCommand.parseAsync(['--security', '--roles'], { from: 'user' });
+    const first = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
+    expect(first).toContain('Guía de Discusión de Pricing');
+
+    vi.mocked(fs.writeFileSync).mockClear();
+
+    await estimateCommand.parseAsync(['--security', '--roles'], { from: 'user' });
+    const second = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
+
+    expect(second).toContain('Guía de Discusión de Pricing');
+    expect(second).toBe(first);
+  });
+
+  it('resumen lista las secciones solicitadas sin la ficha de alcance', async () => {
+    standardMocks();
+
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+    await estimateCommand.parseAsync(['--security', '--roles', '--brief', '--pricing-team'], { from: 'user' });
+
+    const msgs = logSpy.mock.calls.map((c) => String(c));
+    expect(msgs.some((m) => m.includes('Secciones solicitadas en la guía: brief funcional, roles del equipo, seguridad, referencia de costos de equipo.'))).toBe(true);
+    expect(msgs.some((m) => m.includes('ficha de alcance'))).toBe(false);
+
+    logSpy.mockRestore();
+  });
+
+  it('resumen sin flags → ninguna (guía base declarativa)', async () => {
+    const mf = createMockFiles();
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    addDecisions(mf, DECISIONS_CONTENT);
+    applyMocks(mf);
+
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+    await estimateCommand.parseAsync([], { from: 'user' });
+
+    const msgs = logSpy.mock.calls.map((c) => String(c));
+    expect(msgs.some((m) => m.includes('Secciones solicitadas en la guía: ninguna (guía base declarativa).'))).toBe(true);
+
+    logSpy.mockRestore();
+  });
+
+  it('acepta --brief sin valor y sale 0; la guía queda declarativa (el contenido se referencia)', async () => {
+    standardMocks();
+
+    await estimateCommand.parseAsync(['--brief'], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
+    expect(guide).not.toContain('## Brief Funcional');
+  });
+
+  it('#33: sin init brief y sin --brief → no sección de brief en la guía', async () => {
+    const mf = createMockFiles();
+    addOptionalTemplates(mf);
+    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
+    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
+    addDecisions(mf, DECISIONS_CONTENT);
+    applyMocks(mf);
+
+    await estimateCommand.parseAsync([], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
+    expect(guide).not.toContain('## Brief Funcional');
+  });
+});
+
+// ── Guard de aceptación de flags Commander (R8): el parseo de todos los flags
+//    se mantiene aunque la incrustación sea la nueva (2.3).
+describe('estimateCommand — flags Commander (R8)', () => {
+  let exitSpy;
+  let stderrSpy;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(fs.writeFileSync).mockReset();
+    exitSpy = vi.spyOn(process, 'exit').mockImplementation((c) => c);
+    stderrSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
+  });
+
+  afterEach(() => {
+    exitSpy.mockRestore();
+    stderrSpy.mockRestore();
+  });
+
+  it('R8: acepta --multi-tenant (Commander camelCase) y sale 0', async () => {
     const mf = createMockFiles();
     addOptionalTemplates(mf);
     mf[path.join(TPL_DIR, 'topics', 'multi-tenant.md')] = TOPIC_FRAGMENT_MULTI_TENANT;
@@ -88,230 +376,8 @@ describe('estimateCommand — optional flags (R7-R11, R13-R14)', () => {
     addDecisions(mf, DECISIONS_CONTENT);
     applyMocks(mf);
 
-    estimateCommand.parse(['--multi-tenant'], { from: 'user' });
+    await estimateCommand.parseAsync(['--multi-tenant'], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(0);
-    const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
-    expect(guide).toContain(TOPIC_FRAGMENT_MULTI_TENANT);
-    expect(guide).not.toContain('## Roles del equipo');
-  });
-
-  it('R7: --brief without a value embeds the checklist', () => {
-    standardMocks();
-
-    estimateCommand.parse(['--brief'], { from: 'user' });
-
-    expect(exitSpy).toHaveBeenCalledWith(0);
-    const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
-    expect(guide).toContain('## Brief Funcional');
-  });
-
-  it('R7: --brief missing.md warns, falls back to the checklist and exits 0', () => {
-    const mf = createMockFiles();
-    addOptionalTemplates(mf);
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
-    addDecisions(mf, DECISIONS_CONTENT);
-    applyMocks(mf);
-    const missingResolved = path.join(CWD, 'missing.md');
-    vi.mocked(fs.readFileSync).mockImplementation((p) => {
-      const key = String(p);
-      if (key === missingResolved) throw new Error('ENOENT');
-      if (Object.prototype.hasOwnProperty.call(mf, key)) return mf[key];
-      return '';
-    });
-
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-
-    estimateCommand.parse(['--brief', 'missing.md'], { from: 'user' });
-
-    expect(exitSpy).toHaveBeenCalledWith(0);
-    const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
-    expect(guide).toContain('## Brief Funcional');
-    const warnMsgs = warnSpy.mock.calls.map((c) => String(c));
-    expect(warnMsgs.some((m) => m.includes('missing.md') && m.includes('brief'))).toBe(true);
-
-    warnSpy.mockRestore();
-  });
-
-  it('R10: --pricing-team embeds the team-cost reference section', () => {
-    standardMocks();
-
-    estimateCommand.parse(['--pricing-team'], { from: 'user' });
-
-    expect(exitSpy).toHaveBeenCalledWith(0);
-    const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
-    expect(guide).toContain('## Referencia de Costos de Equipo');
-    expect(guide).toContain('Costo por rol = rol × seniority × dedicación × duración');
-  });
-
-  it('R11: prints a console suggestion for an Aplica signal whose flag is unset', () => {
-    const mf = createMockFiles();
-    addOptionalTemplates(mf);
-    addCanvas(mf, 'PROJECT-CANVAS.md', projectCanvasWith());
-    addCanvas(mf, 'INFRA-CANVAS.md', infraCanvasWith({ 2: 'Login con JWT' }));
-    addDecisions(mf, NEUTRAL_DECISIONS);
-    applyMocks(mf);
-
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-
-    estimateCommand.parse([], { from: 'user' });
-
-    const msgs = logSpy.mock.calls.map((c) => String(c));
-    expect(msgs.some((m) => m.includes('💡 Se detectó Seguridad (jwt). Considerá --security para incluir su sección en la guía.'))).toBe(true);
-
-    logSpy.mockRestore();
-  });
-
-  it('R11: does not print a suggestion when the flag is set, and embeds the section', () => {
-    const mf = createMockFiles();
-    addOptionalTemplates(mf);
-    addCanvas(mf, 'PROJECT-CANVAS.md', projectCanvasWith());
-    addCanvas(mf, 'INFRA-CANVAS.md', infraCanvasWith({ 2: 'Login con JWT' }));
-    addDecisions(mf, NEUTRAL_DECISIONS);
-    applyMocks(mf);
-
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-
-    estimateCommand.parse(['--security'], { from: 'user' });
-
-    const msgs = logSpy.mock.calls.map((c) => String(c));
-    expect(msgs.some((m) => m.includes('Considerá --security'))).toBe(false);
-    const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
-    expect(guide).toContain(TOPIC_FRAGMENT_SECURITY);
-
-    logSpy.mockRestore();
-  });
-
-  it('R13: identical inputs and flags twice → byte-identical guide', () => {
-    standardMocks();
-
-    estimateCommand.parse(['--security', '--roles', '--brief', '--pricing-team'], { from: 'user' });
-    const first = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
-    expect(first).toContain('Guía de Discusión de Pricing');
-
-    vi.mocked(fs.writeFileSync).mockClear();
-
-    estimateCommand.parse(['--security', '--roles', '--brief', '--pricing-team'], { from: 'user' });
-    const second = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
-
-    expect(second).toContain('Guía de Discusión de Pricing');
-    expect(second).toBe(first);
-  });
-
-  it('R14: an edited topic fragment is reflected in the guide', () => {
-    const mf = createMockFiles();
-    addOptionalTemplates(mf);
-    mf[path.join(TPL_DIR, 'topics', 'security.md')] = '## Seguridad\n\nImpacto en costos:\n- Editado local: auditoría externa de cumplimiento.';
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
-    addDecisions(mf, DECISIONS_CONTENT);
-    applyMocks(mf);
-
-    estimateCommand.parse(['--security'], { from: 'user' });
-
-    const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
-    expect(guide).toContain('Editado local: auditoría externa de cumplimiento');
-    expect(guide).not.toContain('Auth y cumplimiento');
-  });
-
-  it('lists included sections in the console summary (canonical order)', () => {
-    standardMocks();
-
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-
-    estimateCommand.parse(['--security', '--roles', '--brief', '--pricing-team'], { from: 'user' });
-
-    const msgs = logSpy.mock.calls.map((c) => String(c));
-    expect(msgs.some((m) => m.includes('Secciones incluidas en la guía: ficha de alcance, brief funcional, roles del equipo, seguridad, referencia de costos de equipo.'))).toBe(true);
-
-    logSpy.mockRestore();
-  });
-
-  it('summary shows only the ficha when no optional flags are set', () => {
-    const mf = createMockFiles();
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
-    addDecisions(mf, DECISIONS_CONTENT);
-    applyMocks(mf);
-
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-
-    estimateCommand.parse([], { from: 'user' });
-
-    const msgs = logSpy.mock.calls.map((c) => String(c));
-    expect(msgs.some((m) => m.includes('Secciones incluidas en la guía: ficha de alcance.'))).toBe(true);
-
-    logSpy.mockRestore();
-  });
-
-  // ── Issue #33: auto-detección del brief de init ──
-  const INIT_BRIEF_CONTENT = '# 📋 BRIEF FUNCIONAL\n\n## 1. Nombre del Producto o Idea\n[Completar]';
-
-  it('#33: auto-detects docs/funky-ai/canvas/brief-funcional.md when it exists and no --brief is passed', () => {
-    const mf = createMockFiles();
-    addOptionalTemplates(mf);
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
-    addCanvas(mf, 'brief-funcional.md', INIT_BRIEF_CONTENT);
-    addDecisions(mf, DECISIONS_CONTENT);
-    applyMocks(mf);
-
-    estimateCommand.parse([], { from: 'user' });
-
-    expect(exitSpy).toHaveBeenCalledWith(0);
-    const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
-    expect(guide).toContain(INIT_BRIEF_CONTENT);
-    expect(guide).not.toContain('¿Qué problema resuelve el producto?');
-  });
-
-  it('#33: --brief <path> explicit overrides the auto-detected init brief', () => {
-    const mf = createMockFiles();
-    addOptionalTemplates(mf);
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
-    addCanvas(mf, 'brief-funcional.md', INIT_BRIEF_CONTENT);
-    addDecisions(mf, DECISIONS_CONTENT);
-    mf[path.join(CWD, 'custom-brief.md')] = 'BRIEF DEL USUARIO CUSTOM';
-    applyMocks(mf);
-
-    estimateCommand.parse(['--brief', 'custom-brief.md'], { from: 'user' });
-
-    expect(exitSpy).toHaveBeenCalledWith(0);
-    const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
-    expect(guide).toContain('BRIEF DEL USUARIO CUSTOM');
-    expect(guide).not.toContain(INIT_BRIEF_CONTENT);
-  });
-
-  it('#33: --brief without a value still embeds the checklist (R7) even when the init brief exists', () => {
-    const mf = createMockFiles();
-    addOptionalTemplates(mf);
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
-    addCanvas(mf, 'brief-funcional.md', INIT_BRIEF_CONTENT);
-    addDecisions(mf, DECISIONS_CONTENT);
-    applyMocks(mf);
-
-    estimateCommand.parse(['--brief'], { from: 'user' });
-
-    expect(exitSpy).toHaveBeenCalledWith(0);
-    const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
-    expect(guide).toContain(CHECKLIST_TEMPLATE);
-    expect(guide).not.toContain(INIT_BRIEF_CONTENT);
-  });
-
-  it('#33: no init brief and no --brief → no Brief Funcional section (fallback intacto)', () => {
-    const mf = createMockFiles();
-    addOptionalTemplates(mf);
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
-    addDecisions(mf, DECISIONS_CONTENT);
-    applyMocks(mf);
-
-    estimateCommand.parse([], { from: 'user' });
-
-    expect(exitSpy).toHaveBeenCalledWith(0);
-    const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
-    expect(guide).not.toContain('## Brief Funcional');
   });
 });

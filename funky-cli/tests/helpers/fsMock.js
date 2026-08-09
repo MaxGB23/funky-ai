@@ -22,6 +22,7 @@ export const CWD = process.cwd();
 export const ESTIMATE_TPL_DIR = path.resolve(__testDir, '../src/templates/estimate');
 export const PRICING_GUIDE_TPL_PATH = path.join(ESTIMATE_TPL_DIR, 'pricing-guide-template.md');
 export const PRICING_DECISIONS_TPL_PATH = path.join(ESTIMATE_TPL_DIR, 'pricing-decisions-template.md');
+export const ESTIMATE_PROMPT_TPL_PATH = path.join(ESTIMATE_TPL_DIR, 'estimate-prompt-template.md');
 
 // Canvas location: docs/funky-ai/canvas/
 export const CANVAS_DIR = path.join(CWD, 'docs', 'funky-ai', 'canvas');
@@ -29,43 +30,72 @@ export const CANVAS_DIR = path.join(CWD, 'docs', 'funky-ai', 'canvas');
 export const DECISIONS_DIR = path.join(CWD, 'docs', 'funky-ai', 'assess');
 // Context location: docs/funky-ai/pipeline/
 export const CONTEXT_DIR = path.join(CWD, 'docs', 'funky-ai', 'pipeline');
+// Estimate outputs: docs/funky-ai/estimate/
+export const ESTIMATE_DIR = path.join(CWD, 'docs', 'funky-ai', 'estimate');
+export const PRICING_GUIDE_DEST = path.join(ESTIMATE_DIR, 'pricing-guide.md');
+export const ESTIMATE_PROMPT_DEST = path.join(ESTIMATE_DIR, 'estimate-prompt.md');
 
+// Réplica del template REAL commiteado (pricing-guide-template.md, Fase B M4):
+// guía declarativa SIN placeholders que REFERENCIA los archivos, zona de
+// incrustación <!-- topics --> SIN pares de marcadores vacíos (solo se incrustan
+// topics con contenido) y header ## Estructura de Discusión. Espeja 1.1/1.2 + M4
+// para que los tests de 2.1/2.3 ejerciten la misma estructura que produce el CLI real.
 export const DEFAULT_GUIDE_TEMPLATE = `# Guía de Discusión de Pricing
 
-> Generado por \`funky estimate\`. Use este documento para su sesión de pricing colaborativa.
+> Generado por \`funky estimate\`. Guía declarativa de la sesión de pricing colaborativa.
 
 ## Contexto del Proyecto
 
-### Decisiones Arquitectónicas
-{{DECISIONS_CONTENT}}
+Lee los archivos del proyecto, en este orden:
 
-### PROJECT-CANVAS
-{{PROJECT_CANVAS_CONTENT}}
+1. \`docs/funky-ai/canvas/brief-funcional.md\` — contexto de negocio.
+2. \`docs/funky-ai/canvas/PROJECT-CANVAS.md\` — decisiones de la aplicación.
+3. \`docs/funky-ai/canvas/INFRA-CANVAS.md\` — decisiones operativas.
+4. \`docs/funky-ai/assess/architecture-decisions.md\` — decisiones arquitectónicas.
+5. \`docs/funky-ai/estimate/pricing-decisions.md\` — decisiones de pricing aprobadas.
 
-### INFRA-CANVAS
-{{INFRA_CANVAS_CONTENT}}
-{{OPTIONAL_SECTIONS}}
+<!-- topics -->
+## Paso Inicial: Recomienda las Flags y sus Buffers
+
+Tras analizar el contexto, la IA recomienda las flags aplicables y sus buffers, y DETENTE: pide al humano inyectarlas con \`funky estimate --flag\` antes del debate.
+
+| Flag | Cuándo conviene |
+|------|-----------------|
+| \`--security\` | Si hay autenticación o datos sensibles. |
+
+<!-- /topics -->
 ## Estructura de Discusión
 
-### 1. Contexto de Pricing (5 min)
-Revisar decisiones arquitectónicas y canvases para entender el alcance del proyecto.
+La discusión se hace punto por punto.
 
-### 2. Factores de Costo (10 min)
-- Infraestructura: hosting, servicios, herramientas
-- Complejidad técnica: stack, integraciones, deuda técnica
-- Equipo: seniority, tamaño, dedicación
-- Timeline: urgencia, hitos, mantenimiento post-lanzamiento
+### 3. Factores de Costo del MVP
 
-### 3. Referencia de Infraestructura (10 min)
-Costos estimados de los servicios elegidos en los canvases. Investigar precios actuales de cada proveedor.
+- **Equipo**: seniority, tamaño, dedicación. Para el Costo Base usa las tarifas base por rol de la tabla de abajo; si se incluyó \`--pricing-team\`, usa los rangos reales del equipo de esa sección (reemplazan a las tarifas base).
 
-### 4. Acuerdos de Pricing (15 min)
-Definir precio final usando la guía de la sesión. Documentar en pricing-decisions-template.md.
+#### Tarifas base por rol (USD/hora, edición profesional)
 
-## Instrucciones
-1. Revise esta guía con el equipo.
-2. Discuta cada factor de costo.
-3. Documente los acuerdos en el template de decisiones.`;
+| Rol | Tarifa base (USD/h) |
+|-----|---------------------|
+| Junior | 20–35 |
+| Semi Senior / Mid | 35–55 |
+| Senior | 55–85 |
+| Lead / Arquitecto | 85–120 |
+
+> Referencia por defecto: usa estas tarifas base cuando NO se incluyó \`--pricing-team\`; con la sección se usan los rangos reales del equipo.`;
+
+export const DEFAULT_ESTIMATE_PROMPT_TEMPLATE = `# 🗣️ Prompt de Discusión de Pricing — \`funky estimate\`
+
+Actúas como facilitador de la sesión de pricing del proyecto.
+
+## Contexto de entrada
+
+Lee \`docs/funky-ai/estimate/pricing-guide.md\` primero, luego \`docs/funky-ai/estimate/pricing-decisions.md\`.
+
+## Fases
+
+1. **Fase 1 — Preparación**: lee y analiza el contexto en silencio.
+2. **Fase 2 — Recomendación**: propone las flags aplicables y sus buffers; DETENTE y pide al humano que las inyecte con \`funky estimate --flag\`.
+3. **Fase 3 — Debate**: inicia la discusión solo tras la luz verde del humano.`;
 
 export const DEFAULT_DECISIONS_TEMPLATE = `# Decisiones de Pricing
 
@@ -80,12 +110,26 @@ export const DEFAULT_DECISIONS_TEMPLATE = `# Decisiones de Pricing
 - **Alternativas consideradas:** ...
 - **Fecha:** {{DATE}}
 
-### [Decisión 2: Título breve]
-- **Decisión:** ...
-- **Justificación:** ...
-- **Impacto en presupuesto:** ...
-- **Alternativas consideradas:** ...
-- **Fecha:** {{DATE}}`;
+## Tabla de Cotización del MVP
+
+| Componente | Monto |
+|---|---|
+| Costo Base (desarrollo del MVP) | $ |
+| Buffer de Riesgo (flags + contingencia) | $ |
+| Margen de Ganancia | $ |
+| **Precio de Venta del MVP** (Costo Base + Buffer + Margen) | **$** |
+
+### Costo Operativo Mensual (Infraestructura)
+
+| Componente | Monto Mensual |
+|---|---|
+| Hosting Frontend y API | ~$ |
+| Base de Datos | ~$ |
+| Background Jobs / Workers | ~$ |
+| Herramientas y dependencias | ~$ |
+| **Total Mensual Estimado** | **~$ / mes** |
+
+> El cliente puede pagar la infraestructura directamente a los proveedores. Este costo operativo (OpEx) no se incluye en la factura de desarrollo.`;
 
 export const CANVAS_PROJECT_CONTENT = 'React 18 + Next.js 14\nPatrón: Clean Architecture';
 export const CANVAS_INFRA_CONTENT = 'AWS EC2 + PostgreSQL\nDeploy: Docker Compose';
@@ -95,7 +139,19 @@ export function estimateMockFiles() {
   return {
     [PRICING_GUIDE_TPL_PATH]: DEFAULT_GUIDE_TEMPLATE,
     [PRICING_DECISIONS_TPL_PATH]: DEFAULT_DECISIONS_TEMPLATE,
+    [ESTIMATE_PROMPT_TPL_PATH]: DEFAULT_ESTIMATE_PROMPT_TEMPLATE,
   };
+}
+
+// Incrusta un topic con contenido justo antes del cierre de la zona
+// `<!-- /topics -->`. Es el equivalente funcional de lo que produce el CLI real
+// (Fase B M4: la zona solo contiene topics con contenido), para sembrar guías
+// con topics "ya incrustados" en los tests sin depender de pares vacíos.
+export function embedTopicIntoGuide(guide, topicKey, fragment) {
+  return guide.replace(
+    '<!-- /topics -->',
+    `<!-- topic:${topicKey} -->\n${fragment}\n<!-- /topic:${topicKey} -->\n<!-- /topics -->`
+  );
 }
 
 export function addCanvas(mockFiles, name, content) {
@@ -209,7 +265,29 @@ export const TOPIC_FRAGMENT_SECURITY = `## Seguridad
 Impacto en costos:
 - Auth y cumplimiento agregan esfuerzo recurrente.`;
 
+export const TOPIC_FRAGMENT_MULTI_TENANT = `## Multi-tenant
+
+Impacto en costos:
+- Aislamiento por tenant agrega complejidad de datos y permisos.`;
+
+export const TOPIC_FRAGMENT_TRANSACTIONS = `## Transacciones
+
+Impacto en costos:
+- Pagos y saldos exigen consistencia (ACID) y conciliación.`;
+
+export const TOPIC_FRAGMENT_CONCURRENCY = `## Concurrencia
+
+Impacto en costos:
+- Colas y workers agregan complejidad de infraestructura.`;
+
+export const TOPIC_FRAGMENT_INTEGRATIONS = `## Integraciones
+
+Impacto en costos:
+- La integración con sistemas externos agrega acoplamiento y mantenimiento.`;
+
 export const TEAM_COST_TEMPLATE = `## Referencia de Costos de Equipo
+
+> Sección de referencia (\`--pricing-team\`): ENRIQUECE la guía. Los rangos reales del equipo definidos acá reemplazan a las tarifas base por rol de la guía al calcular el Costo Base. Sin esta sección se usan las tarifas base de la guía.
 
 ### Fórmula de referencia
 Costo por rol = rol × seniority × dedicación × duración`;
@@ -218,5 +296,9 @@ export function addOptionalTemplates(mf) {
   mf[path.join(ESTIMATE_TPL_DIR, 'brief-questions-template.md')] = CHECKLIST_TEMPLATE;
   mf[path.join(ESTIMATE_TPL_DIR, 'topics', 'roles.md')] = TOPIC_FRAGMENT_ROLES;
   mf[path.join(ESTIMATE_TPL_DIR, 'topics', 'security.md')] = TOPIC_FRAGMENT_SECURITY;
+  mf[path.join(ESTIMATE_TPL_DIR, 'topics', 'multi-tenant.md')] = TOPIC_FRAGMENT_MULTI_TENANT;
+  mf[path.join(ESTIMATE_TPL_DIR, 'topics', 'transactions.md')] = TOPIC_FRAGMENT_TRANSACTIONS;
+  mf[path.join(ESTIMATE_TPL_DIR, 'topics', 'concurrency.md')] = TOPIC_FRAGMENT_CONCURRENCY;
+  mf[path.join(ESTIMATE_TPL_DIR, 'topics', 'integrations.md')] = TOPIC_FRAGMENT_INTEGRATIONS;
   mf[path.join(ESTIMATE_TPL_DIR, 'team-cost-reference-template.md')] = TEAM_COST_TEMPLATE;
 }

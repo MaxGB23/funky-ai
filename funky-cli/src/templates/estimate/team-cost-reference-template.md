@@ -1,6 +1,6 @@
 ## Referencia de Costos de Equipo
 
-> Sección de referencia: no calcula presupuestos. Úsala para dimensionar el equipo y estimar rangos durante la sesión de pricing.
+> Sección de referencia (flag `--pricing-team`): NO calcula presupuestos. ENRIQUECE la guía: los rangos reales del equipo definidos acá reemplazan a las tarifas base por rol de la guía al calcular el Costo Base. Sin esta sección se usan las tarifas base de la guía; con esta sección se usan estos rangos reales (no se combinan).
 
 ### Fórmula de referencia
 
