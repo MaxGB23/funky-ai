@@ -126,21 +126,7 @@ export async function runAssess(targetBase, opts = {}) {
       log(line);
     }
 
-    // ── 7. architecture-review.md: guía GENERADA, se regenera siempre ──
-    const reviewTemplatePath = path.join(templatesDir, 'architecture-review-template.md');
-    let templateContent;
-    try {
-      templateContent = fs.readFileSync(reviewTemplatePath, 'utf8');
-    } catch (err) {
-      throw new Error(`Template architecture-review-template.md no encontrado en ${reviewTemplatePath}. La instalación está corrupta.`);
-    }
-
-    // El review es una agenda declarativa: referencia los archivos del proyecto
-    // (brief, canvases, risk-patterns.md) sin incrustar su contenido (obs 2).
-    const outputPath = path.join(assessDir, 'architecture-review.md');
-    fs.writeFileSync(outputPath, templateContent, 'utf8');
-
-    // ── 8. Surface Risk Patterns (solo metadata para context) ──
+    // ── 7. Surface Risk Patterns (solo metadata para context) ──
     let surfaceResult;
     try {
       surfaceResult = surfaceRiskPatterns(targetBase, patternsTemplateContent);
@@ -149,14 +135,9 @@ export async function runAssess(targetBase, opts = {}) {
       surfaceResult = { content: '', patterns: [] };
     }
 
-    // ── 9. Write Context (si aplica) ──
+    // ── 8. Write Context (si aplica) ──
     const promptDestPath = path.join(assessDir, 'assess-prompt.md');
     const artifacts = [
-      {
-        name: 'architecture-review.md',
-        path: path.relative(targetBase, outputPath).split(path.sep).join('/'),
-        kind: 'generated'
-      },
       {
         name: 'assess-prompt.md',
         path: path.relative(targetBase, promptDestPath).split(path.sep).join('/'),
@@ -182,7 +163,7 @@ export async function runAssess(targetBase, opts = {}) {
       writeContext(targetBase, ctx, contextArg || undefined);
     }
 
-    // ── 10. Summary (M10: estado por archivo; no afirmar "generado
+    // ── 9. Summary (M10: estado por archivo; no afirmar "generado
     // exitosamente" cuando hubo omisiones o conservados) ──
     if (!json) {
       const rel = (p) => path.relative(targetBase, p).split(path.sep).join('/');
@@ -195,7 +176,6 @@ export async function runAssess(targetBase, opts = {}) {
         return 'conservado';
       };
       const rows = [
-        { label: 'Guía de discusión', path: rel(outputPath), status: 'generado' },
         { label: 'Prompt de discusión', path: rel(promptDestPath), status: statusOf('assess-prompt.md') },
         { label: 'Patrones de riesgo', path: rel(riskPatternsDestPath), status: statusOf('risk-patterns.md') },
         { label: 'Decisiones', path: rel(decisionsDestPath), status: statusOf('architecture-decisions.md') },
@@ -209,7 +189,7 @@ export async function runAssess(targetBase, opts = {}) {
       console.log('\n📋 Próximos pasos:');
       console.log('   1. Abre una sesión de chat con la IA.');
       console.log('   2. Copia el contenido de docs/funky-ai/assess/assess-prompt.md y pégalo como primer mensaje.');
-      console.log('   3. El agente lee los archivos referenciados (brief, canvases, architecture-review.md y risk-patterns.md) en el orden que marca el prompt.');
+      console.log('   3. El agente lee los archivos referenciados (brief, canvases y risk-patterns.md) en el orden que marca el prompt.');
       console.log('   4. Discute un punto a la vez y anota cada decisión aprobada en docs/funky-ai/assess/architecture-decisions.md.\n');
     }
 

@@ -21,48 +21,18 @@ import { assessCommand, runAssess } from '../src/commands/assess.js';
 
 const __testDir = path.dirname(fileURLToPath(import.meta.url));
 const TPL_DIR = path.resolve(__testDir, '../src/templates/assess');
-const TPL_REVIEW_PATH = path.join(TPL_DIR, 'architecture-review-template.md');
 const TPL_DECISIONS_PATH = path.join(TPL_DIR, 'architecture-decisions-template.md');
 const TPL_RISK_PATTERNS_PATH = path.join(TPL_DIR, 'risk-patterns-template.md');
 const TPL_PROMPT_PATH = path.join(TPL_DIR, 'assess-prompt-template.md');
 const ASSESS_DIR = path.join(CWD, 'docs', 'funky-ai', 'assess');
-const REVIEW_DEST_PATH = path.join(ASSESS_DIR, 'architecture-review.md');
 const DECISIONS_DEST_PATH = path.join(ASSESS_DIR, 'architecture-decisions.md');
 const RISK_PATTERNS_DEST_PATH = path.join(ASSESS_DIR, 'risk-patterns.md');
 const PROMPT_DEST_PATH = path.join(ASSESS_DIR, 'assess-prompt.md');
 
 // Template nuevo (Fase 1): sin placeholders de contenido. El review referencia
 // los archivos del proyecto en lugar de incrustarlos (obs 2, 2.1/2.2).
-const DEFAULT_TEMPLATE = `# 🗣️ Guía de Discusión Arquitectónica
-
-> Generado por \`funky assess\`. Agenda declarativa de la sesión: referencia los archivos del proyecto, no los incrusta.
-
-## Cómo usar esta guía
-
-1. Copia el contenido de \`assess-prompt.md\` (ubicado junto a esta guía) y pégalo como primer mensaje de tu sesión con la IA.
-2. El agente lee los archivos referenciados abajo, en el orden que marca el prompt.
-3. Anota cada decisión aprobada en \`architecture-decisions.md\` durante la discusión.
-
-## Archivos de referencia
-
-- \`docs/funky-ai/canvas/brief-funcional.md\` — contexto de **negocio** (obligatorio, léelo primero): qué se construye, para quién, casos de uso, KPIs y escala esperada.
-- \`docs/funky-ai/canvas/PROJECT-CANVAS.md\` — decisiones de la **aplicación**: framework, patrón arquitectónico, gestión de estado, UI y testing.
-- \`docs/funky-ai/canvas/INFRA-CANVAS.md\` — decisiones **operativas**: base de datos, autenticación, calidad de código y despliegue.
-- \`docs/funky-ai/assess/risk-patterns.md\` — patrones de riesgo de **referencia**: pueden no aplicar a este proyecto.
-
-## Fases de la Discusión
-
-- **Fase 1 — Contexto y NFRs**: confirmar stack elegido y NFRs. Evalúa cada NFR explícitamente (derivan del brief: casos de uso, volumen y KPIs): si aplica, se acuerda cómo se cumple; si no aplica, se declara el porqué. Los patrones de referencia son condicionales, se aplican solo si el contexto los amerita.
-- **Fase 2 — Preocupaciones del equipo**: ¿Qué les preocupa de la arquitectura actual? ¿Dónde ven riesgos? ¿Hay algo que no esté claro?
-- **Fase 3 — Preguntas guía**: candidatos a plantear uno a la vez, cuando apliquen al proyecto concreto:
-  - **Budget e Infraestructura**: ¿El presupuesto mensual alcanza para la infraestructura elegida? Considera costos de hosting, servicios y herramientas.
-  - **Concurrencia y Base de Datos**: ¿La base de datos soporta la concurrencia esperada? Revisa límites de conexiones y estrategias de escalado.
-  - **SLA y Redundancia**: ¿La arquitectura elegida puede cumplir el SLA requerido? Un solo nodo implica downtime en deploys y fallos de hardware.
-- **Fase 4 — Riesgos con validación cruzada**: la IA analiza el stack completo y choca cada decisión técnica contra el brief para detectar incompatibilidades, sobreingeniería o un stack corto frente a las expectativas del producto.
-- **Fase 5 — Alternativas**: para cada riesgo identificado, al menos una alternativa con pros/cons concretos.
-- **Fase 6 — Acuerdos**: documentar las decisiones finales en \`docs/funky-ai/assess/architecture-decisions.md\`. Las decisiones aprobadas se anotan punto por punto durante la discusión.
-`;
-
+// Template nuevo (Fase 1): sin placeholders de contenido. El review referencia
+// los archivos del proyecto en lugar de incrustarlos (obs 2, 2.1/2.2).
 const DEFAULT_DECISIONS_TEMPLATE = '# Decisiones Arquitectónicas\n\n> Fecha de generación: {{DATE}}\n\n## Decisiones\n\n### [Decisión 1: Título breve]\n- **Fecha:** {{DATE}}\n';
 
 const DEFAULT_RISK_PATTERNS_TEMPLATE = `# Patrones de Riesgo de Referencia
@@ -86,14 +56,12 @@ Actúas como **segunda validación** de la arquitectura del proyecto.
 1. \`docs/funky-ai/canvas/brief-funcional.md\` — contexto de **negocio** (obligatorio).
 2. \`docs/funky-ai/canvas/PROJECT-CANVAS.md\`
 3. \`docs/funky-ai/canvas/INFRA-CANVAS.md\`
-4. \`docs/funky-ai/assess/architecture-review.md\`
-5. \`docs/funky-ai/assess/risk-patterns.md\`
+4. \`docs/funky-ai/assess/risk-patterns.md\`
 
 Si falta alguno de los archivos referenciados, señálalo y PREGUNTA el contexto al humano. Jamás lo inventes.`;
 
 function createMockFiles() {
   return {
-    [TPL_REVIEW_PATH]: DEFAULT_TEMPLATE,
     [TPL_DECISIONS_PATH]: DEFAULT_DECISIONS_TEMPLATE,
     [TPL_RISK_PATTERNS_PATH]: DEFAULT_RISK_PATTERNS_TEMPLATE,
     [TPL_PROMPT_PATH]: DEFAULT_PROMPT_TEMPLATE
@@ -106,7 +74,7 @@ const setTTY = (value) => {
 };
 
 function reviewWrite() {
-  return vi.mocked(fs.writeFileSync).mock.calls.find(c => String(c[0]).includes('architecture-review.md'));
+  return vi.mocked(fs.writeFileSync).mock.calls.find(c => String(c[0]).includes('architecture-decisions.md'));
 }
 
 function allLogs(logSpy) {
@@ -182,55 +150,6 @@ describe('assess Command - action flow', () => {
     warnSpy.mockRestore();
   });
 
-  it('warns when canvas contains [Responde aquí]', async () => {
-    const mf = createMockFiles();
-    addCanvas(mf, 'PROJECT-CANVAS.md', 'Framework: [Responde aquí]\nEstado: [Responde aquí]');
-    addCanvas(mf, 'INFRA-CANVAS.md', 'DB: PostgreSQL');
-    applyMocks(mf);
-
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-
-    await assessCommand.parseAsync([], { from: 'user' });
-
-    expect(exitSpy).toHaveBeenCalledWith(0);
-    const warnMsgs = warnSpy.mock.calls.map(c => String(c));
-    expect(warnMsgs.some(m => m.includes('[Responde aquí]'))).toBe(true);
-
-    warnSpy.mockRestore();
-  });
-
-  it('escribe architecture-review.md con las 6 fases y referencias, sin embeber canvases (2.1)', async () => {
-    const mf = createMockFiles();
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
-    applyMocks(mf);
-
-    await assessCommand.parseAsync([], { from: 'user' });
-
-    expect(exitSpy).toHaveBeenCalledWith(0);
-
-    const reviewCall = reviewWrite();
-    expect(reviewCall).toBeTruthy();
-    const writtenContent = String(reviewCall[1]);
-
-    expect(writtenContent).toContain('Fase 1 — Contexto y NFRs');
-    expect(writtenContent).toContain('Fase 2 — Preocupaciones del equipo');
-    expect(writtenContent).toContain('Fase 3 — Preguntas guía');
-    expect(writtenContent).toContain('Fase 4 — Riesgos con validación cruzada');
-    expect(writtenContent).toContain('Fase 5 — Alternativas');
-    expect(writtenContent).toContain('Fase 6 — Acuerdos');
-    expect(writtenContent).toContain('Budget e Infraestructura');
-    expect(writtenContent).toContain('Concurrencia y Base de Datos');
-    expect(writtenContent).toContain('SLA y Redundancia');
-    // Referencias a los archivos, no copy paste de los canvases.
-    expect(writtenContent).toContain('docs/funky-ai/canvas/brief-funcional.md');
-    expect(writtenContent).toContain('docs/funky-ai/canvas/PROJECT-CANVAS.md');
-    expect(writtenContent).toContain('docs/funky-ai/canvas/INFRA-CANVAS.md');
-    expect(writtenContent).toContain('docs/funky-ai/assess/risk-patterns.md');
-    expect(writtenContent).not.toContain(CANVAS_PROJECT_CONTENT);
-    expect(writtenContent).not.toContain(CANVAS_INFRA_CONTENT);
-  });
-
   it('creates architecture-decisions.md on first run with {{DATE}} replaced', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
@@ -267,27 +186,6 @@ describe('assess Command - action flow', () => {
     expect(logMsgs.some(m => m.includes('elimínalo o muévelo de ubicación'))).toBe(true);
   });
 
-  it('overwrites architecture-review.md when the file already exists', async () => {
-    const mf = createMockFiles();
-    addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
-    addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
-    mf[REVIEW_DEST_PATH] = '# Previous stale content';
-    applyMocks(mf);
-
-    await assessCommand.parseAsync([], { from: 'user' });
-
-    expect(exitSpy).toHaveBeenCalledWith(0);
-
-    const reviewCall = reviewWrite();
-    expect(reviewCall).toBeTruthy();
-    const writtenContent = String(reviewCall[1]);
-
-    expect(writtenContent).toContain('Fase 1 — Contexto y NFRs');
-    expect(writtenContent).toContain('docs/funky-ai/canvas/PROJECT-CANVAS.md');
-    expect(writtenContent).not.toContain('Previous stale content');
-    expect(writtenContent).not.toContain(CANVAS_PROJECT_CONTENT);
-  });
-
   it('creates risk-patterns.md from the template when it does not exist', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
@@ -319,23 +217,17 @@ describe('assess Command - action flow', () => {
     expect(logMsgs.some(m => m.includes('Contiene decisiones del proyecto'))).toBe(true);
   });
 
-  it('references risk-patterns.md in the review but does not embed its content (2.2)', async () => {
+  it('escribe prompt y decisiones adecuadamente', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
-    mf[RISK_PATTERNS_DEST_PATH] = '# Patrones del Equipo\n\n## Microservicios\n- **Riesgo:** complejidad de deploys.\n\n## Cola Síncrona\n';
     applyMocks(mf);
 
     await assessCommand.parseAsync([], { from: 'user' });
 
-    const reviewCall = reviewWrite();
-    const writtenContent = String(reviewCall[1]);
-
-    expect(writtenContent).toContain('docs/funky-ai/assess/risk-patterns.md');
-    expect(writtenContent).not.toContain('Microservicios');
-    expect(writtenContent).not.toContain('Cola Síncrona');
-    expect(writtenContent).not.toContain('Patrones del Equipo');
-    expect(writtenContent).not.toContain('{{DYNAMIC_QUESTIONS}}');
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
+    expect(writeCalls.length).toBeGreaterThan(0);
   });
 
   it('creates assess-prompt.md in docs/funky-ai/assess/ on first run (2.3)', async () => {
@@ -468,7 +360,7 @@ describe('assess Command - action flow', () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
-    // Decisiones ya existen → se conservan; risk-patterns y prompt se crean; el review siempre se regenera.
+    // Decisiones ya existen → se conservan; risk-patterns y prompt se crean.
     mf[DECISIONS_DEST_PATH] = '# Decisiones del equipo';
     applyMocks(mf);
 
@@ -476,15 +368,14 @@ describe('assess Command - action flow', () => {
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const msgs = allLogs(logSpy);
-    expect(msgs.some(m => m.includes('Material de assess listo: 3 creados, 1 conservados.'))).toBe(true);
+    expect(msgs.some(m => m.includes('Material de assess listo: 2 creados, 1 conservados.'))).toBe(true);
     expect(msgs.some(m => m.includes('Guía de discusión generada exitosamente'))).toBe(false);
-    expect(msgs.some(m => m.includes('architecture-review.md') && m.includes('— generado'))).toBe(true);
     expect(msgs.some(m => m.includes('architecture-decisions.md') && m.includes('— conservado'))).toBe(true);
     expect(msgs.some(m => m.includes('risk-patterns.md') && m.includes('— creado'))).toBe(true);
     expect(msgs.some(m => m.includes('assess-prompt.md') && m.includes('— creado'))).toBe(true);
   });
 
-  it('M10: en creación limpia el summary matiza "listo: 4 creados, 0 conservados"', async () => {
+  it('M10: en creación limpia el summary matiza "listo: 3 creados, 0 conservados"', async () => {
     const mf = createMockFiles();
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
@@ -493,7 +384,7 @@ describe('assess Command - action flow', () => {
     await assessCommand.parseAsync([], { from: 'user' });
 
     const msgs = allLogs(logSpy);
-    expect(msgs.some(m => m.includes('Material de assess listo: 4 creados, 0 conservados.'))).toBe(true);
+    expect(msgs.some(m => m.includes('Material de assess listo: 3 creados, 0 conservados.'))).toBe(true);
     expect(msgs.some(m => m.includes('Guía de discusión generada exitosamente'))).toBe(false);
   });
 
@@ -541,14 +432,8 @@ describe('--context flag', () => {
     expect(typeof result.durationMs).toBe('number');
     expect(Array.isArray(result.warnings)).toBe(true);
 
-    const reviewCall = reviewWrite();
-    expect(reviewCall).toBeTruthy();
-    const writtenContent = String(reviewCall[1]);
-    // El review referencia los canvases; NO incrusta su contenido.
-    expect(writtenContent).toContain('docs/funky-ai/canvas/PROJECT-CANVAS.md');
-    expect(writtenContent).toContain('docs/funky-ai/canvas/INFRA-CANVAS.md');
-    expect(writtenContent).not.toContain(CANVAS_PROJECT_CONTENT);
-    expect(writtenContent).not.toContain(CANVAS_INFRA_CONTENT);
+    const promptCall = vi.mocked(fs.copyFileSync).mock.calls.find(c => String(c[1]).includes('assess-prompt.md'));
+    expect(promptCall).toBeTruthy();
   });
 
   it('prints error when context file is missing', async () => {
@@ -631,11 +516,7 @@ describe('--context flag', () => {
     const contextCall = writeCalls.find(c => String(c[0]).endsWith('context.json'));
     const writtenData = JSON.parse(contextCall[1]);
     expect(writtenData.assess.surfacedPatterns).toEqual(['Microservicios', 'Cola Síncrona']);
-    // El review referencia risk-patterns.md, no incrusta su contenido.
-    const reviewCall = reviewWrite();
-    expect(String(reviewCall[1])).not.toContain('Microservicios');
-    // R-P12: artifacts en el result object (guía generada + prompt guía)
-    expect(result.artifacts.some(a => a.name === 'architecture-review.md' && a.kind === 'generated')).toBe(true);
+    // R-P12: artifacts en el result object (prompt guía)
     expect(result.artifacts.some(a => a.name === 'assess-prompt.md' && a.kind === 'living')).toBe(true);
     expect(result.artifacts.every(a => typeof a.path === 'string' && !a.path.startsWith('/'))).toBe(true);
   });

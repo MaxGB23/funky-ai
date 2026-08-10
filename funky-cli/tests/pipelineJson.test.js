@@ -11,7 +11,7 @@ const V2_CTX = {
     finishedAt: '2024-01-01T10:05:00.000Z',
     durationMs: 5000,
     error: null,
-    artifacts: [{ name: 'architecture-review.md', path: 'docs/funky-ai/assess/architecture-review.md', kind: 'generated' }],
+    artifacts: [{ name: 'assess-prompt.md', path: 'docs/funky-ai/assess/assess-prompt.md', kind: 'living' }],
     runAt: '2024-01-01T10:05:00.000Z',
     surfacedPatterns: ['Microservicios'],
     decisionsFile: 'docs/funky-ai/assess/architecture-decisions.md'
@@ -80,7 +80,7 @@ describe('runJson', () => {
       phase: 'assess',
       status: 'completed',
       durationMs: 5000,
-      artifacts: [{ name: 'architecture-review.md', path: 'docs/funky-ai/assess/architecture-review.md', kind: 'generated' }],
+      artifacts: [{ name: 'assess-prompt.md', path: 'docs/funky-ai/assess/assess-prompt.md', kind: 'living' }],
       warnings: ['Canvas con secciones sin completar']
     },
     estimate: {
@@ -103,7 +103,7 @@ describe('runJson', () => {
       assess: {
         status: 'completed',
         durationMs: 5000,
-        artifacts: [{ name: 'architecture-review.md', path: 'docs/funky-ai/assess/architecture-review.md', kind: 'generated' }],
+        artifacts: [{ name: 'assess-prompt.md', path: 'docs/funky-ai/assess/assess-prompt.md', kind: 'living' }],
         warnings: ['Canvas con secciones sin completar']
       },
       estimate: {
@@ -124,9 +124,9 @@ describe('runJson', () => {
   it('keeps artifact shape { name, path, kind } and order', () => {
     const json = runJson(V2_CTX, results);
     expect(json.run.assess.artifacts[0]).toEqual({
-      name: 'architecture-review.md',
-      path: 'docs/funky-ai/assess/architecture-review.md',
-      kind: 'generated'
+      name: 'assess-prompt.md',
+      path: 'docs/funky-ai/assess/assess-prompt.md',
+      kind: 'living'
     });
   });
 

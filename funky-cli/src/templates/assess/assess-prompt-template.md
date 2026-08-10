@@ -17,8 +17,7 @@ Lee los archivos del proyecto, en este orden:
 1. `docs/funky-ai/canvas/brief-funcional.md` — contexto de **negocio**: qué se construye, para quién, casos de uso, KPIs y escala esperada. Léelo PRIMERO y es OBLIGATORIO: los NFRs y los riesgos dependen de entender la realidad del negocio.
 2. `docs/funky-ai/canvas/PROJECT-CANVAS.md` — decisiones de la **aplicación**: framework, patrón arquitectónico, gestión de estado, UI y testing.
 3. `docs/funky-ai/canvas/INFRA-CANVAS.md` — decisiones **operativas**: base de datos, autenticación, calidad de código y despliegue.
-4. `docs/funky-ai/assess/architecture-review.md` — agenda declarativa de la sesión de discusión.
-5. `docs/funky-ai/assess/risk-patterns.md` — patrones de riesgo de **referencia**: pueden no aplicar a este proyecto.
+4. `docs/funky-ai/assess/risk-patterns.md` — patrones de riesgo de **referencia**: pueden no aplicar a este proyecto.
 
 Si falta alguno de los archivos referenciados (por ejemplo, `brief-funcional.md`), señálalo y PREGUNTA el contexto al humano. Jamás lo inventes.
 
@@ -46,7 +45,7 @@ No presentes los hallazgos de las fases 1 a 3 de golpe: úsalos solo para prepar
    - Alternativa concreta, si existe.
    - Clasificación: (a) incompatibilidad, (b) riesgo con mitigación, o (c) decisión aceptable con observación.
 4. **Validación cruzada técnica vs negocio**: en cada punto, choca la decisión técnica contra el `brief-funcional.md`. Pregúntate si es **sobreingeniería** (matar moscas a cañonazos) o si el stack se queda **corto** frente a los casos de uso, volumen y KPIs del producto.
-5. **No modifiques nada**: `brief-funcional.md`, los canvases y `architecture-review.md` son de SOLO LECTURA. No edites, crees ni borres contenido en ellos sin aprobación explícita del humano. La discusión no cambia esos archivos.
+5. **No modifiques nada**: `brief-funcional.md`, los canvases y `risk-patterns.md` son de SOLO LECTURA. No edites, crees ni borres contenido en ellos sin aprobación explícita del humano. La discusión no cambia esos archivos.
 6. **Decisiones aprobadas**: cuando el humano apruebe un punto, anótalo de INMEDIATO en `docs/funky-ai/assess/architecture-decisions.md`, siguiendo su estructura (decisión, rationale, alternativas consideradas, riesgos aceptados, fecha). NUNCA anotes un punto que no haya sido aprobado.
 
 ## Cierre
@@ -58,4 +57,4 @@ Cuando el humano haya aprobado o ajustado todos los puntos:
 
 ## Inicio
 
-Lee `brief-funcional.md` primero, luego los dos canvases, después `architecture-review.md` y `risk-patterns.md`. Cuando termines, presenta el PRIMER punto de discusión y espera mi respuesta.
+Lee `brief-funcional.md` primero, luego los dos canvases y después `risk-patterns.md`. Cuando termines, presenta el PRIMER punto de discusión y espera mi respuesta.
