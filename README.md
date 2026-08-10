@@ -26,6 +26,12 @@ funky-cli/
 
 ---
 
+## ✨ Novedad: `funky secure`
+
+Endurece las dependencias pnpm del repo (lifecycle scripts, cuarentena de versiones recién publicadas, secretos commiteados) con tres subcomandos: `doctor` (diagnóstico, solo lectura), `init` (aplica la política, idempotente) y `check` (gate CI-ready con exit 0/1). Guía completa: [`docs/funky-ai/secure.md`](docs/funky-ai/secure.md).
+
+---
+
 ## ⚡ Quick Start
 
 ### Instalar el CLI

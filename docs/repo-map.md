@@ -39,6 +39,7 @@
 | `funky pipeline` | forge | [`src/commands/pipeline.js`](../funky-cli/src/commands/pipeline.js) | [`docs/funky-forge/pipeline.md`](../docs/funky-forge/pipeline.md) |
 | `funky engram add` | funky-ai | [`src/commands/engram.js`](../funky-cli/src/commands/engram.js) | [`docs/funky-ai/engram.md`](../docs/funky-ai/engram.md) |
 | `funky skills` | funky-ai | [`src/commands/skills.js`](../funky-cli/src/commands/skills.js) | [`docs/funky-ai/skills.md`](../docs/funky-ai/skills.md) |
+| `funky secure` (doctor/init/check) | funky-ai | [`src/commands/secure.js`](../funky-cli/src/commands/secure.js) | [`docs/funky-ai/secure.md`](../docs/funky-ai/secure.md) |
 
 ---
 
