@@ -13,11 +13,11 @@ Strict TDD es el default y prevalece sobre cualquier flag de engram/syncs; aplic
 Resolución: 1) `openspec/config.yaml` → `testing.strict_tdd`; 2) si no, engram (`sdd-init/{project}`); 3) si no hay flag pero existe runner (Vitest / `pnpm test`), `strict_tdd: true` (fallback del skill `sdd-init`).
 Si resuelve a `true`, `sdd-apply` y `sdd-verify` DEBEN recibir `STRICT TDD MODE IS ACTIVE` con runner `pnpm test`.
 
-## Flujo post-SDD (docs y release)
-Tras `sdd-archive`, sugerir en orden, solo si aplica (el usuario decide; no es obligatorio):
-1. `sdd-docs-sync` — si tocó comandos, flags, templates o estructura (docs = CLI real).
-2. `sdd-release` — feature → MINOR, breaking → MAJOR, fix significativo → PATCH.
-Skills: `.agents/skills/sdd-docs-sync-gentle-ai/` y `.agents/skills/sdd-release-gentle-ai/`.
+## Flujo post-SDD y post-merge (docs y release)
+Tras `sdd-archive`, o tras mergear una branch de trabajo directo, sugerir en orden, solo si aplica (el usuario decide; no es obligatorio):
+1. `sdd-docs-sync` — si tocó comandos, flags, templates o estructura (docs = CLI real). Delegar: es read-heavy (SSOT, índices, verificación CLI); el subagente commitea work units y el orquestador verifica y pushea.
+2. `sdd-release` — feature → MINOR, breaking → MAJOR, fix significativo → PATCH. Inline en el orquestador: es write-gated (pocos archivos, gates de git/gh); commit + push + tags propio. NUNCA un push final único que absorba los commits de docs sync.
+Skills: `.agents/skills/sdd-docs-sync-gentle-ai/` y `.agents/skills/sdd-release-gentle-ai/`. 
 
 ## Flujo directo (branches)
 SDD ya define su branch (la crea `sdd-apply`); esta sección es solo para trabajo no-SDD.
