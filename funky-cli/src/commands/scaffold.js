@@ -121,23 +121,101 @@ export function runScaffold({ templatesDir, targetBase }) {
   return intentions;
 }
 
-export const scaffoldCommand = new Command('scaffold')
-  .description('Copia toda la estructura base del ecosistema Funky AI (reglas de agentes, ORCHESTRATOR-STATE, plantillas SDD, directorios engram)')
-  .action(async () => {
-    const bootstrapDir = path.join(__dirname, '../templates/bootstrap');
-    const targetBase = process.cwd();
+/**
+ * Lógica pura del comando `funky scaffold` (scaffold agnóstico OpenSpec/SDD).
+ * Instala SOLO la base documental común a cualquier ecosistema que use
+ * OpenSpec/SDD: README interpolado, ORCHESTRATOR-STATE, release-notes y RFC.
+ * No instala reglas de agentes ni templates de proceso: eso es `funky sdd install`.
+ *
+ * @param {object} opts
+ * @param {string} opts.templatesDir - Directorio absoluto de templates de bootstrap.
+ * @param {string} opts.targetBase   - Directorio destino (normalmente process.cwd()).
+ * @returns {Array<{ action: string, src?: string, dest: string, content?: string }>}
+ */
+export function runAgnosticScaffold({ templatesDir, targetBase }) {
+  const intentions = [];
+  const projectName = resolveProjectName(targetBase);
 
-    try {
-      console.log('🚀 Instalando estructura Funky AI...');
-      const intentions = runScaffold({ templatesDir: bootstrapDir, targetBase });
+  /** @type {(src: string, dest: string) => void} */
+  const add = (src, dest) => {
+    intentions.push({
+      action: 'copy',
+      src: path.join(templatesDir, src),
+      dest: path.join(targetBase, dest),
+    });
+  };
 
-      const { created, skipped, logs } = await executeIntentions(intentions);
-      for (const log of logs) {
-        console.log(log);
-      }
-      console.log(`\n✅ Funky AI instalado. ${created} archivos creados, ${skipped} ya existian.`);
-    } catch (error) {
-      console.error('❌ Error al instalar Funky AI:', error.message);
-      process.exit(1);
+  // README.md se genera interpolando {{project_name}}; si el template no se puede
+  // leer, cae al copy del archivo crudo (placeholder literal).
+  try {
+    const readmeContent = fs
+      .readFileSync(path.join(templatesDir, 'README.md'), 'utf8')
+      .replace(/{{project_name}}/g, projectName);
+    intentions.push({
+      action: 'create',
+      dest: path.join(targetBase, 'README.md'),
+      content: readmeContent,
+    });
+  } catch {
+    add('README.md', 'README.md');
+  }
+  add('ORCHESTRATOR-STATE.md', 'ORCHESTRATOR-STATE.md');
+  add('sdd/release-notes.md', '.agents/templates/sdd/release-notes.md');
+  add('sdd/000-rfc-template.md', 'openspec/rfcs/000-rfc-template.md');
+
+  return intentions;
+}
+
+/**
+ * Handler compartido del flujo de instalación del framework.
+ * Lo usa `funky sdd install` (nombre canónico).
+ */
+export async function runScaffoldCommand() {
+  const bootstrapDir = path.join(__dirname, '../templates/bootstrap');
+  const targetBase = process.cwd();
+
+  try {
+    console.log('🚀 Instalando estructura Funky AI...');
+    const intentions = runScaffold({ templatesDir: bootstrapDir, targetBase });
+
+    const { created, skipped, logs } = await executeIntentions(intentions);
+    for (const log of logs) {
+      console.log(log);
     }
-  });
+    console.log(`\n✅ Funky AI instalado. ${created} archivos creados, ${skipped} ya existian.`);
+  } catch (error) {
+    console.error('❌ Error al instalar Funky AI:', error.message);
+    process.exit(1);
+  }
+}
+
+/**
+ * Handler del comando agnóstico `funky scaffold`: instala solo la base
+ * documental OpenSpec/SDD (README, ORCHESTRATOR-STATE, release-notes, RFC).
+ */
+export async function runAgnosticScaffoldCommand() {
+  const bootstrapDir = path.join(__dirname, '../templates/bootstrap');
+  const targetBase = process.cwd();
+
+  try {
+    console.log('🚀 Instalando scaffold agnóstico OpenSpec/SDD...');
+    const intentions = runAgnosticScaffold({ templatesDir: bootstrapDir, targetBase });
+
+    const { created, skipped, logs } = await executeIntentions(intentions);
+    for (const log of logs) {
+      console.log(log);
+    }
+    console.log(`\n✅ Scaffold agnóstico instalado. ${created} archivos creados, ${skipped} ya existian.`);
+  } catch (error) {
+    console.error('❌ Error al instalar el scaffold agnóstico:', error.message);
+    process.exit(1);
+  }
+}
+
+export const installCommand = new Command('install')
+  .description('Copia toda la estructura base del ecosistema Funky AI (reglas de agentes, ORCHESTRATOR-STATE, plantillas SDD, directorios engram)')
+  .action(runScaffoldCommand);
+
+export const scaffoldCommand = new Command('scaffold')
+  .description('Instala la base documental agnóstica OpenSpec/SDD (README, ORCHESTRATOR-STATE, release-notes, RFC template)')
+  .action(runAgnosticScaffoldCommand);

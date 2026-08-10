@@ -1,4 +1,4 @@
-# Índice de Secciones: `docs/funky-ai/scaffold.md`
+# Índice de Secciones: `docs/funky-ai/sdd.md`
 
 - **1. ¿Qué problema resuelve?:** Instalación del framework agéntico (reglas, templates y engram) sobre un repo inicializado.
 - **2. ¿Cuándo usarlo?:** Después de `funky init`; una sola vez, es idempotente.
@@ -8,4 +8,4 @@
   - **`.agents/templates/sdd/` (8 + 2 copiados):** 8 templates copiados más `docs-live-index.md` y `docs-index/_indice-seccional-template.md` copiados del template base compartido (`bootstrap/sdd/`, mismo src que `funky skills` — R-SK-5).
   - **`openspec/rfcs/` — Excepción de ruta:** `000-rfc-template.md` inyectado fuera de `.agents` (dominio del proyecto).
   - **`docs/engram/` — 7 directorios:** Shards vacíos para memoria persistente por categoría.
-- **4. Diagrama de flujo:** `runScaffold()` ensambla intenciones (`copy`, `create`, `mkdir`) que procesa `executeIntentions()`.
+- **4. Diagrama de flujo:** `runScaffoldCommand()` (handler de `funky sdd install`) → `runScaffold()` ensambla intenciones (`copy`, `create`, `mkdir`) que procesa `executeIntentions()`. El scaffold agnóstico (`funky scaffold`) es un comando aparte: `runAgnosticScaffold()` (4 operaciones).

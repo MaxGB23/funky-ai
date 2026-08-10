@@ -1,4 +1,4 @@
-# 📘 Flujo Interno: `funky init` y `funky scaffold`
+# 📘 Flujo Interno: `funky init` y `funky sdd install`
 
 > **Versión documentada:** v4.4.0  
 > **Ultima actualizacion:** 2026-08-08  
@@ -11,7 +11,7 @@
 El CLI tiene dos comandos de inicialización:
 
 1. **`funky init`** — Genera el brief funcional, PROJECT-CANVAS.md, INFRA-CANVAS.md y las guías (canvas-planning-guide.md, init-prompt.md), el brief primero.
-2. **`funky scaffold`** — Copia toda la estructura base del ecosistema Funky AI (reglas de agentes, ORCHESTRATOR-STATE, directorios engram, plantillas SDD). No requiere canvases, pero si existen los respeta.
+2. **`funky sdd install`** — Copia toda la estructura base del ecosistema Funky AI (reglas de agentes, ORCHESTRATOR-STATE, directorios engram, plantillas SDD). No requiere canvases, pero si existen los respeta.
 
 No hay modos interactivos obligatorios: el CLI genera los archivos y termina. La única confirmación interactiva es la Y/N para actualizar guías existentes (ver sección 3.3); el equipo discute las decisiones en chat con IA, no en la terminal.
 
@@ -39,12 +39,14 @@ funky init
             └─ Summary: "Canvases creados" / "Canvases listos: N creados, M conservados" / "Nada que crear"
 ```
 
-### `funky scaffold`
+### `funky sdd install`
+
+> **Nota:** `funky scaffold` es un comando aparte (scaffold agnóstico OpenSpec/SDD): instala solo la base documental (README, ORCHESTRATOR-STATE, release-notes, RFC) vía `runAgnosticScaffoldCommand()`. NO es un alias de `funky sdd install`. Ver [`docs/funky-ai/scaffold.md`](../funky-ai/scaffold.md).
 
 ```
-funky scaffold
+funky sdd install
 │
-├─ runScaffold({ templatesDir: bootstrap, targetBase: cwd })
+├─ runScaffoldCommand() → runScaffold({ templatesDir: bootstrap, targetBase: cwd })
 │   ├─ Copia archivos root (ORCHESTRATOR-STATE.md, README.md, TEMPLATE_GUIDE.md)
 │   ├─ Copia reglas de agente → .agents/rules/
 │   ├─ Copia templates SDD → .agents/templates/sdd/
@@ -64,10 +66,11 @@ funky scaffold
 | Archivo | Rol |
 |---|---|
 | `src/commands/init.js` | Orquestador del comando `funky init`: expone `runInit({ templatesDir, targetBase })` (función pura que devuelve las intenciones ordenadas, cada una con su `kind`: decision/guide) y el action que ejecuta `executeIntentions()` con confirmación Y/N para guías |
-| `src/commands/scaffold.js` | Orquestador del comando `funky scaffold`: ejecuta `runScaffold()` para copiar el ecosistema |
+| `src/commands/sdd.js` | Namespace del comando `funky sdd`: registra el subcomando `install` (delega en `runScaffoldCommand`) |
+| `src/commands/scaffold.js` | Exponen `runScaffold()` (función pura del framework completo) + `runScaffoldCommand()` (handler de `funky sdd install`) y `runAgnosticScaffold()` + `runAgnosticScaffoldCommand()` (comando `funky scaffold` agnóstico) |
 | `src/utils/fs-adapter.js` | `executeIntentions(intentions)`: ejecuta mkdir/copy con skip-if-exists y logs |
 
-### 3.2 Templates estáticos (copiados por `funky scaffold`)
+### 3.2 Templates estáticos (copiados por `funky sdd install`)
 
 Ubicación base: `src/templates/bootstrap/`
 
@@ -101,7 +104,7 @@ No existe un guard que bloquee la ejecución: cada archivo se maneja por su `kin
 
 ## 4. Idempotencia
 
-`funky init` y `funky scaffold` son idempotentes por diseño. Ejecutarlos múltiples veces en el mismo directorio es seguro:
+`funky init` y `funky sdd install` son idempotentes por diseño. Ejecutarlos múltiples veces en el mismo directorio es seguro:
 
 - Cada archivo se verifica con `fs.existsSync()` antes de copiarse o escribirse
 - Decisión existente (`brief-funcional.md`, `PROJECT-CANVAS.md`, `INFRA-CANVAS.md`) → `⚡ Omitiendo (ya existe): <archivo>...` con recomendación de eliminar/mover con backup

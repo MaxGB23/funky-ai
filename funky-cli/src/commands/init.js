@@ -76,9 +76,9 @@ export const initCommand = new Command('init')
       } else if (skipped > 0) {
         // M10: si hubo omisiones, el título matiza "listo: N creados, M
         // conservados" en lugar de afirmar "Canvases creados" (sobreventa).
-        console.log(`\n✅ Canvases listos: ${created} creados, ${skipped} conservados. Ejecuta \`funky scaffold\` para instalar el ecosistema completo.`);
+        console.log(`\n✅ Canvases listos: ${created} creados, ${skipped} conservados. Ejecuta \`funky sdd install\` para instalar el ecosistema completo.`);
       } else {
-        console.log(`\n✅ Canvases creados. Ejecuta \`funky scaffold\` para instalar el ecosistema completo.`);
+        console.log(`\n✅ Canvases creados. Ejecuta \`funky sdd install\` para instalar el ecosistema completo.`);
       }
     } catch (error) {
       console.error(`❌ Error al generar los canvases: ${error.message}`);

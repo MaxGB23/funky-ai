@@ -2,7 +2,7 @@
 
 **funky-forge** son las tools de planeación de proyecto asistida con IA. Convierten una idea difusa en un plan estructurado: stack, arquitectura, costos.
 
-Esto NO es el framework agéntico — las tools del framework (`scaffold`, `feature`, `engram add`) están en `docs/funky-ai/`.
+Esto NO es el framework agéntico — las tools del framework (`sdd install`, `feature`, `engram add`) están en `docs/funky-ai/`.
 
 ---
 
@@ -18,12 +18,12 @@ Esto NO es el framework agéntico — las tools del framework (`scaffold`, `feat
 ## Resumen rápido
 
 ```
-[Idea] → funky init → llenar canvases → funky scaffold* → funky assess → funky estimate
+[Idea] → funky init → llenar canvases → funky sdd install* → funky assess → funky estimate
                                            ↓
                                     [funky pipeline (opcional)]
 ```
 
-> **\*** `funky scaffold` es del framework funky-ai — instala reglas agénticas y templates SDD.
+> **\*** `funky sdd install` es del framework funky-ai — instala reglas agénticas y templates SDD.
 
 ## Referencia
 

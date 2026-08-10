@@ -31,7 +31,8 @@
 | Comando | Dominio | Archivo | Docs |
 |---------|---------|---------|------|
 | `funky init` | forge | [`src/commands/init.js`](../funky-cli/src/commands/init.js) | [`docs/funky-forge/init.md`](../docs/funky-forge/init.md) |
-| `funky scaffold` | funky-ai | [`src/commands/scaffold.js`](../funky-cli/src/commands/scaffold.js) | [`docs/funky-ai/scaffold.md`](../docs/funky-ai/scaffold.md) |
+| `funky sdd install` | funky-ai | [`src/commands/sdd.js`](../funky-cli/src/commands/sdd.js) (delega en [`runScaffoldCommand`](../funky-cli/src/commands/scaffold.js)) | [`docs/funky-ai/sdd.md`](../docs/funky-ai/sdd.md) |
+| `funky scaffold` | funky-ai | [`src/commands/scaffold.js`](../funky-cli/src/commands/scaffold.js) (`runAgnosticScaffold`) | [`docs/funky-ai/scaffold.md`](../docs/funky-ai/scaffold.md) |
 | `funky assess` | forge | [`src/commands/assess.js`](../funky-cli/src/commands/assess.js) | [`docs/funky-forge/assess.md`](../docs/funky-forge/assess.md) |
 | `funky estimate` | forge | [`src/commands/estimate.js`](../funky-cli/src/commands/estimate.js) | [`docs/funky-forge/estimate.md`](../docs/funky-forge/estimate.md) |
 | `funky feature` | funky-ai | [`src/commands/feature.js`](../funky-cli/src/commands/feature.js) | [`docs/funky-ai/feature.md`](../docs/funky-ai/feature.md) |
@@ -58,7 +59,8 @@ docs/
 
 | Doc | Contenido |
 |-----|-----------|
-| [`scaffold.md`](../docs/funky-ai/scaffold.md) | Árbol completo de inyección del ecosistema agéntico |
+| [`sdd.md`](../docs/funky-ai/sdd.md) | Árbol completo de inyección del ecosistema agéntico (`funky sdd install`) |
+| [`scaffold.md`](../docs/funky-ai/scaffold.md) | Scaffold agnóstico OpenSpec/SDD: set de 4 archivos y diferencia con `funky sdd install` |
 | [`feature.md`](../docs/funky-ai/feature.md) | Tiers T1/T2/T3, inyección condicional, golden vs fallback |
 | [`engram.md`](../docs/funky-ai/engram.md) | Knowledge base: categorías, flags, buenas prácticas |
 | [`skills.md`](../docs/funky-ai/skills.md) | Instalador interactivo de skills: selección, autodetección, manifests, docs compartidos |
@@ -97,7 +99,7 @@ docs/
 | Directorio | Usado por | Propósito |
 |-----------|-----------|-----------|
 | `init/` | `funky init` | Brief, canvases y guías (brief-funcional.md, PROJECT-CANVAS.md, INFRA-CANVAS.md, canvas-planning-guide-template.md, init-prompt-template.md) |
-| `bootstrap/` | `funky scaffold` / `funky skills` | Reglas agénticas, templates SDD, ORCHESTRATOR-STATE, docs compartidos (docs-live-index, índice seccional) |
+| `bootstrap/` | `funky sdd install` / `funky scaffold` / `funky skills` | Reglas agénticas, templates SDD, ORCHESTRATOR-STATE, docs compartidos (docs-live-index, índice seccional) |
 | `assess/` | `funky assess` | Architecture review templates |
 | `estimate/` | `funky estimate` | Pricing guide templates |
 

@@ -1,13 +1,13 @@
 # Flujos de Templates — Golden vs Base Distribuidos
 
-> **Decisión (2026-08-01):** `sync-templates.js` ELIMINADO. Era dead code con dirección invertida (golden → base). Los **templates base distribuidos** (`funky-cli/src/templates/`) son la fuente única de distribución vía `funky scaffold` y `funky skills`; los **golden templates** de un repo (`.agents/`) son personalización local que NO se propaga al paquete.
+> **Decisión (2026-08-01):** `sync-templates.js` ELIMINADO. Era dead code con dirección invertida (golden → base). Los **templates base distribuidos** (`funky-cli/src/templates/`) son la fuente única de distribución vía `funky sdd install` y `funky skills`; los **golden templates** de un repo (`.agents/`) son personalización local que NO se propaga al paquete.
 
 ## Nomenclatura
 
 | Término | Ubicación | Rol |
 |---|---|---|
 | **Golden templates** | `.agents/` (en el proyecto destino) | Capa de personalización local. Si existen, ganan en runtime (`funky feature`). NO se propagan al paquete. |
-| **Templates base distribuidos** | `funky-cli/src/templates/` (empaquetados con el CLI) | Fuente única de distribución. `funky scaffold` los copia a `.agents/` del proyecto destino. |
+| **Templates base distribuidos** | `funky-cli/src/templates/` (empaquetados con el CLI) | Fuente única de distribución. `funky sdd install` los copia a `.agents/` del proyecto destino. |
 
 ## Árbol real de `funky-cli/src/templates/` (verificado)
 
@@ -89,7 +89,7 @@ bootstrap/sdd/docs-index/_indice-seccional-template.md  ──► <proyecto>/.ag
 
 - `runSkills()` es puro: expande los manifests por skill (`src/skills/<skill>/manifest.js`) en intenciones de copia — 2 skills + 3 docs compartidos SDD (release-notes opcional). Los srcs se resuelven contra `srcDir` (raíz `funky-cli/src`), cubriendo `skills/<skill>/` y `templates/bootstrap/sdd/` — nunca los goldens `.agents/` del repo (R-SK-2, R-SK-8).
 - Idempotente (R-SK-3): `executeIntentions` salta destinos existentes — no sobreescribe la personalización local.
-- **Paridad (R-SK-5):** `docs-live-index.md`, `docs-index/_indice-seccional-template.md` y `release-notes.md` se copian desde el MISMO src que `funky scaffold` (`bootstrap/sdd/`), garantizando bytes idénticos en ambos caminos.
+- **Paridad (R-SK-5):** `docs-live-index.md`, `docs-index/_indice-seccional-template.md` y `release-notes.md` se copian desde el MISMO src que `funky sdd install` (`bootstrap/sdd/`), garantizando bytes idénticos en ambos caminos.
 - `--help` enriquecido (R-HL-1/2): `funky <cmd> --help` inyecta `docs/funky-ai/<cmd>.md` (fallback `docs/funky-forge/<cmd>.md`) vía `src/utils/help.js`; sin doc, vacío o con placeholder `<ruta-del-doc>` → no-op.
 
 ## Rol dual de `.agents/`
@@ -97,7 +97,7 @@ bootstrap/sdd/docs-index/_indice-seccional-template.md  ──► <proyecto>/.ag
 | Contexto | Rol de `.agents/` |
 |---|---|
 | Repo funky-ai (fuente) | Personalización local del propio repo. NO se empaqueta (Flujo 1 eliminado). |
-| Proyecto destino (usuario) | Golden templates que ganan en runtime (Flujo 3). Se crean con `funky scaffold` (Flujo 2). |
+| Proyecto destino (usuario) | Golden templates que ganan en runtime (Flujo 3). Se crean con `funky sdd install` (Flujo 2). |
 
 ## Evidencia en código
 

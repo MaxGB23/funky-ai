@@ -23,7 +23,8 @@ pnpm link --global
 | Comando | Descripción |
 |---------|-------------|
 | `funky init` | Genera el brief funcional, PROJECT-CANVAS.md, INFRA-CANVAS.md y las guías (canvas-planning-guide.md, init-prompt.md) en `docs/funky-ai/canvas/` para iniciar la planificación del proyecto. |
-| `funky scaffold` | Copia la estructura base del ecosistema Funky AI: reglas de agentes (.agents/rules/), templates SDD (.agents/templates/sdd/), ORCHESTRATOR-STATE.md, directorios engram (docs/engram/) y el template de RFC (openspec/rfcs/). |
+| `funky sdd install` | Copia la estructura base del ecosistema Funky AI: reglas de agentes (.agents/rules/), templates SDD (.agents/templates/sdd/), ORCHESTRATOR-STATE.md, directorios engram (docs/engram/) y el template de RFC (openspec/rfcs/). |
+| `funky scaffold` | Scaffold agnóstico OpenSpec/SDD: instala solo la base documental (README interpolado, ORCHESTRATOR-STATE.md, release-notes, RFC template). No instala reglas ni templates de proceso. |
 | `funky assess` | Facilita una sesión de discusión arquitectónica humano+IA. Genera una guía de discusión declarativa (`architecture-review.md`) que referencia los archivos del proyecto en lugar de incrustarlos, más un template para documentar decisiones. Genera `docs/funky-ai/assess/architecture-review.md`. |
 | `funky estimate` | Facilita una sesión de pricing colaborativa humano+IA. Genera una guía de discusión declarativa (`pricing-guide.md`) que referencia las decisiones arquitectónicas y los canvases, más un template para documentar acuerdos. Sin fórmulas hardcodeadas. Genera `docs/funky-ai/estimate/pricing-guide.md`. |
 | `funky pipeline` | Orquesta el flujo unificado `assess → estimate` con estado compartido vía `context.json`. Subcomandos: `assess`, `estimate`, `all`, `status`. |
@@ -43,10 +44,10 @@ pnpm link --global
 | `release-checklist.md` / `release-notes.md` | Notas y checklist de release (inyectados por `funky feature` en T2/T3). |
 | `docs.md` | Documentación de feature (inyectado solo si el cambio afecta docs). |
 
-## Estructura generada por `funky init` y `funky scaffold`
+## Estructura generada por `funky init` y `funky sdd install`
 
 `funky init` genera los canvases en **`docs/funky-ai/canvas/`**.
-`funky scaffold` copia toda la estructura base del ecosistema. A continuación, la estructura completa post-init + post-scaffold:
+`funky sdd install` copia toda la estructura base del ecosistema. A continuación, la estructura completa post-init + post-sdd-install:
 
 ```text
 proyecto/
@@ -82,11 +83,11 @@ proyecto/
 │   │   ├── estimate/                ← funky estimate
 │   │   └── pipeline/                ← funky pipeline
 │   │       └── context.json
-│   └── engram/                      ← funky scaffold
+│   └── engram/                      ← funky sdd install
 │       ├── index.md
 │       ├── architecture/  pattern/  discovery/
 │       ├── decision/  bugfix/  session/  release/
 └── openspec/
     └── rfcs/
-        └── 000-rfc-template.md      ← funky scaffold
+        └── 000-rfc-template.md      ← funky sdd install
 ```
