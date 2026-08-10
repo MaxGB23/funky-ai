@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { seedForPosture, isPlaceholder, deepEqual } from './secureYaml.js';
 
 // R8 — Marcador de idempotencia para AGENTS.md (design: marker + 3 líneas).
@@ -58,10 +59,26 @@ export function pinPackageManager(pkgJson, activeVersion) {
 // R6/R11 — Claves de ruido del probe `pnpm config list --json` (design).
 const CONFIG_NOISE = new Set(['json', 'registry', 'userAgent', 'packages']);
 
+// R6/R11 — pnpm 10.x emite las claves estándar en kebab-case; 11.x en camelCase
+// (empírica de verify: `config list --json` en 10.23.0 vs 11.5.0). Se normalizan
+// para que doctor/check lean el estado real sin importar la versión del gestor.
+const KEBAB_TO_CAMEL = {
+  'allow-builds': 'allowBuilds',
+  'block-exotic-subdeps': 'blockExoticSubdeps',
+  'engine-strict': 'engineStrict',
+  'ignore-scripts': 'ignoreScripts',
+  'minimum-release-age': 'minimumReleaseAge',
+  'trust-policy': 'trustPolicy',
+  'verify-store-integrity': 'verifyStoreIntegrity',
+  'strict-dep-builds': 'strictDepBuilds',
+  'only-built-dependencies': 'onlyBuiltDependencies',
+  'ignored-built-dependencies': 'ignoredBuiltDependencies',
+};
+
 /**
- * R6/R11 — Parsea la salida de `pnpm config list --json` y filtra el ruido
- * (json/registry/userAgent/packages). null si el JSON es inválido → el handler
- * de check puede fail-closed (R10).
+ * R6/R11 — Parsea la salida de `pnpm config list --json`, filtra el ruido
+ * (json/registry/userAgent/packages) y normaliza las claves kebab-case de
+ * pnpm 10.x a camelCase (11.x) para una lectura cross-version del estado.
  *
  * @param {string} stdout
  * @returns {Record<string, unknown> | null}
@@ -72,12 +89,37 @@ export function parseConfigList(stdout) {
     if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return null;
     const clean = {};
     for (const [key, value] of Object.entries(parsed)) {
-      if (!CONFIG_NOISE.has(key)) clean[key] = value;
+      const canonical = KEBAB_TO_CAMEL[key] ?? key;
+      if (!CONFIG_NOISE.has(canonical)) clean[canonical] = value;
     }
     return clean;
   } catch {
     return null;
   }
+}
+
+/**
+ * R6 — Deduplica las rutas de `where pnpm`: en win32 un mismo install aparece
+ * como <dir>/pnpm y <dir>/pnpm.CMD (shim de la misma instalación). Mismo
+ * directorio + mismo nombre base → una sola instalación (case-insensitive en
+ * win32); directorios distintos → instalaciones distintas (≥2 → WARNING R6).
+ *
+ * @param {string[]} paths
+ * @returns {string[]}
+ */
+export function dedupeWherePaths(paths) {
+  const seen = new Set();
+  const out = [];
+  for (const p of paths) {
+    const ext = path.extname(p);
+    const stem = ext ? p.slice(0, -ext.length) : p;
+    let key = `${path.dirname(stem)}${path.sep}${path.basename(stem)}`;
+    if (process.platform === 'win32') key = key.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(p);
+  }
+  return out;
 }
 
 /**

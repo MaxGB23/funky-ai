@@ -267,6 +267,16 @@ describe('secureCommand — integración (R2-R11)', () => {
     );
   });
 
+  it('R6: un solo install win32 (exe + shim .CMD del mismo dir) → SIN warning de duplicados', async () => {
+    applyMocks(secureRepoFiles());
+    routeRunner({ wherePaths: ['C:\\pnpm\\pnpm', 'C:\\pnpm\\pnpm.CMD'] });
+
+    await secureCommand.parseAsync(['doctor'], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    expect(warnSpy).not.toHaveBeenCalledWith(expect.stringMatching(/duplicad/i));
+  });
+
   it('smoke E2E: el probe real de pnpm devuelve la versión (omitido si pnpm no está)', async () => {
     const real = await vi.importActual('../src/utils/runner.js');
     const res = real.run('pnpm', ['--version']);

@@ -13,6 +13,7 @@ import {
   isQuarantineActive,
   diagnose,
   evaluate,
+  dedupeWherePaths,
   QUARANTINE_CMD,
 } from '../src/utils/secureDomain.js';
 
@@ -90,6 +91,41 @@ describe('secureDomain — parseo config list (R6/R11)', () => {
     expect(parseConfigList('no-json{')).toBeNull();
     expect(parseConfigList('')).toBeNull();
   });
+
+  it('normaliza claves kebab-case de pnpm 10.x a camelCase (estabilidad cross-version)', () => {
+    const cfg = parseConfigList(
+      JSON.stringify({
+        'allow-builds': [],
+        'block-exotic-subdeps': true,
+        'engine-strict': true,
+        'ignore-scripts': true,
+        'minimum-release-age': 4320,
+        'trust-policy': 'no-downgrade',
+        'verify-store-integrity': true,
+        'strict-dep-builds': true,
+        'only-built-dependencies': [],
+        'ignored-built-dependencies': [],
+        json: 'all',
+        packages: {},
+      })
+    );
+
+    expect(cfg.allowBuilds).toEqual([]);
+    expect(cfg.blockExoticSubdeps).toBe(true);
+    expect(cfg.engineStrict).toBe(true);
+    expect(cfg.ignoreScripts).toBe(true);
+    expect(cfg.minimumReleaseAge).toBe(4320);
+    expect(cfg.trustPolicy).toBe('no-downgrade');
+    expect(cfg.verifyStoreIntegrity).toBe(true);
+    expect(cfg.strictDepBuilds).toBe(true);
+    expect(cfg.onlyBuiltDependencies).toEqual([]);
+    expect(cfg.ignoredBuiltDependencies).toEqual([]);
+  });
+
+  it('cuarentena activa con config pnpm 10.x (kebab-case normalizada)', () => {
+    const cfg = parseConfigList(JSON.stringify({ 'minimum-release-age': 4320 }));
+    expect(isQuarantineActive(cfg, {})).toBe(true);
+  });
 });
 
 describe('secureDomain — cuarentena conductual (R6)', () => {
@@ -157,6 +193,45 @@ describe('secureDomain — doctor diagnose (R6)', () => {
   });
 });
 
+describe('secureDomain — dedupe de instalaciones pnpm (R6, win32)', () => {
+  it('exe + shim .CMD en el MISMO directorio → una sola instalación', () => {
+    expect(dedupeWherePaths(['C:\\pnpm\\pnpm', 'C:\\pnpm\\pnpm.CMD'])).toHaveLength(1);
+    expect(dedupeWherePaths(['C:\\pnpm\\pnpm.exe', 'C:\\pnpm\\pnpm.CMD', 'C:\\pnpm\\pnpm'])).toHaveLength(1);
+  });
+
+  it('instalaciones en directorios distintos → se conservan (≥2 → WARNING)', () => {
+    expect(
+      dedupeWherePaths(['C:\\tools\\pnpm\\pnpm.CMD', 'M:\\pnpm-standalone\\pnpm.exe'])
+    ).toHaveLength(2);
+  });
+
+  it('doctor con un solo install win32 (exe + .CMD) → SIN warning de duplicados', () => {
+    const findings = diagnose({
+      activeVersion: '11.5.0',
+      duplicates: dedupeWherePaths(['C:\\pnpm\\pnpm', 'C:\\pnpm\\pnpm.CMD']),
+      effectiveConfig: {},
+      quarantineActive: true,
+      repoSignals: {},
+    });
+    expect(
+      findings.some((f) => f.severity === 'warning' && /duplicad/i.test(f.text))
+    ).toBe(false);
+  });
+
+  it('doctor con 2 instalaciones reales (directorios distintos) → WARNING de duplicados', () => {
+    const findings = diagnose({
+      activeVersion: '11.5.0',
+      duplicates: dedupeWherePaths(['C:\\tools\\pnpm\\pnpm.CMD', 'M:\\pnpm-standalone\\pnpm.exe']),
+      effectiveConfig: {},
+      quarantineActive: true,
+      repoSignals: {},
+    });
+    expect(
+      findings.some((f) => f.severity === 'warning' && /duplicad/i.test(f.text))
+    ).toBe(true);
+  });
+});
+
 describe('secureDomain — evaluador check (R10/R11)', () => {
   function conformantRepo(overrides = {}) {
     return {
@@ -219,6 +294,27 @@ describe('secureDomain — evaluador check (R10/R11)', () => {
 
     const missing = evaluate(conformantRepo({ effectiveConfig: {} }));
     expect(missing.violations.map((v) => v.code)).toContain('config-mismatch');
+  });
+
+  it('repo conformante bajo pnpm 10.x (claves kebab-case) → sin violaciones', () => {
+    const out = evaluate(
+      conformantRepo({
+        effectiveConfig: parseConfigList(
+          JSON.stringify({
+            'ignore-scripts': true,
+            'minimum-release-age': 4320,
+            'engine-strict': true,
+            'block-exotic-subdeps': true,
+            'trust-policy': 'no-downgrade',
+            'verify-store-integrity': true,
+            'allow-builds': [],
+            json: 'all',
+            packages: {},
+          })
+        ),
+      })
+    );
+    expect(out.violations).toEqual([]);
   });
 
   it('postura fail-fast exige sus claves; presente → conforma', () => {

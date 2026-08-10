@@ -19,6 +19,7 @@ import {
   isQuarantineActive,
   diagnose,
   evaluate,
+  dedupeWherePaths,
   floatingRanges,
   AGENTS_MARKER,
 } from '../utils/secureDomain.js';
@@ -49,10 +50,11 @@ async function runDoctor() {
   const effectiveConfig = parseConfigList(cfgProbe.stdout);
   const quarantineActive = isQuarantineActive(effectiveConfig, process.env);
 
-  const wherePaths =
+  const wherePaths = dedupeWherePaths(
     whereProbe.code === 0
       ? whereProbe.stdout.split('\n').map((s) => s.trim()).filter(Boolean)
-      : [];
+      : []
+  );
 
   const pkgJson = readJsonSafe(path.join(cwd, 'package.json'));
   const git = run('git', ['ls-files', '--', '.env', '.env.*']);
