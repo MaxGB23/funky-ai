@@ -1,17 +1,9 @@
-import { vi } from 'vitest';
 import path from 'path';
 
-// Mocks vi.hoisted compartidos de la capability secure (patrón fsMock +
-// estimateCommand.interactive.test.js): los test files los registran con
-// vi.mock('../src/utils/runner.js') / vi.mock('@clack/prompts').
-export const runnerMock = vi.hoisted(() => vi.fn(() => ({ code: 0, stdout: '', stderr: '' })));
-
-export const clackMock = vi.hoisted(() => ({
-  select: vi.fn(),
-  confirm: vi.fn(),
-  isCancel: vi.fn(() => false),
-  cancel: vi.fn(),
-}));
+// Fixtures compartidos de la capability secure. Los mocks vi.hoisted
+// (runner/clack) NO pueden exportarse desde un helper (vitest los hoistea al
+// tope del test file): se definen inline en cada test file que los necesite,
+// patrón estimateCommand.interactive.test.js.
 
 export const CWD = process.cwd();
 export const WORKSPACE_YAML_PATH = path.join(CWD, 'pnpm-workspace.yaml');
