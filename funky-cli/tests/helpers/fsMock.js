@@ -13,6 +13,7 @@ const fsMock = vi.hoisted(() => ({
   statSync: vi.fn(),
   lstatSync: vi.fn(),
   realpathSync: vi.fn(),
+  appendFileSync: vi.fn(),
 }));
 
 export { fsMock };
@@ -172,6 +173,13 @@ export function applyMocks(mockFiles) {
       return mockFiles[key];
     }
     return '';
+  });
+  // appendFileSync actualiza el mapa para que re-lecturas vean el append
+  // (espeja el comportamiento real; init appenda .funky/ al .gitignore sin
+  // reescribir el contenido leído — AGENTS.md).
+  vi.mocked(fsMock.appendFileSync).mockImplementation((p, data) => {
+    const key = String(p);
+    mockFiles[key] = (mockFiles[key] ?? '') + String(data);
   });
 }
 
