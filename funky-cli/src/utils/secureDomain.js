@@ -170,6 +170,23 @@ export function diagnose({ activeVersion, duplicates, effectiveConfig, quarantin
 }
 
 /**
+ * R11 — Rangos flotantes (^/~) en las secciones de dependencias de package.json.
+ * @param {object | null} pkgJson
+ * @returns {string[]} - Nombres/versiones flotantes detectados.
+ */
+export function floatingRanges(pkgJson) {
+  const ranges = [];
+  for (const section of ['dependencies', 'devDependencies', 'optionalDependencies', 'peerDependencies']) {
+    if (pkgJson && pkgJson[section]) {
+      for (const [name, range] of Object.entries(pkgJson[section])) {
+        if (typeof range === 'string' && /^[~^]/.test(range)) ranges.push(`${name}@${range}`);
+      }
+    }
+  }
+  return ranges;
+}
+
+/**
  * R10/R11 — Evaluador de `check`: convierte lecturas (fs + probes) en
  * violaciones. Repos npm/yarn (sin pnpm-workspace.yaml) → warnOnly, exit 0.
  *
@@ -216,14 +233,7 @@ export function evaluate({
     violations.push({ code: 'package-lock', detail: 'package-lock.json presente en repo pnpm: mezcla npm/pnpm.' });
   }
 
-  const ranges = [];
-  for (const section of ['dependencies', 'devDependencies', 'optionalDependencies', 'peerDependencies']) {
-    if (pkgJson && pkgJson[section]) {
-      for (const [name, range] of Object.entries(pkgJson[section])) {
-        if (typeof range === 'string' && /^[~^]/.test(range)) ranges.push(`${name}@${range}`);
-      }
-    }
-  }
+  const ranges = floatingRanges(pkgJson);
   if (ranges.length > 0) {
     violations.push({ code: 'floating-ranges', detail: `Rangos flotantes (^/~) en package.json: ${ranges.join(', ')}.` });
   }
