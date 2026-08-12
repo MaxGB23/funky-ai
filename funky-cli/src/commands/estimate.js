@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { loadDecisions, findCanvases, readContext, writeContext, updatePhaseState } from '../utils/context.js';
-import { generateDecisionsTemplate, buildPricingGuide, embedTopicSections, refreshPricingGuideBase, validatePricingGuideTemplate, TOPICS, DISPLAY_NAMES } from '../utils/estimateDomain.js';
+import { generateDecisionsTemplate, buildPricingGuide, embedTopicSections, refreshPricingGuideBase, validatePricingGuideTemplate, TOPICS, DISPLAY_NAMES, TEAM_COST_KEY } from '../utils/estimateDomain.js';
 import * as p from '@clack/prompts';
 import { executeIntentions, existingGuides } from '../utils/fs-adapter.js';
 
@@ -105,6 +105,14 @@ export async function runEstimate(targetBase, opts = {}) {
       pricingTeam: opts.pricingTeam === true,
     };
 
+    // Secciones a incrustar en la zona `<!-- topics -->`: topics canónicos +
+    // referencia de costos de equipo al final (R10). La zona y el embeder del
+    // dominio ya saben resolver TEAM_COST_KEY contra team-cost-reference-template.md.
+    const embedKeys = [
+      ...guideOpts.topics,
+      ...(guideOpts.pricingTeam ? [TEAM_COST_KEY] : []),
+    ];
+
     // Warn si --brief <path> no existe (R7): el dominio vuelve al checklist
     // (usedFallback); acá se avisa al usuario con la misma condición de base
     // (ruta resuelta contra targetBase == cwd del CLI).
@@ -143,7 +151,7 @@ export async function runEstimate(targetBase, opts = {}) {
     let guideContent;
     try {
       if (!fs.existsSync(pricingGuidePath)) {
-        guideContent = buildPricingGuide(guideOpts.topics);
+        guideContent = buildPricingGuide(embedKeys);
       } else {
         const currentGuide = fs.readFileSync(pricingGuidePath, 'utf8');
         let isMarkerGuide = true;
@@ -153,9 +161,9 @@ export async function runEstimate(targetBase, opts = {}) {
           isMarkerGuide = false;
         }
         if (!isMarkerGuide) {
-          guideContent = buildPricingGuide(guideOpts.topics);
+          guideContent = buildPricingGuide(embedKeys);
         } else {
-          guideContent = embedTopicSections(currentGuide, guideOpts.topics);
+          guideContent = embedTopicSections(currentGuide, embedKeys);
           const refreshed = refreshPricingGuideBase(buildPricingGuide([]), guideContent);
           if (normalizeEmbeddedGuide(refreshed) !== normalizeEmbeddedGuide(guideContent)) {
             if (json) {
