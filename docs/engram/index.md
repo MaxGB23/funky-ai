@@ -40,4 +40,6 @@ Directorio unificado de conocimientos, decisiones y patrones.
 - [[SESSION][add-engram-categories] Implementación de categorías Session y Release](./session/add-engram-categories-20260723.md)
 
 
+- [[docs-sync-assess] Se ejecutó sdd-docs-sync. Se actualizó docs/funky-forge/assess.md y su índice eliminando arquitectura-review.md para espejar la realidad del CLI (deprecated). estimate.md verificado, coincide perfecto con el CLI. No hay cambios estructurales en repo-map.](./session/docs-sync-assess.md)
+
 ## Release
