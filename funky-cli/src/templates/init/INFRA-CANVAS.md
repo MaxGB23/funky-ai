@@ -3,6 +3,8 @@
 > Documento de decisiones operativas del proyecto: define cómo se ejecuta y despliega el producto.
 > Completa cada campo con la decisión tomada y su justificación, después de leer `canvas-planning-guide.md`.
 
+> 💡 *Si aplica* — Completa las secciones solo si aplica al proyecto, si no, responde "No aplica".
+
 ## 1. Base de Datos / ORM
 <!-- Qué registrar: base de datos y ORM elegidos, y su impacto en latencia, escalabilidad y costo.
      Ej: PostgreSQL + Prisma — Se necesitan transacciones ACID y migrations con type safety. -->

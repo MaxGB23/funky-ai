@@ -3,6 +3,8 @@
 > Documento de decisiones técnicas de la aplicación: define el **CÓMO** se construye el producto.
 > Completa cada campo con la decisión tomada y su justificación, después de leer `canvas-planning-guide.md`.
 
+> 💡 *Si aplica* — Completa las secciones solo si aplica al proyecto, si no, responde "No aplica".
+
 ## 1. Framework Base
 <!-- Qué registrar: framework elegido y la necesidad que resuelve (SSR, SPA, SSG, etc.).
      Ej: Next.js (App Router) — Se necesita SSR para SEO y performance en el dashboard. -->
@@ -19,7 +21,6 @@
 [Responde aquí]
 
 ## 4. Estrategia UI
-> 💡 *Si aplica* — Completa esta sección solo si el proyecto tiene una librería de UI o design system definido.
 <!-- Qué registrar: herramienta de estilos elegida y el motivo.
      Ej: Tailwind + shadcn/ui — Componentes headless con utility-first para desarrollo rápido. -->
 [Responde aquí]
