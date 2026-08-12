@@ -18,7 +18,7 @@ Lee los archivos del proyecto, en este orden:
 1. `docs/funky-ai/canvas/brief-funcional.md` — contexto de **negocio**: qué se construye, para quién, casos de uso, KPIs y escala esperada. Léelo PRIMERO y es OBLIGATORIO: los NFRs y los riesgos dependen de entender la realidad del negocio.
 2. `docs/funky-ai/canvas/PROJECT-CANVAS.md` — decisiones de la **aplicación**: framework, patrón arquitectónico, gestión de estado, UI y testing.
 3. `docs/funky-ai/canvas/INFRA-CANVAS.md` — decisiones **operativas**: base de datos, autenticación, calidad de código y despliegue.
-4. `docs/funky-ai/assess/risk-patterns.md` — patrones de riesgo de **referencia**: pueden no aplicar a este proyecto.
+4. `docs/funky-ai/assess/risk-patterns.md` — patrones de riesgo de **referencia**: úsalo al FINAL de tu análisis como checklist de completitud (read-only, no lo editas).
 
 Si falta alguno de los archivos referenciados (por ejemplo, `brief-funcional.md`), señálalo y PREGUNTA el contexto al humano. Jamás lo inventes.
 
@@ -26,12 +26,11 @@ Si falta alguno de los archivos referenciados (por ejemplo, `brief-funcional.md`
 
 1. **Leer el brief funcional** y resumir en una línea: usuarios, caso de uso principal, KPIs y escala.
 2. **Leer ambos canvases** y mapear cada decisión técnica contra el contexto de negocio del brief.
-3. **Evaluación holística**: analiza los archivos al mismo tiempo, como un solo sistema. Busca:
-   - Incompatibilidades entre decisiones (framework + autenticación, base de datos + escala, patrón + complejidad real).
-   - **Auditoría Estructural de Complejidad**: No ignores patrones complejos (ej. multi-tenancy, concurrencia, integraciones), audítalos activamente buscando bugs arquitectónicos graves (ej. falta de aislamiento de datos). El costeo lo hará estimate.
-   - **Sobreingeniería**: decisiones que exceden lo que el producto necesita (por ejemplo, microservicios, colas o caching distribuido para un CRUD interno de pocos usuarios).
-   - **Subdimensionamiento**: un stack demasiado corto para las expectativas del producto (por ejemplo, sin autenticación cuando el brief exige roles y datos sensibles).
-   - **Hipótesis de negocio dudosas**: metas, KPIs o supuestos de escala que chocan con la arquitectura elegida o con la realidad operativa.
+3. **Evaluación holística**: analiza los archivos al mismo tiempo, como un solo sistema. Audita bajo los **4 ejes**:
+   - **Eje 1: Incompatibilidades estructurales**: bugs, deploy roto, bloqueos de escala (ej. framework + auth no embonan). Valida la viabilidad técnica de requisitos complejos (multi-tenancy, concurrencia, seguridad).
+   - **Eje 2: Sobreingeniería**: el stack excede el volumen y KPIs del brief (matar moscas a cañonazos, ej. microservicios para un CRUD interno).
+   - **Eje 3: Decisiones de datos incorrectas**: fallas graves (ej. falta de aislamiento de datos), subdimensionamiento o stacks que se quedan cortos.
+   - **Eje 4: Hipótesis de negocio dudosas**: metas, KPIs o supuestos de escala que chocan con la arquitectura elegida o con la realidad operativa.
 4. **Discusión socrática** con el humano, un punto a la vez (ver reglas).
 5. **Cierre**: confirmar que las decisiones aprobadas quedaron registradas en `architecture-decisions.md` (ver reglas).
 
@@ -61,4 +60,4 @@ Cuando el humano haya aprobado o ajustado todos los puntos:
 
 ## Inicio
 
-Lee `brief-funcional.md` primero, luego los dos canvases y después `risk-patterns.md`. Cuando termines, presenta el PRIMER punto de discusión y espera mi respuesta.
+Lee `brief-funcional.md` primero y luego los dos canvases. Realiza tu evaluación interna y, al FINAL, usa `risk-patterns.md` como checklist de completitud para asegurar que no olvidaste nada. Cuando termines, presenta el PRIMER punto de discusión y espera mi respuesta.
