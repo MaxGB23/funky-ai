@@ -154,7 +154,7 @@ describe('Templates de estimate — Fase A (checklist M1/M2/M3)', () => {
     const content = fs.readFileSync(guidePath, 'utf8');
     const costos = content.split('### 3. Factores de Costo del MVP')[1]?.split('### 4.')[0] || '';
 
-    expect(costos).toContain('Tarifas base por rol');
+    expect(costos).toContain('TARIFAS BASE DE FALLBACK');
     expect(costos).toContain('| Junior | 20–35 |');
     expect(costos).toContain('| Semi Senior / Mid | 35–55 |');
     expect(costos).toContain('| Senior | 55–85 |');
