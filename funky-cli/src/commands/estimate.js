@@ -113,6 +113,10 @@ export async function runEstimate(targetBase, opts = {}) {
       ...(guideOpts.pricingTeam ? [TEAM_COST_KEY] : []),
     ];
 
+    if (guideOpts.pricingTeam) {
+      warn('⚠️  ALERTA: Detecté la flag --pricing-team. Abre docs/funky-ai/estimate/pricing-guide.md, busca la sección "Rangos Reales del Equipo" y llena la tabla con tus costos reales ANTES de darle luz verde a la IA.');
+    }
+
     // Warn si --brief <path> no existe (R7): el dominio vuelve al checklist
     // (usedFallback); acá se avisa al usuario con la misma condición de base
     // (ruta resuelta contra targetBase == cwd del CLI).
