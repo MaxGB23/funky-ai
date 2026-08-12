@@ -26,12 +26,12 @@
 > **Alcance y Criterio de Éxito:** Transformar el archivo de una lista plana a un framework estructurado por los 4 ejes de riesgo arquitectónico.
 > 🛑 **PROHIBIDO:** Ser usado como temario de discusión al inicio (sesga a la IA) o ser editado dinámicamente por la IA.
 
-- [ ] **Reestructurar documento:** Cambiar la estructura actual de lista plana y agrupar los riesgos bajo los **4 Ejes de Validación Arquitectónica**: *(Ref: `risk-patterns-propuesta.md`)*
+- [x] **Reestructurar documento:** Cambiar la estructura actual de lista plana y agrupar los riesgos bajo los **4 Ejes de Validación Arquitectónica**: *(Ref: `risk-patterns-propuesta.md`)*
   - Eje 1: Sobreingeniería.
   - Eje 2: Decisión de datos incorrecta.
   - Eje 3: Incompatibilidades estructurales.
   - Eje 4: Hipótesis de negocio dudosas.
-- [ ] **Clarificar su uso:** Añadir la aclaración de que el archivo se lee al final como un *checklist de completitud interno* (para no sesgar el análisis) y que es estrictamente *Read-Only*. *(Ref: `observaciones.md` Punto 3 / `risk-patterns-propuesta.md`)*
+- [x] **Clarificar su uso:** Añadir la aclaración de que el archivo se lee al final como un *checklist de completitud interno* (para no sesgar el análisis) y que es estrictamente *Read-Only*. *(Ref: `observaciones.md` Punto 3 / `risk-patterns-propuesta.md`)*
 
 ## 4. Fase Estimate (`docs/funky-ai/estimate/estimate-prompt.md` y `pricing-guide.md`)
 > **Alcance y Criterio de Éxito:** El prompt debe cobrar el esfuerzo de implementar la complejidad técnica previamente validada (El CUÁNTO).
