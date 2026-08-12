@@ -55,7 +55,7 @@
 ## ⏳ Tareas Pendientes
 
 - [ ] **Revisar mezcla de responsabilidades en `estimateDomain.js` + política de tests compactados (post-refactor-canvas):** `estimateDomain.js` (408 líneas) mezcla tres responsabilidades: ruta legacy (`generatePricingGuide`, `buildOptionalSections` — solo la usan tests), mecanismo de marcadores Fase 2 (`embedTopicSections`, `detectEmbeddedTopics`, `refreshPricingGuideBase`) y constantes de dominio (`TOPICS`, `DISPLAY_NAMES`, `TEAM_COST_KEY`). La regla ≤500 líneas del meta-test `organization.test.js` empujó a compactar los tests del fix `--pricing-team` (obs 471 engram): no se perdió cobertura de contrato (R10/R10.2 cubiertos en integración), pero sí granularidad de diagnóstico. A decidir juntos: (a) extraer el mecanismo de incrustación de la zona a un módulo propio (recupera granularidad de tests sin pelear con el límite), (b) dejar claro en rules (skill `vitest` / `AGENTS.md`) la política: cuándo la compactación es aceptable (sin perder contrato) vs. cuándo extraer módulo, y si el límite de 500 líneas necesita matices.
-
+- [ ] **Migrar aserciones frágiles de copy a Snapshot/Structural Testing (Deuda Técnica):** Se detectaron más de 190 aserciones usando `expect().toContain()` con textos estáticos/hardcodeados en plantillas (ej. en `templates.test.js`, `skills.test.js`, `skills.integration.test.js`, `secureYaml.test.js`). Esto viola la nueva `Assertion Strategy` (Anti-Brittle Tests) recién definida en la skill de Vitest. Tarea: Refactorizar estas pruebas para que usen `toMatchSnapshot()` en salidas enteras o que validen marcadores semánticos/nodos para que los tests sobrevivan a cambios de redacción.
 ---
 
 ## 🐛 Bugs Activos
