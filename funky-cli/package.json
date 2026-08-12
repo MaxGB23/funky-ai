@@ -1,7 +1,7 @@
 {
   "name": "funky-cli",
-  "version": "4.6.0",
-  "description": "",
+  "version": "4.7.0",
+  "description": "Funky AI - The Autonomous CLI",
   "type": "module",
   "main": "index.js",
   "bin": {

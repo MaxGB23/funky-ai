@@ -5,10 +5,10 @@
 ---
 
 ## 🏷️ Estado Actual
-- **Versión:** v4.6.0
+- **Versión:** v4.7.0
 - **Rama activa:** `main`
-- **Última sesión:** 2026-08-11
-- **Estado:** 🟢 Publicada. Release v4.6.0 (funky-secure v1 + refactor assess, PR #40): `funky secure doctor/init/check` — el estándar de hardening de dependencias pnpm del RFC `feature-secure.md` pasa de documento a CLI operativo (probe conductual, seed idempotente de `pnpm-workspace.yaml`, gate CI-ready). Docs sync post-merge: `secure.md` en SSOT con índice seccional, mención "Novedad" en README raíz, repo-map alineado. Refactor `funky assess` (architecture-review eliminado). PR #40 mergeado (`d57de04`).
+- **Última sesión:** 2026-08-12
+- **Estado:** 🟢 Publicada. Release v4.7.0 (refactor canvas-phase-1): reestructuración profunda en canvas, assess y estimate. El comando `assess` es ahora el juez arquitectónico definitivo, validado contra 4 ejes, eliminando `architecture-review.md`. `canvas` es un recolector pasivo. `estimate` mejoró su DX con manejo avanzado de tópicos, señales de severidad y reglas multiplicativas, sumando tests de dominio. Docs sync post-merge: `assess.md` alineado con CLI. Branch mergeada a main.
 
 ---
 
@@ -83,3 +83,4 @@
 | v4.4.0 | **MINOR** — refactor estimate M1-M12 (PR #36): flujo de 3 fases estrictas con contexto unificado; tarifas base por rol SIEMPRE en la guía; avisos correctivos; summary con estado por archivo (M10); costo del problema en init (M9); tabla de costo operativo mensual (M12); pricing-guide aditiva (M4). Docs sync post-merge incluido. Lanzado 2026-08-08. |
 | v4.5.0 | **MINOR** — rename scaffold→sdd install + scaffold agnóstico (PR #38): `funky sdd install` como nombre canónico del framework completo; `funky scaffold` como comando real agnóstico que instala solo 4 archivos base (README interpolado, ORCHESTRATOR-STATE, release-notes, 000-rfc-template), idempotente y sin deprecación; docs sync post-merge (scaffold.md en SSOT + índice seccional, repo-map). 344 tests / 28 archivos verdes. Lanzado 2026-08-09. |
 | v4.6.0 | **MINOR** — funky secure v1 (PR #40): `doctor` (diagnóstico conductual), `init` (seed idempotente de la política pnpm: 7 claves estándar, bloque AGENTS, baseline SHA-256 de hooks, `.gitignore`, pin packageManager; posturas fail-silent/fail-fast), `check` (gate CI-ready exit 0/1); normalización pnpm 10.x/11.x + dedup win32; refactor assess (architecture-review eliminado); docs sync post-merge (secure.md en SSOT, README "Novedad"). 412 tests / 34 archivos verdes. Lanzado 2026-08-11. |
+| v4.7.0 | **MINOR** — refactor canvas-phase-1: canvas es recolector pasivo, assess asume rol de juez arquitectónico definitivo validado contra 4 ejes (se elimina architecture-review.md). estimate mejora DX en tópicos, severidad y reglas multiplicativas. 412 tests verdes (más tests de integración/dominio agregados). Docs sync: assess.md alineado al CLI. Lanzado 2026-08-12. |
