@@ -273,6 +273,18 @@ describe('buildPricingGuide — 2.3a', () => {
     expect(guide).not.toMatch(/<!-- \/topic:[a-z0-9-]+ -->/);
   });
 
+  it('R10: con \'pricing-team\' incrusta la referencia de costos de equipo al final de la zona', () => {
+    const mf = {};
+    mf[TPL_PRICING_GUIDE_PATH] = DEFAULT_GUIDE_TEMPLATE;
+    addOptionalTemplates(mf);
+    applyMocks(mf);
+
+    const guide = buildPricingGuide(['roles', 'pricing-team']);
+    expect(guide).toContain('<!-- topic:pricing-team -->');
+    expect(guide).toContain(TEAM_COST_TEMPLATE);
+    expect(guide.indexOf('<!-- topic:roles -->')).toBeLessThan(guide.indexOf('<!-- topic:pricing-team -->'));
+  });
+
   it('valida el template base y lanza error de instalación claro si no tiene zona o header (1.2)', () => {
     const mf = {};
     mf[TPL_PRICING_GUIDE_PATH] = '# Guía sin zona ni header';
@@ -365,6 +377,23 @@ describe('embedTopicSections — 2.3b (aditivo, orden canónico)', () => {
     expect(zone.match(/## Paso Inicial/g) || []).toHaveLength(1);
     expect(zone.indexOf('## Paso Inicial')).toBeLessThan(zone.indexOf('<!-- topic:security -->'));
   });
+
+  it('R10: incrusta pricing-team sobre una guía existente, al final y sin duplicarlo', () => {
+    const mf = {};
+    addOptionalTemplates(mf);
+    applyMocks(mf);
+
+    const seeded = embedTopicIntoGuide(DEFAULT_GUIDE_TEMPLATE, 'roles', TOPIC_FRAGMENT_ROLES);
+    const once = embedTopicSections(seeded, ['security', 'roles', 'pricing-team']);
+
+    expect(once).toContain(TEAM_COST_TEMPLATE);
+    expect(once.indexOf('<!-- topic:roles -->')).toBeLessThan(once.indexOf('<!-- topic:security -->'));
+    expect(once.indexOf('<!-- topic:security -->')).toBeLessThan(once.indexOf('<!-- topic:pricing-team -->'));
+
+    const twice = embedTopicSections(once, ['pricing-team']);
+    expect(twice).toBe(once);
+    expect(twice.match(/<!-- topic:pricing-team -->/g)).toHaveLength(1);
+  });
 });
 
 describe('detectEmbeddedTopics — 2.3', () => {
@@ -382,6 +411,13 @@ describe('detectEmbeddedTopics — 2.3', () => {
 
   it('devuelve lista vacía cuando no hay topics incrustados', () => {
     expect(detectEmbeddedTopics(DEFAULT_GUIDE_TEMPLATE)).toEqual([]);
+  });
+
+  it('R10: detecta pricing-team por marcador exacto cuando está incrustado', () => {
+    const guide = embedTopicIntoGuide(DEFAULT_GUIDE_TEMPLATE, 'pricing-team', TEAM_COST_TEMPLATE);
+
+    const result = detectEmbeddedTopics(guide);
+    expect(result).toContain('pricing-team');
   });
 });
 
@@ -420,6 +456,23 @@ describe('refreshPricingGuideBase — 2.3e (reincrusta TODOS los topics)', () =>
     expect(result).toContain(TOPIC_FRAGMENT_ROLES);
     expect(result).not.toContain('<!-- topic:security -->');
     expect(result).not.toContain('<!-- topic:transactions -->\n<!-- /topic:transactions -->');
+  });
+
+  it('R10: refresca la base y reincrusta pricing-team detectado sin perderlo', () => {
+    const mf = {};
+    mf[TPL_PRICING_GUIDE_PATH] = DEFAULT_GUIDE_TEMPLATE;
+    addOptionalTemplates(mf);
+    applyMocks(mf);
+
+    const stale = embedTopicIntoGuide(
+      embedTopicIntoGuide(DEFAULT_GUIDE_TEMPLATE, 'roles', TOPIC_FRAGMENT_ROLES),
+      'pricing-team',
+      TEAM_COST_TEMPLATE
+    );
+
+    const result = refreshPricingGuideBase(DEFAULT_GUIDE_TEMPLATE, stale);
+    expect(result).toContain('<!-- topic:pricing-team -->');
+    expect(result).toContain(TEAM_COST_TEMPLATE);
   });
 });
 

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 vi.mock('fs', () => ({ ...fsMock, default: fsMock }));
 vi.mock('node:fs', () => ({ ...fsMock, default: fsMock }));
-import { fsMock, applyMocks, estimateMockFiles as createMockFiles, addCanvas, addDecisions, addOptionalTemplates, CWD, ESTIMATE_TPL_DIR as TPL_DIR, PRICING_GUIDE_DEST, CANVAS_PROJECT_CONTENT, CANVAS_INFRA_CONTENT, DECISIONS_CONTENT, DEFAULT_GUIDE_TEMPLATE, TOPIC_FRAGMENT_ROLES, TOPIC_FRAGMENT_SECURITY, TOPIC_FRAGMENT_MULTI_TENANT, embedTopicIntoGuide } from './helpers/fsMock.js';
+import { fsMock, applyMocks, estimateMockFiles as createMockFiles, addCanvas, addDecisions, addOptionalTemplates, CWD, ESTIMATE_TPL_DIR as TPL_DIR, PRICING_GUIDE_DEST, CANVAS_PROJECT_CONTENT, CANVAS_INFRA_CONTENT, DECISIONS_CONTENT, DEFAULT_GUIDE_TEMPLATE, TOPIC_FRAGMENT_ROLES, TOPIC_FRAGMENT_SECURITY, TOPIC_FRAGMENT_MULTI_TENANT, TEAM_COST_TEMPLATE, embedTopicIntoGuide } from './helpers/fsMock.js';
 import path from 'path';
 import fs from 'fs';
 import { estimateCommand } from '../src/commands/estimate.js';
@@ -346,6 +346,28 @@ describe('estimateCommand — determinismo y resumen (R13 + 2.2)', () => {
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
     expect(guide).not.toContain('## Brief Funcional');
+  });
+
+  it('R10: --pricing-team incrusta la referencia de costos de equipo en la guía', async () => {
+    standardMocks();
+
+    await estimateCommand.parseAsync(['--pricing-team'], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
+    expect(guide).toContain('<!-- topic:pricing-team -->');
+    expect(guide).toContain(TEAM_COST_TEMPLATE);
+  });
+
+  it('R10.2: sin --pricing-team la guía no contiene la referencia de costos de equipo', async () => {
+    standardMocks();
+
+    await estimateCommand.parseAsync(['--roles'], { from: 'user' });
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
+    expect(guide).not.toContain('<!-- topic:pricing-team -->');
+    expect(guide).not.toContain(TEAM_COST_TEMPLATE);
   });
 });
 

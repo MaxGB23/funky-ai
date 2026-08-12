@@ -1,3 +1,6 @@
+### Draft actualizado: estructura reducida de risk-patterns.md
+
+```markdown
 # Patrones de Riesgo de Referencia
 
 > Documento VIVO, editable por el equipo entre proyectos.
@@ -42,3 +45,4 @@
 
 - **KPI de activación agresivo sin onboarding** — el canvas no menciona tour ni reducción de fricción → los KPIs de activación dependen de la UX, no solo del stack.
 - **Escala proyectada vs. infra que escala a cero** — brief menciona alto volumen pero el INFRA-CANVAS no tiene estrategia de escala horizontal → ¿hay un plan de migración explícito?
+```

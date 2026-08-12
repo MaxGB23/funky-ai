@@ -13,6 +13,11 @@ const TOPICS_DIR = path.join(TEMPLATES_DIR, 'topics');
 // la guía corta de flags del template base es la única guía para decidir flags, sin
 // heurísticas de texto). TOPICS/DISPLAY_NAMES viven acá como orden canónico de los
 // 6 tópicos (topic key == flag name) hasta que 2.4 defina su hogar definitivo.
+// TODO(post-refactor-canvas, ORCHESTRATOR-STATE → Tareas Pendientes): este módulo
+// mezcla la ruta legacy (generatePricingGuide/buildOptionalSections, solo tests),
+// el mecanismo de marcadores Fase 2 y las constantes de dominio. Evaluar extraer
+// el mecanismo de incrustación de la zona a un módulo propio: recupera granularidad
+// de tests sin compactar contra el límite de 500 líneas (organization.test.js).
 export const TOPICS = [
   'roles',
   'multi-tenant',
@@ -30,6 +35,18 @@ export const DISPLAY_NAMES = {
   concurrency: 'Concurrencia',
   integrations: 'Integraciones',
 };
+
+// Key de la sección de referencia de costos de equipo (R10). NO es un topic
+// temático: no vive en topics/ sino en team-cost-reference-template.md, y se
+// incrusta al FINAL de la zona, después de los topics canónicos (orden del
+// design AD-3: ficha → brief → topics → team-cost). El CLI la solicita con la
+// flag --pricing-team.
+export const TEAM_COST_KEY = 'pricing-team';
+
+// Orden de incrustación de la zona: topics canónicos + referencia de equipo al
+// final. TOPICS se conserva puro (los 6 flags de topic del CLI); EMBED_ORDER es
+// el orden de emisión de la zona <!-- topics --> (no se exporta).
+const EMBED_ORDER = [...TOPICS, TEAM_COST_KEY];
 
 // Línea marcador de secciones opcionales, sola en su línea entre INFRA-CANVAS
 // y ## Estructura de Discusión. Con sections === '' la línea desaparece y la
@@ -141,6 +158,11 @@ export function generateTopicFragments(topics) {
 }
 
 function readTopicFragment(topic) {
+  // R10: la referencia de costos de equipo vive en un template propio (no en
+  // topics/). Mismo error claro de instalación que los fragmentos de topic.
+  if (topic === TEAM_COST_KEY) {
+    return readOptionalTemplate('team-cost-reference-template.md');
+  }
   const fragmentPath = path.join(TOPICS_DIR, `${topic}.md`);
   try {
     return fs.readFileSync(fragmentPath, 'utf8');
@@ -250,11 +272,12 @@ export function generateIAPromptFooter() {
 // Fase 2 (2.3): mecanismo de incrustación aditiva con marcadores XML.
 // pricing-guide.md es una GUÍA (no un derivado regenerable): la zona de
 // incrustación `<!-- topics --> ... <!-- /topics -->` envuelve los bloques
-// `<!-- topic:<key> --> ... <!-- /topic:<key> -->` de los topics incrustados en
-// orden canónico (Fase B M4: la zona SOLO contiene topics con contenido, sin
-// pares vacíos). El CLI detecta secciones existentes por marcador exacto (conjunto
-// cerrado de 6 topics, checklist 1.2), incrusta las nuevas SIN preguntar y
-// reincrusta todas al refrescar la base (contrato de feedback, decisión 2026-08-06).
+// `<!-- topic:<key> --> ... <!-- /topic:<key> -->` de las secciones incrustadas
+// en orden EMBED_ORDER (Fase B M4: la zona SOLO contiene secciones con
+// contenido, sin pares vacíos). El CLI detecta secciones existentes por marcador
+// exacto (conjunto cerrado: 6 topics + pricing-team, checklist 1.2), incrusta
+// las nuevas SIN preguntar y reincrusta todas al refrescar la base (contrato de
+// feedback, decisión 2026-08-06).
 const TOPIC_ZONE_OPEN = '<!-- topics -->';
 const TOPIC_ZONE_CLOSE = '<!-- /topics -->';
 const TOPIC_BLOCK_OPEN = (key) => `<!-- topic:${key} -->`;
@@ -310,11 +333,12 @@ function parseTopicZone(zoneContent) {
 }
 
 /**
- * Guía fresca desde pricing-guide-template.md con los topics solicitados ya
- * incrustados. Valida el template base (error claro de instalación si falta la
+ * Guía fresca desde pricing-guide-template.md con las secciones solicitadas ya
+ * incrustadas. Valida el template base (error claro de instalación si falta la
  * zona o el header de discusión).
  *
- * @param {string[]} topics Topics en orden canónico (TOPICS.filter del CLI).
+ * @param {string[]} topics Secciones en orden de emisión (topic keys canónicos
+ * del CLI y/o TEAM_COST_KEY; los topic keys respetan EMBED_ORDER).
  * @returns {string} Guía declarativa lista para escribir.
  */
 export function buildPricingGuide(topics) {
@@ -326,11 +350,13 @@ export function buildPricingGuide(topics) {
 /**
  * Aditivo puro: incrusta SOLO las secciones de topic faltantes sobre una guía
  * existente, conservando todo lo demás (secciones previas, anotaciones fuera de
- * los marcadores, guía corta de flags). Orden canónico (TOPICS). Sin topics
- * nuevos devuelve el contenido intacto (idempotente).
+ * los marcadores, guía corta de flags). Orden de emisión: EMBED_ORDER (topics
+ * canónicos + pricing-team al final). Sin secciones nuevas devuelve el contenido
+ * intacto (idempotente).
  *
  * @param {string} guideContent Guía existente (o template fresco).
- * @param {string[]} topics Topics solicitados en esta corrida.
+ * @param {string[]} topics Secciones solicitadas en esta corrida (topic keys
+ * canónicos y/o TEAM_COST_KEY).
  * @returns {string}
  */
 export function embedTopicSections(guideContent, topics) {
@@ -352,15 +378,15 @@ export function embedTopicSections(guideContent, topics) {
   }
 
   const zoneBody = [zonePrefix];
-  for (const key of TOPICS) {
+  for (const key of EMBED_ORDER) {
     const existing = blocks.get(key);
     if (existing && existing.content.trim() !== '') {
       zoneBody.push(existing.full);
     } else if (requested.includes(key)) {
       zoneBody.push(`\n${TOPIC_BLOCK_OPEN(key)}\n${readTopicFragment(key)}${TOPIC_BLOCK_CLOSE(key)}`);
     }
-    // Fase B M4: los topics no solicitados NO dejan pares de marcadores vacíos;
-    // la zona solo contiene topics con contenido.
+    // Fase B M4: las secciones no solicitadas NO dejan pares de marcadores vacíos;
+    // la zona solo contiene secciones con contenido.
   }
   zoneBody.push(zoneSuffix);
 

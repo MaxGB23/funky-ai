@@ -18,7 +18,7 @@ Si falta alguno de los archivos referenciados, señálalo y PREGUNTA el contexto
 <!-- topics -->
 ## Paso Inicial: Recomienda las Flags y sus Buffers
 
-Tras analizar el contexto en silencio (Fase 1), la IA decide PRIMERO qué flags recomienda para este proyecto y por qué, usando la guía corta de abajo. Después de cada flag recomendada, propone su **buffer de contingencia**: un porcentaje entre +10% y +25% sobre el costo base, con justificación basada en el proyecto (nunca un número fijo). Las flags son defensa contra la sobreingeniería: si una no aplica, no se recomienda ni se cotiza.
+Tras analizar el contexto en silencio (Fase 1), la IA decide PRIMERO qué flags recomienda para este proyecto y por qué, usando la guía corta de abajo. Después de cada flag recomendada, propone su **buffer de contingencia** usando la instrucción activa de cada flag. Las flags son defensa contra la sobreingeniería: si una no aplica, no se recomienda ni se cotiza.
 
 **DETENTE por completo** después de proponer las flags y sus buffers: pide al humano que las inyecte con `funky estimate --flag`. NO inicies la discusión de pricing hasta que las haya inyectado y te dé luz verde (Fase 3).
 
@@ -32,7 +32,7 @@ Tras analizar el contexto en silencio (Fase 1), la IA decide PRIMERO qué flags 
 | `--security` | Si hay autenticación, datos sensibles, cumplimiento (GDPR) o exposición pública. |
 | `--concurrency` | Si hay colas, workers, procesamiento en background o picos de carga concurrente. |
 | `--integrations` | Si se integra con sistemas externos (webhooks, APIs de terceros, CRM, ERP, pagos). |
-| `--pricing-team` | Si se necesita dimensionar el equipo y usar sus rangos de costo REALES (reemplazan las tarifas base por rol de la sección 3; referencia, no calculadora). |
+| `--pricing-team` | Si se necesita dimensionar el equipo y usar rangos REALES. **(IA: Si recomiendas esta flag, ADVIERTE explícitamente al humano que, una vez inyectada la flag, debe llenar la tabla (sección <!-- topic:pricing-team -->) de costos con valores reales ANTES de darte luz verde para continuar).** |
 
 <!--
   Zona de incrustación de topics, gestionada por `funky estimate` (no editar a mano).
@@ -74,12 +74,12 @@ Pregunta y aplica estas cuatro variables durante la discusión:
 
 - **Infraestructura**: hosting, servicios, herramientas.
 - **Complejidad técnica**: stack, integraciones, deuda técnica.
-- **Equipo**: seniority, tamaño, dedicación. Para el Costo Base usa las tarifas base por rol de la tabla de abajo (referencia, edición profesional). Si se incluyó la sección de `--pricing-team`, usa los rangos REALES del equipo de esa sección: reemplazan a las tarifas base, no se usan ambas.
+- **Equipo**: seniority, tamaño, dedicación. **REGLA CRÍTICA:** Si se incluyó la sección de `--pricing-team` en el contexto, **IGNORA POR COMPLETO** la tabla de tarifas de abajo y usa exclusivamente los rangos reales de esa sección. Solo usa la tabla de abajo si `--pricing-team` no está presente.
 - **Timeline**: urgencia, hitos, mantenimiento post-lanzamiento.
 
-#### Tarifas base por rol (USD/hora, edición profesional)
+#### ⚠️ TARIFAS BASE DE FALLBACK (USAR SOLO SI NO HAY --pricing-team)
 
-| Rol | Tarifa base (USD/h) |
+| Seniority | Tarifa base (USD/h) |
 |-----|---------------------|
 | Junior | 20–35 |
 | Semi Senior / Mid | 35–55 |
@@ -103,7 +103,9 @@ Se estiman como **costo mensual (OpEx) aparte** y NO se suman al precio de venta
 
 ### 5. Buffers de Contingencia
 
-Por cada flag recomendada en el paso inicial, valida su buffer dentro del rango **+10% a +25%**, con justificación basada en el proyecto. El buffer acumulado se suma al Costo Base para cubrir el riesgo.
+Por cada flag recomendada en el paso inicial, valida su buffer dentro del rango especificado en la sección de esa flag, con justificación basada en el proyecto. El buffer acumulado se suma al Costo Base para cubrir el riesgo.
+
+> **Regla de Interacción Multiplicativa:** Cuando se activen ≥2 flags del grupo de alto riesgo (`--transactions`, `--multi-tenant`, `--concurrency`), los buffers individuales subestiman la complejidad porque se multiplican entre sí. DEBES aplicar un escalón adicional al buffer combinado y justificarlo.
 
 ### 6. Tabla de Cotización Final
 

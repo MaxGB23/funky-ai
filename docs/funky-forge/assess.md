@@ -2,7 +2,7 @@
 
 ## ¿Qué problema resuelve?
 
-Evalúa el stack tecnológico del proyecto, facilita la discusión arquitectónica y genera una guía para documentar decisiones. La guía (`architecture-review.md`) es una agenda **declarativa**: referencia los archivos del proyecto (`brief-funcional.md`, `PROJECT-CANVAS.md`, `INFRA-CANVAS.md`, `risk-patterns.md`) en lugar de incrustar su contenido, y se acompaña de un prompt (`assess-prompt.md`) para pegar como primer mensaje en la sesión de IA. El análisis real de riesgos lo hace la IA durante la discusión, no el CLI.
+Evalúa el stack tecnológico del proyecto, facilita la discusión arquitectónica y genera un prompt y un template para documentar decisiones. El prompt (`assess-prompt.md`) sirve como primer mensaje en la sesión de IA e instruye al agente a leer y analizar pasivamente los documentos fundacionales (`brief-funcional.md`, `PROJECT-CANVAS.md`, `INFRA-CANVAS.md`, `risk-patterns.md`). El análisis real de riesgos y la arquitectura final la evalúa la IA durante la discusión asumiendo su rol de juez arquitectónico, no el CLI.
 
 ## ¿Cuándo usarlo standalone?
 
@@ -27,7 +27,6 @@ Evalúa el stack tecnológico del proyecto, facilita la discusión arquitectóni
 |---|---|---|
 | PROJECT-CANVAS.md | `docs/funky-ai/canvas/` | Contexto del proyecto, stack, equipo (referenciado, no incrustado) |
 | INFRA-CANVAS.md | `docs/funky-ai/canvas/` | Infraestructura elegida, costos, SLA (referenciado, no incrustado) |
-| architecture-review-template.md | `templates/assess/` | Esqueleto declarativo de la guía con 6 fases |
 | assess-prompt-template.md | `templates/assess/` | Prompt para pegar como primer mensaje en la sesión de IA |
 | architecture-decisions-template.md | `templates/assess/` | Template para documentar decisiones |
 | risk-patterns-template.md | `templates/assess/` | Template inicial de patrones de riesgo de referencia |
@@ -40,7 +39,6 @@ Evalúa el stack tecnológico del proyecto, facilita la discusión arquitectóni
 
 | Output | Condición | Descripción |
 |---|---|---|
-| `docs/funky-ai/assess/architecture-review.md` | Siempre (sobrescribe si existe) | Guía de discusión declarativa: referencia brief, canvases y `risk-patterns.md`, sin incrustar su contenido |
 | `docs/funky-ai/assess/assess-prompt.md` | Se crea si no existe; si existe, Y/N interactivo | Prompt para pegar como primer mensaje de la sesión con la IA |
 | `docs/funky-ai/assess/architecture-decisions.md` | Solo si no existe | Template para documentar decisiones durante la sesión (con `{{DATE}}` reemplazado) |
 | `docs/funky-ai/assess/risk-patterns.md` | Solo si no existe | Patrones de riesgo de referencia, editables por el equipo |
@@ -57,20 +55,9 @@ Evalúa el stack tecnológico del proyecto, facilita la discusión arquitectóni
 
 Sin terminal (CI): default `n` logueado — no se sobrescriben guías sin input humano. "El usuario decidió no actualizar" nunca es un error.
 
-### architecture-review.md
-
-Guía declarativa que **referencia** los archivos del proyecto (brief, canvases, `risk-patterns.md`) en lugar de incrustar su contenido. Se regenera en cada ejecución. Estructura en 6 fases:
-
-1. **Contexto y NFRs**: Confirmar stack y evaluar cada NFR explícitamente; los patrones de referencia son condicionales.
-2. **Preocupaciones del equipo**: Riesgos percibidos por el equipo.
-3. **Preguntas guía**: Preguntas estándar (presupuesto, concurrencia, SLA) a plantear cuando apliquen.
-4. **Riesgos con validación cruzada**: La IA analiza el stack completo y lo choca contra el brief para detectar incompatibilidades, sobreingeniería o un stack corto.
-5. **Alternativas**: Propuestas con pros/cons para cada riesgo.
-6. **Acuerdos**: Documentar decisiones finales.
-
 ### assess-prompt.md
 
-Prompt para pegar como primer mensaje de la sesión con la IA. Instruye leer los archivos en orden (brief primero, luego canvases, `architecture-review.md` y `risk-patterns.md`), discutir un punto a la vez y anotar cada decisión aprobada en `architecture-decisions.md`. Si alguno de los archivos referenciados falta, el prompt indica señalar y preguntar al humano, jamás inventarlo.
+Prompt para pegar como primer mensaje de la sesión con la IA. Instruye leer los archivos en orden (brief primero, luego canvases, y `risk-patterns.md`), discutir un punto a la vez y anotar cada decisión aprobada en `architecture-decisions.md`. Si alguno de los archivos referenciados falta, el prompt indica señalar y preguntar al humano, jamás inventarlo.
 
 ### architecture-decisions.md
 
@@ -116,16 +103,12 @@ Los patrones son **candidatos a evaluar, no riesgos confirmados**: la IA los eva
 │     └── assess-prompt.md (kind 'guide')                     │
 │         └── si existe → Y/N (TTY); sin TTY default 'n'      │
 │                                                             │
-│  5. architecture-review.md (guía GENERADA)                  │
-│     └── se escribe tal cual el template, sin interpolación  │
-│         └── Sobrescribe si existe (siempre se regenera)     │
-│                                                             │
-│  6. Surface Risk Patterns (solo metadata)                   │
+│  5. Surface Risk Patterns (solo metadata)                   │
 │     └── surfaceRiskPatterns(targetBase, templateContent)    │
 │         └── lee risk-patterns.md del proyecto               │
 │             └── {content, patterns} → solo patterns al ctx  │
 │                                                             │
-│  7. Write Context (si --context)                            │
+│  6. Write Context (si --context)                            │
 │     └── updatePhaseState(ctx, 'assess', {                   │
 │     │       status: 'completed',                            │
 │     │       finishedAt, durationMs, artifacts,              │
@@ -133,7 +116,7 @@ Los patrones son **candidatos a evaluar, no riesgos confirmados**: la IA los eva
 │     │       decisionsFile })                                │
 │     └── writeContext(targetBase, ctx)                       │
 │                                                             │
-│  8. Summary + Próximos pasos                                │
+│  7. Summary + Próximos pasos                                │
 │     └── "Material de assess listo: N creados, M conservados"│
 │         + estado por archivo (generado/creado/conservado)   │
 │         + pegar assess-prompt.md como primer mensaje        │

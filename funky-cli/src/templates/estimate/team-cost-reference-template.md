@@ -2,6 +2,18 @@
 
 > Sección de referencia (flag `--pricing-team`): NO calcula presupuestos. ENRIQUECE la guía: los rangos reales del equipo definidos acá reemplazan a las tarifas base por rol de la guía al calcular el Costo Base. Sin esta sección se usan las tarifas base de la guía; con esta sección se usan estos rangos reales (no se combinan).
 
+### Rangos Reales del Equipo (Llenar antes de la sesión)
+
+> ⚠️ **ATENCIÓN HUMANO:** Reemplaza estos valores de ejemplo con los costos o salarios mensuales reales de tu equipo ANTES de ejecutar el comando. El LLM usará estos números exactos.
+
+| Rol | Seniority | Costo Mensual / Hora (USD) |
+|----------|-----------|----------------------------|
+| Frontend | Senior | $0.00 |
+| Backend | Semi Senior | $0.00 |
+| QA | Mid | $0.00 |
+| PM | Senior | $0.00 |
+| UX/UI | Mid | $0.00 |
+
 ### Fórmula de referencia
 
 Costo por rol = rol × seniority × dedicación × duración
