@@ -18,7 +18,7 @@ Si falta alguno de los archivos referenciados, señálalo y PREGUNTA el contexto
 <!-- topics -->
 ## Paso Inicial: Recomienda las Flags y sus Buffers
 
-Tras analizar el contexto en silencio (Fase 1), la IA decide PRIMERO qué flags recomienda para este proyecto y por qué, usando la guía corta de abajo. Después de cada flag recomendada, propone su **buffer de contingencia**: un porcentaje entre +10% y +25% sobre el costo base, con justificación basada en el proyecto (nunca un número fijo). Las flags son defensa contra la sobreingeniería: si una no aplica, no se recomienda ni se cotiza.
+Tras analizar el contexto en silencio (Fase 1), la IA decide PRIMERO qué flags recomienda para este proyecto y por qué, usando la guía corta de abajo. Después de cada flag recomendada, propone su **buffer de contingencia** usando la instrucción activa de cada flag. Las flags son defensa contra la sobreingeniería: si una no aplica, no se recomienda ni se cotiza.
 
 **DETENTE por completo** después de proponer las flags y sus buffers: pide al humano que las inyecte con `funky estimate --flag`. NO inicies la discusión de pricing hasta que las haya inyectado y te dé luz verde (Fase 3).
 
@@ -103,7 +103,9 @@ Se estiman como **costo mensual (OpEx) aparte** y NO se suman al precio de venta
 
 ### 5. Buffers de Contingencia
 
-Por cada flag recomendada en el paso inicial, valida su buffer dentro del rango **+10% a +25%**, con justificación basada en el proyecto. El buffer acumulado se suma al Costo Base para cubrir el riesgo.
+Por cada flag recomendada en el paso inicial, valida su buffer dentro del rango especificado en la sección de esa flag, con justificación basada en el proyecto. El buffer acumulado se suma al Costo Base para cubrir el riesgo.
+
+> **Regla de Interacción Multiplicativa:** Cuando se activen ≥2 flags del grupo de alto riesgo (`--transactions`, `--multi-tenant`, `--concurrency`), los buffers individuales subestiman la complejidad porque se multiplican entre sí. DEBES aplicar un escalón adicional al buffer combinado y justificarlo.
 
 ### 6. Tabla de Cotización Final
 

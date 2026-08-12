@@ -42,3 +42,10 @@
 | **Total Mensual Estimado** | **~$ / mes** |
 
 > El cliente puede pagar la infraestructura directamente a los proveedores. Este costo operativo (OpEx) no se incluye en la factura de desarrollo.
+
+## Resumen Ejecutivo de la Cotización
+
+> (Generado por la IA al cerrar la sesión). Resumen narrativo del flujo (canvas → assess → estimate).
+> Sintetiza el modelo de pricing elegido y su justificación, las variables de negocio que influyeron en el número (solo las discutidas), y las flags activas con su buffer y razonamiento (si no hubo flags, se omite). No uses elementos genéricos de plantilla, documenta solo la realidad de este proyecto.
+
+[El resumen narrativo se insertará aquí]

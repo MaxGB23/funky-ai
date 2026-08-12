@@ -37,24 +37,24 @@
 > **Alcance y Criterio de Éxito:** El prompt debe cobrar el esfuerzo de implementar la complejidad técnica previamente validada (El CUÁNTO).
 > 🛑 **PROHIBIDO:** Reevaluar si la arquitectura es correcta o debatir el stack técnico elegido (eso ya lo validó **assess** y se definió en **canvas**).
 
-- [ ] **Respetar la arquitectura:** Reforzar que `estimate` asume las decisiones arquitectónicas como ya validadas y se limita a cobrar el esfuerzo de las mismas. *(Ref: `funky-phases.md` Fase 3)*
-- [ ] **Refactorizar inyectables de Flags (Prompt Augmentation):** Modificar los bloques HTML de los `topics` según el contenido definido en `flags-propuestas.md`: *(Ref: `observaciones.md` Punto 5 / `flags-propuestas.md`)*
-  - [ ] Añadir **señales de severidad** (leve vs. alto) a cada topic para que el LLM pueda posicionarse dentro del rango del buffer sin inventarlo. *(Ref: `flags-propuestas.md` §Criterio de diseño)*
-  - [ ] Añadir una **instrucción activa** al final de cada bloque con el guion de preguntas de calibración específico por flag. *(Ref: `flags-propuestas.md` — un bloque por flag)*
-  - [ ] **Ajustar rangos de buffer** en los topics según su riesgo real, en lugar del rango genérico (10-25%). Aplicar los siguientes pesos definidos en `flags-propuestas.md`:
+- [x] **Respetar la arquitectura:** Reforzar que `estimate` asume las decisiones arquitectónicas como ya validadas y se limita a cobrar el esfuerzo de las mismas. *(Ref: `funky-phases.md` Fase 3)*
+- [x] **Refactorizar inyectables de Flags (Prompt Augmentation):** Modificar los bloques HTML de los `topics` según el contenido definido en `flags-propuestas.md`: *(Ref: `observaciones.md` Punto 5 / `flags-propuestas.md`)*
+  - [x] Añadir **señales de severidad** (leve vs. alto) a cada topic para que el LLM pueda posicionarse dentro del rango del buffer sin inventarlo. *(Ref: `flags-propuestas.md` §Criterio de diseño)*
+  - [x] Añadir una **instrucción activa** al final de cada bloque con el guion de preguntas de calibración específico por flag. *(Ref: `flags-propuestas.md` — un bloque por flag)*
+  - [x] **Ajustar rangos de buffer** en los topics según su riesgo real, en lugar del rango genérico (10-25%). Aplicar los siguientes pesos definidos en `flags-propuestas.md`:
     - `--roles`: N/A (Solo calculadora base)
     - `--security`: +10% a +25%
     - `--integrations`: +10% a +30%
     - `--multi-tenant`: +15% a +30%
     - `--concurrency`: +15% a +35%
     - `--transactions`: +20% a +40% (El rey del riesgo)
-- [ ] **Estructura de Cotización (Base vs TCO):** Instruir al prompt para que desglose claramente la cotización separando: 1) Costo Base del MVP, 2) Buffers de Riesgo (flags), y 3) TCO recurrente mensual (como rubro separado). *(Ref: `funky-phases.md` Fase 3)*
-- [ ] **Variables de Negocio y Salida:** Asegurar que el prompt evalúe explícitamente el modelo de pricing (Fixed vs T&M) y el contexto geográfico, y que registre el desglose final en `pricing-decisions.md`. *(Ref: `funky-phases.md` Fase 3)*
-- [ ] **Buffers de interacción entre flags de alto riesgo:** Añadir en `pricing-guide.md` §5 (Buffers de Contingencia) la regla: cuando se activan ≥2 flags del grupo `--transactions`, `--multi-tenant`, `--concurrency`, aplicar un escalón adicional al buffer combinado y justificarlo. Los buffers individuales son aditivos pero la complejidad de estas combinaciones es multiplicativa. *(Ref: `flags-propuestas.md` §Nota interacciones multiplicativas)*
-- [ ] **Resumen narrativo de cierre en `pricing-decisions.md`:** Añadir al template un bloque de cierre e instruir al `estimate-prompt.md` para que lo genere al final del documento. Reglas críticas de la instrucción:
-  - [ ] El resumen documenta **solo lo que ocurrió en el flujo real de las 3 fases** (canvas → assess → estimate). No usa elementos genéricos de plantilla. Si un proyecto no activó ninguna flag, el resumen no menciona buffers.
-  - [ ] **Cierre de tabla MVP:** síntesis de las decisiones tomadas en la sesión: modelo de pricing elegido y su justificación, variables de negocio que influyeron en el número (solo las que se discutieron), y flags activas con su buffer y razonamiento. Si no hubo flags, se omite esa sección.
-  - [ ] **Cierre de tabla TCO:** solo si se discutió el costo operativo. Qué cubre, quién lo paga y bajo qué condición escala. Si el proyecto no tiene TCO relevante (ej. CRUD con localStorage), se omite o se declara explícitamente que no aplica.
+- [x] **Estructura de Cotización (Base vs TCO):** Instruir al prompt para que desglose claramente la cotización separando: 1) Costo Base del MVP, 2) Buffers de Riesgo (flags), y 3) TCO recurrente mensual (como rubro separado). *(Ref: `funky-phases.md` Fase 3)*
+- [x] **Variables de Negocio y Salida:** Asegurar que el prompt evalúe explícitamente el modelo de pricing (Fixed vs T&M) y el contexto geográfico, y que registre el desglose final en `pricing-decisions.md`. *(Ref: `funky-phases.md` Fase 3)*
+- [x] **Buffers de interacción entre flags de alto riesgo:** Añadir en `pricing-guide.md` §5 (Buffers de Contingencia) la regla: cuando se activan ≥2 flags del grupo `--transactions`, `--multi-tenant`, `--concurrency`, aplicar un escalón adicional al buffer combinado y justificarlo. Los buffers individuales son aditivos pero la complejidad de estas combinaciones es multiplicativa. *(Ref: `flags-propuestas.md` §Nota interacciones multiplicativas)*
+- [x] **Resumen narrativo de cierre en `pricing-decisions.md`:** Añadir al template un bloque de cierre e instruir al `estimate-prompt.md` para que lo genere al final del documento. Reglas críticas de la instrucción:
+  - [x] El resumen documenta **solo lo que ocurrió en el flujo real de las 3 fases** (canvas → assess → estimate). No usa elementos genéricos de plantilla. Si un proyecto no activó ninguna flag, el resumen no menciona buffers.
+  - [x] **Cierre de tabla MVP:** síntesis de las decisiones tomadas en la sesión: modelo de pricing elegido y su justificación, variables de negocio que influyeron en el número (solo las que se discutieron), y flags activas con su buffer y razonamiento. Si no hubo flags, se omite esa sección.
+  - [x] **Cierre de tabla TCO:** solo si se discutió el costo operativo. Qué cubre, quién lo paga y bajo qué condición escala. Si el proyecto no tiene TCO relevante (ej. CRUD con localStorage), se omite o se declara explícitamente que no aplica.
 
 ---
 
