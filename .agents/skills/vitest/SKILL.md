@@ -82,5 +82,6 @@ describe('math', () => {
 - Line caps: unit files ≤ 500 lines, integration/interactive files ≤ 800 lines.
 - Shared fs mocks and test helpers live in `tests/helpers/` (e.g. `tests/helpers/fsMock.js`), never duplicated across test files.
 - Test names describe the behavior the system must have (`creates the required files`), never the implementation (`should call copyFile`). When a test fails, its name must say which contract broke, not which function is invoked. Semantic rule — followed by convention, cannot be enforced mechanically by `tests/organization.test.js`.
+- **Assertion Strategy (Anti-Brittle Tests):** NEVER hardcode copy, exact wording or presentation strings (e.g. `expect(output).toContain('Exact Title')`) when testing templates, console outputs or UI. Use **Snapshot Testing** (`toMatchSnapshot()`) for full outputs, or validate **Structure/Behavior** using semantic markers, tokens, and logic branches. Tests MUST survive non-functional copywriting changes.
 - Enforcement: `tests/organization.test.js` (meta-test, runs with `pnpm test`) fails on rule violations; legacy debt is tracked in its `LEGACY_EXCEPTIONS` map (may be empty once debt is migrated) and must be removed when a file is migrated.
 
