@@ -84,3 +84,25 @@ The 'compactar vs extraer módulo' and snapshot rules MUST be documented in the 
 
 ## Requirement: Literal Markdown Assertion
 (Reason: Causes extreme test fragility and Developer Experience degradation as outlined in RFC template-testing-strategy).
+
+## Requirement: Coverage tooling installed and enforced
+The project MUST add `@vitest/coverage-v8@4.1.10` (exact, peer of `vitest@4.1.10`) as a devDependency. `pnpm test --coverage` MUST pass the configured thresholds (lines 60 / functions 60 / branches 50 / statements 60). The project SHOULD add a `coverage` script to `package.json` only if the first real coverage run passes; otherwise the deviation MUST be documented.
+
+### Scenario: Provider resolves and thresholds pass
+- GIVEN `@vitest/coverage-v8@4.1.10` installed
+- WHEN `pnpm test --coverage` runs
+- THEN the v8 provider loads without `ERR_MODULE_NOT_FOUND`
+- AND thresholds 60/60/50/60 are met
+
+### Scenario: Coverage script added only on green
+- GIVEN the first real coverage run passes all thresholds
+- WHEN the change completes
+- THEN `package.json` exposes a `coverage` script running the same suite
+
+### Scenario: Thresholds fail — script withheld
+- GIVEN the first real coverage run fails a threshold
+- WHEN the change completes
+- THEN no `coverage` script is added
+- AND the deviation is documented (conscious adjustment)
+
+(Note, archive 2026-08-16: this scenario is conditional — its precondition (a failed threshold) never occurred in the real run; it holds by the spec's decision rule: the `coverage` script exists ONLY because the first real run passed every threshold. Materialized evidence: Statements 91.11% (1262/1385), Branches 84.2% (645/766), Functions 95.42% (146/153), Lines 92.72% (1210/1305) vs thresholds 60/60/50/60 — all exceeded; `"coverage": "vitest run --coverage"` present in `package.json`.)
