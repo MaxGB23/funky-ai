@@ -21,26 +21,7 @@ describe('funky init — integración real (R1/R7)', () => {
   beforeEach(() => {
     exitSpy = vi.spyOn(process, 'exit').mockImplementation(code => {
       throw new Error(`exit ${code}`);
-  it('M10: con archivos pre-existentes el título matiza "listo: N creados, M conservados" y NO dice "Canvases creados"', async () => {
-    const target = path.join(rootTmp, 'm10-mixed');
-    const cd = canvasDir(target);
-    fs.mkdirSync(cd, { recursive: true });
-    fs.writeFileSync(path.join(cd, 'brief-funcional.md'), 'ORIGINAL USER', 'utf8');
-    fs.writeFileSync(path.join(cd, 'PROJECT-CANVAS.md'), 'ORIGINAL USER', 'utf8');
-
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    try {
-      await runInitIn('m10-mixed');
-
-      const logs = logSpy.mock.calls.map(c => String(c[0]));
-      expect(logs.some(l => l.includes('Canvases listos: 3 creados, 2 conservados'))).toBe(true);
-      expect(logs.some(l => l.includes('Canvases creados'))).toBe(false);
-      expect(exitSpy).not.toHaveBeenCalled();
-    } finally {
-      logSpy.mockRestore();
-    }
-  });
-});
+    });
     vi.spyOn(console, 'log').mockImplementation(() => {});
     vi.spyOn(console, 'error').mockImplementation(() => {});
     // Determinismo: el runner de vitest no es interactivo; forzamos no-TTY para
@@ -133,7 +114,7 @@ describe('funky init — integración real (R1/R7)', () => {
       }
 
       const logs = logSpy.mock.calls.map(c => String(c[0]));
-      expect(logs.some(l => l.includes('Contiene decisiones del proyecto') && l.includes('brief-funcional.md'))).toBe(true);
+      expect(logs.some(l => /Contiene decisiones del proyecto/.test(l) && l.includes('brief-funcional.md'))).toBe(true);
       expect(exitSpy).not.toHaveBeenCalled();
     } finally {
       logSpy.mockRestore();
@@ -160,10 +141,10 @@ describe('funky init — integración real (R1/R7)', () => {
       expect(fs.existsSync(path.join(cd, 'INFRA-CANVAS.md'))).toBe(true);
 
       const logs = logSpy.mock.calls.map(c => String(c[0]));
-      expect(logs.some(l => l.includes('Entorno no interactivo'))).toBe(true);
-      const skipLogs = logs.filter(l => l.includes('Omitiendo'));
-      expect(skipLogs.some(l => l.includes('canvas-planning-guide.md'))).toBe(true);
-      expect(skipLogs.some(l => l.includes('init-prompt.md'))).toBe(true);
+      expect(logs.some(l => /Entorno no interactivo/.test(l))).toBe(true);
+      // Las líneas ⚡ del motor son deterministas (solo basename): el golden
+      // prueba que AMBAS guías existentes se omiten con default n (2.6).
+      expect(logs.filter(l => l.startsWith('⚡'))).toMatchSnapshot();
       expect(exitSpy).not.toHaveBeenCalled();
     } finally {
       logSpy.mockRestore();
@@ -189,9 +170,31 @@ describe('funky init — integración real (R1/R7)', () => {
       }
 
       const logs = logSpy.mock.calls.map(c => String(c[0]));
-      expect(logs.some(l => l.includes('Entorno no interactivo'))).toBe(true);
-      expect(logs.some(l => l.includes('Contiene decisiones del proyecto'))).toBe(true);
-      expect(logs.some(l => l.includes('Salteando'))).toBe(false);
+      expect(logs.some(l => /Entorno no interactivo/.test(l))).toBe(true);
+      // 5 líneas ⚡ deterministas: 3 decisiones (recomendación completa) + 2
+      // guías (default n) — cubre "Contiene decisiones del proyecto" (2.8).
+      expect(logs.filter(l => l.startsWith('⚡'))).toMatchSnapshot();
+      expect(logs.some(l => /Salteando/.test(l))).toBe(false);
+      expect(exitSpy).not.toHaveBeenCalled();
+    } finally {
+      logSpy.mockRestore();
+    }
+  });
+
+  it('M10: con archivos pre-existentes el título matiza "listo: N creados, M conservados" y NO dice "Canvases creados"', async () => {
+    const target = path.join(rootTmp, 'm10-mixed');
+    const cd = canvasDir(target);
+    fs.mkdirSync(cd, { recursive: true });
+    fs.writeFileSync(path.join(cd, 'brief-funcional.md'), 'ORIGINAL USER', 'utf8');
+    fs.writeFileSync(path.join(cd, 'PROJECT-CANVAS.md'), 'ORIGINAL USER', 'utf8');
+
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    try {
+      await runInitIn('m10-mixed');
+
+      const logs = logSpy.mock.calls.map(c => String(c[0]));
+      expect(logs.some(l => /Canvases listos: 3 creados, 2 conservados/.test(l))).toBe(true);
+      expect(logs.some(l => /Canvases creados/.test(l))).toBe(false);
       expect(exitSpy).not.toHaveBeenCalled();
     } finally {
       logSpy.mockRestore();

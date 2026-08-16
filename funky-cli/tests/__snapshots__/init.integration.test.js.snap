@@ -1,0 +1,18 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`funky init — integración real (R1/R7) > guías pre-existentes sin TTY → default n (no sobrescribe), log neutro, exit 0 (2.6) 1`] = `
+[
+  "⚡ Omitiendo (ya existe): canvas-planning-guide.md",
+  "⚡ Omitiendo (ya existe): init-prompt.md",
+]
+`;
+
+exports[`funky init — integración real (R1/R7) > todo existe → decisiones con recomendación, guías con default n, "Salteando" NO aparece (2.8) 1`] = `
+[
+  "⚡ Omitiendo (ya existe): brief-funcional.md. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.",
+  "⚡ Omitiendo (ya existe): PROJECT-CANVAS.md. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.",
+  "⚡ Omitiendo (ya existe): INFRA-CANVAS.md. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.",
+  "⚡ Omitiendo (ya existe): canvas-planning-guide.md",
+  "⚡ Omitiendo (ya existe): init-prompt.md",
+]
+`;

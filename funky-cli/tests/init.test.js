@@ -82,7 +82,7 @@ describe('brief-funcional.md template (R6)', () => {
   });
 
   it('NO contiene [Responde aquí] (R6 — no infla countUnfilledSections)', () => {
-    expect(content).not.toContain('[Responde aquí]');
+    expect(content).not.toMatch(/\[Responde aquí\]/);
   });
 
   it('abre con el título `# 📋 BRIEF FUNCIONAL` y una intro que define "qué" y "para quién" (D4)', () => {
@@ -113,7 +113,7 @@ describe('docs/funky-forge/init.md (R9)', () => {
   it('el diagrama nombra runInit y la copia del brief (R9)', () => {
     const diagram = content.split('## Diagrama de flujo')[1].split('## canvas-planning-guide')[0];
 
-    expect(diagram).toContain('runInit({ templatesDir, targetBase })');
+    expect(diagram).toMatch(/runInit\(\{ templatesDir, targetBase \}\)/);
     expect(diagram).toMatch(/copy brief-funcional\.md/);
   });
 });
@@ -256,8 +256,9 @@ describe('init action — contrato de feedback por archivo (Fase 2, 2.1-2.6)', (
     expect(exitSpy).not.toHaveBeenCalled();
     expect(clackMock.confirm).not.toHaveBeenCalled();
     const logs = allLogs();
-    expect(logs.some(l => l.includes('Contiene decisiones del proyecto'))).toBe(true);
-    expect(logs.some(l => l.includes('elimínalo'))).toBe(true);
+    // Las líneas ⚡ del motor son deterministas (solo basename) y pinchan el
+    // contrato completo de la recomendación de decisiones (2.2): 3 omisiones.
+    expect(logs.filter(l => l.startsWith('⚡'))).toMatchSnapshot();
     // Las decisiones nunca se sobrescriben: copyFileSync solo se usó para las guías nuevas.
     const copyDests = sharedFsMock.copyFileSync.mock.calls.map(c => c[1]);
     expect(copyDests.some(d => d.includes('brief-funcional.md'))).toBe(false);
@@ -277,7 +278,7 @@ describe('init action — contrato de feedback por archivo (Fase 2, 2.1-2.6)', (
     expect(copyDests).toHaveLength(2);
     expect(copyDests.some(d => d.includes('canvas-planning-guide.md'))).toBe(true);
     expect(copyDests.some(d => d.includes('init-prompt.md'))).toBe(true);
-    expect(allLogs().some(l => l.includes('Actualizada'))).toBe(true);
+    expect(allLogs().some(l => /Actualizada/.test(l))).toBe(true);
   });
 
   it('todo existe + TTY + confirm=n → NO sobrescribe nada, decisión válida, exit 0 (2.3)', async () => {
@@ -290,8 +291,9 @@ describe('init action — contrato de feedback por archivo (Fase 2, 2.1-2.6)', (
     expect(exitSpy).not.toHaveBeenCalled();
     expect(clackMock.confirm).toHaveBeenCalledTimes(2);
     expect(sharedFsMock.copyFileSync).not.toHaveBeenCalled();
-    expect(allLogs().some(l => l.includes('Omitiendo'))).toBe(true);
-    expect(allLogs().some(l => l.includes('Contiene decisiones del proyecto'))).toBe(true);
+    const logs = allLogs();
+    // 5 líneas ⚡ deterministas: 3 decisiones (recomendación) + 2 guías (default n).
+    expect(logs.filter(l => l.startsWith('⚡'))).toMatchSnapshot();
   });
 
   it('todo existe + sin TTY → no pregunta, log de entorno no interactivo, no sobrescribe, exit 0 (2.6)', async () => {
@@ -304,8 +306,8 @@ describe('init action — contrato de feedback por archivo (Fase 2, 2.1-2.6)', (
     expect(clackMock.confirm).not.toHaveBeenCalled();
     expect(sharedFsMock.copyFileSync).not.toHaveBeenCalled();
     const logs = allLogs();
-    expect(logs.some(l => l.includes('Entorno no interactivo'))).toBe(true);
-    expect(logs.some(l => l.includes('Omitiendo'))).toBe(true);
+    expect(logs.some(l => /Entorno no interactivo/.test(l))).toBe(true);
+    expect(logs.some(l => /Omitiendo/.test(l))).toBe(true);
   });
 
   it('error real de I/O (EACCES) → mensaje claro y exit 1 (2.5)', async () => {
@@ -339,7 +341,7 @@ describe('init action — contrato de feedback por archivo (Fase 2, 2.1-2.6)', (
     await initCommand.parseAsync([], { from: 'user' });
 
     expect(exitSpy).not.toHaveBeenCalled();
-    expect(allLogs().some(l => l.includes('Entorno no interactivo'))).toBe(false);
+    expect(allLogs().some(l => /Entorno no interactivo/.test(l))).toBe(false);
     expect(sharedFsMock.copyFileSync).toHaveBeenCalledTimes(5);
   });
 
@@ -351,8 +353,8 @@ describe('init action — contrato de feedback por archivo (Fase 2, 2.1-2.6)', (
 
     expect(exitSpy).not.toHaveBeenCalled();
     const logs = allLogs();
-    expect(logs.some(l => l.includes('Nada que crear'))).toBe(true);
-    expect(logs.some(l => l.includes('Canvases creados'))).toBe(false);
+    expect(logs.some(l => /Nada que crear/.test(l))).toBe(true);
+    expect(logs.some(l => /Canvases creados/.test(l))).toBe(false);
   });
 
   it('TTY + guía existente → el Y/N advierte explícitamente que actualizar REEMPLAZA el contenido actual (0.4)', async () => {
@@ -365,10 +367,8 @@ describe('init action — contrato de feedback por archivo (Fase 2, 2.1-2.6)', (
     expect(clackMock.confirm).toHaveBeenCalledTimes(2);
     for (const call of clackMock.confirm.mock.calls) {
       const message = call[0].message;
-      expect(message).toContain('REEMPLAZA la actual');
-      expect(message).toContain('perderás el progreso previo');
-      expect(message).toContain('respaldo');
-      expect(message).not.toContain('¿Quieres actualizarla con la versión más reciente?');
+      // Mensaje Y/N determinista (solo varía el basename): golden por llamada.
+      expect(message).toMatchSnapshot();
     }
   });
 });
