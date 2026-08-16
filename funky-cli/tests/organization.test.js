@@ -30,7 +30,6 @@ const FRAGILE_DEBT = {
   'init.integration.test.js': 8,
   'engram.test.js': 7,
   'engram.integration.test.js': 5,
-  'estimateCommand.interactive.test.js': 4,
   'secureCommand.test.js': 4,
   'sdd.test.js': 3,
   'scaffold.integration.test.js': 2,
