@@ -199,7 +199,7 @@ describe('secureCommand — integración (R2-R11)', () => {
     const run1Count = run1.length; // snapshot: el array vive (run2 appendea)
     const ws1 = run1.find((c) => String(c[0]) === WORKSPACE_YAML_PATH);
     const wsWrite = String(ws1[1]);
-    expect(wsWrite).toContain('ignoreScripts: true');
+    expect(wsWrite).toMatch(/ignoreScripts: true/);
     // AGENTS.md ausente → creado desde template (R8).
     expect(run1.find((c) => String(c[0]) === AGENTS_PATH)).toBeTruthy();
     // State con posture + baseline (extensión de diseño: check la necesita).
@@ -235,9 +235,9 @@ describe('secureCommand — integración (R2-R11)', () => {
     const wsWrite = String(
       vi.mocked(fs.writeFileSync).mock.calls.find((c) => String(c[0]) === WORKSPACE_YAML_PATH)[1]
     );
-    expect(wsWrite).toContain('strictDepBuilds: true');
-    expect(wsWrite).toContain('onlyBuiltDependencies: []');
-    expect(wsWrite).toContain('ignoredBuiltDependencies: []');
+    expect(wsWrite).toMatch(/strictDepBuilds: true/);
+    expect(wsWrite).toMatch(/onlyBuiltDependencies: \[\]/);
+    expect(wsWrite).toMatch(/ignoredBuiltDependencies: \[\]/);
     expect(warnSpy).toHaveBeenCalledWith(expect.stringMatching(/RFC/i));
   });
 

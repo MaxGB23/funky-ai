@@ -19,13 +19,9 @@ const LEGACY_EXCEPTIONS = {};
 // to zero. Initial values calibrated against the committed counter regex.
 const FRAGILE_DEBT = {
   'estimateDomain.test.js': 17,
-  'secureYaml.test.js': 15,
-  'secureDomain.test.js': 13,
-  'fs-adapter.test.js': 11,
   'scaffold.test.js': 10,
   'engram.test.js': 7,
   'engram.integration.test.js': 5,
-  'secureCommand.test.js': 4,
   'sdd.test.js': 3,
   'scaffold.integration.test.js': 2,
   'context.test.js': 1,
