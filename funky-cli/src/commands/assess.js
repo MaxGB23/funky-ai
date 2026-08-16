@@ -4,7 +4,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import * as p from '@clack/prompts';
 import { surfaceRiskPatterns } from '../utils/assessRules.js';
-import { readContext, writeContext, findCanvases, updatePhaseState, getTodayDate } from '../utils/context.js';
+import { findCanvases } from '../utils/canvasDiscovery.js';
+import { readContext, writeContext, updatePhaseState, getTodayDate } from '../utils/context.js';
 import { executeIntentions, existingGuides } from '../utils/fs-adapter.js';
 
 const __filename = fileURLToPath(import.meta.url);

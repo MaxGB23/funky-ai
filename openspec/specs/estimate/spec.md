@@ -238,22 +238,23 @@ The system MUST accept an optional `--context <path>` / `-c` flag on `funky esti
 - THEN an error message is printed indicating the context file is missing
 - AND the process exits with code 1
 
-### R-E2: `loadDecisions()` and `findCanvases()` relocated to `context.js`
+### R-E2: `findCanvases`/`countUnfilledSections` relocated to `canvasDiscovery.js`; `loadDecisions` stays in `context.js`
 
-The system MUST export `loadDecisions(targetBase)` and `findCanvases(targetBase)` from `src/utils/context.js`. These functions MUST be removed from `src/utils/estimateDomain.js`. All existing consumers (estimate.js, tests) MUST import these functions from `context.js` instead of `estimateDomain.js`. The function signatures and return values MUST remain identical to their current form.
+The system MUST export `findCanvases(targetBase)` and `countUnfilledSections(markdown)` from `src/utils/canvasDiscovery.js` (with private helpers `readCanvas`/`canvasDir`), and MUST keep `loadDecisions(targetBase, decisionsPath)` exported from `src/utils/context.js`. The discovery pair MUST be removed from `src/utils/context.js`. All consumers (`src/commands/estimate.js`, `src/commands/assess.js`, tests) MUST import `findCanvases` from `canvasDiscovery.js` and `loadDecisions` from `context.js`. Signatures and return values MUST remain identical.
+(Previously: R-E2 required both `loadDecisions` and `findCanvases` exported from `context.js`, removed from `estimateDomain.js`.)
 
-#### Scenario: Imports resolve from context.js
+#### Scenario: Imports resolve from the new modules
 
-- GIVEN `estimate.js` imports `{ loadDecisions, findCanvases }` from `context.js`
+- GIVEN `estimate.js` imports `findCanvases` from `canvasDiscovery.js` and `loadDecisions` from `context.js`
 - WHEN the estimate command runs
-- THEN both functions execute identically to their previous implementation in `estimateDomain.js`
+- THEN both functions execute identically to their prior `context.js` implementation
 
-#### Scenario: estimateDomain.js no longer exports moved functions
+#### Scenario: context.js no longer exports discovery functions
 
-- GIVEN a test imports `{ loadDecisions }` from `estimateDomain.js`
-- WHEN the module is loaded
+- GIVEN a test imports `{ findCanvases }` from `context.js`
+- WHEN the module loads
 - THEN the import is `undefined`
-- AND the test fails predictably (guiding the developer to update the import path)
+- AND the test fails predictably, guiding the import-path update
 
 ### R-E3: Extracted `runEstimate(targetBase, opts)` function
 
@@ -281,6 +282,6 @@ The system MUST export `async function runEstimate(targetBase, opts)` containing
 | Performance | Lectura+generación DEBE completar en <500ms en inicio frío |
 | Error handling | Errores de lectura/permisos DEBEN imprimir warning y seguir con exit(0) |
 | Sin modo interactivo | NO DEBE usar `@inquirer/prompts` ni preguntar nada al usuario. Todo headless |
-| Dependency | `loadDecisions()` and `findCanvases()` MUST be importable from `context.js` with zero behavioral change |
+| Dependency | `findCanvases()`/`countUnfilledSections()` MUST be importable from `canvasDiscovery.js`; `loadDecisions()` from `context.js`; zero behavioral change |
 | Boundary | `process.exit(0)` MUST appear ONLY in the `.action()` callback, exactly once |
 | Determinismo | Mismos inputs → idéntico `docs/funky-ai/estimate/pricing-guide.md` |
