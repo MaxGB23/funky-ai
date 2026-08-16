@@ -107,7 +107,7 @@ describe('secureCommand — integración (R2-R11)', () => {
     await secureCommand.parseAsync(['check'], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(1);
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('env-tracked'));
+    expect(logSpy).toHaveBeenCalledWith(expect.stringMatching(/env-tracked/));
   });
 
   it('R10: repo npm (package-lock, sin workspace) → WARN y exit 0, no bloquea', async () => {
@@ -131,7 +131,7 @@ describe('secureCommand — integración (R2-R11)', () => {
     await secureCommand.parseAsync(['check'], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(1);
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('pnpm'));
+    expect(logSpy).toHaveBeenCalledWith(expect.stringMatching(/pnpm/));
   });
 
   it('R5: drift de hooks → exit 1; check --rebaseline re-seedea y pasa', async () => {
@@ -160,7 +160,7 @@ describe('secureCommand — integración (R2-R11)', () => {
     applyMocks(mf);
     await secureCommand.parseAsync(['check'], { from: 'user' });
     expect(exitSpy).toHaveBeenCalledWith(1);
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('hook-drift'));
+    expect(logSpy).toHaveBeenCalledWith(expect.stringMatching(/hook-drift/));
 
     // Rebaseline explícito tras el cambio legítimo → pasa.
     exitSpy.mockClear();
@@ -199,7 +199,7 @@ describe('secureCommand — integración (R2-R11)', () => {
     const run1Count = run1.length; // snapshot: el array vive (run2 appendea)
     const ws1 = run1.find((c) => String(c[0]) === WORKSPACE_YAML_PATH);
     const wsWrite = String(ws1[1]);
-    expect(wsWrite).toContain('ignoreScripts: true');
+    expect(wsWrite).toMatch(/ignoreScripts: true/);
     // AGENTS.md ausente → creado desde template (R8).
     expect(run1.find((c) => String(c[0]) === AGENTS_PATH)).toBeTruthy();
     // State con posture + baseline (extensión de diseño: check la necesita).
@@ -235,9 +235,9 @@ describe('secureCommand — integración (R2-R11)', () => {
     const wsWrite = String(
       vi.mocked(fs.writeFileSync).mock.calls.find((c) => String(c[0]) === WORKSPACE_YAML_PATH)[1]
     );
-    expect(wsWrite).toContain('strictDepBuilds: true');
-    expect(wsWrite).toContain('onlyBuiltDependencies: []');
-    expect(wsWrite).toContain('ignoredBuiltDependencies: []');
+    expect(wsWrite).toMatch(/strictDepBuilds: true/);
+    expect(wsWrite).toMatch(/onlyBuiltDependencies: \[\]/);
+    expect(wsWrite).toMatch(/ignoredBuiltDependencies: \[\]/);
     expect(warnSpy).toHaveBeenCalledWith(expect.stringMatching(/RFC/i));
   });
 
@@ -251,7 +251,7 @@ describe('secureCommand — integración (R2-R11)', () => {
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     expect(vi.mocked(fs.writeFileSync)).not.toHaveBeenCalled();
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('11.5.0'));
+    expect(logSpy).toHaveBeenCalledWith(expect.stringMatching(/11\.5\.0/));
     expect(warnSpy).toHaveBeenCalledWith(expect.stringMatching(/duplicad/i));
   });
 
@@ -263,7 +263,7 @@ describe('secureCommand — integración (R2-R11)', () => {
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining('pnpm config set minimum-release-age 4320 --location=global')
+      expect.stringMatching(/pnpm config set minimum-release-age 4320 --location=global/)
     );
   });
 

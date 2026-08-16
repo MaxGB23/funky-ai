@@ -73,7 +73,7 @@ describe('runSkills()', () => {
 
     const srcPrefix = path.resolve(fakeSrcDir) + path.sep;
     for (const intention of intentions) {
-      expect(intention.src).not.toContain('.agents');
+      expect(intention.src).not.toMatch(/\.agents/);
       expect(path.resolve(intention.src).startsWith(srcPrefix)).toBe(true);
     }
   });

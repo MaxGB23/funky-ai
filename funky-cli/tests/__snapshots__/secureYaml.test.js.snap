@@ -1,0 +1,44 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`secureYaml — merge idempotente (R2/R3) > merge preserva packages:, comentarios y claves desconocidas; 2da corrida no cambia nada (idempotencia) 1`] = `
+"packages:
+  - "apps/*"
+  - "packages/*"
+ignoreScripts: true
+minimumReleaseAge: 4320
+engineStrict: true
+blockExoticSubdeps: true
+trustPolicy: no-downgrade
+verifyStoreIntegrity: true
+allowBuilds: []
+
+# Preferencias personales del repo
+"
+`;
+
+exports[`secureYaml — merge idempotente (R2/R3) > postura fail-fast añade las 3 claves de builds estrictos al seed estándar 1`] = `
+"ignoreScripts: true
+minimumReleaseAge: 4320
+engineStrict: true
+blockExoticSubdeps: true
+trustPolicy: no-downgrade
+verifyStoreIntegrity: true
+allowBuilds: []
+strictDepBuilds: true
+onlyBuiltDependencies: []
+ignoredBuiltDependencies: []
+"
+`;
+
+exports[`secureYaml — merge idempotente (R2/R3) > valor existente distinto → se conserva, se lista como conflicto (warn + keep) 1`] = `
+"minimumReleaseAge: 1440
+packages:
+  - "apps/*"
+ignoreScripts: true
+engineStrict: true
+blockExoticSubdeps: true
+trustPolicy: no-downgrade
+verifyStoreIntegrity: true
+allowBuilds: []
+"
+`;

@@ -1,0 +1,97 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`estimateCommand — integration > does NOT overwrite an existing pricing-decisions.md; logs the engine backup recommendation (0.2) 1`] = `
+[
+  "⚡ Omitiendo (ya existe): pricing-decisions.md. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.",
+]
+`;
+
+exports[`estimateCommand — integration > overwrites pricing-guide.md when it already exists (derived artifact) 1`] = `
+"# Guía de Discusión de Pricing
+
+> Generado por \`funky estimate\`. Guía declarativa de la sesión de pricing colaborativa.
+
+## Contexto del Proyecto
+
+Lee los archivos del proyecto, en este orden:
+
+1. \`docs/funky-ai/canvas/brief-funcional.md\` — contexto de negocio.
+2. \`docs/funky-ai/canvas/PROJECT-CANVAS.md\` — decisiones de la aplicación.
+3. \`docs/funky-ai/canvas/INFRA-CANVAS.md\` — decisiones operativas.
+4. \`docs/funky-ai/assess/architecture-decisions.md\` — decisiones arquitectónicas.
+5. \`docs/funky-ai/estimate/pricing-decisions.md\` — decisiones de pricing aprobadas.
+
+<!-- topics -->
+## Paso Inicial: Recomienda las Flags y sus Buffers
+
+Tras analizar el contexto, la IA recomienda las flags aplicables y sus buffers, y DETENTE: pide al humano inyectarlas con \`funky estimate --flag\` antes del debate.
+
+| Flag | Cuándo conviene |
+|------|-----------------|
+| \`--security\` | Si hay autenticación o datos sensibles. |
+
+<!-- /topics -->
+## Estructura de Discusión
+
+La discusión se hace punto por punto.
+
+### 3. Factores de Costo del MVP
+
+- **Equipo**: seniority, tamaño, dedicación. Para el Costo Base usa las tarifas base por rol de la tabla de abajo; si se incluyó \`--pricing-team\`, usa los rangos reales del equipo de esa sección (reemplazan a las tarifas base).
+
+#### Tarifas base por rol (USD/hora, edición profesional)
+
+| Rol | Tarifa base (USD/h) |
+|-----|---------------------|
+| Junior | 20–35 |
+| Semi Senior / Mid | 35–55 |
+| Senior | 55–85 |
+| Lead / Arquitecto | 85–120 |
+
+> Referencia por defecto: usa estas tarifas base cuando NO se incluyó \`--pricing-team\`; con la sección se usan los rangos reales del equipo."
+`;
+
+exports[`estimateCommand — integration > writes pricing-guide.md and pricing-decisions-template.md 1`] = `
+"# Guía de Discusión de Pricing
+
+> Generado por \`funky estimate\`. Guía declarativa de la sesión de pricing colaborativa.
+
+## Contexto del Proyecto
+
+Lee los archivos del proyecto, en este orden:
+
+1. \`docs/funky-ai/canvas/brief-funcional.md\` — contexto de negocio.
+2. \`docs/funky-ai/canvas/PROJECT-CANVAS.md\` — decisiones de la aplicación.
+3. \`docs/funky-ai/canvas/INFRA-CANVAS.md\` — decisiones operativas.
+4. \`docs/funky-ai/assess/architecture-decisions.md\` — decisiones arquitectónicas.
+5. \`docs/funky-ai/estimate/pricing-decisions.md\` — decisiones de pricing aprobadas.
+
+<!-- topics -->
+## Paso Inicial: Recomienda las Flags y sus Buffers
+
+Tras analizar el contexto, la IA recomienda las flags aplicables y sus buffers, y DETENTE: pide al humano inyectarlas con \`funky estimate --flag\` antes del debate.
+
+| Flag | Cuándo conviene |
+|------|-----------------|
+| \`--security\` | Si hay autenticación o datos sensibles. |
+
+<!-- /topics -->
+## Estructura de Discusión
+
+La discusión se hace punto por punto.
+
+### 3. Factores de Costo del MVP
+
+- **Equipo**: seniority, tamaño, dedicación. Para el Costo Base usa las tarifas base por rol de la tabla de abajo; si se incluyó \`--pricing-team\`, usa los rangos reales del equipo de esa sección (reemplazan a las tarifas base).
+
+#### Tarifas base por rol (USD/hora, edición profesional)
+
+| Rol | Tarifa base (USD/h) |
+|-----|---------------------|
+| Junior | 20–35 |
+| Semi Senior / Mid | 35–55 |
+| Senior | 55–85 |
+| Lead / Arquitecto | 85–120 |
+
+> Referencia por defecto: usa estas tarifas base cuando NO se incluyó \`--pricing-team\`; con la sección se usan los rangos reales del equipo."
+`;

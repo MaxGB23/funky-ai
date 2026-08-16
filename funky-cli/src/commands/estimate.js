@@ -3,7 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { loadDecisions, findCanvases, readContext, writeContext, updatePhaseState } from '../utils/context.js';
-import { generateDecisionsTemplate, buildPricingGuide, embedTopicSections, refreshPricingGuideBase, validatePricingGuideTemplate, TOPICS, DISPLAY_NAMES, TEAM_COST_KEY } from '../utils/estimateDomain.js';
+import { generateDecisionsTemplate, TOPICS, DISPLAY_NAMES, TEAM_COST_KEY } from '../utils/estimateDomain.js';
+import { buildPricingGuide, embedTopicSections, refreshPricingGuideBase, validatePricingGuideTemplate } from '../utils/estimateMarkers.js';
 import * as p from '@clack/prompts';
 import { executeIntentions, existingGuides } from '../utils/fs-adapter.js';
 

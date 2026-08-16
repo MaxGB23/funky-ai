@@ -1,0 +1,31 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`fs-adapter executeIntentions > executeIntentionsSync — ejecución síncrona (Fase 0 estimate) > kind decision existente → skip + mensaje completo de backup, sin escribir (0.2) 1`] = `
+[
+  "⚡ Omitiendo (ya existe): decisions.md. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.",
+]
+`;
+
+exports[`fs-adapter executeIntentions > kind: decision — nunca sobrescribir, solo recomendación (2.4) > dest existe → skip + log de recomendación (eliminar/mover/backup), sin copiar 1`] = `
+[
+  "⚡ Omitiendo (ya existe): brief.md. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.",
+]
+`;
+
+exports[`fs-adapter executeIntentions > kind: guide — feedback Y/N sobre archivos existentes (2.3) > dest existe + askConfirm false → NO sobrescribe (decisión válida, skip) 1`] = `
+[
+  "⚡ Omitiendo (ya existe): guide.md",
+]
+`;
+
+exports[`fs-adapter executeIntentions > kind: guide — feedback Y/N sobre archivos existentes (2.3) > dest existe + askConfirm true → sobrescribe (Actualizada) y cuenta como creado 1`] = `
+[
+  "✅ Actualizada: guide.md",
+]
+`;
+
+exports[`fs-adapter executeIntentions > usa "Omitiendo" (no "Salteando") en los logs de skip e incluye el basename (2.8) 1`] = `
+[
+  "⚡ Omitiendo (ya existe): dest.md",
+]
+`;

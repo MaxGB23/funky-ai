@@ -90,7 +90,7 @@ describe('runSkills() Integration', () => {
     const template = fs.readFileSync(templatePath, 'utf8');
 
     expect(actual).toBe(template);
-    expect(actual).toContain('Índice de Secciones');
+    expect(actual).toMatch(/Índice de Secciones/);
   });
 
   it('R-SK-9: 0 referencias al nombre viejo del índice seccional en src/ y tests/', () => {

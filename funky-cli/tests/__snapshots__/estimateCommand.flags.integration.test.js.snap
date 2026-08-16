@@ -1,0 +1,17 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`estimateCommand — estimate-prompt.md (2.8, TDD red) > 2.8: genera docs/funky-ai/estimate/estimate-prompt.md (intención kind guide) 1`] = `
+"# 🗣️ Prompt de Discusión de Pricing — \`funky estimate\`
+
+Actúas como facilitador de la sesión de pricing del proyecto.
+
+## Contexto de entrada
+
+Lee \`docs/funky-ai/estimate/pricing-guide.md\` primero, luego \`docs/funky-ai/estimate/pricing-decisions.md\`.
+
+## Fases
+
+1. **Fase 1 — Preparación**: lee y analiza el contexto en silencio.
+2. **Fase 2 — Recomendación**: propone las flags aplicables y sus buffers; DETENTE y pide al humano que las inyecte con \`funky estimate --flag\`.
+3. **Fase 3 — Debate**: inicia la discusión solo tras la luz verde del humano."
+`;

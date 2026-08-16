@@ -1,0 +1,23 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`init action — contrato de feedback por archivo (Fase 2, 2.1-2.6) > TTY + guía existente → el Y/N advierte explícitamente que actualizar REEMPLAZA el contenido actual (0.4) 1`] = `"Ya existe canvas-planning-guide.md. Actualizarla trae la versión más reciente, pero REEMPLAZA la actual: perderás el progreso previo (anotaciones, ajustes) si no tienes un respaldo. ¿Quieres actualizarla?"`;
+
+exports[`init action — contrato de feedback por archivo (Fase 2, 2.1-2.6) > TTY + guía existente → el Y/N advierte explícitamente que actualizar REEMPLAZA el contenido actual (0.4) 2`] = `"Ya existe init-prompt.md. Actualizarla trae la versión más reciente, pero REEMPLAZA la actual: perderás el progreso previo (anotaciones, ajustes) si no tienes un respaldo. ¿Quieres actualizarla?"`;
+
+exports[`init action — contrato de feedback por archivo (Fase 2, 2.1-2.6) > decisiones existentes → skip + recomendación, guías nuevas se crean, exit 0 (reemplaza R3) 1`] = `
+[
+  "⚡ Omitiendo (ya existe): brief-funcional.md. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.",
+  "⚡ Omitiendo (ya existe): PROJECT-CANVAS.md. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.",
+  "⚡ Omitiendo (ya existe): INFRA-CANVAS.md. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.",
+]
+`;
+
+exports[`init action — contrato de feedback por archivo (Fase 2, 2.1-2.6) > todo existe + TTY + confirm=n → NO sobrescribe nada, decisión válida, exit 0 (2.3) 1`] = `
+[
+  "⚡ Omitiendo (ya existe): brief-funcional.md. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.",
+  "⚡ Omitiendo (ya existe): PROJECT-CANVAS.md. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.",
+  "⚡ Omitiendo (ya existe): INFRA-CANVAS.md. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.",
+  "⚡ Omitiendo (ya existe): canvas-planning-guide.md",
+  "⚡ Omitiendo (ya existe): init-prompt.md",
+]
+`;

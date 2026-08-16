@@ -32,7 +32,6 @@ describe('secureYaml — merge idempotente (R2/R3)', () => {
 
     expect(res.existed).toBe(false);
     expect(res.content).toBe(SEED_GOLDEN);
-    expect(res.content).not.toContain('packages:');
     expect(res.added).toEqual(Object.keys(STANDARD_KEYS));
     expect(res.kept).toEqual([]);
     expect(res.conflicted).toEqual([]);
@@ -43,10 +42,9 @@ describe('secureYaml — merge idempotente (R2/R3)', () => {
     applyMocks(mf);
 
     const first = mergeSeed(TARGET, 'fail-silent');
-    expect(first.content).toContain('packages:');
-    expect(first.content).toContain('"apps/*"');
-    expect(first.content).toContain('# Preferencias personales del repo');
-    expect(first.content).toContain('minimumReleaseAge: 4320');
+    // Golden del merge: preserva packages:, comentario y claves del usuario
+    // mientras aplica los defaults del seed (fixture → determinista).
+    expect(first.content).toMatchSnapshot();
 
     // Simula la escritura del caller (init escribe el contenido mergeado):
     // la segunda corrida lee el archivo YA actualizado.
@@ -66,9 +64,9 @@ describe('secureYaml — merge idempotente (R2/R3)', () => {
 
     const res = mergeSeed(TARGET, 'fail-silent');
 
-    expect(res.conflicted).toContain('minimumReleaseAge');
-    expect(res.content).toContain('minimumReleaseAge: 1440');
-    expect(res.content).not.toContain('minimumReleaseAge: 4320');
+    expect(res.conflicted.some((k) => k === 'minimumReleaseAge')).toBe(true);
+    // Golden: el valor del usuario (1440) se conserva y el default (4320) NO se aplica.
+    expect(res.content).toMatchSnapshot();
   });
 
   it('valor existente igual → no-op (kept), sin conflicto', () => {
@@ -77,8 +75,8 @@ describe('secureYaml — merge idempotente (R2/R3)', () => {
 
     const res = mergeSeed(TARGET, 'fail-silent');
 
-    expect(res.kept).toContain('verifyStoreIntegrity');
-    expect(res.conflicted).not.toContain('verifyStoreIntegrity');
+    expect(res.kept.some((k) => k === 'verifyStoreIntegrity')).toBe(true);
+    expect(res.conflicted.some((k) => k === 'verifyStoreIntegrity')).toBe(false);
   });
 
   it('YAML existente inválido → lanza (el comando aborta con exit 1, R2)', () => {
@@ -96,8 +94,8 @@ describe('secureYaml — merge idempotente (R2/R3)', () => {
 
     const res = mergeSeed(TARGET, 'fail-silent');
 
-    expect(res.pending).toContain('allowBuilds');
-    expect(res.conflicted).not.toContain('allowBuilds');
+    expect(res.pending.some((k) => k === 'allowBuilds')).toBe(true);
+    expect(res.conflicted.some((k) => k === 'allowBuilds')).toBe(false);
     // El placeholder se conserva: es estado pendiente de aprobación del usuario.
     expect(res.content).toContain(PLACEHOLDER);
   });
@@ -107,10 +105,8 @@ describe('secureYaml — merge idempotente (R2/R3)', () => {
 
     const res = mergeSeed(TARGET, 'fail-fast');
 
-    expect(res.content).toContain('strictDepBuilds: true');
-    expect(res.content).toContain('onlyBuiltDependencies: []');
-    expect(res.content).toContain('ignoredBuiltDependencies: []');
-    expect(res.content).toContain('allowBuilds: []');
+    // Golden del seed fail-fast: seed estándar + las 3 claves de builds estrictos.
+    expect(res.content).toMatchSnapshot();
     expect(res.added).toEqual(Object.keys(seedForPosture('fail-fast')));
   });
 

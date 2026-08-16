@@ -179,7 +179,7 @@ describe('pipeline assess', () => {
     expect(writeContext).not.toHaveBeenCalled();
     expect(spies.exitSpy).toHaveBeenCalledWith(1);
     const errMsgs = spies.errorSpy.mock.calls.map(c => String(c));
-    expect(errMsgs.some(m => m.includes('context.json inválido'))).toBe(true);
+    expect(errMsgs.some(m => /context\.json inválido/.test(m))).toBe(true);
   });
 
   it('termina con exit 1 cuando el assess falla', async () => {
@@ -217,7 +217,7 @@ describe('pipeline estimate', () => {
     expect(runEstimate).not.toHaveBeenCalled();
     expect(spies.exitSpy).toHaveBeenCalledWith(1);
     const errMsgs = spies.errorSpy.mock.calls.map(c => String(c));
-    expect(errMsgs.some(m => m.includes('Contexto de pipeline no encontrado'))).toBe(true);
+    expect(errMsgs.some(m => /Contexto de pipeline no encontrado/.test(m))).toBe(true);
   });
 
   it('blocked when assess has not been run yet', async () => {
@@ -229,7 +229,7 @@ describe('pipeline estimate', () => {
     expect(runEstimate).not.toHaveBeenCalled();
     expect(spies.exitSpy).toHaveBeenCalledWith(1);
     const errMsgs = spies.errorSpy.mock.calls.map(c => String(c));
-    expect(errMsgs.some(m => m.includes('aún no se ha ejecutado'))).toBe(true);
+    expect(errMsgs.some(m => /aún no se ha ejecutado/.test(m))).toBe(true);
   });
 
   it('allowed when assess has been run', async () => {
@@ -329,7 +329,7 @@ describe('pipeline all', () => {
     expect(updatePhaseState).toHaveBeenCalledWith(expect.anything(), 'estimate', expect.objectContaining({ status: 'skipped' }));
     expect(spies.exitSpy).toHaveBeenCalledWith(1);
     const errMsgs = spies.errorSpy.mock.calls.map(c => String(c));
-    expect(errMsgs.some(m => m.includes('Assess falló'))).toBe(true);
+    expect(errMsgs.some(m => /Assess falló/.test(m))).toBe(true);
   });
 
   it('resume — phase left running (no finishedAt) is re-run, not skipped (R-P10)', async () => {
@@ -429,11 +429,11 @@ describe('pipeline all', () => {
     await pipelineCommand.parseAsync(['all', '--json'], { from: 'user' });
 
     const stdout = spies.stdoutWriteSpy.mock.calls.map(c => String(c)).join('');
-    expect(stdout.includes('Assess completado')).toBe(false);
-    expect(stdout.includes('Pipeline completado')).toBe(false);
+    expect(stdout).not.toMatch(/Assess completado/);
+    expect(stdout).not.toMatch(/Pipeline completado/);
     // el texto humano se desvió a stderr
     const stderr = spies.errorSpy.mock.calls.map(c => String(c)).join('');
-    expect(stderr.includes('Assess completado')).toBe(true);
+    expect(stderr).toMatch(/Assess completado/);
   });
 
   it('all --json on assess failure — no JSON emitted, exit 1', async () => {
@@ -473,7 +473,7 @@ describe('pipeline status', () => {
     expect(readContext).toHaveBeenCalled();
     expect(spies.exitSpy).toHaveBeenCalledWith(0);
     const logMsgs = spies.logSpy.mock.calls.map(c => String(c));
-    expect(logMsgs.some(m => m.includes('Pipeline no iniciado'))).toBe(true);
+    expect(logMsgs.some(m => /Pipeline no iniciado/.test(m))).toBe(true);
   });
 
   it('status --json with no context — single JSON not-started shape, exit 0, no human text on stdout (R-P11)', async () => {
@@ -492,7 +492,7 @@ describe('pipeline status', () => {
     expect(parsed.run).toBeUndefined();
     expect(spies.exitSpy).toHaveBeenCalledWith(0);
     const logMsgs = spies.logSpy.mock.calls.map(c => String(c));
-    expect(logMsgs.some(m => m.includes('Pipeline no iniciado'))).toBe(false);
+    expect(logMsgs.some(m => /Pipeline no iniciado/.test(m))).toBe(false);
   });
 
   it('human status — per-phase status, runAt, surfacedPatterns; no pipeline.completed', async () => {
@@ -508,12 +508,10 @@ describe('pipeline status', () => {
 
     expect(spies.exitSpy).toHaveBeenCalledWith(0);
     const logMsgs = spies.logSpy.mock.calls.map(c => String(c)).join('\n');
-    expect(logMsgs.includes('Estado del Pipeline')).toBe(true);
-    expect(logMsgs.includes('Estado: completed')).toBe(true);
-    expect(logMsgs.includes('Completado: 2024-01-01T12:00:00.000Z')).toBe(true);
-    expect(logMsgs.includes('Patrones detectados: 2')).toBe(true);
-    expect(logMsgs.includes('Estado: pending')).toBe(true);
-    expect(logMsgs.includes('pipeline')).toBe(false); // pipeline.completed eliminado
+    // Golden del re-render humano completo: estado por fase, runAt, patrones y
+    // la AUSENCIA de pipeline.completed (R-P5 removido). Todas las piezas vienen
+    // del ctx fixture (fechas fijas) → determinista.
+    expect(logMsgs).toMatchSnapshot();
   });
 
   it('status --json — single JSON on stdout, exit 0 (R-P11)', async () => {
@@ -541,6 +539,6 @@ describe('pipeline status', () => {
     expect(spies.stdoutWriteSpy).not.toHaveBeenCalled();
     expect(spies.exitSpy).toHaveBeenCalledWith(1);
     const errMsgs = spies.errorSpy.mock.calls.map(c => String(c));
-    expect(errMsgs.some(m => m.includes('context.json inválido'))).toBe(true);
+    expect(errMsgs.some(m => /context\.json inválido/.test(m))).toBe(true);
   });
 });

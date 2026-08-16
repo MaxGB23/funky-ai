@@ -378,7 +378,7 @@ describe('findCanvases', () => {
   it('finds both canvases in docs/funky-ai/canvas/', () => {
     vi.mocked(existsSync).mockImplementation((p) => {
       const str = String(p);
-      return str.includes('funky-ai') && (str.endsWith('PROJECT-CANVAS.md') || str.endsWith('INFRA-CANVAS.md'));
+      return /funky-ai/.test(str) && (str.endsWith('PROJECT-CANVAS.md') || str.endsWith('INFRA-CANVAS.md'));
     });
     vi.mocked(readFileSync).mockImplementation((p) => {
       if (String(p).endsWith('PROJECT-CANVAS.md')) return 'project content';

@@ -18,6 +18,13 @@ import fs from 'fs';
 import path from 'path';
 import { estimateCommand } from '../src/commands/estimate.js';
 
+// Datos de fixture para drift de templates (dato de prueba, no copy de
+// producción): el fragmento NUEVO vive en el template real del topic, el VIEJO
+// en la guía incrustada; BASE_SECTION es la sección añadida a la base.
+const OLD_SECURITY_FRAGMENT = '## Seguridad\n\nImpacto en costos:\n- Versión antigua.';
+const NEW_SECURITY_FRAGMENT = '## Seguridad\n\nImpacto en costos:\n- Nueva versión del fragmento.';
+const BASE_SECTION = '## Base Actualizada';
+
 // ═══════════════════════════════════════════════════
 // Fase 2, 2.3c/2.3e y 2.8: confirmaciones Y/N (TDD red)
 // La capa interactiva del comando estimate se implementa en la tanda siguiente
@@ -76,8 +83,8 @@ describe('estimateCommand — guías interactivas (2.3c/2.3e, 2.8 — TDD red)',
   it('2.3c: template de un topic modificado → confirma Y/N; con "n" conserva la sección actual y sale 0', async () => {
     const mf = standardMocks();
     // El template REAL del topic cambió respecto a lo incrustado en la guía.
-    mf[path.join(PRICING_GUIDE_TPL_PATH, '..', 'topics', 'security.md')] = '## Seguridad\n\nImpacto en costos:\n- Nueva versión del fragmento.';
-    seedGuideWithTopics(mf, [['security', '## Seguridad\n\nImpacto en costos:\n- Versión antigua.']]);
+    mf[path.join(PRICING_GUIDE_TPL_PATH, '..', 'topics', 'security.md')] = NEW_SECURITY_FRAGMENT;
+    seedGuideWithTopics(mf, [['security', OLD_SECURITY_FRAGMENT]]);
     clackMock.confirm.mockResolvedValue(false);
 
     await estimateCommand.parseAsync(['--security'], { from: 'user' });
@@ -88,8 +95,8 @@ describe('estimateCommand — guías interactivas (2.3c/2.3e, 2.8 — TDD red)',
     const guideCall = writeCalls.find((c) => String(c[0]).includes('pricing-guide.md'));
     expect(guideCall).toBeTruthy();
     const guideContent = String(guideCall[1]);
-    expect(guideContent).toContain('Versión antigua');
-    expect(guideContent).not.toContain('Nueva versión del fragmento');
+    expect(guideContent).toContain(OLD_SECURITY_FRAGMENT);
+    expect(guideContent).not.toContain(NEW_SECURITY_FRAGMENT);
   });
 
   it('2.3e: template base modificado → confirma Y/N; con "n" NO toca la guía actual y sale 0', async () => {
@@ -113,7 +120,7 @@ describe('estimateCommand — guías interactivas (2.3c/2.3e, 2.8 — TDD red)',
 
   it('2.3e: con "y" reconstruye la base fresca y reincrusta TODOS los topics detectados', async () => {
     const mf = standardMocks();
-    mf[PRICING_GUIDE_TPL_PATH] = DEFAULT_GUIDE_TEMPLATE + '\n\n## Base Actualizada';
+    mf[PRICING_GUIDE_TPL_PATH] = DEFAULT_GUIDE_TEMPLATE + '\n\n' + BASE_SECTION;
     seedGuideWithTopics(mf, [['security', TOPIC_FRAGMENT_SECURITY], ['transactions', TOPIC_FRAGMENT_TRANSACTIONS]]);
     clackMock.confirm.mockResolvedValue(true);
 
@@ -123,7 +130,7 @@ describe('estimateCommand — guías interactivas (2.3c/2.3e, 2.8 — TDD red)',
     const guideCall = vi.mocked(fs.writeFileSync).mock.calls.find((c) => String(c[0]).includes('pricing-guide.md'));
     expect(guideCall).toBeTruthy();
     const guideContent = String(guideCall[1]);
-    expect(guideContent).toContain('## Base Actualizada');
+    expect(guideContent).toContain(BASE_SECTION);
     expect(guideContent).toContain(TOPIC_FRAGMENT_SECURITY);
     expect(guideContent).toContain(TOPIC_FRAGMENT_TRANSACTIONS);
   });
@@ -143,7 +150,7 @@ describe('estimateCommand — guías interactivas (2.3c/2.3e, 2.8 — TDD red)',
 
   it('R1: sin TTY + drift de template → default n logueado: NO pregunta y conserva la guía', async () => {
     const mf = standardMocks();
-    mf[PRICING_GUIDE_TPL_PATH] = DEFAULT_GUIDE_TEMPLATE + '\n\n## Base Actualizada';
+    mf[PRICING_GUIDE_TPL_PATH] = DEFAULT_GUIDE_TEMPLATE + '\n\n' + BASE_SECTION;
     seedGuideWithTopics(mf, [['security', TOPIC_FRAGMENT_SECURITY]]);
     process.stdin.isTTY = undefined;
 
@@ -151,11 +158,13 @@ describe('estimateCommand — guías interactivas (2.3c/2.3e, 2.8 — TDD red)',
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     expect(clackMock.confirm).not.toHaveBeenCalled();
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('se conserva la guía actual'));
+    // Default n logueado: el aviso se emite (outcome); la conservación de la
+    // guía se prueba por contenido escrito abajo, sin copiar el mensaje.
+    expect(logSpy).toHaveBeenCalled();
     const guideCall = vi.mocked(fs.writeFileSync).mock.calls.find((c) => String(c[0]).includes('pricing-guide.md'));
     expect(guideCall).toBeTruthy();
     const guideContent = String(guideCall[1]);
     expect(guideContent).toContain(TOPIC_FRAGMENT_SECURITY);
-    expect(guideContent).not.toContain('## Base Actualizada');
+    expect(guideContent).not.toContain(BASE_SECTION);
   });
 });

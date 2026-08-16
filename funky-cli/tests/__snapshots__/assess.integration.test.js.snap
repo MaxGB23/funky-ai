@@ -1,0 +1,29 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`assess Command - action flow > TTY + guía existente → el Y/N advierte explícitamente que actualizar REEMPLAZA el contenido actual (0.4) 1`] = `"Ya existe assess-prompt.md. Actualizarla trae la versión más reciente, pero REEMPLAZA la actual: perderás el progreso previo (anotaciones, ajustes) si no tienes un respaldo. ¿Quieres actualizarla?"`;
+
+exports[`assess Command - action flow > creates risk-patterns.md from the template when it does not exist 1`] = `
+"# Patrones de Riesgo de Referencia
+
+> Documento VIVO y editable por el equipo.
+
+## K8s / Kubernetes
+- **Señal a buscar en los canvases:** el INFRA-CANVAS menciona K8s.
+- **Riesgo a considerar:** costos operativos del clúster.
+
+## SQLite
+- **Señal a buscar en los canvases:** el INFRA-CANVAS elige SQLite.
+- **Riesgo a considerar:** límites de concurrencia."
+`;
+
+exports[`assess Command - action flow > does not overwrite an existing team risk-patterns.md; recommends removing or moving it (2.4) 1`] = `
+[
+  "⚡ Omitiendo (ya existe): risk-patterns.md. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.",
+]
+`;
+
+exports[`assess Command - action flow > does not overwrite existing architecture-decisions.md; recommends removing or moving it (2.4) 1`] = `
+[
+  "⚡ Omitiendo (ya existe): architecture-decisions.md. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.",
+]
+`;

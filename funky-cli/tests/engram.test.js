@@ -40,7 +40,7 @@ describe('runEngramAdd() — unit (fs mocked)', () => {
     expect(fs.mkdirSync).toHaveBeenCalledWith(expectedDir, { recursive: true });
     expect(fs.writeFileSync).toHaveBeenCalledWith(
       expectedFile,
-      expect.stringContaining('[test-tag]'),
+      expect.stringMatching(/\[test-tag\]/),
       'utf8'
     );
   });
@@ -63,10 +63,10 @@ describe('runEngramAdd() — unit (fs mocked)', () => {
     await runEngramAdd({ tag, category, desc, cwd: fakeCwd });
 
     const [, writtenContent] = fs.writeFileSync.mock.calls[0];
-    expect(writtenContent).toContain('[nuevo-patron]');
+    expect(writtenContent).toMatch(/\[nuevo-patron\]/);
     expect(writtenContent).toContain(desc);
     expect(writtenContent).toContain(today);
-    expect(writtenContent).toContain('[PATTERN]');
+    expect(writtenContent).toMatch(/\[PATTERN\]/);
   });
 
   it('sanitiza el tag: strips brackets, lowercase, spaces → guiones', async () => {
@@ -114,8 +114,8 @@ describe('runEngramAdd() — unit (fs mocked)', () => {
     const indexWrite = fs.writeFileSync.mock.calls.find(([p]) => p === indexPath);
     expect(indexWrite).toBeDefined();
     const [, updatedIndex] = indexWrite;
-    expect(updatedIndex).toContain('[index-append]');
-    expect(updatedIndex).toContain('decision/index-append.md');
+    // Golden del append en index.md: entrada con tag y ruta categoría/tag (sin fecha → determinista).
+    expect(updatedIndex).toMatchSnapshot();
   });
 
   it('crea index.md si no existe y agrega la entrada', async () => {
@@ -136,12 +136,12 @@ describe('runEngramAdd() — unit (fs mocked)', () => {
     const indexWrites = fs.writeFileSync.mock.calls.filter(([p]) => p === indexPath);
     expect(indexWrites.length).toBe(2);
     const [, createdIndex] = indexWrites[0];
-    expect(createdIndex).toContain('## Architecture');
-    expect(createdIndex).not.toContain('[sin-index]');
+    // Golden del índice recién creado: headers de categorías, sin entradas todavía.
+    expect(createdIndex).toMatchSnapshot();
 
     const [, updatedIndex] = indexWrites[1];
-    expect(updatedIndex).toContain('[sin-index]');
-    expect(updatedIndex).toContain('architecture/sin-index.md');
+    // Golden del índice actualizado: entrada appendeada bajo su header de categoría.
+    expect(updatedIndex).toMatchSnapshot();
   });
 
   it('no crea directorios que ya existen', async () => {
@@ -190,8 +190,8 @@ describe('runEngramAdd() — unit (fs mocked)', () => {
     const indexWrite = fs.writeFileSync.mock.calls.find(([p]) => p === indexPath);
     expect(indexWrite).toBeDefined();
     const [, updatedIndex] = indexWrite;
-    expect(updatedIndex).toContain('[test-release]');
-    expect(updatedIndex).toContain('release/test-release.md');
+    // Golden del append bajo la sección Session/Release recién creada.
+    expect(updatedIndex).toMatchSnapshot();
   });
 
   it('lanza un error si la categoría enviada es inválida', async () => {

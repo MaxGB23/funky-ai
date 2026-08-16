@@ -1,0 +1,11 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`runEngramAdd() Integration (headless, fs real) > hace append en index.md cuando el archivo ya existe con la sección de categoría 1`] = `
+"# Engram Index
+
+## Bugfix
+- [[index-write] Fixture de index append](./bugfix/index-write.md)
+
+## Discovery
+"
+`;

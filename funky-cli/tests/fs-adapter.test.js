@@ -96,9 +96,8 @@ describe('fs-adapter executeIntentions', () => {
       { action: 'copy', src: '/fake/src.md', dest: '/fake/dest.md' }
     ]);
 
-    expect(result.logs[0]).toContain('Omitiendo');
-    expect(result.logs[0]).toContain('dest.md');
-    expect(result.logs[0]).not.toContain('Salteando');
+    // Golden del log de skip: "Omitiendo" (NO "Salteando") + basename (2.8).
+    expect(result.logs).toMatchSnapshot();
   });
 
   describe('kind: guide — feedback Y/N sobre archivos existentes (2.3)', () => {
@@ -114,7 +113,8 @@ describe('fs-adapter executeIntentions', () => {
       expect(askConfirm).toHaveBeenCalledWith('/fake/guide.md', 'guide.md');
       expect(fs.copyFileSync).toHaveBeenCalledWith('/fake/guide.md', '/fake/guide.md');
       expect(result.created).toBe(1);
-      expect(result.logs[0]).toContain('Actualizada');
+      // Golden: sobrescritura de guía con confirmación → "Actualizada".
+      expect(result.logs).toMatchSnapshot();
     });
 
     it('dest existe + askConfirm false → NO sobrescribe (decisión válida, skip)', async () => {
@@ -128,7 +128,8 @@ describe('fs-adapter executeIntentions', () => {
 
       expect(fs.copyFileSync).not.toHaveBeenCalled();
       expect(result.skipped).toBe(1);
-      expect(result.logs[0]).toContain('Omitiendo');
+      // Golden del skip de guía con confirmación "n" (decisión válida).
+      expect(result.logs).toMatchSnapshot();
     });
 
     it('dest existe + sin askConfirm → skip por defecto (n), no sobrescribe (2.6)', async () => {
@@ -140,7 +141,7 @@ describe('fs-adapter executeIntentions', () => {
 
       expect(fs.copyFileSync).not.toHaveBeenCalled();
       expect(result.skipped).toBe(1);
-      expect(result.logs[0]).toContain('Omitiendo');
+      expect(result.logs[0]).toMatch(/Omitiendo/); // golden del skip ya vive en el test de askConfirm=false
     });
 
     it('askConfirm puede ser síncrono (booleano directo)', async () => {
@@ -180,10 +181,8 @@ describe('fs-adapter executeIntentions', () => {
 
       expect(fs.copyFileSync).not.toHaveBeenCalled();
       expect(result.skipped).toBe(1);
-      expect(result.logs[0]).toContain('Omitiendo');
-      expect(result.logs[0]).toContain('brief.md');
-      expect(result.logs[0]).toContain('elimínalo');
-      expect(result.logs[0]).toContain('backup');
+      // Golden de la recomendación completa de decisiones (2.4): eliminar/mover/backup.
+      expect(result.logs).toMatchSnapshot();
     });
 
     it('dest NO existe → crea normal', async () => {
@@ -234,8 +233,8 @@ describe('fs-adapter executeIntentions', () => {
 
       expect(result.skipped).toBe(1);
       expect(fs.writeFileSync).not.toHaveBeenCalled();
-      expect(result.logs[0]).toContain('Contiene decisiones del proyecto');
-      expect(result.logs[0]).toContain('elimínalo o muévelo de ubicación');
+      // Golden síncrono: misma recomendación de decisiones (0.2).
+      expect(result.logs).toMatchSnapshot();
     });
 
     it('kind guide existente → default n (skip logueado), no sobrescribe', () => {
@@ -247,7 +246,7 @@ describe('fs-adapter executeIntentions', () => {
 
       expect(result.skipped).toBe(1);
       expect(fs.copyFileSync).not.toHaveBeenCalled();
-      expect(result.logs[0]).toContain('Omitiendo');
+      expect(result.logs[0]).toMatch(/Omitiendo/);
     });
 
     it('respeta la opción dryRun', () => {

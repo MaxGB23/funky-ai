@@ -1,0 +1,16 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`pipeline status > human status — per-phase status, runAt, surfacedPatterns; no pipeline.completed 1`] = `
+"📋 Estado del Pipeline
+──────────────────────
+Creado: 2024-01-01T00:00:00.000Z
+
+🔍 Assess:
+  Estado: completed
+  Completado: 2024-01-01T12:00:00.000Z
+  Patrones detectados: 2
+
+💰 Estimate:
+  Estado: pending
+"
+`;

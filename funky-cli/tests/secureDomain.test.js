@@ -147,7 +147,7 @@ describe('secureDomain — doctor diagnose (R6)', () => {
       repoSignals: {},
     });
 
-    expect(findings.some((f) => f.text.includes('11.5.0'))).toBe(true);
+    expect(findings.some((f) => /11\.5\.0/.test(f.text))).toBe(true);
     expect(
       findings.some((f) => f.severity === 'warning' && /duplicad/i.test(f.text))
     ).toBe(true);
@@ -258,12 +258,12 @@ describe('secureDomain — evaluador check (R10/R11)', () => {
 
   it('pnpm-lock.yaml ausente → violation missing-lockfile', () => {
     const out = evaluate(conformantRepo({ hasPnpmLockfile: false }));
-    expect(out.violations.map((v) => v.code)).toContain('missing-lockfile');
+    expect(out.violations.some((v) => v.code === 'missing-lockfile')).toBe(true);
   });
 
   it('package-lock.json en repo pnpm → violation; repo npm/yarn → warnOnly exit 0 (R10)', () => {
     const pnpm = evaluate(conformantRepo({ hasPackageLock: true }));
-    expect(pnpm.violations.map((v) => v.code)).toContain('package-lock');
+    expect(pnpm.violations.some((v) => v.code === 'package-lock')).toBe(true);
 
     const npm = evaluate(
       conformantRepo({
@@ -280,20 +280,20 @@ describe('secureDomain — evaluador check (R10/R11)', () => {
     const out = evaluate(
       conformantRepo({ pkgJson: { dependencies: { esbuild: '^0.19.0' } } })
     );
-    expect(out.violations.map((v) => v.code)).toContain('floating-ranges');
+    expect(out.violations.some((v) => v.code === 'floating-ranges')).toBe(true);
 
     const ok = evaluate(
       conformantRepo({ pkgJson: { devDependencies: { vitest: '~3.0.0' } } })
     );
-    expect(ok.violations.map((v) => v.code)).toContain('floating-ranges');
+    expect(ok.violations.some((v) => v.code === 'floating-ranges')).toBe(true);
   });
 
   it('claves estándar faltantes o distintas (por postura) → violation config-mismatch', () => {
     const wrong = evaluate(conformantRepo({ effectiveConfig: { ...STANDARD_KEYS, ignoreScripts: false } }));
-    expect(wrong.violations.map((v) => v.code)).toContain('config-mismatch');
+    expect(wrong.violations.some((v) => v.code === 'config-mismatch')).toBe(true);
 
     const missing = evaluate(conformantRepo({ effectiveConfig: {} }));
-    expect(missing.violations.map((v) => v.code)).toContain('config-mismatch');
+    expect(missing.violations.some((v) => v.code === 'config-mismatch')).toBe(true);
   });
 
   it('repo conformante bajo pnpm 10.x (claves kebab-case) → sin violaciones', () => {
@@ -321,7 +321,7 @@ describe('secureDomain — evaluador check (R10/R11)', () => {
     const noKeys = evaluate(
       conformantRepo({ posture: 'fail-fast', effectiveConfig: { ...STANDARD_KEYS } })
     );
-    expect(noKeys.violations.map((v) => v.code)).toContain('config-mismatch');
+    expect(noKeys.violations.some((v) => v.code === 'config-mismatch')).toBe(true);
 
     const full = evaluate(
       conformantRepo({
@@ -334,26 +334,26 @@ describe('secureDomain — evaluador check (R10/R11)', () => {
 
   it('cuarentena inactiva → violation quarantine-inactive', () => {
     const out = evaluate(conformantRepo({ quarantineActive: false }));
-    expect(out.violations.map((v) => v.code)).toContain('quarantine-inactive');
+    expect(out.violations.some((v) => v.code === 'quarantine-inactive')).toBe(true);
   });
 
   it('.env trackeado o presente sin entrada de .gitignore → violations (R11)', () => {
     const tracked = evaluate(conformantRepo({ trackedEnvFiles: ['.env'] }));
-    expect(tracked.violations.map((v) => v.code)).toContain('env-tracked');
+    expect(tracked.violations.some((v) => v.code === 'env-tracked')).toBe(true);
 
     const unignored = evaluate(conformantRepo({ envUnignored: true }));
-    expect(unignored.violations.map((v) => v.code)).toContain('env-unignored');
+    expect(unignored.violations.some((v) => v.code === 'env-unignored')).toBe(true);
   });
 
   it('drift de hooks → violation hook-drift', () => {
     const out = evaluate(conformantRepo({ hooksDrift: ['.claude/settings.json'] }));
-    expect(out.violations.map((v) => v.code)).toContain('hook-drift');
+    expect(out.violations.some((v) => v.code === 'hook-drift')).toBe(true);
   });
 
   it('placeholder allowBuilds (aprobación pendiente) → violation pending-approval', () => {
     const out = evaluate(
       conformantRepo({ effectiveConfig: { ...STANDARD_KEYS, allowBuilds: { esbuild: 'set this to true or false' } } })
     );
-    expect(out.violations.map((v) => v.code)).toContain('pending-approval');
+    expect(out.violations.some((v) => v.code === 'pending-approval')).toBe(true);
   });
 });

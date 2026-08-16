@@ -1,0 +1,63 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`runEngramAdd() — unit (fs mocked) > crea index.md si no existe y agrega la entrada 1`] = `
+"# Engram Index
+
+Directorio unificado de conocimientos, decisiones y patrones.
+
+## Architecture
+
+## Pattern
+
+## Discovery
+
+## Decision
+
+## Bugfix
+
+## Session
+
+## Release
+
+"
+`;
+
+exports[`runEngramAdd() — unit (fs mocked) > crea index.md si no existe y agrega la entrada 2`] = `
+"# Engram Index
+
+## Architecture
+- [[sin-index] Sin index presente](./architecture/sin-index.md)
+
+## Pattern
+
+## Discovery
+
+## Decision
+
+## Bugfix
+
+## Session
+
+## Release
+"
+`;
+
+exports[`runEngramAdd() — unit (fs mocked) > hace append a index.md en las nuevas secciones (session/release) 1`] = `
+"# Engram Index
+
+## Session
+
+## Release
+- [[test-release] Test de release](./release/test-release.md)
+"
+`;
+
+exports[`runEngramAdd() — unit (fs mocked) > hace append a index.md si existe y la categoría header está presente 1`] = `
+"# Engram Index
+
+## Decision
+- [[index-append] Decisión importante](./decision/index-append.md)
+
+## Architecture
+"
+`;

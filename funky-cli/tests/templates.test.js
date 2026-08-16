@@ -25,7 +25,7 @@ describe('Bases de skills (src/skills/, no dead gentle)', () => {
     const releasePath = path.join(__dirname, '../src/skills/sdd-release/SKILL.md');
     const content = fs.readFileSync(releasePath, 'utf8');
 
-    expect(content).not.toContain('No aplica en antigravity');
+    expect(content).not.toMatch(/No aplica en antigravity/);
     expect(content).not.toContain('funky-cli/bin');
     expect(content).toContain('<ruta-docs-del-proyecto>');
     expect(content).toContain('release-notes.md');
@@ -47,7 +47,8 @@ describe('Bases de skills (src/skills/, no dead gentle)', () => {
     expect(content).not.toContain('funky-cli/bin');
     expect(content).not.toMatch(/paso 4a|paso 4b|node funky-cli/);
     expect(content).toContain('docs-live-index.md');
-    expect(content).toContain('docs-index');
+    // Ruta de directorio (token estructural, no copy).
+    expect(content).toContain('docs-index/');
   });
 
   it('sdd-docs-sync base: regla doc-nuevo en Decision Gates y pasos (D6, R-SK-11)', () => {
@@ -67,7 +68,8 @@ describe('Templates de docs compartidos (bootstrap/sdd)', () => {
     const livePath = path.join(__dirname, '../src/templates/bootstrap/sdd/docs-live-index.md');
     const content = fs.readFileSync(livePath, 'utf8');
 
-    expect(content).toContain('Índice de Docs Vivos (SSOT)');
+    // (b): template estático → snapshot del archivo completo (D3: CRLF→LF).
+    expect(content.replace(/\r\n/g, '\n')).toMatchSnapshot();
     expect(content).toContain('<ruta-del-doc>');
   });
 
@@ -89,15 +91,15 @@ describe('Templates de estimate — Fase A (checklist M1/M2/M3)', () => {
   it('M1: estimate-prompt-template define el flujo estricto en 3 fases (Preparación → Recomendación → Debate)', () => {
     const content = fs.readFileSync(promptPath, 'utf8');
 
-    expect(content).toContain('Fase 1 — Preparación');
-    expect(content).toContain('Fase 2 — Recomendación');
-    expect(content).toContain('Fase 3 — Debate');
+    // (b): template estático → snapshot del archivo completo (D3: CRLF→LF);
+    // centraliza las 3 fases y el resto del contrato M1 del prompt.
+    expect(content.replace(/\r\n/g, '\n')).toMatchSnapshot();
   });
 
   it('M1: la Fase 2 ordena DETENERSE y pedir al humano que inyecte las flags con `funky estimate --flag`', () => {
     const content = fs.readFileSync(promptPath, 'utf8');
 
-    expect(content).toContain('funky estimate --flag');
+    expect(content).toMatch(/funky estimate --flag/);
     expect(content).toMatch(/DETENTE por completo/i);
     expect(content).toMatch(/luz verde/i);
   });
@@ -105,7 +107,7 @@ describe('Templates de estimate — Fase A (checklist M1/M2/M3)', () => {
   it('M1: la sección ## Inicio ya no ordena presentar el primer punto de discusión sin pasar por las flags', () => {
     const content = fs.readFileSync(promptPath, 'utf8');
 
-    expect(content).not.toContain('presenta el PRIMER punto de discusión');
+    expect(content).not.toMatch(/presenta el PRIMER punto de discusión/);
     expect(content).toMatch(/Fase 1/);
   });
 
@@ -131,7 +133,7 @@ describe('Templates de estimate — Fase A (checklist M1/M2/M3)', () => {
   it('M1: el Paso Inicial de la guía ordena detenerse y esperar la inyección de flags antes del debate', () => {
     const content = fs.readFileSync(guidePath, 'utf8');
 
-    expect(content).toContain('funky estimate --flag');
+    expect(content).toMatch(/funky estimate --flag/);
     expect(content).toMatch(/DETENTE|Detente/i);
     expect(content).toMatch(/luz verde/i);
   });
@@ -154,11 +156,9 @@ describe('Templates de estimate — Fase A (checklist M1/M2/M3)', () => {
     const content = fs.readFileSync(guidePath, 'utf8');
     const costos = content.split('### 3. Factores de Costo del MVP')[1]?.split('### 4.')[0] || '';
 
-    expect(costos).toContain('TARIFAS BASE DE FALLBACK');
-    expect(costos).toContain('| Junior | 20–35 |');
-    expect(costos).toContain('| Semi Senior / Mid | 35–55 |');
-    expect(costos).toContain('| Senior | 55–85 |');
-    expect(costos).toContain('| Lead / Arquitecto | 85–120 |');
+    // (b): la tabla completa de tarifas es la expectativa centralizada
+    // (template estático, D3: CRLF→LF) — cubre el encabezado y todas las filas.
+    expect(costos.replace(/\r\n/g, '\n')).toMatchSnapshot();
   });
 
   it('M5: sin la sección de --pricing-team se usan las tarifas base; con la sección se usan los rangos reales del equipo', () => {
@@ -175,8 +175,8 @@ describe('Templates de estimate — Fase A (checklist M1/M2/M3)', () => {
 
     expect(teamCost).toMatch(/tarifas base/i);
     expect(teamCost).toMatch(/rangos reales del equipo/i);
-    expect(teamCost).not.toContain('| Junior | 20–35 |');
-    expect(teamCost).not.toContain('Tarifas base por rol');
+    expect(teamCost).not.toMatch(/\| Junior \| 20–35 \|/);
+    expect(teamCost).not.toMatch(/Tarifas base por rol/);
   });
 });
 
@@ -186,9 +186,9 @@ describe('Templates de estimate — M12 (tabla de Costo Operativo Mensual)', () 
   it('M12: pricing-decisions-template incluye la tabla de Costo Operativo Mensual con Total Mensual Estimado', () => {
     const content = fs.readFileSync(decisionsPath, 'utf8');
 
-    expect(content).toContain('### Costo Operativo Mensual (Infraestructura)');
-    expect(content).toContain('| Componente | Monto Mensual |');
-    expect(content).toContain('**Total Mensual Estimado**');
+    // (b): template estático → snapshot del archivo completo (D3: CRLF→LF);
+    // {{DATE}} es un literal del archivo, no una fecha → determinista.
+    expect(content.replace(/\r\n/g, '\n')).toMatchSnapshot();
   });
 
   it('M12: la sección deja claro que el OpEx mensual NO suma al Precio de Venta del MVP', () => {

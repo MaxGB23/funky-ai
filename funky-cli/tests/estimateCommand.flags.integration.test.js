@@ -57,8 +57,10 @@ describe('estimateCommand — guía declarativa (2.1)', () => {
     expect(guide).toContain('docs/funky-ai/canvas/INFRA-CANVAS.md');
     expect(guide).toContain('docs/funky-ai/assess/architecture-decisions.md');
     expect(guide).not.toContain('Next.js');
-    expect(guide).not.toContain('AWS EC2');
-    expect(guide).not.toContain('React 18');
+    // 2.1: el canvas incrusta estos valores (dato de fixture) → la guía NO los
+    // incrusta; aserción de rama (regex semántico), no copy.
+    expect(guide).not.toMatch(/AWS EC2/);
+    expect(guide).not.toMatch(/React 18/);
   });
 
   it('2.1: sin flags no hay ficha de alcance, ni secciones de topics, ni brief embebido', async () => {
@@ -72,14 +74,16 @@ describe('estimateCommand — guía declarativa (2.1)', () => {
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
-    expect(guide).not.toContain('## Alcance: ¿Aplica en esta fase?');
-    expect(guide).not.toContain('| Tema | Estado |');
-    expect(guide).not.toContain('## Roles del equipo');
-    expect(guide).not.toContain('## Seguridad');
-    expect(guide).not.toContain('## Brief Funcional');
-    expect(guide).not.toContain('## Referencia de Costos de Equipo');
+    // 2.1: sin flags → nada de secciones opcionales ni brief embebido
+    // (los encabezados son anclas estructurales en forma regex).
+    expect(guide).not.toMatch(/## Alcance: ¿Aplica en esta fase\?/);
+    expect(guide).not.toMatch(/^\| Tema \| Estado \|$/m);
+    expect(guide).not.toMatch(/## Roles del equipo/);
+    expect(guide).not.toMatch(/## Seguridad/);
+    expect(guide).not.toMatch(/## Brief Funcional/);
+    expect(guide).not.toMatch(/## Referencia de Costos de Equipo/);
     expect(guide).not.toContain('{{OPTIONAL_SECTIONS}}');
-    expect(guide).toContain('## Estructura de Discusión');
+    expect(guide).toMatch(/## Estructura de Discusión/);
   });
 });
 
@@ -113,8 +117,8 @@ describe('estimateCommand — terminal limpia (2.2)', () => {
     await estimateCommand.parseAsync([], { from: 'user' });
 
     const msgs = logSpy.mock.calls.map((c) => String(c));
-    expect(msgs.some((m) => m.includes('💡 Se detectó'))).toBe(false);
-    expect(msgs.some((m) => m.includes('Considerá --'))).toBe(false);
+    expect(msgs.some((m) => /💡 Se detectó/.test(m))).toBe(false);
+    expect(msgs.some((m) => /Considerá --/.test(m))).toBe(false);
 
     logSpy.mockRestore();
   });
@@ -232,7 +236,8 @@ describe('estimateCommand — estimate-prompt.md (2.8, TDD red)', () => {
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const promptCall = writeCalls.find((c) => String(c[0]).includes('estimate-prompt.md'));
     expect(promptCall).toBeTruthy();
-    expect(String(promptCall[1])).toContain('facilitador');
+    // (b): el prompt completo es la expectativa centralizada (snapshot).
+    expect(String(promptCall[1])).toMatchSnapshot();
   });
 
   it('2.8: no imprime el prompt gigante en consola (el material vive en estimate-prompt.md)', async () => {
@@ -243,8 +248,8 @@ describe('estimateCommand — estimate-prompt.md (2.8, TDD red)', () => {
     await estimateCommand.parseAsync([], { from: 'user' });
 
     const msgs = logSpy.mock.calls.map((c) => String(c));
-    expect(msgs.some((m) => m.includes('PROMPT PARA INICIAR SESIÓN'))).toBe(false);
-    expect(msgs.some((m) => m.includes('Material de análisis'))).toBe(false);
+    expect(msgs.some((m) => /PROMPT PARA INICIAR SESIÓN/.test(m))).toBe(false);
+    expect(msgs.some((m) => /Material de análisis/.test(m))).toBe(false);
 
     logSpy.mockRestore();
   });
@@ -281,14 +286,14 @@ describe('estimateCommand — determinismo y resumen (R13 + 2.2)', () => {
 
     await estimateCommand.parseAsync(['--security', '--roles'], { from: 'user' });
     const first = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
-    expect(first).toContain('Guía de Discusión de Pricing');
+    expect(first).toMatch(/Guía de Discusión de Pricing/);
 
     vi.mocked(fs.writeFileSync).mockClear();
 
     await estimateCommand.parseAsync(['--security', '--roles'], { from: 'user' });
     const second = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
 
-    expect(second).toContain('Guía de Discusión de Pricing');
+    // R13: byte-identidad cubre el encabezado del segundo (heredado de first).
     expect(second).toBe(first);
   });
 
@@ -300,8 +305,8 @@ describe('estimateCommand — determinismo y resumen (R13 + 2.2)', () => {
     await estimateCommand.parseAsync(['--security', '--roles', '--brief', '--pricing-team'], { from: 'user' });
 
     const msgs = logSpy.mock.calls.map((c) => String(c));
-    expect(msgs.some((m) => m.includes('Secciones solicitadas en la guía: brief funcional, roles del equipo, seguridad, referencia de costos de equipo.'))).toBe(true);
-    expect(msgs.some((m) => m.includes('ficha de alcance'))).toBe(false);
+    expect(msgs.some((m) => /Secciones solicitadas en la guía: brief funcional, roles del equipo, seguridad, referencia de costos de equipo\./.test(m))).toBe(true);
+    expect(msgs.some((m) => /ficha de alcance/.test(m))).toBe(false);
 
     logSpy.mockRestore();
   });
@@ -318,7 +323,7 @@ describe('estimateCommand — determinismo y resumen (R13 + 2.2)', () => {
     await estimateCommand.parseAsync([], { from: 'user' });
 
     const msgs = logSpy.mock.calls.map((c) => String(c));
-    expect(msgs.some((m) => m.includes('Secciones solicitadas en la guía: ninguna (guía base declarativa).'))).toBe(true);
+    expect(msgs.some((m) => /Secciones solicitadas en la guía: ninguna \(guía base declarativa\)\./.test(m))).toBe(true);
 
     logSpy.mockRestore();
   });
@@ -330,7 +335,7 @@ describe('estimateCommand — determinismo y resumen (R13 + 2.2)', () => {
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
-    expect(guide).not.toContain('## Brief Funcional');
+    expect(guide).not.toMatch(/## Brief Funcional/);
   });
 
   it('#33: sin init brief y sin --brief → no sección de brief en la guía', async () => {
@@ -345,7 +350,7 @@ describe('estimateCommand — determinismo y resumen (R13 + 2.2)', () => {
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const guide = guideFromWriteCalls(vi.mocked(fs.writeFileSync).mock.calls);
-    expect(guide).not.toContain('## Brief Funcional');
+    expect(guide).not.toMatch(/## Brief Funcional/);
   });
 
   it('R10: --pricing-team incrusta la referencia de costos de equipo en la guía', async () => {
