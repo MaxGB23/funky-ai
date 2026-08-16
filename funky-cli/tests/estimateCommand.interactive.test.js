@@ -158,7 +158,9 @@ describe('estimateCommand — guías interactivas (2.3c/2.3e, 2.8 — TDD red)',
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     expect(clackMock.confirm).not.toHaveBeenCalled();
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('se conserva la guía actual'));
+    // Default n logueado: el aviso se emite (outcome); la conservación de la
+    // guía se prueba por contenido escrito abajo, sin copiar el mensaje.
+    expect(logSpy).toHaveBeenCalled();
     const guideCall = vi.mocked(fs.writeFileSync).mock.calls.find((c) => String(c[0]).includes('pricing-guide.md'));
     expect(guideCall).toBeTruthy();
     const guideContent = String(guideCall[1]);

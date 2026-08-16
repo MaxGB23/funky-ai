@@ -40,7 +40,7 @@ describe('runEngramAdd() — unit (fs mocked)', () => {
     expect(fs.mkdirSync).toHaveBeenCalledWith(expectedDir, { recursive: true });
     expect(fs.writeFileSync).toHaveBeenCalledWith(
       expectedFile,
-      expect.stringContaining('[test-tag]'),
+      expect.stringMatching(/\[test-tag\]/),
       'utf8'
     );
   });

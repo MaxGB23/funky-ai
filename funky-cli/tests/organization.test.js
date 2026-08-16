@@ -10,13 +10,14 @@ import { fileURLToPath } from 'url';
 const LEGACY_EXCEPTIONS = {};
 
 // Anti-brittle debt (testing-modernization): remaining fragile copy assertions
-// per test file. A fragile assertion is toContain/toMatch/.includes with a
-// quoted string literal (full-copy or console-copy); structural assertions
-// (markers, tokens, paths, flags, regex args) never count. Entries are removed
-// as each file migrates to snapshots/semantic-token validation. The map total
-// MUST reach ZERO at the change end: once all entries are removed, the
-// "files without entries have zero fragile assertions" test forces every file
-// to zero. Initial values calibrated against the committed counter regex.
+// per test file. A fragile assertion is toContain/toMatch/.includes/
+// stringContaining/stringMatching/toHaveBeenCalledWith with a quoted string
+// literal (full-copy or console-copy); structural assertions (markers, tokens,
+// paths, flags, regex args) never count. Entries are removed as each file
+// migrates to snapshots/semantic-token validation. The map total MUST reach
+// ZERO at the change end: once all entries are removed, the "files without
+// entries have zero fragile assertions" test forces every file to zero.
+// Initial values calibrated against the committed counter regex.
 const FRAGILE_DEBT = {};
 
 // Convention: one unit under test per file, named {unit}.test.js. Integration
@@ -74,13 +75,15 @@ function violations(name) {
   return result;
 }
 
-// Fragile-assertion counter (D1): toContain/toMatch/.includes with a quoted
-// string literal (single, double, bare backtick). Regex args (/.../) never
-// match -> structural. Backticks containing ${} are dynamic -> structural.
-// organization.test.js is self-exempt: its own rule-key strings are
-// identifiers, not copy.
+// Fragile-assertion counter (D1): toContain/toMatch/.includes/stringContaining/
+// stringMatching/toHaveBeenCalledWith with a quoted string literal (single,
+// double, bare backtick). Regex args (/.../) never match -> structural.
+// Backticks containing ${} are dynamic -> structural. toHaveBeenCalledWith
+// counts only a sole string-literal argument; multi-arg structural calls
+// (paths + options) don't match. organization.test.js is self-exempt: its own
+// rule-key strings are identifiers, not copy.
 const FRAGILE_ASSERT_RE =
-  /\b(?:not\.)?(?:toContain|toMatch)\s*\(\s*(['"`])((?:[^'"`\\]|\\.)*?)\1\s*\)|\.includes\s*\(\s*(['"`])((?:[^'"`\\]|\\.)*?)\3\s*\)/g;
+  /\b(?:not\.)?(?:toContain|toMatch|toHaveBeenCalledWith)\s*\(\s*(['"`])((?:[^'"`\\]|\\.)*?)\1\s*\)|\.includes\s*\(\s*(['"`])((?:[^'"`\\]|\\.)*?)\3\s*\)|expect\.string(?:Containing|Matching)\s*\(\s*(['"`])((?:[^'"`\\]|\\.)*?)\5\s*\)/g;
 
 // Structural exclusions (category a): markers, tokens, placeholders, paths,
 // bare filenames, CLI flags.
@@ -101,7 +104,7 @@ function countFragileAssertions(name) {
   const re = new RegExp(FRAGILE_ASSERT_RE.source, 'g');
   let match;
   while ((match = re.exec(content)) !== null) {
-    const lit = match[2] ?? match[4];
+    const lit = match[2] ?? match[4] ?? match[6];
     if (lit === undefined) continue;
     if (lit.includes('${')) continue; // template literal with interpolation
     if (isStructuralLiteral(lit)) continue;

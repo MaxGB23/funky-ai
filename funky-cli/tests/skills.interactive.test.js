@@ -78,7 +78,8 @@ describe('skillsCommand — acción interactiva (R-SK-6)', () => {
 
     await program.parseAsync(['skills'], { from: 'user' });
 
-    expect(p.cancel).toHaveBeenCalledWith('Operación cancelada.');
+    // Camino de cancelación: se muestra el aviso (outcome), exit 1, cero escrituras.
+    expect(p.cancel).toHaveBeenCalled();
     expect(exitSpy).toHaveBeenCalledWith(1);
     expect(fs.existsSync(path.join(tmpDir, '.agents'))).toBe(false);
   });
@@ -91,9 +92,10 @@ describe('skillsCommand — acción interactiva (R-SK-6)', () => {
     expect(fs.existsSync(path.join(tmpDir, '.agents/skills/sdd-release/SKILL.md'))).toBe(true);
     expect(fs.existsSync(path.join(tmpDir, '.agents/templates/sdd/release-notes.md'))).toBe(true);
     expect(fs.existsSync(path.join(tmpDir, '.agents/skills/sdd-docs-sync/SKILL.md'))).toBe(false);
-    expect(logSpy).toHaveBeenCalledWith(
-      '\n✅ Skills y docs compartidos instalados. 2 archivos creados, 0 ya existian.'
-    );
+    // La instalación se prueba por outcomes de archivos (arriba) y por el aviso
+    // de éxito emitido (el mensaje exacto con conteo se cubre dinámicamente en
+    // el test __all__; el literal no se copia aquí).
+    expect(logSpy).toHaveBeenCalled();
     expect(exitSpy).not.toHaveBeenCalled();
   });
 

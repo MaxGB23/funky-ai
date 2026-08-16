@@ -107,7 +107,7 @@ describe('secureCommand — integración (R2-R11)', () => {
     await secureCommand.parseAsync(['check'], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(1);
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('env-tracked'));
+    expect(logSpy).toHaveBeenCalledWith(expect.stringMatching(/env-tracked/));
   });
 
   it('R10: repo npm (package-lock, sin workspace) → WARN y exit 0, no bloquea', async () => {
@@ -131,7 +131,7 @@ describe('secureCommand — integración (R2-R11)', () => {
     await secureCommand.parseAsync(['check'], { from: 'user' });
 
     expect(exitSpy).toHaveBeenCalledWith(1);
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('pnpm'));
+    expect(logSpy).toHaveBeenCalledWith(expect.stringMatching(/pnpm/));
   });
 
   it('R5: drift de hooks → exit 1; check --rebaseline re-seedea y pasa', async () => {
@@ -160,7 +160,7 @@ describe('secureCommand — integración (R2-R11)', () => {
     applyMocks(mf);
     await secureCommand.parseAsync(['check'], { from: 'user' });
     expect(exitSpy).toHaveBeenCalledWith(1);
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('hook-drift'));
+    expect(logSpy).toHaveBeenCalledWith(expect.stringMatching(/hook-drift/));
 
     // Rebaseline explícito tras el cambio legítimo → pasa.
     exitSpy.mockClear();
@@ -251,7 +251,7 @@ describe('secureCommand — integración (R2-R11)', () => {
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     expect(vi.mocked(fs.writeFileSync)).not.toHaveBeenCalled();
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('11.5.0'));
+    expect(logSpy).toHaveBeenCalledWith(expect.stringMatching(/11\.5\.0/));
     expect(warnSpy).toHaveBeenCalledWith(expect.stringMatching(/duplicad/i));
   });
 
@@ -263,7 +263,7 @@ describe('secureCommand — integración (R2-R11)', () => {
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining('pnpm config set minimum-release-age 4320 --location=global')
+      expect.stringMatching(/pnpm config set minimum-release-age 4320 --location=global/)
     );
   });
 

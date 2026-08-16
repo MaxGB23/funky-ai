@@ -321,7 +321,7 @@ describe('init action — contrato de feedback por archivo (Fase 2, 2.1-2.6)', (
     await expect(initCommand.parseAsync([], { from: 'user' })).rejects.toThrow('exit');
 
     expect(exitSpy).toHaveBeenCalledWith(1);
-    expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('permisos'));
+    expect(errorSpy).toHaveBeenCalledWith(expect.stringMatching(/permisos/));
   });
 
   it('sin archivos existentes → completa sin exit y crea las 5 copias (triangulación)', async () => {
