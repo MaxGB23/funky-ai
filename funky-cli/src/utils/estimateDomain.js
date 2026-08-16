@@ -8,12 +8,11 @@ const __dirname = path.dirname(__filename);
 
 const TEMPLATES_DIR = path.join(__dirname, '../templates/estimate');
 
-// TODO(Fase 2, Pendiente 1): estimateTopics.js fue ELIMINADO (decisión 2026-08-07:
-// la guía corta de flags del template base es la única guía para decidir flags, sin
-// heurísticas de texto). TOPICS/DISPLAY_NAMES viven acá como orden canónico de los
-// 6 tópicos (topic key == flag name) hasta que 2.4 defina su hogar definitivo.
-// El mecanismo de incrustación de la zona vive en su propio módulo de marcadores
-// (testing-modernization, Front 2); este módulo conserva constantes, decisiones y R10.
+// estimateTopics.js fue ELIMINADO (decisión 2026-08-07: la guía corta de flags
+// del template base es la única guía para decidir flags, sin heurísticas de texto).
+// TOPICS/DISPLAY_NAMES viven acá como orden canónico de los 6 tópicos (topic key ==
+// flag name) hasta que 2.4 defina su hogar definitivo. El mecanismo de incrustación
+// vive en su módulo de marcadores; este módulo conserva constantes, decisiones y R10.
 export const TOPICS = [
   'roles',
   'multi-tenant',

@@ -84,10 +84,9 @@ export async function runEstimate(targetBase, opts = {}) {
     }
 
     // ── 2b. Sugerencias de consola (R11) — ELIMINADAS (2.2) ──
-    // TODO(Fase 2, 2.2): la terminal queda limpia para checks y warnings; ya NO
-    // se imprimen sugerencias automáticas de flags ("💡 Se detectó ... Considerá")
-    // ni el prompt gigante. surfaceEstimateTopics/estimateTopics.js fueron
-    // eliminados (Pendiente 1); la guía corta de flags del template decide.
+    // La terminal queda limpia para checks y warnings; ya NO se imprimen sugerencias
+    // automáticas de flags ni el prompt gigante. surfaceEstimateTopics/estimateTopics.js
+    // fueron eliminados (Pendiente 1); la guía corta de flags del template decide.
 
     // ── 3. Generate Pricing Guide ──
     const estimateDir = path.join(targetBase, 'docs', 'funky-ai', 'estimate');
@@ -99,8 +98,8 @@ export async function runEstimate(targetBase, opts = {}) {
     }
 
     // Mapeo Commander → opts del dominio (Interfaces/Contracts del design).
-    // TODO(Fase 2, 1.5/2.4): la ficha de alcance (scopeFicha) se eliminó junto con
-    // estimateTopics.js; la guía corta de flags vive en el template base.
+    // La ficha de alcance (scopeFicha) se eliminó junto con estimateTopics.js;
+    // la guía corta de flags vive en el template base.
     const guideOpts = {
       brief: opts.brief,                                       // true | string | undefined
       topics: TOPICS.filter((t) => flagValue(opts, t) === true), // orden canónico → R13

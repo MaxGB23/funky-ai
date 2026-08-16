@@ -411,8 +411,9 @@ describe('--context flag', () => {
     const guideCall = writeCalls.find(c => String(c[0]).includes('pricing-guide.md'));
     expect(guideCall).toBeTruthy();
     const guideContent = String(guideCall[1]);
-    // 2.1: la guía no incrusta decisiones (se referencian). La ruta custom la
-    // consume loadDecisions para el pipeline; TODO(2.4): la guía debe señalarla.
+    // 2.1: la guía no incrusta decisiones (se referencian). La ruta custom la consume
+    // loadDecisions para el pipeline; la guía referencia el path default de
+    // architecture-decisions.md (verificado por la aserción siguiente).
     expect(guideContent).not.toMatch(/Vue/);
     expect(guideContent).not.toMatch(/DB: PostgreSQL/);
     expect(guideContent).toContain('docs/funky-ai/assess/architecture-decisions.md');
