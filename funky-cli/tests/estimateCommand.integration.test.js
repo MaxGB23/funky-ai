@@ -55,11 +55,11 @@ describe('estimateCommand — integration', () => {
     expect(exitSpy).toHaveBeenCalledWith(0);
     expect(warnSpy).toHaveBeenCalled();
     const warnMsgs = warnSpy.mock.calls.map(c => String(c));
-    expect(warnMsgs.some(m => m.includes('architecture-decisions'))).toBe(true);
+    expect(warnMsgs.some(m => m.includes('architecture-decisions.md'))).toBe(true);
     // M6/M11: el aviso dice el comando correctivo (funky assess) y NO afirma
     // "contenido parcial" (la guía referencia archivos, no incrusta contenido).
-    expect(warnMsgs.some(m => m.includes('funky assess'))).toBe(true);
-    expect(warnMsgs.some(m => m.includes('contenido parcial'))).toBe(false);
+    expect(warnMsgs.some(m => /funky assess/.test(m))).toBe(true);
+    expect(warnMsgs.some(m => /contenido parcial/.test(m))).toBe(false);
 
     warnSpy.mockRestore();
   });
@@ -76,9 +76,9 @@ describe('estimateCommand — integration', () => {
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const warnMsgs = warnSpy.mock.calls.map(c => String(c));
-    expect(warnMsgs.some(m => m.includes('PROJECT-CANVAS'))).toBe(true);
+    expect(warnMsgs.some(m => m.includes('PROJECT-CANVAS.md'))).toBe(true);
     // M11: el aviso de canvas faltante dice el comando correctivo (funky init).
-    expect(warnMsgs.some(m => m.includes('funky init'))).toBe(true);
+    expect(warnMsgs.some(m => /funky init/.test(m))).toBe(true);
 
     warnSpy.mockRestore();
   });
@@ -94,9 +94,9 @@ describe('estimateCommand — integration', () => {
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const warnMsgs = warnSpy.mock.calls.map(c => String(c));
-    expect(warnMsgs.some(m => m.includes('PROJECT-CANVAS') && m.includes('funky init'))).toBe(true);
-    expect(warnMsgs.some(m => m.includes('INFRA-CANVAS') && m.includes('funky init'))).toBe(true);
-    expect(warnMsgs.some(m => m.includes('placeholder'))).toBe(false);
+    expect(warnMsgs.some(m => m.includes('PROJECT-CANVAS.md') && /funky init/.test(m))).toBe(true);
+    expect(warnMsgs.some(m => m.includes('INFRA-CANVAS.md') && /funky init/.test(m))).toBe(true);
+    expect(warnMsgs.some(m => /placeholder/.test(m))).toBe(false);
 
     warnSpy.mockRestore();
   });
@@ -116,8 +116,8 @@ describe('estimateCommand — integration', () => {
     const warnMsgs = warnSpy.mock.calls.map(c => String(c));
     // M8: el aviso menciona el archivo ausente, el contexto de negocio y el
     // comando correctivo (funky init), armonizado con M11 (mismo patrón que canvases).
-    expect(warnMsgs.some(m => m.includes('brief-funcional.md') && m.includes('contexto de negocio'))).toBe(true);
-    expect(warnMsgs.some(m => m.includes('brief-funcional.md') && m.includes('funky init'))).toBe(true);
+    expect(warnMsgs.some(m => m.includes('brief-funcional.md') && /contexto de negocio/.test(m))).toBe(true);
+    expect(warnMsgs.some(m => m.includes('brief-funcional.md') && /funky init/.test(m))).toBe(true);
 
     warnSpy.mockRestore();
   });
@@ -139,7 +139,9 @@ describe('estimateCommand — integration', () => {
     const warnMsgs = warnSpy.mock.calls.map(c => String(c));
     expect(warnMsgs.some(m => m.includes('brief-funcional.md'))).toBe(false);
     const logMsgs = logSpy.mock.calls.map(c => String(c));
-    expect(logMsgs.some(m => m.includes('auto-detectado') && m.includes('brief-funcional.md'))).toBe(true);
+    // M8: el log de auto-detección referencia el archivo del brief (el aviso de
+    // ausencia va por warn, no por log — la vía log + token de archivo ES la rama).
+    expect(logMsgs.some(m => m.includes('brief-funcional.md'))).toBe(true);
 
     warnSpy.mockRestore();
     logSpy.mockRestore();
@@ -158,7 +160,7 @@ describe('estimateCommand — integration', () => {
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const warnMsgs = warnSpy.mock.calls.map(c => String(c));
-    expect(warnMsgs.some(m => m.includes('[Responde aquí]'))).toBe(true);
+    expect(warnMsgs.some(m => /\[Responde aquí\]/.test(m))).toBe(true);
 
     warnSpy.mockRestore();
   });
@@ -213,8 +215,11 @@ describe('estimateCommand — integration', () => {
     const guideContent = String(guideCall[1]);
     const decisionsContent = String(decisionsCall[1]);
 
-    expect(guideContent).toContain('Guía de Discusión de Pricing');
-    expect(decisionsContent).toContain('Decisiones de Pricing');
+    // (b): la guía completa es la expectativa centralizada (snapshot).
+    expect(guideContent).toMatchSnapshot();
+    // D2: las decisiones llevan fecha — tokens, no copy ni snapshot (flaky).
+    expect(decisionsContent).not.toMatch(/\{\{DATE\}\}/);
+    expect(decisionsContent).toMatch(/> Fecha: \d{4}-\d{2}-\d{2}$/m);
   });
 
   it('overwrites pricing-guide.md when it already exists (derived artifact)', async () => {
@@ -222,7 +227,8 @@ describe('estimateCommand — integration', () => {
     addCanvas(mf, 'PROJECT-CANVAS.md', CANVAS_PROJECT_CONTENT);
     addCanvas(mf, 'INFRA-CANVAS.md', CANVAS_INFRA_CONTENT);
     addDecisions(mf, DECISIONS_CONTENT);
-    mf[path.join(CWD, 'docs', 'funky-ai', 'estimate', 'pricing-guide.md')] = '# Guía obsoleta previa';
+    const staleSeed = '# Guía obsoleta previa';
+    mf[path.join(CWD, 'docs', 'funky-ai', 'estimate', 'pricing-guide.md')] = staleSeed;
     applyMocks(mf);
 
     await estimateCommand.parseAsync([], { from: 'user' });
@@ -232,8 +238,10 @@ describe('estimateCommand — integration', () => {
     const guideCall = writeCalls.find(c => String(c[0]).includes('pricing-guide.md'));
     expect(guideCall).toBeTruthy();
     const guideContent = String(guideCall[1]);
-    expect(guideContent).toContain('Guía de Discusión de Pricing');
-    expect(guideContent).not.toContain('Guía obsoleta previa');
+    // (b): la guía regenerada es la expectativa centralizada; el seed previo es
+    // dato de fixture, no copy de producción.
+    expect(guideContent).toMatchSnapshot();
+    expect(guideContent).not.toContain(staleSeed);
   });
 
   it('does NOT overwrite an existing pricing-decisions.md; logs the engine backup recommendation (0.2)', async () => {
@@ -254,10 +262,12 @@ describe('estimateCommand — integration', () => {
     expect(decisionsCall).toBeFalsy();
     // El mensaje completo viene del motor común (kind decision): la recomendación
     // de backup reemplaza al warning corto "No se sobrescribió" (Fase 0, 0.2).
+    // (c): el copy del motor se centraliza en el snapshot de su línea; el token
+    // de archivo valida que el log corrió. La línea del motor usa solo el
+    // basename (determinista), a diferencia del log "Creado" que lleva la ruta.
     const logMsgs = logSpy.mock.calls.map(c => String(c));
-    expect(logMsgs.some(m => m.includes('pricing-decisions.md') && m.includes('ya existe'))).toBe(true);
-    expect(logMsgs.some(m => m.includes('Contiene decisiones del proyecto'))).toBe(true);
-    expect(logMsgs.some(m => m.includes('elimínalo o muévelo de ubicación'))).toBe(true);
+    expect(logMsgs.some(m => m.includes('pricing-decisions.md'))).toBe(true);
+    expect(logMsgs.filter(m => m.startsWith('⚡'))).toMatchSnapshot();
 
     logSpy.mockRestore();
   });
@@ -275,8 +285,10 @@ describe('estimateCommand — integration', () => {
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const msgs = logSpy.mock.calls.map(c => String(c));
-    expect(msgs.some(m => m.includes('Material de pricing listo: 2 creados, 0 conservados.'))).toBe(true);
-    expect(msgs.some(m => m.includes('Material de pricing generado exitosamente'))).toBe(false);
+    // M7: estructura del título con conteos (semántico — el log del motor usa
+    // rutas absolutas, así que la consola no es snapshot-safe en este escenario).
+    expect(msgs.some(m => /Material de pricing listo: 2 creados, 0 conservados\./.test(m))).toBe(true);
+    expect(msgs.some(m => /Material de pricing generado exitosamente/.test(m))).toBe(false);
 
     logSpy.mockRestore();
   });
@@ -296,9 +308,10 @@ describe('estimateCommand — integration', () => {
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const msgs = logSpy.mock.calls.map(c => String(c));
-    expect(msgs.some(m => m.includes('pricing-guide.md') && m.includes('— generado'))).toBe(true);
-    expect(msgs.some(m => m.includes('pricing-decisions.md') && m.includes('— conservado'))).toBe(true);
-    expect(msgs.some(m => m.includes('estimate-prompt.md') && m.includes('— creado'))).toBe(true);
+    // M7: estado por archivo en el resumen (patrón <archivo> — <estado>).
+    expect(msgs.some(m => /pricing-guide\.md — generado/.test(m))).toBe(true);
+    expect(msgs.some(m => /pricing-decisions\.md — conservado/.test(m))).toBe(true);
+    expect(msgs.some(m => /estimate-prompt\.md — creado/.test(m))).toBe(true);
 
     logSpy.mockRestore();
   });
@@ -315,7 +328,7 @@ describe('estimateCommand — integration', () => {
     await estimateCommand.parseAsync([], { from: 'user' });
 
     const logMsgs = logSpy.mock.calls.map(c => String(c));
-    expect(logMsgs.some(m => m.includes('Entorno no interactivo'))).toBe(false);
+    expect(logMsgs.some(m => /Entorno no interactivo/.test(m))).toBe(false);
 
     logSpy.mockRestore();
   });
@@ -400,8 +413,8 @@ describe('--context flag', () => {
     const guideContent = String(guideCall[1]);
     // 2.1: la guía no incrusta decisiones (se referencian). La ruta custom la
     // consume loadDecisions para el pipeline; TODO(2.4): la guía debe señalarla.
-    expect(guideContent).not.toContain('Vue');
-    expect(guideContent).not.toContain('DB: PostgreSQL');
+    expect(guideContent).not.toMatch(/Vue/);
+    expect(guideContent).not.toMatch(/DB: PostgreSQL/);
     expect(guideContent).toContain('docs/funky-ai/assess/architecture-decisions.md');
   });
 
@@ -464,9 +477,9 @@ describe('--context flag', () => {
 
     expect(result.status).toBe('completed');
     const logMsgs = logSpy.mock.calls.map(c => String(c));
-    expect(logMsgs.some(m => m.includes('Material de pricing generado'))).toBe(false);
-    expect(logMsgs.some(m => m.includes('Material de pricing listo'))).toBe(false);
-    expect(logMsgs.some(m => m.includes('PROMPT'))).toBe(false);
+    expect(logMsgs.some(m => /Material de pricing generado/.test(m))).toBe(false);
+    expect(logMsgs.some(m => /Material de pricing listo/.test(m))).toBe(false);
+    expect(logMsgs.some(m => /PROMPT/.test(m))).toBe(false);
 
     logSpy.mockRestore();
   });
