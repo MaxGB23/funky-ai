@@ -129,7 +129,7 @@ describe('assess Command - action flow', () => {
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const warnMsgs = warnSpy.mock.calls.map(c => String(c));
-    expect(warnMsgs.some(m => m.includes('INFRA-CANVAS'))).toBe(true);
+    expect(warnMsgs.some(m => m.includes('INFRA-CANVAS.md'))).toBe(true);
 
     warnSpy.mockRestore();
   });
@@ -144,8 +144,8 @@ describe('assess Command - action flow', () => {
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const warnMsgs = warnSpy.mock.calls.map(c => String(c));
-    expect(warnMsgs.some(m => m.includes('PROJECT-CANVAS'))).toBe(true);
-    expect(warnMsgs.some(m => m.includes('INFRA-CANVAS'))).toBe(true);
+    expect(warnMsgs.some(m => m.includes('PROJECT-CANVAS.md'))).toBe(true);
+    expect(warnMsgs.some(m => m.includes('INFRA-CANVAS.md'))).toBe(true);
 
     warnSpy.mockRestore();
   });
@@ -163,7 +163,8 @@ describe('assess Command - action flow', () => {
     const decisionsCall = writeCalls.find(c => String(c[0]).includes('architecture-decisions.md'));
     expect(decisionsCall).toBeTruthy();
     const writtenContent = String(decisionsCall[1]);
-    expect(writtenContent).toContain('Decisiones Arquitectónicas');
+    // El archivo de decisiones lleva fecha → tokens, no snapshot (flaky).
+    expect(writtenContent).toMatch(/Decisiones Arquitectónicas/);
     expect(writtenContent).not.toContain('{{DATE}}');
     expect(writtenContent).toMatch(/\d{4}-\d{2}-\d{2}/);
   });
@@ -182,8 +183,10 @@ describe('assess Command - action flow', () => {
     const decisionsWrite = writeCalls.find(c => String(c[0]).includes('architecture-decisions.md'));
     expect(decisionsWrite).toBeFalsy();
     const logMsgs = allLogs(logSpy);
-    expect(logMsgs.some(m => m.includes('Contiene decisiones del proyecto'))).toBe(true);
-    expect(logMsgs.some(m => m.includes('elimínalo o muévelo de ubicación'))).toBe(true);
+    expect(logMsgs.some(m => m.includes('architecture-decisions.md'))).toBe(true);
+    // (c): la recomendación de backup del motor común se centraliza en el
+    // snapshot de su línea (usa basename → determinista; sin rutas absolutas).
+    expect(logMsgs.filter(m => m.startsWith('⚡'))).toMatchSnapshot();
   });
 
   it('creates risk-patterns.md from the template when it does not exist', async () => {
@@ -197,7 +200,8 @@ describe('assess Command - action flow', () => {
     const writeCalls = vi.mocked(fs.writeFileSync).mock.calls;
     const patternsCall = writeCalls.find(c => String(c[0]).includes('risk-patterns.md'));
     expect(patternsCall).toBeTruthy();
-    expect(String(patternsCall[1])).toContain('Patrones de Riesgo de Referencia');
+    // (b): risk-patterns es estático (sin fecha) → snapshot de contenido.
+    expect(String(patternsCall[1])).toMatchSnapshot();
   });
 
   it('does not overwrite an existing team risk-patterns.md; recommends removing or moving it (2.4)', async () => {
@@ -214,7 +218,8 @@ describe('assess Command - action flow', () => {
     expect(patternsCall).toBeFalsy();
     const logMsgs = allLogs(logSpy);
     expect(logMsgs.some(m => m.includes('risk-patterns.md'))).toBe(true);
-    expect(logMsgs.some(m => m.includes('Contiene decisiones del proyecto'))).toBe(true);
+    // (c): misma recomendación del motor común (basename) → snapshot de la línea.
+    expect(logMsgs.filter(m => m.startsWith('⚡'))).toMatchSnapshot();
   });
 
   it('escribe prompt y decisiones adecuadamente', async () => {
@@ -304,8 +309,9 @@ describe('assess Command - action flow', () => {
     await assessCommand.parseAsync([], { from: 'user' });
 
     const logMsgs = allLogs(logSpy);
-    expect(logMsgs.some(m => m.includes('Entorno no interactivo'))).toBe(true);
-    expect(logMsgs.some(m => m.includes('no se actualiza la guía assess-prompt.md existente'))).toBe(false);
+    expect(logMsgs.some(m => /Entorno no interactivo/.test(m))).toBe(true);
+    // 0.3: el aviso es GENÉRICO, no hardcodeado al nombre de la guía.
+    expect(logMsgs.some(m => /no se actualiza la guía assess-prompt\.md existente/.test(m))).toBe(false);
   });
 
   it('TTY + guía existente → el Y/N advierte explícitamente que actualizar REEMPLAZA el contenido actual (0.4)', async () => {
@@ -321,10 +327,9 @@ describe('assess Command - action flow', () => {
 
     expect(clackMock.confirm).toHaveBeenCalledTimes(1);
     const message = clackMock.confirm.mock.calls[0][0].message;
-    expect(message).toContain('REEMPLAZA la actual');
-    expect(message).toContain('perderás el progreso previo');
-    expect(message).toContain('respaldo');
-    expect(message).not.toContain('¿Quieres actualizarla con la versión más reciente?');
+    // (b): el copy completo del Y/N (0.4) es la expectativa centralizada
+    // (mensaje determinista: solo basename, sin fecha ni rutas absolutas).
+    expect(message).toMatchSnapshot();
   });
 
   it('does not generate regex-detected C2 questions from canvas content', async () => {
@@ -338,10 +343,13 @@ describe('assess Command - action flow', () => {
     const reviewCall = reviewWrite();
     const writtenContent = String(reviewCall[1]);
 
-    expect(writtenContent).not.toContain('Elegiste Kubernetes');
-    expect(writtenContent).not.toContain('SQLite es liviano pero tiene límites');
-    expect(writtenContent).not.toContain('Con un solo nodo, cualquier deploy');
-    expect(writtenContent).not.toContain('El equipo es principalmente Junior');
+    // 2.2: el review NO incrusta las preguntas C2 detectadas por regex del
+    // canvas (esos textos viven en las templates de preguntas → aserciones de
+    // rama en forma regex, no copy).
+    expect(writtenContent).not.toMatch(/Elegiste Kubernetes/);
+    expect(writtenContent).not.toMatch(/SQLite es liviano pero tiene límites/);
+    expect(writtenContent).not.toMatch(/Con un solo nodo, cualquier deploy/);
+    expect(writtenContent).not.toMatch(/El equipo es principalmente Junior/);
   });
 
   it('próximos pasos: pegar assess-prompt.md como primer mensaje (2.7)', async () => {
@@ -353,7 +361,7 @@ describe('assess Command - action flow', () => {
     await assessCommand.parseAsync([], { from: 'user' });
 
     const logMsgs = allLogs(logSpy);
-    expect(logMsgs.some(m => m.includes('assess-prompt.md') && m.includes('primer mensaje'))).toBe(true);
+    expect(logMsgs.some(m => m.includes('assess-prompt.md') && /primer mensaje/.test(m))).toBe(true);
   });
 
   it('M10: summary muestra estado por archivo y matiza el título cuando hubo omisiones', async () => {
@@ -368,11 +376,13 @@ describe('assess Command - action flow', () => {
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     const msgs = allLogs(logSpy);
-    expect(msgs.some(m => m.includes('Material de assess listo: 2 creados, 1 conservados.'))).toBe(true);
-    expect(msgs.some(m => m.includes('Guía de discusión generada exitosamente'))).toBe(false);
-    expect(msgs.some(m => m.includes('architecture-decisions.md') && m.includes('— conservado'))).toBe(true);
-    expect(msgs.some(m => m.includes('risk-patterns.md') && m.includes('— creado'))).toBe(true);
-    expect(msgs.some(m => m.includes('assess-prompt.md') && m.includes('— creado'))).toBe(true);
+    // M10: estructura del título con conteos + estado por archivo (semántico;
+    // la consola no es snapshot-safe porque los logs del motor llevan rutas).
+    expect(msgs.some(m => /Material de assess listo: 2 creados, 1 conservados\./.test(m))).toBe(true);
+    expect(msgs.some(m => /Guía de discusión generada exitosamente/.test(m))).toBe(false);
+    expect(msgs.some(m => /architecture-decisions\.md — conservado/.test(m))).toBe(true);
+    expect(msgs.some(m => /risk-patterns\.md — creado/.test(m))).toBe(true);
+    expect(msgs.some(m => /assess-prompt\.md — creado/.test(m))).toBe(true);
   });
 
   it('M10: en creación limpia el summary matiza "listo: 3 creados, 0 conservados"', async () => {
@@ -384,8 +394,8 @@ describe('assess Command - action flow', () => {
     await assessCommand.parseAsync([], { from: 'user' });
 
     const msgs = allLogs(logSpy);
-    expect(msgs.some(m => m.includes('Material de assess listo: 3 creados, 0 conservados.'))).toBe(true);
-    expect(msgs.some(m => m.includes('Guía de discusión generada exitosamente'))).toBe(false);
+    expect(msgs.some(m => /Material de assess listo: 3 creados, 0 conservados\./.test(m))).toBe(true);
+    expect(msgs.some(m => /Guía de discusión generada exitosamente/.test(m))).toBe(false);
   });
 
   it('exits 1 when --context file is missing (R-A1), with neutral Spanish "Asegúrate" (2.5)', async () => {
@@ -400,8 +410,9 @@ describe('assess Command - action flow', () => {
 
     const errMsgs = errorSpy.mock.calls.map(c => String(c));
     expect(errMsgs.some(m => m.includes('No se pudo leer context.json'))).toBe(true);
-    expect(errMsgs.some(m => m.includes('Asegúrate'))).toBe(true);
-    expect(errMsgs.some(m => m.includes('Asegurate'))).toBe(false);
+    // 2.5: español neutral con tilde — guard de ortografía (semántico).
+    expect(errMsgs.some(m => /Asegúrate/.test(m))).toBe(true);
+    expect(errMsgs.some(m => /Asegurate/.test(m))).toBe(false);
     expect(exitSpy).toHaveBeenCalledWith(1);
     errorSpy.mockRestore();
   });
@@ -552,8 +563,8 @@ describe('--context flag', () => {
 
     expect(result.status).toBe('completed');
     const logMsgs = allLogs(logSpy);
-    expect(logMsgs.some(m => m.includes('Guía de discusión generada'))).toBe(false);
-    expect(logMsgs.some(m => m.includes('Próximos pasos'))).toBe(false);
+    expect(logMsgs.some(m => /Guía de discusión generada/.test(m))).toBe(false);
+    expect(logMsgs.some(m => /Próximos pasos/.test(m))).toBe(false);
 
     logSpy.mockRestore();
   });
