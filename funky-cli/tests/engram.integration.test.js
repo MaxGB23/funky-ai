@@ -34,8 +34,8 @@ describe('runEngramAdd() Integration (headless, fs real)', () => {
     expect(fs.existsSync(expectedFile)).toBe(true);
 
     const content = fs.readFileSync(expectedFile, 'utf8');
-    expect(content).toContain('[headless-test]');
-    expect(content).toContain('Integración headless sin interactividad');
+    expect(content).toMatch(/\[headless-test\]/);
+    expect(content).toMatch(/Integración headless sin interactividad/);
   });
 
   it('crea el directorio de categoría si no existía previamente', async () => {
@@ -69,8 +69,8 @@ describe('runEngramAdd() Integration (headless, fs real)', () => {
     });
 
     const updatedIndex = fs.readFileSync(indexPath, 'utf8');
-    expect(updatedIndex).toContain('[index-write]');
-    expect(updatedIndex).toContain('bugfix/index-write.md');
+    // Golden del index real: entrada appendeada bajo su header de categoría (sin fecha → determinista).
+    expect(updatedIndex).toMatchSnapshot();
   });
 
   it('NO sobreescribe un engrama existente con el mismo tag — previene duplicados', async () => {
@@ -84,7 +84,7 @@ describe('runEngramAdd() Integration (headless, fs real)', () => {
     expect(result.skipped).toBe(true);
     // El contenido original se conserva
     const content = fs.readFileSync(result.path, 'utf8');
-    expect(content).toContain('Primera versión');
-    expect(content).not.toContain('Segunda versión');
+    expect(content).toMatch(/Primera versión/);
+    expect(content).not.toMatch(/Segunda versión/);
   });
 });

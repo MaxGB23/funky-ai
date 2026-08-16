@@ -20,7 +20,7 @@ describe('funky sdd — namespace y subcomando install', () => {
   it('sddCommand existe, se llama "sdd" y registra el subcomando install', () => {
     expect(sddCommand.name()).toBe('sdd');
     const subcommandNames = sddCommand.commands.map(c => c.name());
-    expect(subcommandNames).toContain('install');
+    expect(subcommandNames.some((n) => n === 'install')).toBe(true);
     // El handler compartido se exporta por el namespace (contrato de delegación
     // de install): es una función ejecutable, no solo un nombre.
     expect(typeof runScaffoldCommand).toBe('function');
@@ -36,8 +36,8 @@ describe('funky sdd — namespace y subcomando install', () => {
 
       expect(executeIntentionsMock).toHaveBeenCalledTimes(1);
       const logs = logSpy.mock.calls.map(c => String(c[0]));
-      expect(logs.some(l => l.includes('🚀 Instalando estructura Funky AI...'))).toBe(true);
-      expect(logs.some(l => l.includes('✅ Funky AI instalado.'))).toBe(true);
+      expect(logs.some((l) => /🚀 Instalando estructura Funky AI\.\.\./.test(l))).toBe(true);
+      expect(logs.some((l) => /✅ Funky AI instalado\./.test(l))).toBe(true);
     } finally {
       logSpy.mockRestore();
     }

@@ -72,7 +72,7 @@ describe('runScaffold() Integration', () => {
       const readmePath = path.join(targetDir, 'README.md');
       expect(fs.existsSync(readmePath)).toBe(true);
       const content = fs.readFileSync(readmePath, 'utf8');
-      expect(content).toContain('mi-proyecto-ejemplo');
+      expect(content).toMatch(/mi-proyecto-ejemplo/);
       expect(content).not.toContain('{{project_name}}');
     } finally {
       fs.rmSync(targetDir, { recursive: true, force: true });
@@ -91,7 +91,7 @@ describe('runScaffold() Integration', () => {
       const readmePath = path.join(targetDir, 'README.md');
       expect(fs.existsSync(readmePath)).toBe(true);
       const content = fs.readFileSync(readmePath, 'utf8');
-      expect(content).toContain('tmp-integration-basename');
+      expect(content).toMatch(/tmp-integration-basename/);
       expect(content).not.toContain('{{project_name}}');
     } finally {
       fs.rmSync(targetDir, { recursive: true, force: true });

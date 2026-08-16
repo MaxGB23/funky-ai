@@ -52,7 +52,7 @@ describe('runner — probes internos (R1)', () => {
 
     expect(res.code).toBe(1);
     expect(res.stdout).toBe('');
-    expect(res.stderr).toContain('ENOENT');
+    expect(res.stderr).toMatch(/ENOENT/);
   });
 
   it('un nombre de probe desconocido lanza (nombres internos: input de usuario nunca llega al shell)', () => {

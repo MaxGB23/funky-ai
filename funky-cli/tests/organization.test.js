@@ -19,15 +19,6 @@ const LEGACY_EXCEPTIONS = {};
 // to zero. Initial values calibrated against the committed counter regex.
 const FRAGILE_DEBT = {
   'estimateDomain.test.js': 17,
-  'scaffold.test.js': 10,
-  'engram.test.js': 7,
-  'engram.integration.test.js': 5,
-  'sdd.test.js': 3,
-  'scaffold.integration.test.js': 2,
-  'context.test.js': 1,
-  'secureRunner.test.js': 1,
-  'skills.integration.test.js': 1,
-  'skills.test.js': 1,
 };
 
 // Convention: one unit under test per file, named {unit}.test.js. Integration

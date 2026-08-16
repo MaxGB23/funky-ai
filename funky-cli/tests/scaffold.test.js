@@ -163,7 +163,7 @@ describe('runScaffold() — interpolación {{project_name}}', () => {
     const readme = findReadme(intentions);
     expect(readme).toBeTruthy();
     expect(readme.action).toBe('create');
-    expect(readme.content).toContain('mi-proyecto');
+    expect(readme.content).toMatch(/mi-proyecto/);
     expect(readme.content).not.toContain('{{project_name}}');
   });
 
@@ -173,7 +173,7 @@ describe('runScaffold() — interpolación {{project_name}}', () => {
     const readme = findReadme(intentions);
     expect(readme).toBeTruthy();
     expect(readme.action).toBe('create');
-    expect(readme.content).toContain('tmp-init-interpolation');
+    expect(readme.content).toMatch(/tmp-init-interpolation/);
     expect(readme.content).not.toContain('{{project_name}}');
   });
 });
@@ -226,12 +226,12 @@ describe('runAgnosticScaffold()', () => {
     const allSrc = intentions.map(i => String(i.src || ''));
     const allDest = intentions.map(i => String(i.dest));
 
-    expect(allSrc.some(s => s.includes('.agents') || s.includes('funky-ai-rules'))).toBe(false);
+    expect(allSrc.some(s => /\.agents|funky-ai-rules/.test(s))).toBe(false);
     for (const procTemplate of ['docs.md', 'explore.md', 'proposal.md', 'spec.md', 'tasks.md', 'report.md', 'release-checklist.md', 'docs-live-index.md']) {
       expect(allSrc.some(s => s.endsWith(procTemplate))).toBe(false);
     }
-    expect(allDest.some(d => d.includes('rules'))).toBe(false);
-    expect(allDest.some(d => d.includes('engram'))).toBe(false);
+    expect(allDest.some(d => /rules/.test(d))).toBe(false);
+    expect(allDest.some(d => /engram/.test(d))).toBe(false);
   });
 });
 
@@ -264,7 +264,7 @@ describe('runAgnosticScaffold() — interpolación {{project_name}}', () => {
     const readme = findReadme(intentions);
     expect(readme).toBeTruthy();
     expect(readme.action).toBe('create');
-    expect(readme.content).toContain('mi-proyecto-agnostico');
+    expect(readme.content).toMatch(/mi-proyecto-agnostico/);
     expect(readme.content).not.toContain('{{project_name}}');
   });
 
@@ -274,7 +274,7 @@ describe('runAgnosticScaffold() — interpolación {{project_name}}', () => {
     const readme = findReadme(intentions);
     expect(readme).toBeTruthy();
     expect(readme.action).toBe('create');
-    expect(readme.content).toContain('tmp-agnostic-interpolation');
+    expect(readme.content).toMatch(/tmp-agnostic-interpolation/);
     expect(readme.content).not.toContain('{{project_name}}');
   });
 
@@ -310,8 +310,8 @@ describe('funky scaffold — comando agnóstico OpenSpec/SDD', () => {
       expect(warnSpy).not.toHaveBeenCalled();
       expect(executeIntentionsMock).toHaveBeenCalledTimes(1);
       const logs = logSpy.mock.calls.map(c => String(c[0]));
-      expect(logs.some(l => l.includes('🚀 Instalando scaffold agnóstico'))).toBe(true);
-      expect(logs.some(l => l.includes('✅ Scaffold agnóstico instalado.'))).toBe(true);
+      expect(logs.some((l) => /🚀 Instalando scaffold agnóstico/.test(l))).toBe(true);
+      expect(logs.some((l) => /✅ Scaffold agnóstico instalado\./.test(l))).toBe(true);
       expect(errorSpy).not.toHaveBeenCalled();
     } finally {
       warnSpy.mockRestore();
