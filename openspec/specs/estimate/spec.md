@@ -1,7 +1,7 @@
 # Spec — Estimate Domain
 > Domain: estimate | Status: Living | Source of Truth: `openspec/specs/estimate/spec.md`
 
-Living spec canónico para el dominio `estimate`. Refleja el estado actual tras `fase-3-estimate` y `estimate-redesign`.
+Living spec canónico para el dominio `estimate`. Refleja el estado actual tras `fase-3-estimate`, `estimate-redesign` y `testing-modernization`.
 
 ---
 
@@ -150,17 +150,10 @@ Topic signals MUST print console suggestions ("Se detectó X. Considerá --flag"
 - WHEN the command runs
 - THEN suggestion printed, no section added
 
-### R12: Backward compatibility
+### R12: Backward compatibility — REMOVED
 
-`generatePricingGuide(decisions, projectCanvas, infraCanvas, opts = {})` MUST keep name and first three args; empty `opts` MUST produce byte-identical legacy output; three-arg tests stay green.
-
-- GIVEN `generatePricingGuide(a, b, c)`
-- WHEN it runs
-- THEN output is byte-identical to legacy
-
-- GIVEN `generatePricingGuide(a, b, c, {})`
-- WHEN it runs
-- THEN output equals the three-arg call
+(Reason: `generatePricingGuide` was one of the 6 deleted dead legacy exports with zero production consumers; see R16.)
+(Migration: legacy three-arg tests deleted; guide behavior preserved via `buildPricingGuide` — R3 remains the behavior contract.)
 
 ### R13: Deterministic input
 
@@ -181,6 +174,36 @@ Optional sections MUST be driven by editable repo templates: `brief-questions-te
 - GIVEN a fragment template is edited
 - WHEN the matching flag is used
 - THEN the guide reflects the edit
+
+### R15: Marker module extraction
+
+The marker mechanism (`validatePricingGuideTemplate`, `buildPricingGuide`, `embedTopicSections`, `detectEmbeddedTopics`, `refreshPricingGuideBase` + internals `parseTopicZone`, `TOPIC_BLOCK_RE`, `EMBED_ORDER`, `readTopicFragment`) MUST live in `src/utils/estimateMarkers.js`, importing `TOPICS`/`TEAM_COST_KEY` from `estimateDomain.js` — one direction, no circular imports. `estimate.js` imports MUST point at the new module.
+
+- GIVEN `estimateMarkers.js` exists
+- WHEN `estimate.js` imports marker functions
+- THEN they resolve with identical behavior
+
+- GIVEN `estimateMarkers.js` imports from `estimateDomain.js`
+- WHEN modules load
+- THEN no circular-import error
+- AND `estimateDomain.js` never imports `estimateMarkers.js`
+
+### R16: Dead export deletion
+
+The 6 dead legacy exports (`generatePricingGuide`, `generateBriefSection`, `generateTopicFragments`, `generateIAPrompt`, `generateIAPromptBanner`, `generateIAPromptFooter`) MUST NOT exist with their legacy-route tests; zero production references remain.
+
+- GIVEN a test imports a deleted export
+- WHEN the module loads
+- THEN the import is `undefined` (predictable failure)
+
+### R17: Test split
+
+`estimateDomain.test.js` MUST stay ≤ ~250 lines; marker coverage MUST live in `estimateMarkers.test.js`.
+
+- GIVEN marker tests move out
+- WHEN the change completes
+- THEN `estimateDomain.test.js` ≤ ~250 lines
+- AND markers stay covered in `estimateMarkers.test.js`
 
 ### R-E1: `--context` flag for context file integration
 
