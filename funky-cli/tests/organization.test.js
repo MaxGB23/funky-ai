@@ -17,9 +17,7 @@ const LEGACY_EXCEPTIONS = {};
 // MUST reach ZERO at the change end: once all entries are removed, the
 // "files without entries have zero fragile assertions" test forces every file
 // to zero. Initial values calibrated against the committed counter regex.
-const FRAGILE_DEBT = {
-  'estimateDomain.test.js': 13,
-};
+const FRAGILE_DEBT = {};
 
 // Convention: one unit under test per file, named {unit}.test.js. Integration
 // goes in {cmd}.integration.test.js; interactive command harnesses (real prompt
