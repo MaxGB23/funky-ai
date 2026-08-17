@@ -1,3 +1,8 @@
+---
+trigger: model_decision
+description: Aplicar SIEMPRE que el Orquestador deba emitir la recomendación de `funky feature` o el humano sugiera iniciar sdd, sdd-init, sdd-new
+---
+
 # Reglas de Pre-Vuelo y Templates SDD
 
 ## 1. Bloque de Recomendación (Obligatorio)
