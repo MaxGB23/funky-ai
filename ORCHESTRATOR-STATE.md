@@ -14,23 +14,11 @@
 
 ## 📂 Archivos Clave
 
-### Invariantes (siempre en memoria)
-| Archivo | Rol |
-|---------|-----|
-| `.agents/rules/sdd-orchestrator.md` | Reglas del orquestador (invariantes globales, Route A) |
-| `.agents/rules/sdd-preflight.md` | Guardrail anti-router prematuro, control de modo y cacheo de sesión |
-| `.agents/rules/engram-protocol.md` | Protocolo de memoria persistente |
-| `.agents/templates/sdd/` | Templates "golden" — referencia para este workspace |
-| `funky-cli/src/commands/` | Lógica core del CLI |
-
-### Contextuales (cargar bajo demanda)
+### Contextuales
 | Categoría | Dónde |
 |-----------|-------|
-| Tier routers (1/2/3) + escalation matrix | `.agents/rules/tier*-router.md`, `sdd-escalation-matrix.md` |
-| Tier 2 delegation templates | `.agents/rules/tier2-delegation/` |
-| CLI base templates (distribución) | `funky-cli/src/templates/sdd/` — **no usar para features de este repo** |
-| System prompts globales | `docs/prompts/globals/` |
-| Prompts SDD por fase | `docs/prompts/sdd/` |
+| `.agents/templates/sdd/` | Templates "golden" — **Convenciones específicas de este workspace** |
+| CLI base templates (distribución) | `funky-cli/src/templates/sdd/` — **Convenciones generales para generar nuevos proyectos** |
 | Living Specs + RFCs + Changes | `openspec/specs/`, `openspec/rfcs/`, `openspec/changes/` |
 | Release notes | `docs/funky-ai/releases/` |
 
@@ -39,13 +27,18 @@
 ## ✅ Tareas Completadas
 - [x] **v4.5.0 — Rename scaffold→sdd install + scaffold agnóstico:** `funky sdd install` como nombre canónico del framework completo (namespace `sdd` + subcomando `install`); `funky scaffold` re-creado como comando real agnóstico openspec/sdd que instala solo 4 archivos base (README interpolado `{{project_name}}`, ORCHESTRATOR-STATE hub, `release-notes.md`→`.agents/templates/sdd/`, `000-rfc-template.md`→`openspec/rfcs/`) con 27 tests de scaffold (344 totales). `scaffold.md` re-creado + docs-live-index SSOT + índice seccional; repo-map alineado; template README generalizado (hub = ORCHESTRATOR-STATE). PR #38 mergeado (`b4353ca`). Lanzado 2026-08-09.
 - [x] **v4.6.0 — funky secure v1 (doctor/init/check):** el estándar de hardening de dependencias pnpm del RFC `feature-secure.md` pasa de documento a CLI: `funky secure doctor` (diagnóstico conductual solo lectura — `pnpm config list --json`, la única vía para leer claves de workspace YAML), `init` (seed idempotente de `pnpm-workspace.yaml` con 7 claves estándar, bloque AGENTS.md, baseline SHA-256 de dev hooks, `.gitignore` `.funky/`, pin de `packageManager`; postura `fail-silent`/`fail-fast`, sin TTY `--posture` obligatorio), `check` (gate CI-ready exit 0/1, violaciones tipadas). Normalización cross-version pnpm 10.x/11.x (kebab-case vs camelCase) y dedup de shims win32 (`.exe`/`.CMD`). Refactor `funky assess` incluido (architecture-review eliminado). 412 tests / 34 archivos verdes (415 pre-refactor). Docs sync post-merge: `secure.md` + SSOT + README "Novedad". PR #40 mergeado (`d57de04`). Lanzado 2026-08-11.
-
+- [x] **Testing-modernization:** Migración Anti-Brittle (Snapshots/Structural) y Extracción de responsabilidades en `estimateDomain.js`.
 ---
 
 ## ⏳ Tareas Pendientes
-- [ ] **Feature `testing-modernization` (Deuda Técnica Integral): Refactor de Aserciones y Extracción de Dominios.** Agrupa dos frentes críticos de testing que afectan a todo el proyecto (no solo a `estimate`):
-  1. **Migración Anti-Brittle (Snapshots/Structural):** Refactorizar las >190 aserciones frágiles de copy estático (`expect().toContain()` en `templates`, `skills`, `secureYaml`, etc.) hacia `toMatchSnapshot()` o validaciones estructurales/marcadores, cumpliendo la nueva política de la skill de `vitest` "Repo conventions (funky-ai)".
-  2. **Extracción de responsabilidades en `estimateDomain.js`:** Resolver la mezcla en `estimateDomain.js` (rutas legacy, inyección de marcadores, constantes). Extraer el mecanismo de incrustación a un módulo propio para sortear el límite de 500 líneas en tests de forma limpia, sin compactar tests a la fuerza. Definir explícitamente en `AGENTS.md` cuándo aplica compactar vs extraer módulos.
+Roadmap sugerido: 2 -> 1 -> 3 -> 4 (pero esto no es mandatorio).
+
+- [ ] 1. Revisar los archivos dentro de `./openspec/rfcs/funky-scope-propuesta` y decidir el futuro de funky-forge. Hacia dónde debe evolucionar.
+- [ ] 2. Correr el smoke test manual del comando pipeline. Esto es unicamente con el proposito de entender cómo funciona el comando pipeline antes de decidir el futuro de funky-forge.
+- [ ] 3. Refactor de documentaciones, separar bien por dominios.
+- [ ] 4. Smoke test del comando funky secure.
+- [ ] 5. Crear portfolio personal, esta tarea no está relacionada a funky-ai, pero es una nota de recordatorio.
+
 ---
 
 ## 🐛 Bugs Activos
@@ -57,7 +50,6 @@
 | Versión | Descripción |
 |---------|-------------|
 | v4.2.0 | **MINOR** — funky skills v2: instalador interactivo (multiselect "Todas"/cancel, autodetección `src/skills/` por manifest-per-skill); índice seccional 3 niveles; `sdd-release` inyecta `release-notes.md`; regla doc-nuevo en `sdd-docs-sync`; gap docs v4.1.0 cerrado. 284 tests verdes. Lanzado 2026-08-04. |
-| v4.3.0 | **MINOR** — brief-funcional-init: `funky init` genera el brief funcional como primer output; `funky estimate` lo auto-detecta (issue #33); docs alineadas con el CLI real (init-flow + README); test real-file R9 en init.test.js; fix de parse de commander en tests (ruido eliminado). 308 tests verdes con vitest 4.1.10. Lanzado 2026-08-05. |
 | v4.3.1 | **PATCH** — refactor de organización de tests: `estimate.test.js` partido en 4 archivos por unidad bajo prueba; meta-test `organization.test.js` (cohesión + topes de tamaño, `LEGACY_EXCEPTIONS` vacío); deuda legacy migrada (`pipeline`→`.integration`, `assess` split, `context` trim, `skills` cohesionado); convención en skill `vitest`; `AGENTS.md` recortado a 26 líneas. 311 tests / 27 archivos verdes con vitest 4.1.10. Lanzado 2026-08-05. |
 | v4.3.2 | **PATCH** — fix skills manifests dinámicos: `funky skills` carga manifests por skill (R-SK-8, bug "0 creados" cerrado); `--help` genérico; `discoverSkills` exige SKILL.md + manifest.js exactos (R-SK-7); `select` único (R-SK-6); categoría `.interactive.test.js` documentada + aplicada en `organization.test.js`; test `__all__` dinámico. 312 tests / 27 archivos verdes con vitest 4.1.10. Lanzado 2026-08-06. |
 | v4.4.0 | **MINOR** — refactor estimate M1-M12 (PR #36): flujo de 3 fases estrictas con contexto unificado; tarifas base por rol SIEMPRE en la guía; avisos correctivos; summary con estado por archivo (M10); costo del problema en init (M9); tabla de costo operativo mensual (M12); pricing-guide aditiva (M4). Docs sync post-merge incluido. Lanzado 2026-08-08. |
