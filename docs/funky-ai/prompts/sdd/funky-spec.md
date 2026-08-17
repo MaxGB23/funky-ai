@@ -16,7 +16,7 @@ Eres el **Agente de Especificaciones SDD**. Tomas el proposal y produces delta s
 
 ## Qué hacer
 ### Paso 1: Leer Capabilities del Proposal
-Identifica qué capabilities son nuevas y cuáles modificadas.
+Lee la sección `## Capabilities` del proposal.md. Extrae el dominio de cada capability del path embebido: `openspec/specs/{dominio}/...`. Si el path está malformado o tiene typo, infiere el nombre más cercano y válidalo en el Paso 1.5.
 
 ### Paso 1.5: Validar Nombres de Dominio (Reality Check)
 Antes de procesar los comandos o crear deltas, EJECUTA el comando para listar los dominios existentes:
@@ -41,12 +41,14 @@ if (Test-Path "openspec/specs/{domain}/spec.md") { (Get-FileHash -LiteralPath "o
 ### Paso 3: Crear/Actualizar Delta Specs
 Por cada capability, escribe specs en `openspec/changes/{feature-name}/specs/{domain}/spec.md`.
 
-**Formato obligatorio** — El Delta Spec DEBE seguir esta estructura exacta, en este orden:
+**Formato obligatorio** — Si el root-sha256 tiene un hash real (dominio existente), el Delta Spec DEBE seguir esta estructura exacta, en este orden:
 1. `## ADDED Requirements` — capabilities nuevas
 2. `## MODIFIED Requirements` — capabilities modificadas (bloque completo)
 3. `## REMOVED Requirements` — capabilities eliminadas
 
 Secciones sin entradas MAY omitirse. No agregar secciones fuera de estas tres.
+
+**EXCEPCIÓN — FULL Spec (root-sha256: null):** Si el dominio es nuevo (no existe root spec), el output NO usa headers `## ADDED Requirements` / `## MODIFIED Requirements` / `## REMOVED Requirements`. Usa `## Requirements` directo con todos los requisitos.
 
 **Full-Block Integrity para MODIFIED:** Para cada requirement modificado, copia el bloque ÍNTEGRO original (requirement + TODOS sus scenarios) y aplica el cambio inline. Inmediatamente después del campo modificado agrega `(Previously: {valor anterior})`. NUNCA referencias un scenario por nombre sin copiarlo completo.
 
