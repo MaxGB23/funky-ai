@@ -34,9 +34,9 @@ Escribir/actualizar `openspec/changes/{feature-name}/proposal.md` con esta estru
 - {What we explicitly defer}
 ## Capabilities
 ### New Capabilities
-- `<name>`: <description>
+- [Nombre capacidad] -> Mapea a `openspec/specs/{dominio}/...`
 ### Modified Capabilities
-- `<name>`: <what requirement is changing>
+- [Nombre capacidad] -> Mapea a `openspec/specs/{dominio}/...`
 ## Approach
 {High-level technical approach}
 ## Affected Areas
@@ -55,7 +55,7 @@ Escribir/actualizar `openspec/changes/{feature-name}/proposal.md` con esta estru
 | 🔴/🟡/🟢 | Regla | Descripción |
 |---|---|---|
 | 🔴 | Un solo artefacto | Crear o editar únicamente `proposal.md` |
-| 🔴 | Capabilities | Siempre llenar esta sección (contrato con specs) |
+| 🔴 | Capabilities | Siempre llenar esta sección con el path `openspec/specs/{dominio}/...` (contrato con specs — el spec agent extrae el dominio de aquí) |
 | 🔴 | NFR Fallback | Revisa si explore.md dejó NFR Candidates. Si existen, formalízalos como Tradeoffs, ¡incluso si el Orquestador no los mencionó! |
 | 🟡 | Concisión | Sé conciso, no escribas una novela. Usar bullets/tablas sobre prosa |
 | 🟢 | Rollback & Success | Siempre incluir rollback plan y success criteria |

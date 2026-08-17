@@ -6,7 +6,9 @@
 
   PASOS OBLIGATORIOS:
   1. IDENTIFICAR DOMINIO
-     - Lee el proposal.md para identificar el/los dominios afectados.
+     - Lee la sección `## 2. Capabilities` del proposal.md.
+     - Extrae el dominio del path embebido: `openspec/specs/{dominio}/...`
+     - Si el path está malformado o tiene typo, infiere el nombre más cercano y valida en el paso siguiente.
      - Ejecuta en terminal para validar nombres reales:
        Get-ChildItem -Directory "openspec/specs/" -ErrorAction SilentlyContinue | Select-Object Name
      - Si el dominio del proposal NO coincide exactamente con uno existente → asumir typo, usar el existente.
@@ -15,7 +17,8 @@
   2. CALCULAR ROOT HASH (por cada dominio)
      - Ejecuta en PowerShell:
        if (Test-Path "openspec/specs/[DOMAIN]/spec.md") { (Get-FileHash -LiteralPath "openspec/specs/[DOMAIN]/spec.md" -Algorithm SHA256).Hash } else { "NULL" }
-     - Usa el valor exacto resultante como root-sha256 en el frontmatter del output.
+     - Hash real → usa el valor como `root-sha256: {HASH}` en el frontmatter.
+     - NULL → `root-sha256: null` + el output es un **FULL Spec**: escribe el spec completo SIN headers `## ADDED Requirements`, `## MODIFIED Requirements` ni `## REMOVED Requirements`. Solo `## Requirements` directo.
      - NUNCA copies el comando ni el placeholder al output.
 
   3. ESCRIBIR OUTPUT
@@ -25,7 +28,7 @@
 
   REGLAS CRÍTICAS:
   - DO NOT include implementation details (HOW). Only WHAT.
-  - FULL Spec (dominio nuevo) → todas las secciones como ADDED, sin MODIFIED/REMOVED.
+  - FULL Spec (root-sha256 = null) → se escribe sin headers `## ADDED Requirements` / `## MODIFIED Requirements` / `## REMOVED Requirements`. Usa `## Requirements` directo con todos los requisitos.
   - DELTA Spec (dominio existente) → solo secciones con cambios reales.
   - MODIFIED: copiar bloque COMPLETO del root spec, luego editar inline. Parcial = pérdida de datos.
   - COBERTURA: OBLIGATORIO happy paths + edge cases. Error states solo si hay I/O, red o asincronismo.

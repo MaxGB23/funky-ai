@@ -15,7 +15,7 @@ const __dirname = path.dirname(__filename);
  * Source of truth: spec-cli-ide-boundaries.md §Diagrama de Inyección.
  *
  * T1: tasks.md + report.md. No docs, no release.
- * T2: tasks.md + report.md + explore.md + proposal.md + spec.md + [docs.md] + release-checklist.md.
+ * T2: tasks.md + report.md + explore.md + proposal.md + spec.template.md + [docs.md] + release-checklist.md.
  * T3: tasks.md + [docs.md] + release-checklist.md. No report.md.
  */
 const INJECTION_MATRIX = {
@@ -27,7 +27,7 @@ const INJECTION_MATRIX = {
   },
   T2: {
     base: ['tasks.md', 'report.md'],
-    tier: ['explore.md', 'proposal.md', 'spec.md'],
+    tier: ['explore.md', 'proposal.md', 'spec.template.md'],
     docsConditional: true,
     release: true,          // T2 always injects release-checklist.md
   },
@@ -51,7 +51,7 @@ export function resolveFiles(injectionParams) {
   if (!injectionParams) {
     // Backward compat: exact original 9-file list
     return [
-      'explore.md', 'proposal.md', 'design.md', 'spec.md', 'tasks.md',
+      'explore.md', 'proposal.md', 'design.md', 'spec.template.md', 'tasks.md',
       'planning-handoff.md', 'report.md', 'apply.md', 'verify.md',
     ];
   }
@@ -121,6 +121,14 @@ export const featureCommand = new Command('feature')
     const cliTemplatesDir = path.join(__dirname, '..', 'templates', 'bootstrap', 'sdd');
     const cwd = process.cwd();
 
+    // Early exit: verificar si la feature ya existe ANTES de los prompts interactivos
+    const sanitizedFeatureName = featureName.trim().replace(/\s+/g, '-').toLowerCase();
+    const featurePath = path.join(cwd, 'openspec', 'changes', sanitizedFeatureName);
+    if (fs.existsSync(featurePath)) {
+      console.error(`❌ Error: El directorio de la feature ya existe: ${featurePath}`);
+      process.exit(1);
+    }
+
     // Inquirer 1: Tier (always asked)
     const tier = await p.select({
       message: '¿Qué tier de cambio es?',
@@ -156,12 +164,8 @@ export const featureCommand = new Command('feature')
     
     const goldenTemplatesDir = path.join(cwd, '.agents', 'templates', 'sdd');
     const hasGoldenTemplates = fs.existsSync(goldenTemplatesDir);
-    
-    const sanitizedFeatureName = featureName.trim().replace(/\s+/g, '-').toLowerCase();
-    const featurePath = path.join(cwd, 'openspec', 'changes', sanitizedFeatureName);
-    const featureExists = fs.existsSync(featurePath);
 
-    const result = runFeature({ featureName, cliTemplatesDir, cwd, injectionParams, hasGoldenTemplates, featureExists });
+    const result = runFeature({ featureName, cliTemplatesDir, cwd, injectionParams, hasGoldenTemplates });
 
     if (!result.success) {
       console.error(`❌ Error: ${result.error}`);
