@@ -54,8 +54,11 @@ Cuando el desarrollador regrese con los valores confirmados, almacénalos como c
 
 > **[GUARDRAIL JIT — ANTI-ROUTER-PREMATURO]**
 > **TIENES PROHIBIDO** leer `tier1-router.md`, `tier2-router.md` ni `tier3-router.md` antes de recibir la confirmación explícita del humano sobre el Tier.
-> El orquestador emite la recomendación y **espera**. Solo cuando el humano confirme el Tier final, carga el router correspondiente JIT:
+> El orquestador emite la recomendación y **espera**.
+>
+> **POST-CONFIRMACIÓN (OBLIGATORIO e INDEFERIBLE):** En el **mismo turno** en que el humano confirme el Tier, tu **primera acción** después de cachear la sesión DEBE ser cargar el router:
 > - **T1** → `view_file .agents/rules/tier1-router.md`
 > - **T2** → `view_file .agents/rules/tier2-router.md`
 > - **T3** → `view_file .agents/rules/tier3-router.md`
-> Leer los routers antes de la confirmación es una violación directa de la separación JIT de contexto.
+>
+> Si no cargas el router en ese turno, estás operando sin las reglas del tier elegido — eso es un **error de procedimiento**. No es opcional, no es "después lo hago", no es "lo cargo cuando necesite". El router se carga **siempre** al confirmar, sin excepción.
