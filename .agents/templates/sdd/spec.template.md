@@ -31,7 +31,7 @@
   - FULL Spec (root-sha256 = null) → se escribe sin headers `## ADDED Requirements` / `## MODIFIED Requirements` / `## REMOVED Requirements`. Usa `## Requirements` directo con todos los requisitos.
   - DELTA Spec (dominio existente) → solo secciones con cambios reales.
   - MODIFIED: copiar bloque COMPLETO del root spec, luego editar inline. Parcial = pérdida de datos.
-  - COBERTURA: OBLIGATORIO happy paths + edge cases. Error states solo si hay I/O, red o asincronismo.
+  - COBERTURA: OBLIGATORIO happy paths + edge cases. Error states solo si hay I/O (incluye creación/escritura de archivos), red o asincronismo.
   - RFC 2119: MUST/SHALL = obligatorio · SHOULD = recomendado · MAY = opcional
   ============================================================ -->
 
