@@ -3,7 +3,6 @@ import path from 'path';
 
 vi.mock('fs');
 
-import fs from 'fs';
 import { runFeature, resolveFiles } from '../src/commands/feature.js';
 
 // --- resolveFiles() pure function tests ---
@@ -13,7 +12,7 @@ describe('resolveFiles()', () => {
     it('returns the legacy 9-file list when undefined', () => {
       const files = resolveFiles(undefined);
       expect(files).toEqual([
-        'explore.md', 'proposal.md', 'design.md', 'spec.md', 'tasks.md',
+        'explore.md', 'proposal.md', 'design.md', 'spec.template.md', 'tasks.md',
         'planning-handoff.md', 'report.md', 'apply.md', 'verify.md',
       ]);
     });
@@ -46,7 +45,7 @@ describe('resolveFiles()', () => {
     it('T2 / No → 6 files (base + tier + release)', () => {
       const files = resolveFiles({ tier: 'T2', docsImpact: false });
       expect(files).toEqual([
-        'tasks.md', 'report.md', 'explore.md', 'proposal.md', 'spec.md',
+        'tasks.md', 'report.md', 'explore.md', 'proposal.md', 'spec.template.md',
         'release-checklist.md',
       ]);
     });
@@ -54,7 +53,7 @@ describe('resolveFiles()', () => {
     it('T2 / Sí → 7 files (+ docs)', () => {
       const files = resolveFiles({ tier: 'T2', docsImpact: true });
       expect(files).toEqual([
-        'tasks.md', 'report.md', 'explore.md', 'proposal.md', 'spec.md',
+        'tasks.md', 'report.md', 'explore.md', 'proposal.md', 'spec.template.md',
         'docs.md', 'release-checklist.md',
       ]);
     });
@@ -166,7 +165,7 @@ describe('runFeature()', () => {
       expect(result.copiedFiles).toContain('release-checklist.md');
       expect(result.copiedFiles).toContain('explore.md');
       expect(result.copiedFiles).toContain('proposal.md');
-      expect(result.copiedFiles).toContain('spec.md');
+      expect(result.copiedFiles).toContain('spec.template.md');
       expect(result.copiedFiles).not.toContain('apply.md');
       expect(result.copiedFiles).not.toContain('verify.md');
       expect(result.copiedFiles).not.toContain('planning-handoff.md');
