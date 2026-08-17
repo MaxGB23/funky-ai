@@ -102,7 +102,7 @@ export function runScaffold({ templatesDir, targetBase }) {
   add('sdd/release-checklist.md', '.agents/templates/sdd/release-checklist.md');
   add('sdd/release-notes.md',     '.agents/templates/sdd/release-notes.md');
   add('sdd/report.md',            '.agents/templates/sdd/report.md');
-  add('sdd/spec.md',              '.agents/templates/sdd/spec.md');
+  add('sdd/spec.template.md',              '.agents/templates/sdd/spec.template.md');
   add('sdd/tasks.md',             '.agents/templates/sdd/tasks.md');
 
   // ── Exception: rfc-template a openspec/rfcs/ ──

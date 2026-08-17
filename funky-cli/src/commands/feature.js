@@ -15,7 +15,7 @@ const __dirname = path.dirname(__filename);
  * Source of truth: spec-cli-ide-boundaries.md §Diagrama de Inyección.
  *
  * T1: tasks.md + report.md. No docs, no release.
- * T2: tasks.md + report.md + explore.md + proposal.md + spec.md + [docs.md] + release-checklist.md.
+ * T2: tasks.md + report.md + explore.md + proposal.md + spec.template.md + [docs.md] + release-checklist.md.
  * T3: tasks.md + [docs.md] + release-checklist.md. No report.md.
  */
 const INJECTION_MATRIX = {
@@ -27,7 +27,7 @@ const INJECTION_MATRIX = {
   },
   T2: {
     base: ['tasks.md', 'report.md'],
-    tier: ['explore.md', 'proposal.md', 'spec.md'],
+    tier: ['explore.md', 'proposal.md', 'spec.template.md'],
     docsConditional: true,
     release: true,          // T2 always injects release-checklist.md
   },
@@ -51,7 +51,7 @@ export function resolveFiles(injectionParams) {
   if (!injectionParams) {
     // Backward compat: exact original 9-file list
     return [
-      'explore.md', 'proposal.md', 'design.md', 'spec.md', 'tasks.md',
+      'explore.md', 'proposal.md', 'design.md', 'spec.template.md', 'tasks.md',
       'planning-handoff.md', 'report.md', 'apply.md', 'verify.md',
     ];
   }

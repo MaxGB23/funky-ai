@@ -19,11 +19,11 @@ trigger: manual
 
 > ## Tarea
 > Genera las especificaciones del cambio para la feature "[CHANGE]".
-> Lee el template en `openspec/changes/[CHANGE]/spec.md` y sigue sus instrucciones al pie de la letra.
+> Lee el template en `openspec/changes/[CHANGE]/spec.template.md` y sigue sus instrucciones al pie de la letra.
 > 
 > ## Artefactos a leer
 > - Proposal: `openspec/changes/[CHANGE]/proposal.md`
-> - Template (instrucciones + estructura): `openspec/changes/[CHANGE]/spec.md`
+> - Template (instrucciones + estructura): `openspec/changes/[CHANGE]/spec.template.md`
 > 
 > ## Tags de engram relevantes (opcional)
 > - Nombre: [Nombre]
