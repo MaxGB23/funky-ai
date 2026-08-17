@@ -121,6 +121,14 @@ export const featureCommand = new Command('feature')
     const cliTemplatesDir = path.join(__dirname, '..', 'templates', 'bootstrap', 'sdd');
     const cwd = process.cwd();
 
+    // Early exit: verificar si la feature ya existe ANTES de los prompts interactivos
+    const sanitizedFeatureName = featureName.trim().replace(/\s+/g, '-').toLowerCase();
+    const featurePath = path.join(cwd, 'openspec', 'changes', sanitizedFeatureName);
+    if (fs.existsSync(featurePath)) {
+      console.error(`❌ Error: El directorio de la feature ya existe: ${featurePath}`);
+      process.exit(1);
+    }
+
     // Inquirer 1: Tier (always asked)
     const tier = await p.select({
       message: '¿Qué tier de cambio es?',
@@ -156,12 +164,8 @@ export const featureCommand = new Command('feature')
     
     const goldenTemplatesDir = path.join(cwd, '.agents', 'templates', 'sdd');
     const hasGoldenTemplates = fs.existsSync(goldenTemplatesDir);
-    
-    const sanitizedFeatureName = featureName.trim().replace(/\s+/g, '-').toLowerCase();
-    const featurePath = path.join(cwd, 'openspec', 'changes', sanitizedFeatureName);
-    const featureExists = fs.existsSync(featurePath);
 
-    const result = runFeature({ featureName, cliTemplatesDir, cwd, injectionParams, hasGoldenTemplates, featureExists });
+    const result = runFeature({ featureName, cliTemplatesDir, cwd, injectionParams, hasGoldenTemplates });
 
     if (!result.success) {
       console.error(`❌ Error: ${result.error}`);
