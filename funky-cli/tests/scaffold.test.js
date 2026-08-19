@@ -23,7 +23,7 @@ describe('runScaffold()', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
-  it('crea el plan completo: 37 copy + 0 create + 7 mkdir (dirs fake: README cae al copy)', () => {
+  it('crea el plan completo: 47 copy + 0 create + 7 mkdir (dirs fake: README cae al copy)', () => {
     const intentions = runScaffold({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
 
     const mkdirIntentions = intentions.filter(i => i.action === 'mkdir');
@@ -31,7 +31,7 @@ describe('runScaffold()', () => {
     const createIntentions = intentions.filter(i => i.action === 'create');
 
     expect(mkdirIntentions).toHaveLength(7);
-    expect(copyIntentions).toHaveLength(37);
+    expect(copyIntentions).toHaveLength(47);
     expect(createIntentions).toHaveLength(0);
   });
 
@@ -130,6 +130,33 @@ describe('runScaffold()', () => {
 
     const liveIndex = intentions.find(i => String(i.dest).replace(/\\/g, '/').endsWith('.agents/templates/sdd/docs-live-index.md'));
     expect(liveIndex.action).toBe('copy');
+  });
+
+  it('copia sabueso-route-a.md a .agents/rules/', () => {
+    const intentions = runScaffold({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
+
+    expect(intentions).toContainEqual({
+      action: 'copy',
+      src: path.join(fakeTemplatesDir, 'funky-ai-rules/sabueso-route-a.md'),
+      dest: path.join(fakeTargetDir, '.agents', 'rules', 'sabueso-route-a.md'),
+    });
+  });
+
+  it('copia custom-workflows/sdd/ a docs/funky-ai/prompts/sdd/', () => {
+    const intentions = runScaffold({ templatesDir: fakeTemplatesDir, targetBase: fakeTargetDir });
+
+    const customWorkflowFiles = [
+      'funky-explore.md', 'funky-propose.md', 'funky-spec.md', 'funky-design.md',
+      'funky-tasks.md', 'funky-apply.md', 'funky-verify.md', 'funky-archive.md', 'funky-worker.md',
+    ];
+
+    for (const file of customWorkflowFiles) {
+      expect(intentions).toContainEqual({
+        action: 'copy',
+        src: path.join(fakeTemplatesDir, `custom-workflows/sdd/${file}`),
+        dest: path.join(fakeTargetDir, 'docs', 'funky-ai', 'prompts', 'sdd', file),
+      });
+    }
   });
 
 });

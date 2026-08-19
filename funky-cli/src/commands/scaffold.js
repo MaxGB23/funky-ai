@@ -94,6 +94,7 @@ export function runScaffold({ templatesDir, targetBase }) {
   add('funky-ai-rules/tier3-interactive/interactive-tasks.md',    '.agents/rules/tier3-interactive/interactive-tasks.md');
   add('funky-ai-rules/tier3-interactive/interactive-verify.md',   '.agents/rules/tier3-interactive/interactive-verify.md');
   add('funky-ai-rules/tier3-interactive/risk-decision.md',        '.agents/rules/tier3-interactive/risk-decision.md');
+  add('funky-ai-rules/sabueso-route-a.md',                        '.agents/rules/sabueso-route-a.md');
 
   // ── bootstrap/sdd/ → .agents/templates/sdd/ ──
   add('sdd/docs.md',              '.agents/templates/sdd/docs.md');
@@ -111,6 +112,17 @@ export function runScaffold({ templatesDir, targetBase }) {
   // ── Docs compartidos: docs-live-index.md e índice seccional (mismo template que funky skills — R-SK-5) ──
   add('sdd/docs-live-index.md', '.agents/templates/sdd/docs-live-index.md');
   add('sdd/docs-index/_indice-seccional-template.md', '.agents/templates/sdd/docs-index/_indice-seccional-template.md');
+
+  // ── Custom workflows: prompts T3 para antigravity (siempre se copian) ──
+  add('custom-workflows/sdd/funky-explore.md',  'docs/funky-ai/prompts/sdd/funky-explore.md');
+  add('custom-workflows/sdd/funky-propose.md',  'docs/funky-ai/prompts/sdd/funky-propose.md');
+  add('custom-workflows/sdd/funky-spec.md',     'docs/funky-ai/prompts/sdd/funky-spec.md');
+  add('custom-workflows/sdd/funky-design.md',   'docs/funky-ai/prompts/sdd/funky-design.md');
+  add('custom-workflows/sdd/funky-tasks.md',    'docs/funky-ai/prompts/sdd/funky-tasks.md');
+  add('custom-workflows/sdd/funky-apply.md',    'docs/funky-ai/prompts/sdd/funky-apply.md');
+  add('custom-workflows/sdd/funky-verify.md',   'docs/funky-ai/prompts/sdd/funky-verify.md');
+  add('custom-workflows/sdd/funky-archive.md',  'docs/funky-ai/prompts/sdd/funky-archive.md');
+  add('custom-workflows/sdd/funky-worker.md',   'docs/funky-ai/prompts/sdd/funky-worker.md');
 
   // ── Crear directorios sharded de engram ──
   const engramDirs = ['architecture', 'pattern', 'discovery', 'decision', 'bugfix', 'session', 'release'];
