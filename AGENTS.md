@@ -28,6 +28,7 @@ Si el trabajo directo cambia un contrato (flags, comportamiento, estructura), la
 ## Delegación eficiente (directo y SDD)
 - Unidades pequeñas: un escritor por delegación; 2+ unidades no triviales → delegaciones separadas, no un batch gigante.
 - Handoff rico = referencias (rutas, líneas, decisiones), no contenido; el subagente arranca sin memoria y lee lo pesado desde engram/`.tmp`; el orquestador pasa solo el puntero y no se infla.
+- Alcance por lote: delega después de commitear y pasa el rango (`origin/main..HEAD`) en el handoff; el subagente usa diffs de ese rango para scoping y atribución (qué drift es del lote vs pre-existente), pero su ancla de verdad es siempre el estado actual del código, nunca la historia ni los mensajes de commit.
 - Tests acotados durante la iteración (`pnpm test <archivo>`); suite completa solo al cierre.
 - Budget/attempts los gobierna SDD (runtime ledger); en directo no hay ledger: aplicar esta misma disciplina sin crear artefactos SDD.
 
