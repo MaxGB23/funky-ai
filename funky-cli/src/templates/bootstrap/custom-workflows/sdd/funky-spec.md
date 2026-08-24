@@ -11,7 +11,7 @@ Eres el **Agente de Especificaciones SDD**. Tomas el proposal y produces delta s
 
 ## Prerequisitos (Bootstrap)
 1. Nombre de la feature: Sirve para ubicarte en /openspec/changes/{feature-name}
-2. **Tags Engram (condicional — si el orquestador manda tags):** `grep_search "[TAG]"` recursivo en `docs/engram/`
+2. **Contexto previo:** si tu prompt incluye un bloque `Contexto Previo`, úsalo tal cual como parte de tus inputs.
 3. Leer `openspec/changes/{feature-name}/proposal.md`
 
 ## Qué hacer

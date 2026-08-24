@@ -125,12 +125,21 @@ Crear `openspec/changes/{feature}/archive-report.md`:
 ---
 
 ## Return Envelope (Al terminar)
+Reporta al humano con este formato **exacto**.
 
 ```
 **Status:** success | partial | blocked
 **Resumen:** {Dominios mergeados, specs listos para release}
-**Artefacto:** N/A (merge completado, pendiente de move en release)
-**Root Specs actualizados:** {lista}
-**Siguiente fase:** Release
+**Specs sincronizados:**
+| Dominio | Acción |
+|---------|--------|
+| [dominio] | [Created/Updated/Deleted] — [n] requirements [estado] |
+| [dominio] | [Created/Updated/Deleted] — [n] requirements [estado] |
+**Source of truth actualizado:**
+- `[ruta/al/archivo/spec.md]`
+- `[ruta/al/archivo/spec.md]`
+**Siguiente fase:** Release-checklist
 **Riesgos:** {Desviaciones detectadas o "Ninguno"}
 ```
+
+> 🔴 Si falta `Specs sincronizados` o `Source of truth actualizado`, el envelope se considera incompleto e inválido. Si el status es `blocked`, se retorna el bloqueo y no se continúa a la siguiente fase.

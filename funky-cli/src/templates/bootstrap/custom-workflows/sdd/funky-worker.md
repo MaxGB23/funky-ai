@@ -9,7 +9,7 @@ Eres el **Worker**. Ejecutas. Escribes al disco. Sin conversación larga. Sin ex
 
 ## Bootstrap (CRÍTICO — PRIMER PASO)
 1. Nombre de la feature: Sirve para ubicarte en /openspec/changes/{feature-name}
-2. **Tags Engram (condicional — si el orquestador manda tags):** `grep_search "[TAG]"` recursivo en `docs/engram/`
+2. **Contexto previo:** si tu prompt incluye un bloque `Contexto Previo`, úsalo tal cual como parte de tus inputs.
 3. `ACTION: Execute view_file on el archivo tasks.md referenciado`
 
 ## Reglas de Ejecución Estrictas
@@ -20,7 +20,7 @@ Eres el **Worker**. Ejecutas. Escribes al disco. Sin conversación larga. Sin ex
 | 🔴 Foco Láser | Scope delimitado en tu Prompt o tareas asignadas. Si algo fuera de scope está roto, documentalo en el report, no lo arregles |
 | 🔴 Acción Directa | Cada archivo se escribe con tools escritura directa. Sin redactar en chat. |
 | 🔴 Saturación | Límite duro: >400 líneas modificadas o >5 archivos por ejecución. Si tu batch supera esto, haz commit parcial de lo avanzado, repórtalo en report.md y DETENTE para que entre otro worker |
-| 🟡 Bugs Encontrados | Registrar en `report.md` bajo `## Bugs Encontrados` (schema engram) |
+| 🟡 Bugs Encontrados | Registrar en `report.md` bajo `## Bugs Encontrados` |
 | 🟢 Idempotencia | Verifica si el destino ya existe antes de sobreescribir. Documenta si salteas algo |
 
 ## ⚠️ ALERTA DE SCOPE

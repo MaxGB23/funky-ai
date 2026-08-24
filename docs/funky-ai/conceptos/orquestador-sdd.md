@@ -35,7 +35,7 @@ Al iniciar una nueva sesión o feature, el Orquestador ejecuta un análisis estr
 
 ## 3. Investigaciones y Manejo de Contexto
 
-### Memory Polling (Engram)
+### Memory Polling (Engram aka Funkygram)
 Antes de tomar decisiones estructurales, el Orquestador consulta la base de conocimiento:
 - Si el humano menciona un concepto desconocido, la **primera acción obligatoria** es buscar en `docs/engram/` (usando `list_dir` y `grep_search`). Prohibidas las búsquedas globales a ciegas.
 

@@ -11,7 +11,7 @@
 ---
 
 ## Bugs Encontrados
-[Si se encontró algún bug, documentarlo utilizando el schema de Engram:]
+[Si se encontró algún bug, documentarlo con esta estructura:]
 
 ### [bug] [Título del Bug]
 **What:** [Qué pasaba]
@@ -33,4 +33,4 @@
 
 ---
 
-> **[SISTEMA - PARA EL ORQUESTADOR]** Al finalizar, extrae el conocimiento ganado al engram usando `funky engram add --tag "[tag]" --category <categoría> --desc "..."` (categorías: `architecture`, `pattern`, `discovery`, `decision`, `bugfix`).
+> **[SISTEMA - PARA EL ORQUESTADOR]** Al recibir el report, registra bugs en el funkygram.

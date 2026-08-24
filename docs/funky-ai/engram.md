@@ -1,5 +1,7 @@
 # funky engram add — Knowledge Base
 
+> **Nota:** Este sistema NO es el MCP Engram (SQLite) que usan los orquestadores de OpenCode/Gentle AI. Es la base de conocimiento nativa de funky-ai SDD — archivos Markdown en `docs/engram/` que se gestionan con `funky engram add`.
+
 ## ¿Qué problema resuelve?
 
 Capturar conocimientos, decisiones técnicas y bugs en una base estructurada dentro del repositorio. Cada engrama se guarda como un archivo Markdown individual con campos predefinidos, y se indexa automáticamente en un índice central.

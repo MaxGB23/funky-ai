@@ -32,11 +32,8 @@ Siguiente: [Siguiente batch o Fase Verify, dependiendo si quedan tareas]
 
 ## Casos especiales
 - **Deviations from design** → se muestran **DESTACADAS** antes de preguntar.
-- **Status: blocked** → no pregunta, explica el bloqueo y cómo resolverlo.
-- **If orchestrator sets Strict TDD mode On** → incluir tabla TDD Cycle Evidence en el return (test
-  escrito, test falla, código, test pasa).
-- **Review budget impact** → se muestra por batch para que el humano sepa
-  cuánto está generando cada entrega.
+- **Status: blocked** → no preguntes; explica el bloqueo y cómo resolverlo.
+- **Metodologías con evidencia obligatoria** (ej. Strict TDD → tabla de ciclo: test escrito → falla → código → pasa) → el return debe traer esa evidencia; si falta, pídela al subagente antes de presentar.
 
 ## Dónde corre apply
 | Elección del humano | Flujo | Ventaja |

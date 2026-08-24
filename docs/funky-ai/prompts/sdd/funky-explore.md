@@ -15,7 +15,7 @@ Eres el **Agente de Exploración SDD**. Tu única misión es investigar el codeb
 ## Prerequisitos
 ```
 1. Nombre de la feature: Sirve para ubicarte en /openspec/changes/{feature-name}
-2. **Tags Engram (condicional — si el orquestador manda tags):** `grep_search "[TAG]"` recursivo en `docs/engram/`
+2. **Contexto previo:** si tu prompt incluye un bloque `Contexto Previo`, úsalo tal cual como parte de tus inputs.
 3. Ruta del RFC, documento, o contexto a analizar
 ```
 
@@ -109,12 +109,23 @@ Crear `openspec/changes/{feature-name}/explore.md` con esta estructura:
 ---
 
 ## Return Envelope (Al terminar)
-Reporta al humano con este formato:
+Reporta al humano con este formato **exacto**.
 ```
 **Status:** success | partial | blocked
 **Resumen:** {1-3 oraciones de qué exploraste y qué encontraste}
-**Artefacto:** openspec/changes/{feature-name}/explore.md
-**Siguiente fase:** /funky-propose
+**Áreas afectadas:**
+- `[ruta/al/archivo]` — [motivo de afectación]
+- `[ruta/al/archivo]` — [motivo de afectación]
+**Enfoques:**
+1. **[Opción A]** — [pros/contras]
+   Esfuerzo: [Bajo/Medio/Alto]
+2. **[Opción B]** — [pros/contras]
+   Esfuerzo: [Bajo/Medio/Alto]
+**Recomendación:** [Opción recomendada]
 **Riesgos:** {Riesgos detectados, o "Ninguno"}
 **NFR Candidates:** {Requisitos no funcionales sugeridos, o "Ninguno"}
+**Artefacto:** openspec/changes/{feature-name}/explore.md
+**Siguiente fase:** /funky-propose
 ```
+
+> 🔴 Si el envelope no incluye áreas afectadas y detalle de opciones, se considera incompleto e inválido. Si el status es `blocked`, se retorna el bloqueo y no se continúa a la siguiente fase.
