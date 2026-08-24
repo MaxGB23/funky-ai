@@ -17,12 +17,11 @@ Mi recomendación:
   Docs:             [Sí — inyecta docs.md / No]
   Modo:             [Interactivo / Auto / Handoff]
 
-Dime tu elección final de los parámetros anteriores para saber cómo seguimos.
+- Dime tu elección final de los parámetros anteriores para saber cómo seguimos.
+- Dime si tienes un tag relevante para la sesión o lo busco yo.
 ```
 
 ## 2. Criterios para Completar la Recomendación
-
-### Ejecuté el Memory Polling de Engram?
 
 ### ¿Cuándo inyectar docs.md?
 Se inyecta cuando el cambio afecta documentación o arquitectura:
@@ -49,6 +48,7 @@ Cuando el desarrollador regrese con los valores confirmados, almacénalos como c
 | `tier` | Confirmado por el humano | Determina qué fases SDD corren (ver `sdd-escalation-matrix.md`) |
 | `modo` | Confirmado por el humano | Interactivo: pausa entre fases. Auto: fluido. Handoff: copy-paste al IDE |
 | `docs_impact` | Confirmado por el humano | Sí → `docs.md` existe y hay que llenarlo. No → skip |
+| `funkygram_tag` | Confirmado por el humano | Tag específico o vacío. Si tiene tag → busca en `docs/engram/`, destila las entradas relevantes e inyecta un bloque `Contexto Previo` en el prompt de delegación de cada fase. Si no → omitir polling. |
 
 > **Guardrail:** Si el desarrollador confirma valores que contradicen dependencias duras (ej. T1 con 500 líneas estimadas), advierte UNA sola vez y acepta lo que el humano decidió. No insistas.
 
