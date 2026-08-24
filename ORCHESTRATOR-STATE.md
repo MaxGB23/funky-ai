@@ -5,10 +5,10 @@
 ---
 
 ## 🏷️ Estado Actual
-- **Versión:** v4.7.0
+- **Versión:** v4.8.0
 - **Rama activa:** `main`
-- **Última sesión:** 2026-08-12
-- **Estado:** 🟢 Publicada. Release v4.7.0 (refactor canvas-phase-1): reestructuración profunda en canvas, assess y estimate. El comando `assess` es ahora el juez arquitectónico definitivo, validado contra 4 ejes, eliminando `architecture-review.md`. `canvas` es un recolector pasivo. `estimate` mejoró su DX con manejo avanzado de tópicos, señales de severidad y reglas multiplicativas, sumando tests de dominio. Docs sync post-merge: `assess.md` alineado con CLI. Branch mergeada a main.
+- **Última sesión:** 2026-08-24
+- **Estado:** 🟢 Publicada. Release v4.8.0: refactor del framework SDD — Route A sabueso migrado a subagente flash_lite+codegraph MCP, metodologías data-driven (adiós strict TDD hardcodeado), contrato t2-apply con slots unificados, Contexto Previo pasivo desacoplando workers de funkygram, routers T1/T2/T3 alineados, harness modelo-por-fase y custom-workflows T3 inyectables vía sdd-install (27 reglas). Modernización anti-brittle de tests (~150 aserciones) y RFC 014 aplicado. Lote organizado en 9 work unit commits; docs-sync delegado verificado y pusheado por el orquestador.
 
 ---
 
@@ -58,3 +58,4 @@ Roadmap sugerido: 2 -> 1 -> 3 -> 4 (pero esto no es mandatorio).
 | v4.3.1 | **PATCH** — refactor de organización de tests: `estimate.test.js` partido en 4 archivos por unidad bajo prueba; meta-test `organization.test.js` (cohesión + topes de tamaño, `LEGACY_EXCEPTIONS` vacío); deuda legacy migrada (`pipeline`→`.integration`, `assess` split, `context` trim, `skills` cohesionado); convención en skill `vitest`; `AGENTS.md` recortado a 26 líneas. 311 tests / 27 archivos verdes con vitest 4.1.10. Lanzado 2026-08-05. |
 | v4.6.0 | **MINOR** — funky secure v1 (PR #40): `doctor` (diagnóstico conductual), `init` (seed idempotente de la política pnpm: 7 claves estándar, bloque AGENTS, baseline SHA-256 de hooks, `.gitignore`, pin packageManager; posturas fail-silent/fail-fast), `check` (gate CI-ready exit 0/1); normalización pnpm 10.x/11.x + dedup win32; refactor assess (architecture-review eliminado); docs sync post-merge (secure.md en SSOT, README "Novedad"). 412 tests / 34 archivos verdes. Lanzado 2026-08-11. |
 | v4.7.0 | **MINOR** — refactor canvas-phase-1: canvas es recolector pasivo, assess asume rol de juez arquitectónico definitivo validado contra 4 ejes (se elimina architecture-review.md). estimate mejora DX en tópicos, severidad y reglas multiplicativas. 412 tests verdes (más tests de integración/dominio agregados). Docs sync: assess.md alineado al CLI. Lanzado 2026-08-12. |
+| v4.8.0 | **MINOR** — refactor del framework SDD: Route A sabueso (subagente flash_lite + MCP codegraph), metodologías data-driven, contrato t2-apply con slots unificados, Contexto Previo pasivo (workers desacoplados de funkygram), routers T1/T2/T3 alineados, harness modelo-por-fase, custom-workflows T3 inyectables vía sdd-install (27 reglas). Modernización anti-brittle de tests (~150 aserciones → snapshots/golden/tokens) y RFC 014 aplicado (spec.template.md). 411 tests / 36 archivos verdes. Docs-sync delegado con contrato de rango de commits. Lanzado 2026-08-24. |
