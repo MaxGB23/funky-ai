@@ -25,9 +25,8 @@ trigger: manual
 > - Proposal: `openspec/changes/[CHANGE]/proposal.md`
 > - Template (instrucciones + estructura): `openspec/changes/[CHANGE]/spec.template.md`
 > 
-> ## Tags de engram relevantes (opcional)
-> - Nombre: [Nombre]
-> - Descripción: [Descripción]
+> ## Contexto Previo
+> [Inyecta aquí el digest del funkygram y las metodologías activas del proyecto. Si no aplican, omite esta sección.]
 > 
 > ## Formato de retorno
 > ```markdown

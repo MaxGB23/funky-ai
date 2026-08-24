@@ -2,13 +2,13 @@
 trigger: manual
 ---
 
-# Guardrails Tier 2 - Explore Ligero (Sabueso de Lava)
+# Guardrails Tier 2 - Explore Ligero (Sabueso de Lava - Route B)
 
 ## 1. ⚠️ Orchestration Checklist (EJECUTAR ANTES de delegar)
 | # | Verificación | Acción si falta |
 |---|-------------|-----------------|
 | PRE-0 | ¿He dado el bloque de recomendación y el humano me ha confirmado sus elecciones? | Leer sdd-preflight.md
-| 1 | ¿Ejecuté el Memory Polling Stage 1? | `view_file docs/engram/index.md` ahora |
+| 1 | ¿Tienes listo el bloque `Contexto Previo` (digest del tag de sesión)? | Busca en `docs/engram/` y destílalo ahora |
 > 🔴 **Si cualquier ítem es NO → no delegues. Complétalo (o pídelo al humano) primero.**
 
 ## 2. Prompt de Delegación
@@ -24,9 +24,8 @@ trigger: manual
 > - `[RFC_PATH], si no existe debes pasar contexto`
 > ## Template a seguir
 > - `openspec/changes/[CHANGE]/explore.md` — Leer y usar `replace_file_content`. No sobreescribas desde cero.
-> ## Tags de engram relevantes (opcional)
-> - Nombre: [Nombre]
-> - Descripción: [Descripción]
+> ## Contexto Previo
+> [Inyecta aquí el digest del funkygram y las metodologías activas del proyecto. Si no aplican, omite esta sección.]
 > ## Formato de retorno
 > ```markdown
 > ## Hallazgo: [Título corto]

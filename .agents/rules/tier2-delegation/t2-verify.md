@@ -22,18 +22,16 @@ trigger: manual
 > ## Artefactos a leer
 > - `openspec/changes/[CHANGE]/specs/[DOMAIN]/spec.md` (o la ruta donde se haya generado)
 > - `openspec/changes/[CHANGE]/tasks.md`
-> ## Tags de engram relevantes (opcional)
-> - Nombre: [Nombre]
-> - Descripción: [Descripción]
+> ## Contexto Previo
+> [Inyecta aquí el digest del funkygram y las metodologías activas del proyecto. Si no aplican, omite esta sección.]
 > ## Formato de retorno
 > ```markdown
 > ## Verification Report
 > **Change**: [CHANGE]
 > **Verdict**: PASS | PASS WITH FUNCTIONAL WARNINGS | PASS WITH COSMETIC WARNINGS | FAIL
 > 
-> ### Build & Tests
-> **Build**: ✅/❌
-> **Tests**: [N] passed / [M] failed
+> ### Validación
+> Ejecuta los comandos de la entrada **Validación del proyecto** del Contexto Previo y reporta ✅/❌ por comando ([N] passed / [M] failed cuando aplique).
 > 
 > ### Issues
 > [lista de issues o "None"]

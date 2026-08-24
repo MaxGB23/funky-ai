@@ -31,7 +31,7 @@ describe('runScaffold()', () => {
     const createIntentions = intentions.filter(i => i.action === 'create');
 
     expect(mkdirIntentions).toHaveLength(7);
-    expect(copyIntentions).toHaveLength(47);
+    expect(copyIntentions).toHaveLength(50);
     expect(createIntentions).toHaveLength(0);
   });
 

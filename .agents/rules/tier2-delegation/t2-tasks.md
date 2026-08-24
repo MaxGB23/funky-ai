@@ -11,10 +11,14 @@ trigger: manual
 > 🔴 **Si falta, no delegues.**
 
 ## 2. Prompt de Delegación
-**Cómo delegar:** `self` (excepción válida — tasks requiere contexto compartido de workflow)
+> 🔴 **PROHIBIDO:** delegar usando `self`. 
+**Cómo delegar:** Utiliza **siempre** `define_subagent`
+
 **Prompt:**
 ```text
-/funky-tasks
+Lee el workflow en `docs/funky-ai/prompts/sdd/funky-tasks.md` (usando `view_file`) y adopta tu rol (Tasks Phase Agent).
 feature_name: {change-name}
-tag: {tag-opcional}
+Contexto Previo: {digest del funkygram + metodologías activas — opcional}
+Genera los entregables dentro del workspace en `openspec/changes/{feature_name}/...` o la estructura que defina el workflow.
+NUNCA guardes outputs en un directorio brain local.
 ```

@@ -80,6 +80,7 @@ export function runScaffold({ templatesDir, targetBase }) {
   add('funky-ai-rules/tier2-router.md',                   '.agents/rules/tier2-router.md');
   add('funky-ai-rules/tier3-router.md',                   '.agents/rules/tier3-router.md');
   add('funky-ai-rules/tier2-delegation/t2-archive.md',    '.agents/rules/tier2-delegation/t2-archive.md');
+  add('funky-ai-rules/tier2-delegation/t2-apply.md',      '.agents/rules/tier2-delegation/t2-apply.md');
   add('funky-ai-rules/tier2-delegation/t2-explore.md',    '.agents/rules/tier2-delegation/t2-explore.md');
   add('funky-ai-rules/tier2-delegation/t2-propose.md',    '.agents/rules/tier2-delegation/t2-propose.md');
   add('funky-ai-rules/tier2-delegation/t2-spec.md',       '.agents/rules/tier2-delegation/t2-spec.md');
@@ -94,7 +95,9 @@ export function runScaffold({ templatesDir, targetBase }) {
   add('funky-ai-rules/tier3-interactive/interactive-tasks.md',    '.agents/rules/tier3-interactive/interactive-tasks.md');
   add('funky-ai-rules/tier3-interactive/interactive-verify.md',   '.agents/rules/tier3-interactive/interactive-verify.md');
   add('funky-ai-rules/tier3-interactive/risk-decision.md',        '.agents/rules/tier3-interactive/risk-decision.md');
+  add('funky-ai-rules/metodologias.md',                   '.agents/rules/metodologias.md');
   add('funky-ai-rules/sabueso-route-a.md',                        '.agents/rules/sabueso-route-a.md');
+  add('funky-ai-rules/codegraph.md',                              '.agents/rules/codegraph.md');
 
   // ── bootstrap/sdd/ → .agents/templates/sdd/ ──
   add('sdd/docs.md',              '.agents/templates/sdd/docs.md');
