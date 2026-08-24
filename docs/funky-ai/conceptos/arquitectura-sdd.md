@@ -24,6 +24,7 @@ Funky AI categoriza la delegación por "Tiers" dependiendo del impacto y la comp
   - `Propose`: Propone una solución.
   - `Spec`: Redacta las especificaciones.
   - `Tasks`: Divide en tareas.
+  - `Apply`: Ejecuta la implementación por batches mediante un *funky-worker* (contrato `t2-apply.md`), tras un checkpoint pre-apply obligatorio.
   - `Verify`: Valida contra la especificación.
   - `Archive`: Cierra y documenta la feature internamente.
   - `Post-Archive (Release)`: Inyectado condicionalmente por `funky feature`. Llena `release-checklist.md` y `docs.md` si el impacto lo amerita. El proceso frena estrictamente en operaciones Git para pedir aprobación humana antes de cerrar el SDD.
@@ -51,15 +52,20 @@ Para adaptarse a distintos entornos (y niveles de confianza), el framework SDD s
 Cuando corres `funky sdd install`, se materializa la estructura necesaria para que SDD funcione. Cada directorio tiene un propósito estricto:
 
 ### 1. `.agents/rules/`
-El "cerebro operativo". Contiene 23 reglas que dictan el comportamiento.
-- `tier2-delegation/`: Reglas para que los subagentes ligeros sepan qué hacer en cada fase del T2.
+El "cerebro operativo". Contiene 27 reglas que dictan el comportamiento.
+- Reglas globales planas: Orquestador, enrutadores T1/T2/T3, preflight, matriz de escalamiento, seguridad (`secops.md`), protocolo Engram.
+- `metodologias.md`: restricciones de trabajo data-driven (TDD estricto, convenciones) que el orquestador cachea e inyecta como bloque `Contexto Previo` en cada delegación.
+- `sabueso-route-a.md` y `codegraph.md`: contratos de exploración read-only (subagente sabueso Route A) y de consulta estructural JIT vía codegraph.
+- `tier2-delegation/`: Contratos por fase para que los subagentes ligeros sepan qué hacer en cada fase del T2 (incluye `t2-apply.md`, la ejecución por batches).
 - `tier3-interactive/`: Reglas pesadas para validación de riesgo y workflows nativos interactivos.
-- `base/`: Reglas globales (ej. Orquestador, enrutadores, seguridad y protocolo Engram).
 
 ### 2. `.agents/templates/sdd/`
-La "burocracia útil". Aquí viven las plantillas Markdown (`explore.md`, `proposal.md`, `spec.md`, etc.) que los agentes deben llenar en el T2 y T3 para garantizar que la información fluya estructurada entre fases. También contiene el índice dinámico de la documentación viva.
+La "burocracia útil". Aquí viven las plantillas Markdown (`explore.md`, `proposal.md`, `spec.template.md`, etc.) que los agentes deben llenar en el T2 y T3 para garantizar que la información fluya estructurada entre fases. También contiene el índice dinámico de la documentación viva.
 
-### 3. `docs/engram/`
+### 3. `docs/funky-ai/prompts/sdd/`
+Los **workflows T3** (custom workflows): un prompt por fase (`funky-explore.md` … `funky-archive.md`, más `funky-worker.md`) que cada subagente nativo lee al inicio de su fase para adoptar su rol. Es la única pieza inyectada fuera de `.agents/` además del RFC template.
+
+### 4. `docs/engram/`
 La "memoria a largo plazo" (Memoria Persistente). Está dividida en 7 subdirectorios/shards:
 - `architecture/`: Cambios estructurales.
 - `pattern/`: Patrones de código descubiertos o creados.
@@ -69,8 +75,8 @@ La "memoria a largo plazo" (Memoria Persistente). Está dividida en 7 subdirecto
 - `session/`: Resúmenes de sesiones.
 - `release/`: Notas de versión.
 
-### 4. `openspec/rfcs/`
+### 5. `openspec/rfcs/`
 Donde viven los *Request For Comments*. Al estar fuera de la carpeta `.agents`, fomenta que estos documentos sean del dominio del equipo de ingeniería completo y no solo un artefacto interno de la IA.
 
-### 5. Archivos Raíz (`ORCHESTRATOR-STATE.md`)
+### 6. Archivos Raíz (`ORCHESTRATOR-STATE.md`)
 Archivos de anclaje que mantienen al Orquestador al tanto del estado global del proyecto desde el inicio de cualquier sesión.
