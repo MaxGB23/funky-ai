@@ -23,6 +23,10 @@ Tras `sdd-archive`, antes de `sdd-release` (o al cerrar cualquier sesión con ca
 4. **repo-map solo por estructura:** actualizar `docs/repo-map.md` únicamente cuando cambian rutas, comandos o directorios — no por contenido.
 5. Guardar el resultado en engram (`mem_save`) al terminar.
 
+## Entrada por lote
+
+Si el handoff incluye un rango de commits (ej. `origin/main..HEAD`), úsalo vía `git diff <rango>` para scoping y atribución: distingue el drift del lote vs pre-existente antes de decidir qué docs tocar. Tu ancla de verdad es SIEMPRE el estado actual del código — nunca la historia ni los mensajes de commit.
+
 ## Decision Gates
 
 | Situación | Acción |

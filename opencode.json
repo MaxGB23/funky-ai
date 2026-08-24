@@ -1,0 +1,27 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "agent": {
+    "sdd-docs-sync": {
+      "description": "Docs sync subagent - syncs SSOT docs and repo-map after merge, verifies against real CLI",
+      "mode": "subagent",
+      "hidden": true,
+      "prompt": "{file:M:/funky-ai/.agents/skills/sdd-docs-sync-gentle-ai/SKILL.md}",
+      "tools": {
+        "bash": true,
+        "edit": true,
+        "read": true,
+        "write": true
+      },
+      "permission": {
+        "bash": {
+          "*": "ask",
+          "git status*": "allow",
+          "git diff*": "allow",
+          "git log*": "allow",
+          "git add *": "allow",
+          "git commit *": "allow"
+        }
+      }
+    }
+  }
+}
