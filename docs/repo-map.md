@@ -1,6 +1,6 @@
 # Mapa Estructural del Repositorio
 
-> Última actualización: 2026-08-09
+> Última actualización: 2026-08-24
 > Propósito: Directorio de navegación del repo. Para el pitch y quick start, ver [`README.md`](../README.md).
 
 ---
@@ -11,7 +11,8 @@
 |------|-----------|
 | [`funky-cli/`](../funky-cli/) | Código fuente del CLI |
 | [`docs/`](../docs/) | Documentación del framework y tools |
-| `.agents/` | Reglas, skills del workspace agéntico, golden templates |
+| `.agents/` | Reglas, skills y harnesses del workspace agéntico, golden templates |
+| `comparativas-tokens/` | Investigación de consumo de tokens (MCP vs shardeado, model tiers, suscripciones) |
 | `.github/` | Workflows de CI/CD |
 
 ---
@@ -100,7 +101,7 @@ docs/
 | Directorio | Usado por | Propósito |
 |-----------|-----------|-----------|
 | `init/` | `funky init` | Brief, canvases y guías (brief-funcional.md, PROJECT-CANVAS.md, INFRA-CANVAS.md, canvas-planning-guide-template.md, init-prompt-template.md) |
-| `bootstrap/` | `funky sdd install` / `funky scaffold` / `funky skills` | Reglas agénticas, templates SDD, ORCHESTRATOR-STATE, docs compartidos (docs-live-index, índice seccional) |
+| `bootstrap/` | `funky sdd install` / `funky scaffold` / `funky skills` | Reglas agénticas, templates SDD, prompts T3 custom-workflows, ORCHESTRATOR-STATE, docs compartidos (docs-live-index, índice seccional) |
 | `assess/` | `funky assess` | Architecture review templates |
 | `estimate/` | `funky estimate` | Pricing guide templates |
 
