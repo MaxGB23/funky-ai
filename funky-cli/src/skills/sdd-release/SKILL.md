@@ -30,6 +30,8 @@ After `sdd-archive` completes, the orchestrator suggests running this skill if t
 
 ### 1. Determine version bump
 
+**Release boundary:** el corte SIEMPRE es el último tag (`git tag --sort=-creatordate | Select-Object -First 1`). Enumerar `git log --oneline <último-tag>..HEAD` ANTES de decidir el bump y redactar las notas — la plantilla no elimina este paso. Todo lo que esté en el rango entra en la release, incluidos merges/PRs de sesiones anteriores nunca liberados.
+
 Read `package.json` (or equivalent version file) and determine bump type:
 
 | Change type | Bump | Example |
