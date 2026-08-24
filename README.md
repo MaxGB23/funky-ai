@@ -16,7 +16,7 @@
 funky-cli/
 ├── sdd install      ← Instala el ecosistema agéntico (rules, templates, engram)
 ├── feature          ← Scaffolding de cambios SDD
-├── engram add     ← Captura knowledge base (funciona standalone)
+├── engram add     ← Funkygram: captura knowledge base (funciona standalone)
 │
 ├── init           ← Crea PROJECT-CANVAS.md e INFRA-CANVAS.md
 ├── assess         ← Architecture review con preguntas dinámicas
@@ -55,7 +55,7 @@ funky sdd install  # Rules, templates SDD, engram dirs
 funky feature      # Crear una feature SDD
 ```
 
-### O solo engram (sin sdd install)
+### O solo Funkygram (sin sdd install)
 
 ```bash
 funky init
@@ -84,7 +84,7 @@ Instala y gestiona el ecosistema de reglas, templates y memoria que los agentes 
 |---------|------|-----------|
 | `funky sdd install` | [`docs/funky-ai/sdd.md`](docs/funky-ai/sdd.md) | Inyecta .agents/rules/, templates SDD, ORCHESTRATOR-STATE, docs/engram/ |
 | `funky feature` | [`docs/funky-ai/feature.md`](docs/funky-ai/feature.md) | Scaffolding SDD por tiers (T1/T2/T3) |
-| `funky engram add` | [`docs/funky-ai/engram.md`](docs/funky-ai/engram.md) | Knowledge base — funciona standalone sin sdd install |
+| `funky engram add` | [`docs/funky-ai/engram.md`](docs/funky-ai/engram.md) | Funkygram — knowledge base, funciona standalone sin sdd install |
 
 Conceptos del framework: [`docs/funky-ai/conceptos/`](docs/funky-ai/conceptos/)
 
@@ -132,7 +132,7 @@ Funky AI orquesta el desarrollo de software aprovechando una **Carga JIT (Just-I
 | Cómo instalar el framework en un proyecto | [`docs/funky-ai/sdd.md`](docs/funky-ai/sdd.md) |
 | Cómo planear un proyecto (init, assess, estimate) | [`docs/funky-forge/command-flow.md`](docs/funky-forge/command-flow.md) |
 | Cómo crear features SDD por tier | [`docs/funky-ai/feature.md`](docs/funky-ai/feature.md) |
-| Cómo capturar conocimiento (standalone o con sdd install) | [`docs/funky-ai/engram.md`](docs/funky-ai/engram.md) |
+| Cómo capturar conocimiento (standalone o con sdd install) | [`docs/funky-ai/engram.md`](docs/funky-ai/engram.md) — Funkygram |
 | Conceptos del framework y Orquestador | [`docs/funky-ai/conceptos/`](docs/funky-ai/conceptos/) |
 | Guía de Operación para el Equipo | [`docs/funky-ai/conceptos/funky-ai-team-guide.md`](docs/funky-ai/conceptos/funky-ai-team-guide.md) |
 | Base de conocimiento del proyecto | [`docs/engram/index.md`](docs/engram/index.md) |

@@ -1,6 +1,6 @@
 # ORCHESTRATOR-STATE.md - { project-name }
 
-> **Propósito:** Contexto de recuperación de sesión para el Orquestador. Leer PRIMERO al iniciar cualquier chat de Orquestación.
+> **Propósito:** Contexto de recuperación de sesión para el Orquestador.
 
 ---
 
@@ -35,5 +35,5 @@
 
 ---
 
-## 📋 Historial de Versiones
+## 📋 Historial de Versiones (Resumen breve)
 | Versión | Descripción |

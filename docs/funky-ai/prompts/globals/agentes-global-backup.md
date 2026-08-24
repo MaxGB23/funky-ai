@@ -33,3 +33,24 @@ Si el trabajo directo cambia un contrato (flags, comportamiento, estructura), la
 
 ## Tests en `funky-cli/`
 Al tocar tests de funky-cli, carga la skill `vitest` antes de editar (naming, imports, límites). `tests/organization.test.js` las aplica. Revisar la sección "Repo conventions (funky-ai)" en `.agents/skills/vitest/SKILL.md`
+
+
+
+# EXTRAS
+## Gates de calidad (lint / typecheck / build)
+- Verificación: pnpm lint y pnpm build son evidencia obligatoria. Se corren en
+  sdd-verify (SDD) o antes del commit final (trabajo directo). Un change no avanza
+  si fallan.
+- Iteración: durante apply/desarrollo usar comandos acotados (pnpm lint <archivo>,
+  build solo al cierre); suite completa solo en verify.
+- Release: el release puede compilar artefactos para publicar, pero NUNCA es su
+  trabajo descubrir errores de calidad — si falla ahí, volver al ciclo.
+## Trabajo directo (equivalencia con SDD)
+Sin SDD no hay verify-report: la disciplina se aplica igual sin crear artefactos.
+Antes de commit/push: lint + build + tests completos pasan; evidencia citada en el
+mensaje de commit o PR (ej. "lint/build/tests OK").
+Notas sobre por qué así:
+- Separan "verificación" de "entrega" — la regla clave que discutimos antes. Evita que alguien meta gates de calidad en release "porque ahí hay CI".
+- Distinguen iteración de cierre — mismo principio que ya tienes en "Delegación eficiente" (pnpm test <archivo> vs suite completa); lo extiendo a lint/build para que sea consistente.
+- Cubren ambos flujos explícitamente — tu AGENTS.md ya divide SDD vs directo; los bloques respetan esa estructura en vez de crear una tercera categoría.
+- "Evidencia citada" en directo — sustituye al verify-report: como no hay artefacto persistido, la evidencia vive en el commit/PR.
