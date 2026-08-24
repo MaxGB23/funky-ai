@@ -51,6 +51,7 @@ funky sdd install
 │   ├─ Copia reglas de agente → .agents/rules/
 │   ├─ Copia templates SDD → .agents/templates/sdd/
 │   ├─ Copia docs compartidos (docs-live-index.md, docs-index/_indice-seccional-template.md) → .agents/templates/sdd/
+│   ├─ Copia workflows T3 (custom-workflows/sdd/) → docs/funky-ai/prompts/sdd/
 │   ├─ Crea directorios engram (docs/engram/{architecture,pattern,...})
 │   └─ Cada archivo existente se saltea (idempotente)
 │
@@ -80,7 +81,10 @@ Ubicación base: `src/templates/bootstrap/`
 | `funky-ai-rules/engram-protocol.md` | `.agents/rules/engram-protocol.md` | Estático |
 | `funky-ai-rules/secops.md` | `.agents/rules/secops.md` | Estático |
 | `funky-ai-rules/sdd-orchestrator.md` | `.agents/rules/sdd-orchestrator.md` | Estático |
-| *(scaffold de directorios)* | `docs/engram/architecture/`, `pattern/`, `discovery/`, `decision/`, `bugfix/` | Creados con `fs.mkdirSync` — no son archivos copiados sino directorios vacíos |
+| `funky-ai-rules/metodologias.md`, `sabueso-route-a.md`, `codegraph.md` | `.agents/rules/…` (mismo nombre) | Estáticos — metodologías data-driven, contrato sabueso Route A y consulta codegraph JIT |
+| `funky-ai-rules/tier2-delegation/t2-apply.md` | `.agents/rules/tier2-delegation/t2-apply.md` | Estático — contrato Worker/Apply del T2 |
+| `custom-workflows/sdd/funky-{fase}.md` (9) | `docs/funky-ai/prompts/sdd/funky-{fase}.md` | Estáticos — prompts T3 para subagentes nativos (explore, propose, spec, design, tasks, apply, verify, archive, worker) |
+| *(scaffold de directorios)* | `docs/engram/architecture/`, `pattern/`, `discovery/`, `decision/`, `bugfix/`, `session/`, `release/` | Creados con `fs.mkdirSync` — no son archivos copiados sino directorios vacíos |
 | `TEMPLATE_GUIDE.md` | `TEMPLATE_GUIDE.md` | Estático general |
 | `sdd/000-rfc-template.md` | `openspec/rfcs/000-rfc-template.md` | Estático general |
 

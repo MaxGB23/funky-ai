@@ -24,7 +24,7 @@ funky sdd install
 | `README.md` | `bootstrap/README.md` | Documentación principal y punto de entrada |
 | `TEMPLATE_GUIDE.md` | `bootstrap/TEMPLATE_GUIDE.md` | Guía para customizar golden templates locales (sobrescriben los base del CLI en el proyecto actual) |
 
-### `.agents/rules/` (23 archivos)
+### `.agents/rules/` (27 archivos)
 
 #### Reglas base (8)
 
@@ -39,11 +39,20 @@ funky sdd install
 | `tier2-router.md` | Enrutador Tier 2 (delegación) |
 | `tier3-router.md` | Enrutador Tier 3 (interactivo) |
 
-#### Tier 2 — Delegation (6)
+#### Metodologías y exploración (3)
+
+| Archivo | Propósito |
+|---|---|
+| `metodologias.md` | Restricciones de trabajo data-driven (TDD estricto, convenciones); el orquestador las cachea en el Paso 0 y las inyecta como bloque `Contexto Previo` en cada delegación |
+| `sabueso-route-a.md` | Contrato del subagente explorador read-only (`sabueso-regular`, Route A): lee código, devuelve solo el bloque Hallazgo |
+| `codegraph.md` | Contrato de consulta estructural JIT vía codegraph (MCP o CLI) antes de cualquier loop de search/grep |
+
+#### Tier 2 — Delegation (7)
 
 | Archivo | Propósito |
 |---|---|
 | `tier2-delegation/t2-archive.md` | Archivar cambios completados |
+| `tier2-delegation/t2-apply.md` | Ejecutar la implementación por batches vía funky-worker (contrato Worker/Apply) |
 | `tier2-delegation/t2-explore.md` | Explorar requerimientos |
 | `tier2-delegation/t2-propose.md` | Proponer enfoques de cambio |
 | `tier2-delegation/t2-spec.md` | Escribir especificaciones delta |
@@ -81,7 +90,7 @@ funky sdd install
 | `release-checklist.md` |
 | `release-notes.md` |
 | `report.md` |
-| `spec.md` |
+| `spec.template.md` |
 | `tasks.md` |
 
 #### Docs compartidos (2 copiados del template base)
@@ -92,6 +101,24 @@ funky sdd install
 | `docs-index/_indice-seccional-template.md` | Copiado (`add`) desde `bootstrap/sdd/` | Formato canónico de índice seccional |
 
 > Ambos usan el MISMO src que `funky skills` (R-SK-5): `funky sdd install` y `funky skills` producen bytes idénticos.
+
+### `docs/funky-ai/prompts/sdd/` — Workflows T3 (9 archivos)
+
+Prompts de custom workflows para entornos con subagentes nativos (antigravity CLI). El orquestador T3 indica a cada subagente leer el path de su workflow (`docs/funky-ai/prompts/sdd/funky-{fase}.md`) y adoptar el rol.
+
+| Archivo | Fase |
+|---|---|
+| `funky-explore.md` | Explore |
+| `funky-propose.md` | Propose |
+| `funky-spec.md` | Spec |
+| `funky-design.md` | Design (exclusivo T3) |
+| `funky-tasks.md` | Tasks |
+| `funky-apply.md` | Apply (secuencial por batch) |
+| `funky-verify.md` | Verify |
+| `funky-archive.md` | Archive |
+| `funky-worker.md` | Ejecución de batches del tasks.md |
+
+Fuente: `bootstrap/custom-workflows/sdd/`. Se copian siempre (no son condicionales).
 
 ### `openspec/rfcs/` — Excepción de ruta
 
@@ -128,9 +155,10 @@ funky sdd install
   │   ├── README.md              →  raíz
   │   └── TEMPLATE_GUIDE.md      →  raíz
   │
-  ├── 23 reglas ───────────────────────────── copy
+  ├── 27 reglas ───────────────────────────── copy
   │   ├── 8 base                 →  .agents/rules/
-  │   ├── 6 tier-2-delegation    →  .agents/rules/tier2-delegation/
+  │   ├── 3 metodologías/routing →  .agents/rules/
+  │   ├── 7 tier-2-delegation    →  .agents/rules/tier2-delegation/
   │   ├── 8 tier-3-interactive   →  .agents/rules/tier3-interactive/
   │   └── 1 risk-decision        →  .agents/rules/tier3-interactive/
   │
@@ -143,6 +171,9 @@ funky sdd install
   ├── 2 docs compartidos ──────────────────── copy
   │   ├── docs-live-index.md      →  .agents/templates/sdd/
   │   └── docs-index/_indice-seccional-template.md  →  .agents/templates/sdd/
+  │
+  ├── 9 workflows T3 ──────────────────────── copy
+  │   └── custom-workflows/sdd/funky-*.md  →  docs/funky-ai/prompts/sdd/
   │
   └── 7 engram dirs ───────────────────────── mkdir
       ├── architecture/

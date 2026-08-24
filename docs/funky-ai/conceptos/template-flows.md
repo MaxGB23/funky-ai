@@ -18,11 +18,13 @@ bootstrap/         ← LEÍDO por scaffold.js y skills.js (funcional)
   README.md
   TEMPLATE_GUIDE.md
   funky-ai-rules/          ← estructura ANIDADA que lee scaffold.js
-    engram-protocol.md, secops.md, sdd-*.md, tier1/2/3-*.md, tier2-delegation/, tier3-interactive/
+    engram-protocol.md, secops.md, sdd-*.md, tier1/2/3-*.md, metodologias.md, sabueso-route-a.md, codegraph.md, tier2-delegation/, tier3-interactive/
   sdd/                     ← templates SDD del CLI (fallback de feature.js + doc compartido SDD)
-    explore.md, proposal.md, spec.md, tasks.md, docs.md, report.md, release-checklist.md, release-notes.md, 000-rfc-template.md
+    explore.md, proposal.md, spec.template.md, tasks.md, docs.md, report.md, release-checklist.md, release-notes.md, 000-rfc-template.md
     docs-live-index.md     ← SSOT compartido del índice vivo (scaffold y skills lo copian, R-SK-5)
     docs-index/_indice-seccional-template.md ← formato canónico de índice seccional
+  custom-workflows/sdd/    ← prompts T3 para subagentes nativos (LEÍDO por scaffold.js, copiado a docs/funky-ai/prompts/sdd/)
+    funky-explore.md, funky-propose.md, funky-spec.md, funky-design.md, funky-tasks.md, funky-apply.md, funky-verify.md, funky-archive.md, funky-worker.md
 estimate/          ← templates de pricing (sin comando que los consuma en este análisis)
 init/              ← LEÍDO por init.js (funcional)
   PROJECT-CANVAS.md, INFRA-CANVAS.md, canvas-planning-guide.md
@@ -54,9 +56,10 @@ docs/.../canvas-planning-guide.md       ──► bootstrap/canvas-planning-guid
 
 ```
 bootstrap/root files      ──► <proyecto>/
-bootstrap/funky-ai-rules/ ──► <proyecto>/.agents/rules/          (8 base + 6 t2 + 9 t3 = 23)
+bootstrap/funky-ai-rules/ ──► <proyecto>/.agents/rules/          (8 base + 3 routing/metodología + 7 t2 + 9 t3 = 27)
 bootstrap/sdd/*.md        ──► <proyecto>/.agents/templates/sdd/
 bootstrap/sdd/000-rfc...  ──► <proyecto>/openspec/rfcs/
+bootstrap/custom-workflows/sdd/funky-*.md ──► <proyecto>/docs/funky-ai/prompts/sdd/   (9 workflows T3, siempre se copian)
 ```
 
 Lee la estructura ANIDADA que sí existe. Idempotente (skipea archivos existentes). Con esto el proyecto destino queda con **golden templates propios**.
@@ -103,7 +106,8 @@ bootstrap/sdd/docs-index/_indice-seccional-template.md  ──► <proyecto>/.ag
 
 | Archivo | Línea | Rol |
 |---|---|---|
-| `funky-cli/src/commands/scaffold.js` | 37-60, 62-70 | Flujo 2: lee `funky-ai-rules/` anidado + `sdd/` |
+| `funky-cli/src/commands/scaffold.js` | 55-100 | Flujo 2: root files + lee `funky-ai-rules/` anidado (27 reglas) |
+| `funky-cli/src/commands/scaffold.js` | 102-128 | Flujo 2: copia `sdd/*.md`, RFC exception, docs compartidos y `custom-workflows/sdd/` → `docs/funky-ai/prompts/sdd/` |
 | `funky-cli/src/commands/scaffold.js` | — | `add('sdd/docs-live-index.md', ...)` + `add('sdd/docs-index/_indice-seccional-template.md', ...)` (extraído 2026-08-03, R-SK-5) |
 | `funky-cli/src/commands/skills.js` | — | Flujo 4: `runSkills` 4 intentions copy + `skillsCommand` |
 | `funky-cli/src/utils/help.js` | — | R-HL-1/2: `resolveDocCandidates`/`loadCommandDoc`/`enrichCommandHelp` (help enriquecido) |
