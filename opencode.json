@@ -18,8 +18,17 @@
           "git status*": "allow",
           "git diff*": "allow",
           "git log*": "allow",
+          "git show*": "allow",
+          "git rev-parse*": "allow",
+          "git branch*": "allow",
           "git add *": "allow",
-          "git commit *": "allow"
+          "git commit *": "allow",
+          "Get-ChildItem *": "allow",
+          "Get-Content *": "allow",
+          "Get-FileHash *": "allow",
+          "Select-String *": "allow",
+          "Select-Object *": "allow",
+          "Test-Path *": "allow"
         }
       }
     }
