@@ -1,9 +1,9 @@
 ---
-trigger: model_decision
-description: Aplicar SIEMPRE que el Orquestador deba emitir la recomendación de `funky feature` o el humano sugiera iniciar sdd, sdd-init, sdd-new
+trigger: manual
 ---
 
 # Reglas de Pre-Vuelo y Templates SDD
+> **[ACCIÓN REQUERIDA — CORE]** Si no has leído `sdd-orchestrator.md` en esta sesión, detente y ejecuta `view_file .agents/rules/sdd-orchestrator.md` antes de continuar.
 
 ## 1. Bloque de Recomendación (Obligatorio)
 Cuando se arranque un sdd nuevo se debe presentar al humano el siguiente bloque de recomendación:
@@ -48,7 +48,8 @@ Cuando el desarrollador regrese con los valores confirmados, almacénalos como c
 | `tier` | Confirmado por el humano | Determina qué fases SDD corren (ver `sdd-escalation-matrix.md`) |
 | `modo` | Confirmado por el humano | Interactivo: pausa entre fases. Auto: fluido. Handoff: copy-paste al IDE |
 | `docs_impact` | Confirmado por el humano | Sí → `docs.md` existe y hay que llenarlo. No → skip |
-| `funkygram_tag` | Confirmado por el humano | Tag específico o vacío. Si tiene tag → busca en `docs/engram/`, destila las entradas relevantes e inyecta un bloque `Contexto Previo` en el prompt de delegación de cada fase. Si no → omitir polling. |
+| `funkygram_tag` | Confirmado por el humano | Tag específico o vacío. Si tiene tag → busca en `docs/engram/`, destila las entradas e integra junto a las metodologías en `Contexto Previo`. |
+| `metodologias_activas` | `view_file .agents/rules/metodologias.md` | OBLIGATORIO: Leer y cachear para inyectar junto al tag en `Contexto Previo` de las delegaciones. Si no existe, cachear vacío. |
 
 > **Guardrail:** Si el desarrollador confirma valores que contradicen dependencias duras (ej. T1 con 500 líneas estimadas), advierte UNA sola vez y acepta lo que el humano decidió. No insistas.
 
@@ -56,9 +57,11 @@ Cuando el desarrollador regrese con los valores confirmados, almacénalos como c
 > **TIENES PROHIBIDO** leer `tier1-router.md`, `tier2-router.md` ni `tier3-router.md` antes de recibir la confirmación explícita del humano sobre el Tier.
 > El orquestador emite la recomendación y **espera**.
 >
-> **POST-CONFIRMACIÓN (OBLIGATORIO e INDEFERIBLE):** En el **mismo turno** en que el humano confirme el Tier, tu **primera acción** después de cachear la sesión DEBE ser cargar el router:
+> **POST-CONFIRMACIÓN (OBLIGATORIO e INDEFERIBLE):** En el **mismo turno** en que el humano confirme el Tier, tus acciones inmediatas DEBEN ser en este orden exacto:
+> 1. **Cargar metodologías:** `view_file .agents/rules/metodologias.md` (si existe) y cachear sus directivas.
+> 2. **Cargar el router correspondiente:**
 > - **T1** → `view_file .agents/rules/tier1-router.md`
 > - **T2** → `view_file .agents/rules/tier2-router.md`
 > - **T3** → `view_file .agents/rules/tier3-router.md`
 >
-> Si no cargas el router en ese turno, estás operando sin las reglas del tier elegido — eso es un **error de procedimiento**. No es opcional, no es "después lo hago", no es "lo cargo cuando necesite". El router se carga **siempre** al confirmar, sin excepción.
+> Si no cargas las metodologías y el router en ese turno, estás operando a ciegas — eso es un **error crítico de procedimiento**. Ambos se cargan **siempre** al confirmar, sin excepción.
