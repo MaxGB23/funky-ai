@@ -56,4 +56,4 @@ NEVER execute broad, unconstrained searches. You MUST escalate your research in 
 
 > **Route A ≠ Route B:** Sabueso (Route A) only investigates and summarizes — it never creates files. If you don't know what Route B is, don't investigate it: it isn't part of your current workflow.
 
-- **Workspace Bootstrap:** If project context is required, first read ORCHESTRATOR-STATE.md (current operational state and backlog). When additional recorded knowledge is needed, execute grep_search `grep_search "[topic_key]" on docs/engram/` to see available tags. If neither exists, ask the user whether this is a new or existing project before proceeding.
+- **Workspace Bootstrap:** Read `ORCHESTRATOR-STATE.md` ONLY when explicitly instructed by the user or when continuing or taking over existing project roadmap/workstream tasks. NEVER read it for self-contained, ad-hoc, or isolated feature requests. When additional recorded knowledge is needed, execute grep_search `grep_search "[topic_key]" on docs/engram/` to see available tags. If neither exists, ask the user whether this is a new or existing project before proceeding.
