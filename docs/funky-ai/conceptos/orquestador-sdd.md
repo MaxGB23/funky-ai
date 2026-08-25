@@ -14,22 +14,26 @@ Este documento consolida las reglas base operativas que rigen el comportamiento 
 ---
 
 ## 2. El Flujo Pre-Vuelo (Paso 0)
-Al iniciar una nueva sesión o feature, el Orquestador ejecuta un análisis estructurado antes de proponer cualquier solución:
+Al iniciar una nueva sesión o feature, el Orquestador ejecuta un análisis estructurado antes de proponer cualquier solución. Es un bloqueo de entrada por pasos: no avanza al paso siguiente hasta completar el actual.
 
-1. **Determinación del Tier (`sdd-escalation-matrix.md`):**
+1. **Clasificación binaria de la sesión:** Pregunta al humano si la sesión es de **ideación** o de **implementación**, y espera su respuesta antes de continuar.
+   - **Ideación / brainstorming** → Tier 0. Salta directo al paso [3].
+   - **Implementación** → continúa al paso [2].
+2. **Determinación del Tier (`sdd-escalation-matrix.md`):** La respuesta del paso [1] es **vinculante**: una sesión de ideación SIEMPRE es Tier 0 y jamás puede clasificarse como T1/T2/T3.
    - **T0 (Conversación):** Ideación libre. Sin SDD.
    - **T1 (Flash):** 1-2 archivos, sin impacto arquitectónico. Tareas *inline*.
    - **T2 (Standard):** 3-5 archivos. Flujo estándar (Explore, Propose, Spec, Tasks, Verify, Archive).
    - **T3 (Insano 👻):** Cambios complejos, NFRs, refactors mayores. Subagentes aislados.
-2. **Recomendación Pre-Vuelo (`sdd-preflight.md`):**
-   - Presenta al humano una propuesta de inicialización: 
-     ```
-     funky feature [nombre]
-     Tier: [T1/T2/T3]
-     Docs: [Sí/No]
-     Modo: [Interactivo/Auto/Handoff]
-     ```
-3. **Carga JIT (Just-In-Time):** El Orquestador se queda en espera. **Solo después de que el humano confirma el Tier**, se lee la regla del enrutador correspondiente (`tier1-router.md`, etc.). Esto ahorra tokens y evita contaminación cruzada.
+3. **Evaluación Pre-Vuelo (`sdd-preflight.md`):** Subrutina manual del Orquestador (trigger manual, no `model_decision`). En Tier 0 está prohibido leerla; en T1/T2/T3 presenta al humano una propuesta de inicialización:
+      ```
+      funky feature [nombre]
+      Tier: [T1/T2/T3]
+      Docs: [Sí/No]
+      Modo: [Interactivo/Auto/Handoff]
+      ```
+4. **Metodologías (`metodologias.md`):** Lee y cachea las metodologías activas como `metodologías_activas`. En Tier 0 este paso se omite: no hay delegaciones en ese modo.
+
+**Carga JIT (Just-In-Time):** El Orquestador se queda en espera. **Solo después de que el humano confirma el Tier**, carga en orden las metodologías y luego la regla del enrutador correspondiente (`tier1-router.md`, etc.). Esto ahorra tokens y evita contaminación cruzada.
 
 ---
 

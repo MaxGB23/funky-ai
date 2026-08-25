@@ -33,7 +33,7 @@ funky sdd install
 | `engram-protocol.md` | Protocolo de memoria persistente Engram |
 | `sdd-escalation-matrix.md` | Matriz de escalamiento entre tiers |
 | `sdd-orchestrator.md` | Orquestador del ciclo SDD |
-| `sdd-preflight.md` | Validaciones pre-vuelo antes de ejecutar |
+| `sdd-preflight.md` | Subrutina de pre-vuelo del orquestador (trigger manual; se invoca desde `sdd-orchestrator.md` en T1/T2/T3) |
 | `secops.md` | Reglas de seguridad operacional |
 | `tier1-router.md` | Enrutador Tier 1 (autónomo) |
 | `tier2-router.md` | Enrutador Tier 2 (delegación) |
