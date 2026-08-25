@@ -10,6 +10,9 @@ Cuando respondas en español, usa siempre español neutro. Evita el voseo y los 
 - Sub-agentes NO escriben en rutas externas al workspace (en Windows cada acceso pide confirmación de permisos). Scratch/sandbox/fixtures/reproducciones → `M:\funky-ai\.tmp\` (gitignored).
 - Excepciones: Review (bytes vía árboles Git del provider), Worktrees (`M:\worktrees\funky-ai\`, acceso permitido vía `external_directory` en la config global), artefactos nativos (verify-report, receipts).
 
+### Búsqueda en `.agents/`
+`.agents/` está trackeada en Git pero muchos buscadores la tratan como directorio oculto (punto inicial) y la omiten — glob puede devolver "no existe" para archivos reales. Antes de afirmar que un archivo de `.agents/` no existe, verifica con Grep (ruta explícita), `git ls-files` o `rg --hidden`.
+
 ### Strict TDD (resolución canónica)
 Strict TDD es el default y prevalece sobre cualquier flag de engram/syncs.
 Resolución: 1) `openspec/config.yaml` → `testing.strict_tdd`; 2) si no, engram (`sdd-init/{project}`); 3) si no hay flag pero existe runner (Vitest / `pnpm test`), `strict_tdd: true` (fallback del skill `sdd-init`).
