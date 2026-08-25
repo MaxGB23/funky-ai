@@ -5,10 +5,10 @@
 ---
 
 ## 🏷️ Estado Actual
-- **Versión:** v4.8.0
+- **Versión:** v4.9.0
 - **Rama activa:** `main`
 - **Última sesión:** 2026-08-24
-- **Estado:** 🟢 Publicada. Release v4.8.0: refactor del framework SDD — Route A sabueso migrado a subagente flash_lite+codegraph MCP, metodologías data-driven (adiós strict TDD hardcodeado), contrato t2-apply con slots unificados, Contexto Previo pasivo desacoplando workers de funkygram, routers T1/T2/T3 alineados, harness modelo-por-fase y custom-workflows T3 inyectables vía sdd-install (27 reglas). Modernización anti-brittle de tests (~150 aserciones) y RFC 014 aplicado. Lote organizado en 9 work unit commits; docs-sync delegado verificado y pusheado por el orquestador.
+- **Estado:** 🟢 Publicada. Release v4.9.0: session gate binario en el Paso 0 del orquestador (pregunta ideación/implementación con respuesta vinculante para el Tier), sdd-preflight degradado a subrutina manual con check CORE y POST-CONFIRMACIÓN reforzada (metodologías antes del router), tasks-tdd.md eliminado con sus reglas migradas a metodologias.md como entrada [tasks], agente custom sdd-docs-sync validado end-to-end, bootstrap reads restringidos en global chilango, y primer test e2e del framework archivado (arbol-navidad-cli). 6 work units + docs-sync delegado.
 
 ---
 
@@ -59,3 +59,4 @@ Roadmap sugerido: 2 -> 1 -> 3 -> 4 (pero esto no es mandatorio).
 | v4.6.0 | **MINOR** — funky secure v1 (PR #40): `doctor` (diagnóstico conductual), `init` (seed idempotente de la política pnpm: 7 claves estándar, bloque AGENTS, baseline SHA-256 de hooks, `.gitignore`, pin packageManager; posturas fail-silent/fail-fast), `check` (gate CI-ready exit 0/1); normalización pnpm 10.x/11.x + dedup win32; refactor assess (architecture-review eliminado); docs sync post-merge (secure.md en SSOT, README "Novedad"). 412 tests / 34 archivos verdes. Lanzado 2026-08-11. |
 | v4.7.0 | **MINOR** — refactor canvas-phase-1: canvas es recolector pasivo, assess asume rol de juez arquitectónico definitivo validado contra 4 ejes (se elimina architecture-review.md). estimate mejora DX en tópicos, severidad y reglas multiplicativas. 412 tests verdes (más tests de integración/dominio agregados). Docs sync: assess.md alineado al CLI. Lanzado 2026-08-12. |
 | v4.8.0 | **MINOR** — refactor del framework SDD: Route A sabueso (subagente flash_lite + MCP codegraph), metodologías data-driven, contrato t2-apply con slots unificados, Contexto Previo pasivo (workers desacoplados de funkygram), routers T1/T2/T3 alineados, harness modelo-por-fase, custom-workflows T3 inyectables vía sdd-install (27 reglas). Modernización anti-brittle de tests (~150 aserciones → snapshots/golden/tokens) y RFC 014 aplicado (spec.template.md). 411 tests / 36 archivos verdes. Docs-sync delegado con contrato de rango de commits. Lanzado 2026-08-24. |
+| v4.9.0 | **MINOR** — session gate binario: Paso 0 abre preguntando ideación/implementación, respuesta humana vinculante para el Tier (ideación siempre T0); sdd-preflight manual-only con check CORE; POST-CONFIRMACIÓN ordena metodologías→router mismo turno; tasks-tdd.md eliminado (reglas → metodologias [tasks]); agente custom sdd-docs-sync validado; bootstrap reads restringidos; test e2e archivado (arbol-navidad-cli). Docs-sync delegado verificado byte-parity de mirrors. Lanzado 2026-08-24. |
