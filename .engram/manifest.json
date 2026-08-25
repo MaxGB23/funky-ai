@@ -8,6 +8,14 @@
       "sessions": 79,
       "memories": 279,
       "prompts": 189
+    },
+    {
+      "id": "db944d97",
+      "created_by": "cb147",
+      "created_at": "2026-08-25T00:47:37Z",
+      "sessions": 53,
+      "memories": 221,
+      "prompts": 545
     }
   ]
 }
