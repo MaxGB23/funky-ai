@@ -1,6 +1,5 @@
 ---
-trigger: model_decision
-description: Leer obligatoriamente antes de CUALQUIER delegación a un subagente Tier 2 (nueva fase, reintento o feedback).
+trigger: manual
 ---
 
 # Tier 2 Delegation Router

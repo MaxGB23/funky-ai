@@ -1,9 +1,10 @@
 ---
-trigger: model_decision
-description: Leer obligatoriamente antes de CUALQUIER delegación a un subagente Tier 1 (nueva fase, reintento o feedback).
+trigger: manual
 ---
 
 # Tier 1 Delegation Router
+
+> Relee este router antes de cada delegación o reintento del worker — la frescura instruccional evita derivas en sesiones largas.
 
 SDD tier 1 no contiene artefactos, únicamente se hace una exploración con un sabueso Route A, y con dichos hallazgos se genera un tasks.md. Dicho tasks.md es ejecutado por un funky-worker.
 
