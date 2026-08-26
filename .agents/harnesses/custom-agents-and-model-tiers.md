@@ -29,8 +29,9 @@ subagent: true
 ```
 
 ### Herencia de Prompts y Contexto:
-* Si el archivo `agent.md` **no contiene cuerpo de texto** (solo frontmatter), el agente hereda de forma pura y sin sesgos adicionales el `GEMINI.md`, `AGENTS.md` y las reglas jerárquicas activas del workspace y globales.
-* Si contiene cuerpo de texto, este actúa como un System Prompt aditivo (complementario) que se monta encima de las reglas base.
+* **Aislamiento Total:** El archivo `agent.md` **reemplaza** el system prompt por completo (no hereda automáticamente `GEMINI.md` ni los harnesses/workflows globales).
+* Esto reduce la carga inicial de contexto de **~25k tokens** a **~10k tokens** (ahorro del 60%). Para más detalle ver [custom-agents-inheritance.md](custom-agents-inheritance.md).
+* Si contiene cuerpo de texto, este actúa como su System Prompt exclusivo. Si no contiene cuerpo, opera como un agente base ligero sin overhead.
 
 ---
 
