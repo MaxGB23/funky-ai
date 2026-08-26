@@ -40,6 +40,13 @@ Roadmap sugerido: 2 -> 1 -> 3 -> 4 (pero esto no es mandatorio).
 - [ ] 4. Smoke test del comando funky secure.
 - [ ] 5. Feature conjunta funkygram (minor): mejorar `funky engram add` agregando parámetros `--what`, `--why`, `--where`, `--learned` para que el CLI genere el archivo con los campos llenos (hoy genera esqueleto vacío y hay que editar manualmente), y actualizar `engram-protocol.md` con las reglas de campos flexibles: What + Why siempre obligatorios, Where solo si se tocaron archivos, Learned solo si hubo gotchas. El CLI debe respetar las mismas reglas de omisión — flag no pasado = campo ausente en el archivo generado, nunca campo vacío; evitar texto vacío que ensucie el funkygram. También arreglar el index generation — no incluye prefijo `[TYPE]` como las entradas existentes.
 
+- [ ] 6. **funky feature: flags deterministas, matriz de validación y auto-scaffold en Pre-Flight:**                                                                     
+- **CLI (funky-cli):** Agregar opciones no interactivas a `funky feature <name>` (`--tier <t1|t2|t3>`,`--docs`/`--no-docs`).     
+Validar combinaciones ilegales mediante una matriz pura (ej: T1 rechaza `--docs`) con tests de integración deflags.                                                       
+- **SSOT & Reglas:** Documentar la matriz de compatibilidad en `sdd-preflight.md`, `help` y docs oficiales para que el Orquestador opere con contrato formal.          
+- **Orquestador (Hard-Gate & Fallback):** Mantener el enfoque *Human-First*. Si el desarrollador solo confirma los parámetros en chat y el scaffold no existe en disco,
+el Hard-Gate faculta al Orquestador a ofrecer la ejecución directa del comando con los flags confirmados antes de bloquearse.   
+
 ### EXTERNOS
 - [ ] EXT-1. Reinstalar todo y verificar si el mcp de Engram funciona en antigravity cli, esto nos ahorraría mucho trabajo ya que el usar el mcp es mejor que usar el funkygram. Si el mcp funciona, debemos migrar todo el "engram" que no sea mcp a "funkygram", esto evitaría confusiones y tendrían su rol en específico. Engram MCP sqlite y Funkygram basado en files md.
 - [ ] EXT-2. Añadir colores al repo funky-theme para git untracked/modified/deleted en terminal, actualmente se usa default "rojo". 
