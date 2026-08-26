@@ -9,8 +9,11 @@ trigger: manual
 Cuando se arranque un sdd nuevo se debe presentar al humano el siguiente bloque de recomendación:
 
 ```markdown
-Para arrancar, corre en el CLI:
-  funky feature [nombre-de-la-feature]
+> 🚀 **PASO OBLIGATORIO EN TU TERMINAL:**
+> Corre el siguiente comando para generar el scaffolding inicial:
+> ```bash
+> funky feature [nombre-de-la-feature]
+> ```
 
 Mi recomendación:
   Tier:             [T1 / T2 / T3]
@@ -53,11 +56,15 @@ Cuando el desarrollador regrese con los valores confirmados, almacénalos como c
 
 > **Guardrail:** Si el desarrollador confirma valores que contradicen dependencias duras (ej. T1 con 500 líneas estimadas), advierte UNA sola vez y acepta lo que el humano decidió. No insistas.
 
+> **[HARD-GATE — VERIFICACIÓN FÍSICA DE SCAFFOLD]**
+> Antes de cargar routers o delegar la primera fase, verifica con `list_dir` que `openspec/changes/[nombre-de-la-feature]` exista en disco.
+> Si no existe: DETENTE, muestra `⚠️ No se detectó el scaffold en disco. Ejecuta en tu terminal: funky feature [nombre-de-la-feature]` y espera confirmación. PROHIBIDO delegar fases o crear archivos manualmente sin scaffold.
+
 > **[GUARDRAIL JIT — ANTI-ROUTER-PREMATURO]**
-> **TIENES PROHIBIDO** leer `tier1-router.md`, `tier2-router.md` ni `tier3-router.md` antes de recibir la confirmación explícita del humano sobre el Tier.
+> **TIENES PROHIBIDO** leer `tier1-router.md`, `tier2-router.md` ni `tier3-router.md` antes de recibir la confirmación explícita del humano sobre el Tier y comprobar que el scaffold existe.
 > El orquestador emite la recomendación y **espera**.
 >
-> **POST-CONFIRMACIÓN (OBLIGATORIO e INDEFERIBLE):** En el **mismo turno** en que el humano confirme el Tier, tus acciones inmediatas DEBEN ser en este orden exacto:
+> **POST-CONFIRMACIÓN (OBLIGATORIO e INDEFERIBLE):** En el **mismo turno** en que el humano confirme el Tier y exista el scaffold, tus acciones inmediatas DEBEN ser en este orden exacto:
 > 1. **Cargar metodologías:** `view_file .agents/rules/metodologias.md` (si existe) y cachear sus directivas.
 > 2. **Cargar el router correspondiente:**
 > - **T1** → `view_file .agents/rules/tier1-router.md`
