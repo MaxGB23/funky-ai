@@ -138,5 +138,7 @@ Funky AI orquesta el desarrollo de software aprovechando una **Carga JIT (Just-I
 | Base de conocimiento del proyecto | [`docs/engram/index.md`](docs/engram/index.md) |
 | Releases y retrospectivas | [`docs/funky-ai/releases/`](docs/funky-ai/releases/) |
 | Mapa completo del repo | [`docs/repo-map.md`](docs/repo-map.md) |
+| Consumo de tokens medido (MCP, modelos, suscripciones) | [`comparativas-tokens/index.md`](comparativas-tokens/index.md) |
+| Conducta real de la plataforma Antigravity (harnesses, triggers) | [`.agents/harnesses/index.md`](.agents/harnesses/index.md) |
 | Índice de Docs Vivos (SSOT para Agentes) | [`.agents/templates/sdd/docs-live-index.md`](.agents/templates/sdd/docs-live-index.md) |
 
