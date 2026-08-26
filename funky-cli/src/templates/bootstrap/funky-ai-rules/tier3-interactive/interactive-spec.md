@@ -20,11 +20,6 @@ trigger: manual
 **Siguiente**: Design
 ```
 
-## Comportamiento por modo
-| Modo | Comportamiento |
-|------|---------------|
-| **Interactivo** | Muestra resultado + "¿Quieres ajustar algo o continuamos?" |
-
 ## Casos especiales
 - **Coverage baja en error states** → se marca como warning, pero no bloquea.
 - **Specs MODIFIED** (no solo new) → el orquestador menciona qué cambió respecto

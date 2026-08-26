@@ -25,11 +25,6 @@ Siguiente: [Siguiente batch o Fase Verify, dependiendo si quedan tareas]
 ¿Quieres ajustar algo o continuamos?
 ```
 
-## Comportamiento por modo
-| Modo | Checkpoint pre-apply | Durante apply |
-|------|---------------------|---------------|
-| **Interactivo** | Muestra plan + "¿CLI o IDE?" + "¿Arrancamos?" | Después de cada batch, resultado + "¿Ajustar o continuamos?" |
-
 ## Casos especiales
 - **Deviations from design** → se muestran **DESTACADAS** antes de preguntar.
 - **Status: blocked** → no preguntes; explica el bloqueo y cómo resolverlo.

@@ -46,7 +46,6 @@ funky-tasks devuelve forecast > 400 líneas
 | Worker reporta saturación | Worker Reactivo: commit parcial + report.md, orquestador levanta nuevo worker |
 
 ## Comportamiento por modo
-
 | Modo | Comportamiento |
 |------|---------------|
 | **Interactivo** | Muestra breakdown + workload. Si forecast >400, pregunta si subdividir. Si no, "¿Quieres ajustar algo o continuamos?" |
