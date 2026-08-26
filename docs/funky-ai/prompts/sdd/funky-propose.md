@@ -75,7 +75,7 @@ Reporta al humano con este formato **exacto**.
 **Approach:** {Descripción del enfoque técnico elegido}
 **Rollback:** {Plan de rollback}
 **Risk Level:** {High/Medium/Low} — {Breve justificación de los riesgos}
-**Artefacto:** openspec/changes/{feature-name}/proposal.md
+**Artefacto Generado:** openspec/changes/{feature-name}/proposal.md
 **Siguiente fase:** /funky-spec
 ```
 

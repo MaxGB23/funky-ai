@@ -63,7 +63,7 @@ Reporta al humano con este formato **exacto**.
 **Archivos:** [n] nuevos, [n] modificados, [n] eliminados
 **Testing:** {Estrategia de pruebas propuesta}
 **Open Questions:** {Dudas abiertas o "None"}
-**Artefacto:** openspec/changes/{feature-name}/design.md
+**Artefacto Generado:** openspec/changes/{feature-name}/design.md
 **Siguiente fase:** /funky-tasks
 ```
 

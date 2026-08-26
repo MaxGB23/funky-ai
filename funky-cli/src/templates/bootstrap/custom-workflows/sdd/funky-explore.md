@@ -124,7 +124,7 @@ Reporta al humano con este formato **exacto**.
 **Recomendación:** [Opción recomendada]
 **Riesgos:** {Riesgos detectados, o "Ninguno"}
 **NFR Candidates:** {Requisitos no funcionales sugeridos, o "Ninguno"}
-**Artefacto:** openspec/changes/{feature-name}/explore.md
+**Artefacto Generado:** openspec/changes/{feature-name}/explore.md
 **Siguiente fase:** /funky-propose
 ```
 

@@ -123,7 +123,7 @@ Reporta al humano con este formato **exacto**.
 - Happy paths: [✅ / ❌ / ⚠️] [estado]
 - Edge cases: [✅ / ❌ / ⚠️] [estado]
 - Error states: [✅ / ❌ / ⚠️] [estado]
-**Artefactos:** openspec/changes/{feature-name}/specs/
+**Artefactos Generados:** openspec/changes/{feature-name}/specs/
 **Siguiente fase:** /funky-design
 ```
 

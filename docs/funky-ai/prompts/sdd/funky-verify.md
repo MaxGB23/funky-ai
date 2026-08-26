@@ -88,7 +88,7 @@ PASS | PASS WITH FUNCTIONAL WARNINGS | PASS WITH COSMETIC WARNINGS | FAIL
 - COSMETIC WARNING → fix inline si <5 líneas / 1 archivo; si no, /funky-apply
 - SUGGESTION → anotar en archive, sin acción
 - FAIL → no preguntar; explicar que hay que re-aplicar
-**Artefacto:** openspec/changes/{feature-name}/verify-report.md
+**Artefacto Generado:** openspec/changes/{feature-name}/verify-report.md
 ```
 
 > 🔴 Si falta `Validación`, `Verdict`, `Functional warnings` o `Acción para el Orquestador`, el envelope se considera incompleto e inválido. `Coverage` es obligatoria solo si el proyecto define threshold. Si el status es `blocked`, se retorna el bloqueo y no se continúa a la siguiente fase.
