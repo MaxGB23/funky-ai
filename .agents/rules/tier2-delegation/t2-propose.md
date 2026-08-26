@@ -22,7 +22,7 @@ trigger: manual
 > ## Artefactos a leer
 > - `openspec/changes/[CHANGE]/explore.md`, **Prohibido ignorar la sección "2. Context Preservation"**
 > ## Template a seguir
-> - `openspec/changes/[CHANGE]/proposal.md` — Leer y usar `replace_file_content`.
+> - `openspec/changes/[CHANGE]/proposal.md` — Ejecuta `view_file` y usa `replace_file_content`. No sobreescribas desde cero.
 > ## Contexto Previo
 > [Inyecta aquí el digest del funkygram y las metodologías activas del proyecto. Si no aplican, omite esta sección.]
 > ## Formato de retorno

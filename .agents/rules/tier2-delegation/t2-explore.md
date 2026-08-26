@@ -23,7 +23,7 @@ trigger: manual
 > ## Documento fuente
 > - `[RFC_PATH], si no existe debes pasar contexto de la feature`
 > ## Template a seguir
-> - `openspec/changes/[CHANGE]/explore.md` — Leer y usar `replace_file_content`. No sobreescribas desde cero.
+> - `openspec/changes/[CHANGE]/explore.md` — Ejecuta `view_file` y usa `replace_file_content`. No sobreescribas desde cero.
 > ## Contexto Previo
 > [Inyecta aquí el digest del funkygram y las metodologías activas del proyecto. Si no aplican, omite esta sección.]
 > ## Formato de retorno
