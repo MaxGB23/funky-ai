@@ -47,6 +47,8 @@ Validar combinaciones ilegales mediante una matriz pura (ej: T1 rechaza `--docs`
 - **Orquestador (Hard-Gate & Fallback):** Mantener el enfoque *Human-First*. Si el desarrollador solo confirma los parámetros en chat y el scaffold no existe en disco,
 el Hard-Gate faculta al Orquestador a ofrecer la ejecución directa del comando con los flags confirmados antes de bloquearse.   
 
+- [ ] DRAFT: He pensado en hacer un custom agent para sdd-orchestrator, ya que depende de que el trigger sea activado. custom-agents-inheritance.md menciona algo pero es mucho trabajo como para implementarlo ahora, ya que no hereda prompts globales y requiere dejarle claro todo con referencias u otra estrategia.
+
 ### EXTERNOS
 - [ ] EXT-1. Reinstalar todo y verificar si el mcp de Engram funciona en antigravity cli, esto nos ahorraría mucho trabajo ya que el usar el mcp es mejor que usar el funkygram. Si el mcp funciona, debemos migrar todo el "engram" que no sea mcp a "funkygram", esto evitaría confusiones y tendrían su rol en específico. Engram MCP sqlite y Funkygram basado en files md.
 - [ ] EXT-2. Añadir colores al repo funky-theme para git untracked/modified/deleted en terminal, actualmente se usa default "rojo". 
