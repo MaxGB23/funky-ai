@@ -21,7 +21,7 @@ trigger: manual
 > ## Tarea
 > Analiza el RFC/especificación para "[CHANGE]" y produce la sección Context Preservation en explore.md. NO inventes arquitectura.
 > ## Documento fuente
-> - `[RFC_PATH], si no existe debes pasar contexto`
+> - `[RFC_PATH], si no existe debes pasar contexto de la feature`
 > ## Template a seguir
 > - `openspec/changes/[CHANGE]/explore.md` — Leer y usar `replace_file_content`. No sobreescribas desde cero.
 > ## Contexto Previo
