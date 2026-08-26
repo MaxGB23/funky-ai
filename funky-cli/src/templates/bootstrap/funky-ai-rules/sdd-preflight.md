@@ -58,7 +58,9 @@ Cuando el desarrollador regrese con los valores confirmados, almacénalos como c
 
 > **[HARD-GATE — VERIFICACIÓN FÍSICA DE SCAFFOLD]**
 > Antes de cargar routers o delegar la primera fase, verifica con `list_dir` que `openspec/changes/[nombre-de-la-feature]` exista en disco.
-> Si no existe: DETENTE, muestra `⚠️ No se detectó el scaffold en disco. Ejecuta en tu terminal: funky feature [nombre-de-la-feature]` y espera confirmación. PROHIBIDO delegar fases o crear archivos manualmente sin scaffold.
+> Si no existe: DETENTE, muestra el siguiente mensaje y espera confirmación. PROHIBIDO delegar fases o crear archivos manualmente sin scaffold.`⚠️ No se detectó el scaffold en disco. Ejecuta en tu terminal: funky feature [nombre-de-la-feature]`
+> Si el usuario no mencionó tag, añade al mismo mensaje: `ℹ️ No confirmaste si hay un tag relevante de funkygram. Si no lo hay, avanzamos con tag vacío.`
+> Si el scaffold SÍ existe: asume tag vacío sin recordatorio.
 
 > **[GUARDRAIL JIT — ANTI-ROUTER-PREMATURO]**
 > **TIENES PROHIBIDO** leer `tier1-router.md`, `tier2-router.md` ni `tier3-router.md` antes de recibir la confirmación explícita del humano sobre el Tier y comprobar que el scaffold existe.

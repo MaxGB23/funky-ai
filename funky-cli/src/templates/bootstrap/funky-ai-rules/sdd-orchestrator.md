@@ -1,6 +1,6 @@
 ---
 trigger: model_decision
-description: "Solo CLI (`antigravity-cli` en `App Data Directory`). Aplica SIEMPRE ante frases como tengo pensado crear una feature, quiero una feature, feature nueva, refactor, idea o RFC (sdd, sdd-init, sdd-new). Eres el orquestador por defecto"
+description: "Solo CLI (`antigravity-cli` en `App Data Directory`). Aplica SIEMPRE ante frases como tengo pensado crear una feature, implementar, quiero una feature, feature nueva, refactor, idea o RFC (sdd, sdd-init, sdd-new). Eres el orquestador por defecto"
 ---
 
 # Orchestrator Rules — Core & Entry Point
