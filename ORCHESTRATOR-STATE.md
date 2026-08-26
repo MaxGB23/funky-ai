@@ -5,10 +5,10 @@
 ---
 
 ## 🏷️ Estado Actual
-- **Versión:** v4.9.0
+- **Versión:** v4.9.1
 - **Rama activa:** `main`
-- **Última sesión:** 2026-08-24
-- **Estado:** 🟢 Publicada. Release v4.9.0: session gate binario en el Paso 0 del orquestador (pregunta ideación/implementación con respuesta vinculante para el Tier), sdd-preflight degradado a subrutina manual con check CORE y POST-CONFIRMACIÓN reforzada (metodologías antes del router), tasks-tdd.md eliminado con sus reglas migradas a metodologias.md como entrada [tasks], agente custom sdd-docs-sync validado end-to-end, bootstrap reads restringidos en global chilango, y primer test e2e del framework archivado (arbol-navidad-cli). 6 work units + docs-sync delegado.
+- **Última sesión:** 2026-08-26
+- **Estado:** 🟢 Publicada. Release v4.9.1: endurecimiento del protocolo SDD tras incidente de salto de pre-vuelo (trigger del orquestador con frases literales de usuario + condición Solo CLI, clasificación incondicional en Paso 0.1, guardia de madurez en implementación, routers tier a trigger manual como punto único de entrada, transición ideación→implementación definida con invariante RFC-en-disco, hard-gate scaffold condensado). Validado end-to-end con testing en sesión viva. 7 work units + docs-sync delegado.
 
 ---
 
@@ -69,3 +69,4 @@ el Hard-Gate faculta al Orquestador a ofrecer la ejecución directa del comando 
 | v4.7.0 | **MINOR** — refactor canvas-phase-1: canvas es recolector pasivo, assess asume rol de juez arquitectónico definitivo validado contra 4 ejes (se elimina architecture-review.md). estimate mejora DX en tópicos, severidad y reglas multiplicativas. 412 tests verdes (más tests de integración/dominio agregados). Docs sync: assess.md alineado al CLI. Lanzado 2026-08-12. |
 | v4.8.0 | **MINOR** — refactor del framework SDD: Route A sabueso (subagente flash_lite + MCP codegraph), metodologías data-driven, contrato t2-apply con slots unificados, Contexto Previo pasivo (workers desacoplados de funkygram), routers T1/T2/T3 alineados, harness modelo-por-fase, custom-workflows T3 inyectables vía sdd-install (27 reglas). Modernización anti-brittle de tests (~150 aserciones → snapshots/golden/tokens) y RFC 014 aplicado (spec.template.md). 411 tests / 36 archivos verdes. Docs-sync delegado con contrato de rango de commits. Lanzado 2026-08-24. |
 | v4.9.0 | **MINOR** — session gate binario: Paso 0 abre preguntando ideación/implementación, respuesta humana vinculante para el Tier (ideación siempre T0); sdd-preflight manual-only con check CORE; POST-CONFIRMACIÓN ordena metodologías→router mismo turno; tasks-tdd.md eliminado (reglas → metodologias [tasks]); agente custom sdd-docs-sync validado; bootstrap reads restringidos; test e2e archivado (arbol-navidad-cli). Docs-sync delegado verificado byte-parity de mirrors. Lanzado 2026-08-24. |
+| v4.9.1 | **PATCH** — endurecimiento del protocolo SDD: trigger del orquestador con frases literales + Solo CLI; clasificación incondicional (Paso 0.1); guardia de madurez redirige implementación vaga a Tier 0; routers tier1/2/3 a trigger manual (punto único de entrada) con relectura por delegación; transición ideación→implementación definida (chat nuevo si exhaustiva / reinicio Pre-Vuelo si breve) con invariante RFC-en-disco; hard-gate scaffold condensado; higiene de contexto global; hallazgos de harness documentados (aislamiento custom agents, discovery en subdirectorios). Validado end-to-end en sesión viva. Lanzado 2026-08-26. |

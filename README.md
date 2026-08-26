@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>👻 Funky AI v4.9.0</h1>
+  <h1>👻 Funky AI v4.9.1</h1>
   <p>
     <em>CLI que unifica la instalación de reglas agénticas, templates SDD, y tools de planeación de proyecto asistida con IA.</em>
   </p>
