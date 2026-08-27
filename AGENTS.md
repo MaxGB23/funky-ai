@@ -5,7 +5,10 @@ Convenciones de proyecto, separadas por audiencia: reglas compartidas primero; p
 
 ### Idioma (conversación)
 Cuando respondas en español, usa siempre español neutro. Evita el voseo y los regionalismos.
-Commits siempre en inglés.
+
+### Commits
+- Conventional commits siempre en inglés.
+- Un commit = una work unit (una behavior, fix, o docs unit). Nunca commitear por tipo de archivo.
 
 ### Directorio temporal (`.tmp/`)
 - Sub-agentes NO escriben en rutas externas al workspace (en Windows cada acceso pide confirmación de permisos). Scratch/sandbox/fixtures/reproducciones → `M:\funky-ai\.tmp\` (gitignored).
