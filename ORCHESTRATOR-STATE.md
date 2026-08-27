@@ -51,7 +51,6 @@ el Hard-Gate faculta al Orquestador a ofrecer la ejecución directa del comando 
 
 ### EXTERNOS
 - [ ] EXT-1. Reinstalar todo y verificar si el mcp de Engram funciona en antigravity cli, esto nos ahorraría mucho trabajo ya que el usar el mcp es mejor que usar el funkygram. Si el mcp funciona, debemos migrar todo el "engram" que no sea mcp a "funkygram", esto evitaría confusiones y tendrían su rol en específico. Engram MCP sqlite y Funkygram basado en files md.
-- [ ] EXT-2. Añadir colores al repo funky-theme para git untracked/modified/deleted en terminal, actualmente se usa default "rojo". 
 
 ---
 
