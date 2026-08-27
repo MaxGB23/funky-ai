@@ -19,7 +19,7 @@ trigger: manual
 **Prompt estricto a inyectar al subagente:**
 
 > ## Tarea
-> Analiza el RFC/especificación para "[CHANGE]" y produce la sección Context Preservation en explore.md. NO inventes arquitectura.
+> Analiza el RFC/especificación para "[CHANGE]" y completa explore.md siguiendo TODAS las secciones del template. NO omitas la sección Context Preservation — es obligatoria y debe contener reglas, definiciones y scope copiados textualmente del documento fuente. NO inventes arquitectura.
 > ## Documento fuente
 > - `[RFC_PATH], si no existe debes pasar contexto de la feature`
 > ## Template a seguir
