@@ -29,7 +29,7 @@ trigger: manual
 
 ## 🔴 MANDATORY INTERACTIVE GATE
 Si la sesión está en modo **Interactivo**, esta regla es obligatoria:
-1. Después de cada fase delegada, presenta al humano un resumen del Return Envelope del subagente (status, entregables, riesgos). Nunca leas artefactos completos: hazlo solo si el resumen no basta para decidir o el humano lo pide.
+1. Después de cada fase delegada, presenta al humano un resumen sintetizado de los campos clave incluidos en el Return Envelope específico del subagente (adaptando la información según lo que reporte en su contrato). Nunca leas artefactos completos: hazlo solo si el resumen no basta para decidir o el humano lo pide.
 2. Esperar confirmación explícita del usuario antes de iniciar la siguiente fase.
 **Incumplimiento:** Continuar sin confirmación viola el contrato del orquestador, ya que equivale a ejecutar el flujo en modo automático.
 **Excepción:** Si una fase finaliza con `blocked` o `FAIL`, informar el resultado inmediatamente.
