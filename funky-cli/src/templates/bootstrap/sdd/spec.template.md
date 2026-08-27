@@ -5,9 +5,10 @@
          openspec/changes/[CHANGE]/specs/[DOMAIN]/spec.md
 
   PASOS OBLIGATORIOS:
-  1. IDENTIFICAR DOMINIO
+  1. IDENTIFICAR DOMINIO(S)
      - Lee la sección `## 2. Capabilities` del proposal.md.
-     - Extrae el dominio del path embebido: `openspec/specs/{dominio}/...`
+     - Extrae el dominio de cada capability del path embebido: `openspec/specs/{dominio}/...`
+     - Si hay capabilities de MÚLTIPLES dominios, crea un spec por cada uno.
      - Si el path está malformado o tiene typo, infiere el nombre más cercano y valida en el paso siguiente.
      - Ejecuta en terminal para validar nombres reales:
        Get-ChildItem -Directory "openspec/specs/" -ErrorAction SilentlyContinue | Select-Object Name
@@ -21,8 +22,8 @@
      - NULL → `root-sha256: null` + el output es un **FULL Spec**: escribe el spec completo SIN headers `## ADDED Requirements`, `## MODIFIED Requirements` ni `## REMOVED Requirements`. Solo `## Requirements` directo.
      - NUNCA copies el comando ni el placeholder al output.
 
-  3. ESCRIBIR OUTPUT
-     - Usa write_to_file para crear openspec/changes/[CHANGE]/specs/[DOMAIN]/spec.md
+  3. ESCRIBIR OUTPUT (uno por dominio)
+     - Usa write_to_file para crear openspec/changes/[CHANGE]/specs/{domain}/spec.md por cada dominio identificado.
      - El output SOLO contiene el bloque delimitado por OUTPUT START / OUTPUT END de abajo.
      - Secciones sin cambios MAY omitirse del delta.
 

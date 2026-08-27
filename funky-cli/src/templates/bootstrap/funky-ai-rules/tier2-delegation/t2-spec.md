@@ -34,8 +34,9 @@ trigger: manual
 > **Change**: [CHANGE]
 > | Domain | Type | Requirements | Scenarios |
 > |--------|------|-------------|-----------|
-> | [DOMAIN] | [New/Delta] | [N] | [M] |
+> | [DOMAIN-1] | [New/Delta] | [N] | [M] |
+> | [DOMAIN-2] | [New/Delta] | [N] | [M] |
 > 
 > **Coverage**: happy paths ✅ / error states ⚠️ parcial
-> **Artefacto generado en**: openspec/changes/[CHANGE]/specs/[DOMAIN]/spec.md
+> **Artefactos generados en**: openspec/changes/[CHANGE]/specs/{domain}/spec.md (uno por domain)
 > ```
