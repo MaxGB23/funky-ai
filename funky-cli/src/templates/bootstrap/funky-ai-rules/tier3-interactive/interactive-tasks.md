@@ -14,6 +14,8 @@ trigger: manual
 - **Total**: [n] tareas
 
 ⚠️ **Review Workload**: ~[n] líneas estimadas — [ALTO/MEDIO/BAJO]
+
+**Docs:** [Modificado (N archivos) / No aplica / No existe]
 ```
 
 ## Review Workload Guard
