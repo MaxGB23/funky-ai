@@ -23,20 +23,24 @@
 
 ### Reglas del RFC / input fuente
 - [regla explícita del documento fuente o RFC]
+- [regla explícita del documento fuente o RFC]
 
 ### Definiciones clave
+- [término]: [definición]
 - [término]: [definición]
 
 ### Scope no-negociable
 - [restricción que no se discute]
+- [restricción que no se discute]
 
 ## 3. Opciones de Arquitectura
+
+> Agrega tantas filas como opciones reales consideres (típicamente 2-4). No es necesario rellenar todas.
 
 | Opción | Descripción | Pros | Contras / Tradeoffs |
 |--------|-------------|------|---------------------|
 | **Opción A** | [Descripción] | - [Pro 1]<br>- [Pro 2] | - [Contra 1]<br>- [Contra 2] |
 | **Opción B** | [Descripción] | - [Pro 1]<br>- [Pro 2] | - [Contra 1]<br>- [Contra 2] |
-| **Opción C** | [Descripción] | - [Pro 1]<br>- [Pro 2] | - [Contra 1]<br>- [Contra 2] |
 
 ## 4. Recomendación + Riesgos
 **Opción recomendada:** [Elegir A, B o C]
@@ -46,4 +50,4 @@
 
 **Riesgos mitigables:**
 - [Riesgo 1]: [Cómo mitigarlo]
-- [Riesgo 2]: [Cómo mitigarlo]
+- [Riesgo N]: [Cómo mitigarlo]
