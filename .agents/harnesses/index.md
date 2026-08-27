@@ -16,7 +16,9 @@
 | [`custom-agents-and-model-tiers.md`](./custom-agents-and-model-tiers.md) | Aliases de modelo disponibles en `invoke_subagent` (`flash_lite`, `flash`, `pro`, `inherit`) y herencia de prompts en custom agents. |
 | [`custom-agents-inheritance.md`](./custom-agents-inheritance.md) | Hallazgo: los custom agents NO heredan prompts globales — su `agent.md` reemplaza el system prompt completo (~25k → ~10k tokens). |
 | [`modelo-por-fase.md`](./modelo-por-fase.md) | **[DRAFT]** Optimización de costo asignando un modelo distinto por fase SDD. Experimental; requiere autorización humana explícita. |
+| [`permissions-and-hooks.md`](./permissions-and-hooks.md) | Modos de aprobación (`auto_edit`, `auto_execute`), sistema de hooks `PreToolUse`, bug de path duplicado en Windows, deadlock de self-blocking, y pendientes sobre herencia en subagentes. |
 | [`rule-discovery-subdirs.md`](./rule-discovery-subdirs.md) | Experimento: las conditional rules en subdirectorios de `.agents/rules/` **no** son detectadas como tales — solo cuentan las del raíz. |
+
 
 ---
 
