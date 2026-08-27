@@ -19,8 +19,8 @@ trigger: manual
 | 3. Spec | `docs/funky-ai/prompts/sdd/funky-spec.md` → requirements completos |
 | 4. Design | `docs/funky-ai/prompts/sdd/funky-design.md` (**obligatorio, exclusivo T3**) → `design.md` |
 | 5. Tasks | `docs/funky-ai/prompts/sdd/funky-tasks.md` |
-| **Checkpoint** | **PRE-APPLY obligatorio:** Mostrar resumen y confirmar **Nativo (CLI)** o **Handoff (IDE)**. Si existe **Risk**, consultar `.agents/rules/tier3-interactive/risk-decision.md`. El cambio a **Handoff** sólo aplica para `Apply`; las fases siguientes permanecen en modo interactivo. |
-| 6. Apply | `docs/funky-ai/prompts/sdd/funky-apply.md` secuencial por batch, no confundir con Worker (tier 2) |
+| **Checkpoint** | **PRE-APPLY obligatorio:** Mostrar resumen y confirmar **Nativo (CLI)** o **Handoff (IDE)**. Si existe **Risk**, consultar `.agents/rules/tier3-interactive/risk-decision.md`. El cambio a **Handoff** sólo aplica para `Apply`; las fases siguientes permanecen en modo elegido (auto/interactivo). |
+| 6. Apply | `docs/funky-ai/prompts/sdd/funky-apply.md` Secuencial por batch, nunca reutilizar subagentes apply. No confundir Apply con funky-worker (tier 1 y 2) |
 | 7. Verify | `docs/funky-ai/prompts/sdd/funky-verify.md` (build, tests, compliance, design, NFR) |
 | 8. Archive | `docs/funky-ai/prompts/sdd/funky-archive.md` |
 | **Checkpoint** | **PRE-RELEASE OBLIGATORIO:** Antes de release, parar y pedir confirmación para continuar, tanto en modo Auto como Interactivo.

@@ -19,7 +19,7 @@ trigger: manual
 | **3. Spec** | Ejecuta `view_file .agents/rules/tier2-delegation/t2-spec.md` |
 | **4. Tasks** | Ejecuta `view_file .agents/rules/tier2-delegation/t2-tasks.md` |
 | **Checkpoint** | **PRE-APPLY OBLIGATORIO:** Mostrar resumen del plan. Preguntar al humano: ¿Nativa (CLI con subagentes) o Handoff (IDE)? Aunque el 90% es un solo batch, si `tasks.md` devuelve subdivisión requerida, prepárate para delegar en batches. |
-| **5. Worker (Apply)** | Ejecuta `view_file .agents/rules/tier2-delegation/t2-apply.md` |
+| **5. Worker (Apply)** | Ejecuta `view_file .agents/rules/tier2-delegation/t2-apply.md`. Secuencial por batch, nunca reutilizar subagentes apply. |
 | **6. Verify** | Ejecuta `view_file .agents/rules/tier2-delegation/t2-verify.md` |
 | **7. Archive** | Ejecuta `view_file .agents/rules/tier2-delegation/t2-archive.md` |
 | **Checkpoint** | **PRE-RELEASE OBLIGATORIO:** Antes de release, parar y pedir confirmación para continuar, tanto en modo Auto como Interactivo.

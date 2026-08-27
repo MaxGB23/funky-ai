@@ -20,7 +20,7 @@ trigger: manual
 > ## Tarea
 > Verifica que la implementación de "[CHANGE]" cumple con las especificaciones.
 > ## Artefactos a leer
-> - `openspec/changes/[CHANGE]/specs/[DOMAIN]/spec.md` (o la ruta donde se haya generado)
+> - `openspec/changes/[CHANGE]/specs/` — Lee todos los `spec.md` en cada subdirectorio (un domain = un subdirectorio). Si solo hay uno, lee ese.
 > - `openspec/changes/[CHANGE]/tasks.md`
 > ## Contexto Previo
 > [Inyecta aquí el digest del funkygram y las metodologías activas del proyecto. Si no aplican, omite esta sección.]
