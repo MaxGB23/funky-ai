@@ -5,6 +5,7 @@ Convenciones de proyecto, separadas por audiencia: reglas compartidas primero; p
 
 ### Idioma (conversación)
 Cuando respondas en español, usa siempre español neutro. Evita el voseo y los regionalismos.
+Commits siempre en inglés.
 
 ### Directorio temporal (`.tmp/`)
 - Sub-agentes NO escriben en rutas externas al workspace (en Windows cada acceso pide confirmación de permisos). Scratch/sandbox/fixtures/reproducciones → `M:\funky-ai\.tmp\` (gitignored).
