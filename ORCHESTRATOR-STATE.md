@@ -41,16 +41,17 @@ Roadmap sugerido: 2 -> 1 -> 3 -> 4 (pero esto no es mandatorio).
 - [ ] 5. Feature conjunta funkygram (minor): mejorar `funky engram add` agregando parámetros `--what`, `--why`, `--where`, `--learned` para que el CLI genere el archivo con los campos llenos (hoy genera esqueleto vacío y hay que editar manualmente), y actualizar `engram-protocol.md` con las reglas de campos flexibles: What + Why siempre obligatorios, Where solo si se tocaron archivos, Learned solo si hubo gotchas. El CLI debe respetar las mismas reglas de omisión — flag no pasado = campo ausente en el archivo generado, nunca campo vacío; evitar texto vacío que ensucie el funkygram. También arreglar el index generation — no incluye prefijo `[TYPE]` como las entradas existentes.
 
 - [ ] 6. **funky feature: flags deterministas, matriz de validación y auto-scaffold en Pre-Flight:**                                                                     
-- **CLI (funky-cli):** Agregar opciones no interactivas a `funky feature <name>` (`--tier <t1|t2|t3>`,`--docs`/`--no-docs`).     
-Validar combinaciones ilegales mediante una matriz pura (ej: T1 rechaza `--docs`) con tests de integración deflags.                                                       
-- **SSOT & Reglas:** Documentar la matriz de compatibilidad en `sdd-preflight.md`, `help` y docs oficiales para que el Orquestador opere con contrato formal.          
-- **Orquestador (Hard-Gate & Fallback):** Mantener el enfoque *Human-First*. Si el desarrollador solo confirma los parámetros en chat y el scaffold no existe en disco,
-el Hard-Gate faculta al Orquestador a ofrecer la ejecución directa del comando con los flags confirmados antes de bloquearse.   
+    - **CLI (funky-cli):** Agregar opciones no interactivas a `funky feature <name>` (`--tier <t1|t2|t3>`,`--docs`/`--no-docs`).     
+    Validar combinaciones ilegales mediante una matriz pura (ej: T1 rechaza `--docs`) con tests de integración deflags.                                                       
+    - **SSOT & Reglas:** Documentar la matriz de compatibilidad en `sdd-preflight.md`, `help` y docs oficiales para que el Orquestador opere con contrato formal.          
+    - **Orquestador (Hard-Gate & Fallback):** Mantener el enfoque *Human-First*. Si el desarrollador solo confirma los parámetros en chat y el scaffold no existe en disco,
+    el Hard-Gate faculta al Orquestador a ofrecer la ejecución directa del comando con los flags confirmados antes de bloquearse.   
+
+- [ ] 7. **Migrar "engram no-MCP" a full "funkygram" para independencia de naming y evitar confusiones con Engram MCP (estándar SQLite).**
+  - Al ejecutar `funky sdd install` u otro comando que inyecte `engram-protocol`, el CLI preguntará de forma interactiva la variante a instalar: `mcp`, `funkygram` (archivos md) o `ambos` (MCP será default en rules para evitar conflictos en ambos).
+  - Reglas como `sdd-orchestrator` o `preflight` se actualizarán con etiquetas XML u otra solución estructurada para inyectar únicamente las reglas correspondientes en los espacios designados.
 
 - [ ] DRAFT: He pensado en hacer un custom agent para sdd-orchestrator, ya que depende de que el trigger sea activado. custom-agents-inheritance.md menciona algo pero es mucho trabajo como para implementarlo ahora, ya que no hereda prompts globales y requiere dejarle claro todo con referencias u otra estrategia.
-
-### EXTERNOS
-- [ ] EXT-1. Reinstalar todo y verificar si el mcp de Engram funciona en antigravity cli, esto nos ahorraría mucho trabajo ya que el usar el mcp es mejor que usar el funkygram. Si el mcp funciona, debemos migrar todo el "engram" que no sea mcp a "funkygram", esto evitaría confusiones y tendrían su rol en específico. Engram MCP sqlite y Funkygram basado en files md.
 
 ---
 
