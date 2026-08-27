@@ -6,7 +6,7 @@
 > - ALWAYS read real code, never guess about the codebase.
 > - If you can't find enough information, say so clearly.
 > - The ONLY file you MAY create/edit is this exploration document. DO NOT modify any existing code or files.
- 
+
 > **INVESTIGATE GUIDELINES:**
 > - Read entry points and key files
 > - Search for related functionality

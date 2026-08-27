@@ -9,25 +9,27 @@
 > Esta sección es el contrato primario para la fase spec. Define exactamente qué specs crear o actualizar.
 
 **New Capabilities:**
-- [Capacidad nueva 1] -> Mapea a `openspec/specs/...`
+- [Capacidad nueva] -> Mapea a `openspec/specs/...`
 
 **Modified Capabilities:**
-- [Capacidad modificada 1] -> Mapea a `openspec/specs/...`
- 
+- [Capacidad modificada] -> Mapea a `openspec/specs/...`
+
 ## 3. Decisiones Técnicas
+
+> Lista solo las áreas relevantes para este cambio (arquitectura, dependencias, almacenamiento, testing, etc.). Añade o elimina filas según el alcance.
 
 | Área | Decisión | Justificación Corta |
 |------|----------|---------------------|
 | Arquitectura | [Ej: Hexagonal] | [Por qué se eligió] |
 | Dependencias | [Ej: Vite, Zustand] | [Por qué se eligió] |
-| Almacenamiento | [Ej: LocalStorage] | [Por qué se eligió] |
 
 ## 4. Stack / Scope
 **Stack Tecnológico:**
 - [Tecnología 1]
-- [Tecnología 2]
+- [Tecnología N, tantas como apliquen]
 
 **Fuera de Scope (Non-Goals):**
+- [Lo que NO se va a hacer en esta iteración]
 - [Lo que NO se va a hacer en esta iteración]
 
 ## 5. Riesgos y Rollback
@@ -41,4 +43,4 @@
 
 ## 6. Success Criteria
 - [ ] [Criterio de éxito 1 verificable]
-- [ ] [Criterio de éxito 2 verificable]
+- [ ] [Criterio de éxito N verificable]
