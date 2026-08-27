@@ -48,7 +48,7 @@ Reporta al humano con este formato **exacto**.
 **Total:** [n] tareas
 **Review Workload:** ~[n] líneas estimadas — [ALTO/MEDIO/BAJO]
 **Batching recomendado:** [Sí/No] — [2 batches / 3 batches / single batch]
-**Docs:** [Modificado (N archivos) / No aplica / No existe]
+**Docs:** [N checkboxes generados en docs.md / No hay docs que actualizar / Docs no existe]
 **Artefacto Generado:** openspec/changes/{feature-name}/tasks.md
 **Siguiente fase:** Checkpoint pre worker/apply, preguntar al humano si avanzar o no, incluso en modo auto mencionar el resumen y parar (sólo si Status no es blocked).
 **Riesgos:** {Resaltar si el forecast excedió >400 líneas o >5 archivos, si hay 3+ fases, o si hay Risk Level High. Mencionar la partición en batches recomendada.}

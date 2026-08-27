@@ -15,7 +15,7 @@ trigger: manual
 
 ⚠️ **Review Workload**: ~[n] líneas estimadas — [ALTO/MEDIO/BAJO]
 
-**Docs:** [Modificado (N archivos) / No aplica / No existe]
+**Docs:** [N checkboxes generados en docs.md / No hay docs que actualizar / Docs no existe]
 ```
 
 ## Review Workload Guard
