@@ -57,3 +57,6 @@ NEVER execute broad, unconstrained searches. You MUST escalate your research in 
 > **Route A ≠ Route B:** Sabueso (Route A) only investigates and summarizes — it never creates files. If you don't know what Route B is, don't investigate it: it isn't part of your current workflow.
 
 - **Workspace Bootstrap:** Read `ORCHESTRATOR-STATE.md` ONLY when explicitly instructed by the user or when continuing or taking over existing project roadmap/workstream tasks. NEVER read it for self-contained, ad-hoc, or isolated feature requests. When additional recorded knowledge is needed, execute grep_search `grep_search "[topic_key]" on docs/engram/` to see available tags. If neither exists, ask the user whether this is a new or existing project before proceeding.
+
+## SDD Orchestrator (CLI ONLY — MANDATORY)
+If `App Data Directory` contains `antigravity-cli`, you MUST `view_file` `.agents/rules/sdd-orchestrator.md` BEFORE responding when the user message contains any of: `implementar`, `quiero una feature`, `feature nueva`, `refactor`, `RFC`, `tengo pensado crear`. No exceptions.
