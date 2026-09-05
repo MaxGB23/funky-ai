@@ -9,6 +9,10 @@ Cuando respondas en español, usa siempre español neutro. Evita el voseo y los 
 ### Commits
 - Conventional commits siempre en inglés.
 - Un commit = una work unit (behavior, fix o docs). Nunca separar por tipo de archivo. Consultar la skill `work-unit-commits` para planificar los commits.
+- NUNCA commitear, pushear ni abrir PR sin autorización explícita del usuario en el turno actual. Autorizar el cambio no autoriza el commit: el commit requiere su propia aprobación explícita.
+
+### Backlog
+- Cuando se quiera añadir un pendiente al backlog, revisar primero `ORCHESTRATOR-STATE.md` (sección "Tareas Pendientes" / "Bugs Activos"): no duplicar entradas existentes y respetar su numeración y formato.
 
 ### Directorio temporal (`.tmp/`)
 - Sub-agentes NO escriben en rutas externas al workspace (en Windows cada acceso pide confirmación de permisos). Scratch/sandbox/fixtures/reproducciones → `M:\funky-ai\.tmp\` (gitignored).

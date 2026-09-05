@@ -51,6 +51,8 @@ Roadmap sugerido: 2 -> 1 -> 3 -> 4 (pero esto no es mandatorio).
   - Al ejecutar `funky sdd install` u otro comando que inyecte `engram-protocol`, el CLI preguntará de forma interactiva la variante a instalar: `mcp`, `funkygram` (archivos md) o `ambos` (MCP será default en rules para evitar conflictos en ambos).
   - Reglas como `sdd-orchestrator` o `preflight` se actualizarán con etiquetas XML u otra solución estructurada para inyectar únicamente las reglas correspondientes en los espacios designados.
 
+- [ ] 8. **Verificar coherencia del CI:** `docs/operaciones/ci-cd.md` documenta `pnpm/action-setup` v10.23.0 / Node 20 y un workflow de GitHub Actions que no existe en el repo (verificado 2026-09-05: no hay `.github/workflows/`). Determinar dónde vive el CI real (o si se desactivó) y actualizar el doc. Origen: análisis del toolchain (riesgo "ci-cd.md documenta un CI inexistente" en `docs/operaciones/toolchain.md`).
+
 - [ ] DRAFT: He pensado en hacer un custom agent para sdd-orchestrator, ya que depende de que el trigger sea activado. custom-agents-inheritance.md menciona algo pero es mucho trabajo como para implementarlo ahora, ya que no hereda prompts globales y requiere dejarle claro todo con referencias u otra estrategia.
 
 ---
