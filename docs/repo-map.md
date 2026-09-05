@@ -1,6 +1,6 @@
 # Mapa Estructural del Repositorio
 
-> Última actualización: 2026-08-24
+> Última actualización: 2026-09-05
 > Propósito: Directorio de navegación del repo. Para el pitch y quick start, ver [`README.md`](../README.md).
 
 ---
@@ -52,7 +52,7 @@ docs/
 ├── funky-forge/       ← Tools de planeación (init, assess, estimate, pipeline)
 ├── engram/            ← Memoria persistente del sistema
 ├── issues/            ← Issue tracker local
-├── operaciones/       ← CI/CD, QA governance
+├── operaciones/       ← CI/CD, QA governance, mantenimiento del toolchain
 ├── github-logs/       ← Logs de GitHub Actions
 └── repo-map.md        ← Este archivo
 ```

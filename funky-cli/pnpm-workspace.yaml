@@ -1,0 +1,11 @@
+# Toolchain pinning — pnpm (11+)
+#
+# Define qué hacer cuando el pnpm global no coincide con el campo `packageManager` de package.json.
+# - `download` (default desde v11.0.0): descarga y ejecuta la versión EXACTA del pin.
+# - `error`: falla el comando.
+# - `warn`: avisa y continúa.
+# - `ignore`: salta la verificación (para gestores externos: asdf, mise, Volta).
+#
+# Reemplaza a los antiguos managePackageManagerVersions / packageManagerStrict del .npmrc (pnpm <=10).
+# En pnpm 12+ los settings se leen de aquí, NO de .npmrc (solo auth/registry).
+pmOnFail: download
