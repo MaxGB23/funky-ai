@@ -19,7 +19,7 @@
     "node": "^22.13.0 || >=23.5.0"
   },
   "dependencies": {
-    "@clack/prompts": "^1.7.0",
+    "@clack/prompts": "^1.8.1",
     "@inquirer/prompts": "^8.5.2",
     "commander": "15.0.0",
     "yaml": "^2.9.0"
