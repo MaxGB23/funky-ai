@@ -247,8 +247,12 @@ nivel superior. Detectado leyendo el árbol de `describe`/`it`, antes de dar ver
 
 ## Next step
 
-Nada pendiente en código. Commit pendiente de autorización explícita del usuario
-(`AGENTS.md`: autorizar el cambio no autoriza el commit).
+Nada pendiente en código. Commits `a7daf6a` (typo "existían") y `3d41ccc` (multiselect +
+conflicto por skill) en `main` local, sin pushear (push es decisión del usuario).
+
+El aviso de conflicto por TTY sin stdin real ya no queda como hueco abierto: lo resolvieron
+`--force` y el conflicto como error en `skills-conflict-flags` (commits `bf072c3`,
+`98a1ac9`), verificados además en terminal real con pty.
 
 ## Requirements moved
 
