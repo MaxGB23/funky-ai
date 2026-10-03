@@ -2,13 +2,26 @@
 
 ## ¿Qué problema resuelve?
 
-`funky skills` instala las skills del ecosistema agéntico MaxGB23 dentro de `.agents/skills/` del proyecto destino, junto con los docs compartidos de SDD (docs-live-index, formato canónico de índice seccional y release-notes). Cada skill declara sus propios recursos en un manifest (`src/skills/<skill>/manifest.js`), que es la única fuente de qué archivos se instalan y a dónde (R-SK-8) — el comando no tiene listas hardcodeadas de recursos.
+`funky skills` instala las skills del ecosistema agéntico MaxGB23 dentro de `.agents/skills/` del proyecto destino, junto con los docs compartidos que usan los procesos de docs y release (docs-live-index, formato canónico de índice seccional y release-notes). Cada skill declara sus propios recursos en un manifest (`src/skills/<skill>/manifest.js`), que es la única fuente de qué archivos se instalan y a dónde (R-SK-8) — el comando no tiene listas hardcodeadas de recursos.
 
-Sin `funky skills` las skills base (sdd-release, sdd-docs-sync) no se distribuyen al proyecto, ni se bootstrapan los docs compartidos que el flujo SDD espera en `.agents/templates/sdd/`.
+Sin `funky skills` ninguna skill del catálogo se distribuye al proyecto, ni se bootstrapan los docs compartidos que esos procesos esperan en `.agents/templates/sdd/`.
+
+Todas las skills del catálogo son personales de MaxGB23. Ninguna viene de un framework ni de un paquete externo, y el instalador no las trata como esenciales: la selección interactiva permite instalar solo las deseadas.
+
+### Sobre el prefijo `sdd-`
+
+El prefijo es **legacy y engañoso**: no se refiere a spec-driven development, que este proyecto ya no usa. Las skills que lo llevan siguen describiendo procesos reales:
+
+| Skill | Proceso que sirve |
+|---|---|
+| `sdd-release` | proceso de release de funky-ai |
+| `sdd-docs-sync` | proceso de actualizar los docs de funky-ai |
+
+El nombre se conserva para no alterar rutas ni referencias ya escritas en `AGENTS.md`, en la config de agentes y en release notes. Está previsto deprecarlo; cuando se haga, el nombre debe cambiar a algo que describa el proceso real.
 
 ## ¿Cuándo usarlo?
 
-Cuando el proyecto necesite las skills de orquestación SDD o los docs compartidos. El comando es interactivo e idempotente: los archivos existentes se skipean sin sobrescribirse (skip-if-exists), por lo que las ediciones locales sobre las golden templates se conservan.
+Cuando el proyecto necesite las skills de release o de docs, o los docs compartidos que ambas usan. El comando es interactivo e idempotente: los archivos existentes se skipean sin sobrescribirse (skip-if-exists), por lo que las ediciones locales sobre las golden templates se conservan.
 
 ```bash
 funky skills
@@ -26,15 +39,21 @@ El instalador detecta las skills disponibles bajo `src/skills/` y pregunta qué 
 
 Cada skill vive en `src/skills/<skill>/`:```
 src/skills/
-├── sdd-release/
+├── sdd-release/           # proceso de release de funky-ai (prefijo legacy, ver arriba)
 │   ├── SKILL.md
 │   └── manifest.js        # SKILL.md → .agents/skills/sdd-release/
 │                          # templates/bootstrap/sdd/release-notes.md → .agents/templates/sdd/ (optional)
-└── sdd-docs-sync/
+├── sdd-docs-sync/         # proceso de docs de funky-ai (prefijo legacy, ver arriba)
+│   ├── SKILL.md
+│   └── manifest.js        # SKILL.md → .agents/skills/sdd-docs-sync/
+│                          # docs-live-index.md → .agents/templates/sdd/
+│                          # docs-index/_indice-seccional-template.md → .agents/templates/sdd/docs-index/
+├── layout-debug/          # reglas del overlay de layout, instalacion cross-project
+│   ├── SKILL.md
+│   └── manifest.js        # SKILL.md → .agents/skills/layout-debug/
+└── layout-debug-canon/    # hechos del repo, uso diario; requiere layout-debug
     ├── SKILL.md
-    └── manifest.js        # SKILL.md → .agents/skills/sdd-docs-sync/
-                           # docs-live-index.md → .agents/templates/sdd/
-                           # docs-index/_indice-seccional-template.md → .agents/templates/sdd/docs-index/
+    └── manifest.js        # SKILL.md → .agents/skills/layout-debug-canon/
 ```
 
 Cada entrada del manifest declara `src` (relativo a `src/` de funky-cli), `dest` (relativo al proyecto destino) y opcionalmente `optional: true`: si el src falta, la intención se salta con log y nunca crashea (R-SK-3).
