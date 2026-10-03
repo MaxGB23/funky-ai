@@ -76,6 +76,7 @@ en disco. Lo desconocido se trata como conflicto.
 - [x] Un archivo idéntico al distribuido no es conflicto: la ruta con flags es idempotente.
 - [x] `--force` sin conflictos no inventa avisos.
 - [x] `pnpm test` verde, incluido el gate de organización.
+- [x] Verificado en terminal real con pty: sin cuelgue, idempotencia confirmada fuera de los tests.
 
 ## Route declaration
 
@@ -122,14 +123,21 @@ Sobre un directorio real, con un `SKILL.md` editado a mano:
 
 Ningún paso abre un prompt: el agente no puede colgarse.
 
-**No verificado:** el cuelgue real con pseudo-TTY no se reprodujo — no hay pty disponible en
-este entorno. Lo verificado por tests es el camino de código (con TTY y flags no se llama a
-`p.confirm`). De ahí a "espera una tecla para siempre" es la definición de un prompt, pero es
-razonamiento, no observación. Queda pendiente un chequeo manual en un terminal con pty.
+**Verificado en terminal real (2026-10-03).** El usuario ejecutó el ciclo completo desde una
+terminal con pty, en un repo ya instalado, y probó varios edge cases:
+
+- `funky skills -s layout-debug` en repo ya sincronizado: `ℹ️ 1 archivo(s) ya están en la
+  versión más reciente`, exit 0. Confirma la idempotencia de T9 fuera de los tests.
+- Ningún prompt bloquea: ni en la ruta con flags ni en la interactiva.
+- Sin fricción observada en los casos probados.
+
+Esto cierra el hueco que la suite no podía cubrir. Los tests siguen siendo la prueba del
+camino de código; la terminal real es la prueba de que no hay espera.
 
 ## Next step
 
-Nada pendiente en código. Commit pendiente de autorización explícita del usuario.
+Nada pendiente en código ni en verificación. Commits `bf072c3` y `98a1ac9` en `main` local,
+sin pushear (push es decisión del usuario).
 
 ## Requirements moved
 
