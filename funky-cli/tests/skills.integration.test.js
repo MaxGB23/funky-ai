@@ -172,6 +172,13 @@ describe('funky skills — modo no interactivo (flags)', () => {
     fs.writeFileSync(file, content, 'utf8');
     return file;
   };
+  // Copia el contenido REAL de la skill: mismo bytes = no hay nada que sobrescribir.
+  const seedUpToDate = (name) => {
+    const file = skillDir(name);
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.copyFileSync(path.join(srcDir, 'skills', name, 'SKILL.md'), file);
+    return file;
+  };
 
   it('--all instala todas las skills detectadas sin preguntar', async () => {
     setTTY(false);
@@ -238,6 +245,145 @@ describe('funky skills — modo no interactivo (flags)', () => {
     expect(fs.existsSync(path.join(tmpDir, '.agents'))).toBe(false);
   });
 
+  it('--force sin TTY reemplaza lo existente sin preguntar', async () => {
+    setTTY(false);
+    const [first] = available();
+    const file = seedConflict(first);
+
+    await program.parseAsync(['skills', '--all', '--force'], { from: 'user' });
+
+    expect(fs.readFileSync(file, 'utf8')).not.toBe('version local');
+    expect(exitSpy).not.toHaveBeenCalled();
+  });
+
+  it('--force declara qué reemplaza: lo destructivo tiene que ser visible', async () => {
+    setTTY(false);
+    const [first] = available();
+    seedConflict(first);
+
+    await program.parseAsync(['skills', '--all', '--force'], { from: 'user' });
+
+    // Quien pasa --force puede no saber qué hay en destino; el aviso lo dice.
+    expect(warnings()).toContain(`skills/${first}/SKILL.md`);
+  });
+
+  it('sin --force y con conflicto: error con código 1, no un aviso silencioso', async () => {
+    setTTY(false);
+    const [first] = available();
+    const file = seedConflict(first);
+
+    await expect(
+      program.parseAsync(['skills', '--all'], { from: 'user' })
+    ).rejects.toThrow('exit');
+
+    // Exit 0 sin instalar nada era el bug: el agente leía éxito.
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    expect(fs.readFileSync(file, 'utf8')).toBe('version local');
+  });
+
+  it('el error de conflicto dice qué archivo es y ofrece las dos salidas', async () => {
+    setTTY(false);
+    const [first] = available();
+    seedConflict(first);
+
+    await expect(
+      program.parseAsync(['skills', '--all'], { from: 'user' })
+    ).rejects.toThrow('exit');
+
+    const message = errors().join('\n');
+    expect(message).toContain(`skills/${first}/SKILL.md`);
+    // Ambas salidas tienen que estar en el mensaje: reemplazar o mantener.
+    expect(message).toContain('--force');
+    expect(message).toMatch(/mantener|conservar/i);
+  });
+
+  it('con TTY pero con flags tampoco pregunta: error, no prompt colgado', async () => {
+    // Es el caso "un agente con pseudo-TTY": hay terminal, pero nadie va a contestar.
+    setTTY(true);
+    const [first] = available();
+    const file = seedConflict(first);
+
+    await expect(
+      program.parseAsync(['skills', '-s', first], { from: 'user' })
+    ).rejects.toThrow('exit');
+
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    expect(fs.readFileSync(file, 'utf8')).toBe('version local');
+  });
+
+  it('conflicto + archivos faltantes: instala los faltantes igual y después falla', async () => {
+    setTTY(false);
+    const release = available().find((n) => n === 'sdd-release') ?? available()[0];
+    const [first] = available();
+    seedConflict(first);
+    const companion = path.join(tmpDir, '.agents', 'templates', 'sdd', 'release-notes.md');
+    if (release !== first) {
+      await program.parseAsync(['skills', '-s', release], { from: 'user' }).catch(() => {});
+      fs.rmSync(companion, { force: true });
+    }
+
+    await expect(
+      program.parseAsync(['skills', '--all'], { from: 'user' })
+    ).rejects.toThrow('exit');
+
+    // El faltante no es conflicto: se instala igual aunque el comando termine en 1.
+    // Si se abortara antes, el repo quedaría a medias para siempre.
+    expect(fs.existsSync(companion)).toBe(true);
+  });
+
+  it('archivo idéntico al distribuido no es conflicto: sale con 0', async () => {
+    setTTY(false);
+    const [first] = available();
+    const file = seedUpToDate(first);
+
+    // No hay nada que sobrescribir ni que perder: un exit 1 acá sería un falso
+    // positivo, y haría fallar un CI que ya está al día.
+    await program.parseAsync(['skills', '--all'], { from: 'user' });
+
+    expect(exitSpy).not.toHaveBeenCalled();
+    expect(errors().join('\n')).not.toMatch(/ya existen/);
+    expect(fs.readFileSync(file, 'utf8')).toBe(
+      fs.readFileSync(path.join(srcDir, 'skills', first, 'SKILL.md'), 'utf8')
+    );
+  });
+
+  it('el archivo idéntico se declara como actualizado, no como omitido', async () => {
+    setTTY(false);
+    seedUpToDate(available()[0]);
+
+    await program.parseAsync(['skills', '--all'], { from: 'user' });
+
+    const logged = logSpy.mock.calls.map((c) => String(c[0])).join('\n');
+    expect(logged).toMatch(/versión más reciente/);
+  });
+
+  it('mixto: el idéntico no falla, el editado sí', async () => {
+    setTTY(false);
+    const [first, second] = available();
+    seedUpToDate(first);
+    seedConflict(second);
+
+    await expect(
+      program.parseAsync(['skills', '--all'], { from: 'user' })
+    ).rejects.toThrow('exit');
+
+    // Solo se reporta el que realmente difiere.
+    const message = errors().join('\n');
+    expect(message).toContain(`skills/${second}/SKILL.md`);
+    expect(message).not.toContain(`skills/${first}/SKILL.md`);
+  });
+
+  it('--force sin conflictos no inventa trabajo: no avisa de reemplazos', async () => {
+    setTTY(false);
+
+    await program.parseAsync(['skills', '--all', '--force'], { from: 'user' });
+
+    for (const name of available()) {
+      expect(fs.existsSync(skillDir(name))).toBe(true);
+    }
+    expect(warnings()).not.toMatch(/reemplazando/);
+  });
+
   it('--help documenta ambos flags con ejemplos para agentes', async () => {
     // addHelpText no aparece en helpInformation(): se emite al imprimir. Lo que
     // importa es lo que un agente lee de verdad al ejecutar `--help`, así que se
@@ -257,6 +403,7 @@ describe('funky skills — modo no interactivo (flags)', () => {
     const help = chunks.join('');
     expect(help).toContain('--all');
     expect(help).toContain('--skill');
+    expect(help).toContain('--force');
     // Sin ejemplos el agente no sabe cómo combinarlos ni qué pasa sin TTY.
     expect(help).toMatch(/Ejemplos/);
     stdoutSpy.mockRestore();

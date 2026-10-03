@@ -368,9 +368,10 @@ describe('skillsCommand — conflictos por skill (reemplazo y faltantes)', () =>
     expect(fs.readFileSync(file, 'utf8')).toBe('version local');
   });
 
-  it('Sin TTY pero con --all: instala y avisa que no reemplaza, sin preguntar', async () => {
-    // Con los flags no interactivos esta ruta existe de verdad: instala lo pedido,
-    // pero ante un conflicto conserva lo existente en vez de preguntar.
+  it('Sin TTY pero con --all: instala lo que falta y falla por el conflicto', async () => {
+    // Con flags no se pregunta nunca: se instala lo seguro y se reporta el conflicto
+    // como error. Un agente no puede contestar un prompt, así que preguntar sería
+    // colgarse.
     const file = path.join(tmpDir, '.agents', 'skills', 'layout-debug', 'SKILL.md');
     fs.mkdirSync(path.dirname(file), { recursive: true });
     fs.writeFileSync(file, 'version local', 'utf8');
@@ -378,13 +379,29 @@ describe('skillsCommand — conflictos por skill (reemplazo y faltantes)', () =>
 
     p.multiselect.mockResolvedValueOnce(['__all__']);
 
+    // El exitSpy de este describe no lanza (a diferencia del de integration), así que
+    // se awaita normal y se verifica la llamada.
     await program.parseAsync(['skills', '--all'], { from: 'user' });
 
     expect(p.confirm).not.toHaveBeenCalled();
-    expect(warnSpy).toHaveBeenCalled();
+    expect(exitSpy).toHaveBeenCalledWith(1);
     expect(fs.readFileSync(file, 'utf8')).toBe('version local');
-    // Y lo que no estaba en conflicto sí se instala: el aviso no bloquea la instalación.
+    // Y lo que no estaba en conflicto sí se instaló: el error no bloquea la instalación.
     expect(fs.existsSync(path.join(tmpDir, '.agents/skills/layout-debug-canon/SKILL.md'))).toBe(true);
+  });
+
+  it('--force con TTY reemplaza sin preguntar, para el reinstall limpio', async () => {
+    const file = path.join(tmpDir, '.agents', 'skills', 'layout-debug', 'SKILL.md');
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, 'version local', 'utf8');
+
+    p.multiselect.mockResolvedValueOnce(['layout-debug']);
+
+    await program.parseAsync(['skills', '--force'], { from: 'user' });
+
+    // Se pregunta qué instalar, pero no si reemplazar: --force autoriza eso.
+    expect(p.confirm).not.toHaveBeenCalled();
+    expect(fs.readFileSync(file, 'utf8')).not.toBe('version local');
   });
 
   it('Una skill recién detectada no genera aviso ni pregunta: no hay conflicto', async () => {

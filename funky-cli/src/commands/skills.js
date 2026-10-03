@@ -91,6 +91,26 @@ export function runSkills({ srcDir, targetBase, selectedSkills, manifests }) {
   return intentions;
 }
 
+/**
+ * ¿El destino ya tiene exactamente el contenido que se quiere instalar?
+ *
+ * Si es así, no hay conflicto: no se sobrescribe nada y no se pierde nada.
+ * Tratarlo como conflicto sería un falso positivo que hace fallar un CI ya al día.
+ * Ante cualquier error de lectura se devuelve false — no asumir, preguntar es más
+ * seguro que afirmar que algo está actualizado sin poder comprobarlo.
+ *
+ * @param {{ src?: string, dest: string }} intention
+ * @returns {boolean}
+ */
+function isUpToDate(intention) {
+  if (!intention.src || !fs.existsSync(intention.src)) return false;
+  try {
+    return fs.readFileSync(intention.dest).equals(fs.readFileSync(intention.src));
+  } catch {
+    return false;
+  }
+}
+
 /** Acumula `-s a -s b` en un array. Patrón estándar de commander para opciones repetibles. */
 function collect(value, previous) {
   return previous.concat([value]);
@@ -103,6 +123,11 @@ Ejemplos:
   funky skills --skill sdd-release            Instala solo esa skill
   funky skills -s sdd-release -s layout-debug  Instala varias
 
+Conflicto (un archivo ya existe):
+  Sin flag             Pregunta una vez por skill; por defecto conserva
+  --force              Reemplaza sin preguntar. DESTRUCTIVO: pierde ediciones locales
+  Sin --force y sin terminal   Conserva lo existente y avisa por stderr
+
 Sin terminal (CI, agentes) es obligatorio usar --all o --skill. Sin ninguno el comando
 falla con código 1 en vez de no hacer nada. Una skill desconocida también falla y lista
 las disponibles.`;
@@ -111,6 +136,7 @@ export const skillsCommand = new Command('skills')
   .description('Instala las skills detectadas bajo src/skills/ desde sus manifests y bootstrapa los docs compartidos que usan (docs-live-index, formato canónico de índice seccional, release-notes)')
   .option('--all', 'Instala todas las skills detectadas, sin preguntar')
   .option('-s, --skill <nombre>', 'Instala solo la skill indicada (repetible)', collect, [])
+  .option('--force', 'Reemplaza los archivos existentes sin preguntar (destructivo: pierde ediciones locales)')
   .addHelpText('after', SKILLS_HELP)
   .action(async (opts) => {
     const srcDir = path.join(__dirname, '..');
@@ -126,6 +152,10 @@ export const skillsCommand = new Command('skills')
       const interactive = Boolean(process.stdin && process.stdin.isTTY);
       const requested = [...new Set(opts.skill ?? [])];
       const catalog = `Disponibles: ${available.join(', ')}`;
+      // Pasó una flag = intención de script. Un humano que quiere revisar los
+      // conflictos omite las flags; un agente nunca debe quedarse esperando una
+      // tecla que no va a llegar.
+      const hasSelectionFlag = Boolean(opts.all) || requested.length > 0;
 
       if (opts.all && requested.length > 0) {
         console.error('❌ --all y --skill son excluyentes: usa uno u otro.');
@@ -214,26 +244,54 @@ export const skillsCommand = new Command('skills')
       console.log('🚀 Instalando skills y docs compartidos...');
       const intentions = runSkills({ srcDir, targetBase, selectedSkills: selected, manifests });
 
-// Estado por skill: qué archivos ya existen (conflicto) y cuáles faltan. Los que
-      // faltan no son conflicto — no hay nada que perder — así que se instalan siempre;
-      // los que existen requieren una decisión, y se toma UNA por skill.
-      const bySkill = new Map();
-      for (const intention of intentions) {
-        const shipped = !intention.optional || fs.existsSync(intention.src);
-        if (!shipped) continue;
-        const entry = bySkill.get(intention.skill) ?? { exists: [], missing: [] };
-        (fs.existsSync(intention.dest) ? entry.exists : entry.missing).push(intention);
-        bySkill.set(intention.skill, entry);
-      }
+      // Estado por skill: qué archivos ya existen (conflicto), cuáles faltan y cuáles ya
+// están en la versión distribuida. Los que faltan no son conflicto — no hay nada que
+// perder — así que se instalan siempre; los que difieren requieren una decisión, y se
+// toma UNA por skill; los idénticos no son nada de eso.
+const bySkill = new Map();
+const uptodate = [];
+for (const intention of intentions) {
+  const shipped = !intention.optional || fs.existsSync(intention.src);
+  if (!shipped) continue;
+  const exists = fs.existsSync(intention.dest);
+  if (exists && isUpToDate(intention)) {
+    uptodate.push(intention);
+    continue;
+  }
+  const entry = bySkill.get(intention.skill) ?? { exists: [], missing: [] };
+  (exists ? entry.exists : entry.missing).push(intention);
+  bySkill.set(intention.skill, entry);
+}
+
+if (uptodate.length > 0) {
+  console.log(
+    `ℹ️ ${uptodate.length} archivo(s) ya están en la versión más reciente: ${uptodate
+      .map((i) => i.label)
+      .join(', ')}`
+  );
+}
 
       let pendingOverwrite = false;
+      let blocked = [];
 
-      if (!interactive) {
-        const conflicts = [...bySkill.values()].filter((e) => e.exists.length > 0);
-        if (conflicts.length > 0) {
-          console.warn('⚠️ Entorno no interactivo: no se reemplazan archivos existentes de skills.');
+      if (opts.force) {
+        // Reemplazo explícito: no se pregunta nada. Aun así se declara qué se
+        // descarta, porque quien pasa --force puede no saber qué hay en destino y
+        // el aviso también sirve para el log de un agente.
+        const replaced = [...bySkill.values()].flatMap((entry) => entry.exists);
+        if (replaced.length > 0) {
+          console.warn(`⚠️ --force: reemplazando ${replaced.length} archivo(s) existente(s):`);
+          for (const intention of replaced) {
+            console.warn(`  - ${intention.label}`);
+            intention.overwrite = true;
+          }
+          pendingOverwrite = true;
         }
-} else {
+      } else if (interactive && !hasSelectionFlag) {
+        // Solo se pregunta cuando hay terminal Y no vino ninguna flag: es la única
+        // combinación que significa "persona al frente". Con flags —incluido un
+        // agente con pseudo-TTY, que tiene isTTY pero nadie contesta— preguntar
+        // sería colgarse esperando una tecla.
         for (const [name, { exists, missing }] of bySkill) {
           if (exists.length === 0) continue;
 
@@ -255,6 +313,12 @@ export const skillsCommand = new Command('skills')
           for (const intention of exists) intention.overwrite = true;
           pendingOverwrite = true;
         }
+      } else {
+        // Con flags no se destruye nada sin permiso explícito, pero tampoco se sale
+        // con 0 como si se hubiera instalado todo. El error se emite DESPUÉS de
+        // ejecutar, para que los archivos que faltan (que no son conflicto) se
+        // instalen igual: si se abortara antes, el repo quedaría a medias.
+        blocked = [...bySkill.values()].flatMap((entry) => entry.exists);
       }
 
       if (pendingOverwrite) {
@@ -266,6 +330,21 @@ export const skillsCommand = new Command('skills')
         console.log(log);
       }
       console.log(`\n✅ Skills y docs compartidos instalados. ${created} archivos creados, ${skipped} ya existían.`);
+
+      // Va después de instalar a propósito: los faltantes ya se crearon, así que el
+      // repo no queda a medias. El 1 dice "tu intención no se satisfizo entera", y el
+      // mensaje ofrece las dos salidas: reemplazar con --force, o mantener sin él.
+      if (blocked.length > 0) {
+        console.error(
+          [
+            `❌ ${blocked.length} archivo(s) ya existen y no se sobrescriben sin --force:`,
+            ...blocked.map((i) => `  - ${i.label}`),
+            `Usa --force para reemplazarlos por la versión nueva.`,
+            `Para mantener la versión actual, ignora este error: esos archivos no se modificaron.`,
+          ].join('\n')
+        );
+        process.exit(1);
+      }
     } catch (error) {
       console.error('❌ Error al instalar skills y docs compartidos:', error.message);
       process.exit(1);

@@ -57,21 +57,78 @@ Reglas, todas con código de salida 1 y sin instalar nada:
 
 El mensaje de error siempre lista las skills disponibles, así el reintento no necesita un `ls`.
 
-Sin TTY, un archivo que ya existe se conserva y se avisa por `console.warn`: el aviso no
-bloquea la instalación de lo que sí faltaba. Con TTY, en cambio, se pregunta.
+El conflicto con flags se reporta como error con código 1, no como aviso: ver la sección
+de conflictos. Los faltantes no son conflicto y se instalan igual.
 
-## Conflictos y archivos faltantes
+## Conflictos: reemplazar o mantener
 
-La unidad de decisión es **la skill, no el archivo**. Antes de instalar, el instalador compara los recursos declarados en el manifest contra lo que hay en destino y separa dos cosas:
+Un archivo que ya existe es un conflicto: se perdería una edición local. El comando separa
+`exists` de `missing`, y por cada skill con conflictos emite **un solo aviso** que nombra
+cada archivo (`ya existe:` / `falta:`) y pregunta si se reemplazan. Default **no**; cancelar
+equivale a "no", nunca a abortar la instalación.
 
-- **Ya existe** — hay un conflicto: se perdería una edición local.
-- **Falta** — no hay conflicto: no se pierde nada, así que el archivo se crea siempre.
+Los faltantes nunca generan aviso de conflicto: no hay nada que perder, así que se crean
+siempre. Solo aparecen listados como `falta:` para que la instalación parcial sea visible.
 
-Por cada skill con archivos en conflicto, el comando emite **un solo aviso** que nombra cada archivo afectado (`ya existe:` / `falta:`) y pregunta si se reemplazan con la versión nueva. La respuesta por defecto es **no**; cancelar el aviso equivale a "no", nunca a abortar la instalación.
+La granularidad es por skill a propósito: reemplazar el `SKILL.md` de una skill pero conservar
+sus docs compartidos dejaría esa skill internamente inconsistente — una versión nueva
+apuntando a archivos de la anterior. Con una decisión por skill ese estado es imposible. También
+hace que el número de preguntas escale con el catálogo, no con su número de archivos.
 
-La granularidad es por skill a propósito: reemplazar el `SKILL.md` de una skill pero conservar sus docs compartidos dejaría esa skill internamente inconsistente — una versión nueva apuntando a archivos de la anterior. Con una decisión por skill ese estado es imposible. También hace que el número de preguntas escale con el catálogo de skills, no con su número de archivos.
+Un archivo que ya existe solo es conflicto si **difiere** del que se distribuye. Si es
+byte-idéntico no hay nada que sobrescribir ni que perder, así que no se pregunta ni se
+falla: se informa y se sigue.
 
-Un archivo ausente nunca genera aviso de conflicto, pero sí aparece listado como `falta:` en el aviso de su skill, para que la instalación parcial sea visible en lugar de silenciosa.
+```
+ℹ️ 2 archivo(s) ya están en la versión más reciente: .agents/skills/sdd-release/SKILL.md, ...
+```
+
+Eso hace que la ruta con flags sea idempotente: instalar, volver a instalar y reintentar
+tras un error dan el resultado correcto sin falsos positivos. Un archivo ilegible se trata
+como conflicto —no se afirma que esté actualizado sin poder comprobarlo—.
+
+### Los tres caminos ante un conflicto
+
+| Situación | Resultado |
+|---|---|
+| Sin flags (humano en terminal) | Una pregunta por skill. Default: conservar |
+| Con flags, sin `--force` | **Error con código 1.** Instala lo que faltaba, conserva lo existente |
+| Con `--force` | **Reemplaza** sin preguntar. Código 0 |
+
+**Con flags nunca se pregunta.** La única combinación que abre un prompt es "hay terminal
+y no pasó ninguna flag", que es la única que significa "hay una persona al frente". Esto
+importa para agentes: muchos harnesses dan un pseudo-TTY al comando, así que `isTTY` es
+`true` aunque no haya nadie. Preguntar en ese caso cuelga el proceso esperando una tecla que
+no llega.
+
+Sin `--force`, el conflicto se reporta como **error y no como aviso**:
+
+```
+❌ 1 archivo(s) ya existen y no se sobrescriben sin --force:
+  - .agents/skills/layout-debug/SKILL.md
+Usa --force para reemplazarlos por la versión nueva.
+Para mantener la versión actual, ignora este error: esos archivos no se modificaron.
+```
+
+Sale con código 1 porque la intención no se satisfizo entera: un `0` haría creer a un
+agente que instaló todo. El error se emite **después** de instalar, así que los archivos
+que faltan —que no son conflicto— sí se crean. Si abortara antes, un repo a medias se
+quedaría a medias para siempre.
+
+`--force` es destructivo: pierde ediciones locales de los archivos reemplazados. Por eso
+imprime qué archivos va a descartar:
+
+```
+⚠️ --force: reemplazando 2 archivo(s) existente(s):
+  - .agents/skills/sdd-release/SKILL.md
+  - .agents/templates/sdd/release-notes.md
+```
+
+Así quien lo pasa puede ver el alcance en el momento, no descubrirlo después. Es también el
+reinstall limpio para quien quiere dejar las skills exactamente como se distribuyen.
+
+Un `src` marcado como opcional que no existe no cuenta como faltante: no se distribuye, no se
+puede instalar.
 
 ## Logs
 
