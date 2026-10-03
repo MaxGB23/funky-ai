@@ -100,6 +100,60 @@ describe('fs-adapter executeIntentions', () => {
     expect(result.logs).toMatchSnapshot();
   });
 
+  it('overwrite: true reemplaza un destino existente en vez de omitirlo', async () => {
+    // El caso "el usuario confirmó reemplazar": sin overwrite el destino existente
+    // se omite (contrato 2.8); con overwrite se copia y se reporta como actualizada.
+    fs.existsSync.mockReturnValue(true);
+
+    const result = await executeIntentions([
+      { action: 'copy', src: '/fake/new.md', dest: '/fake/dir/SKILL.md', overwrite: true, label: '.agents/skills/x/SKILL.md' },
+    ]);
+
+    expect(fs.copyFileSync).toHaveBeenCalledWith('/fake/new.md', '/fake/dir/SKILL.md');
+    expect(result.created).toBe(1);
+    expect(result.skipped).toBe(0);
+    expect(result.logs[0]).toMatch(/Actualizada/);
+    expect(result.logs[0]).toContain(path.posix.join('.agents/skills/x/SKILL.md'));
+  });
+
+  it('sin overwrite, un destino existente se omite (sin copiar ni log de Actualizada)', async () => {
+    fs.existsSync.mockReturnValue(true);
+
+    const result = await executeIntentions([
+      { action: 'copy', src: '/fake/new.md', dest: '/fake/dir/SKILL.md', label: '.agents/skills/x/SKILL.md' },
+    ]);
+
+    expect(fs.copyFileSync).not.toHaveBeenCalled();
+    expect(result.created).toBe(0);
+    expect(result.skipped).toBe(1);
+    expect(result.logs[0]).toMatch(/Omitiendo/);
+  });
+
+  it('el campo label identifica el archivo en los logs de create y skip', async () => {
+    // Sin `label`, el log de skip muestra solo el basename (contrato 2.8, golden
+    // snapshot de arriba). Con `label`, el llamador lo desambigua cuando varios
+    // archivos comparten basename — skills copia un SKILL.md por skill, así que
+    // sin esto el log es ambiguo.
+    fs.existsSync.mockImplementation((p) => p === '/fake');
+
+    const created = await executeIntentions([
+      { action: 'copy', src: '/fake/src.md', dest: '/fake/a/SKILL.md', label: '.agents/skills/a/SKILL.md' },
+      { action: 'copy', src: '/fake/src.md', dest: '/fake/b/SKILL.md', label: '.agents/skills/b/SKILL.md' },
+    ]);
+
+    expect(created.logs[0]).toContain(path.posix.join('.agents/skills/a/SKILL.md'));
+    expect(created.logs[1]).toContain(path.posix.join('.agents/skills/b/SKILL.md'));
+
+    fs.existsSync.mockReturnValue(true);
+    const skipped = await executeIntentions([
+      { action: 'copy', src: '/fake/src.md', dest: '/fake/a/SKILL.md', label: '.agents/skills/a/SKILL.md' },
+      { action: 'copy', src: '/fake/src.md', dest: '/fake/b/SKILL.md', label: '.agents/skills/b/SKILL.md' },
+    ]);
+
+    expect(skipped.logs[0]).toContain(path.posix.join('.agents/skills/a/SKILL.md'));
+    expect(skipped.logs[1]).toContain(path.posix.join('.agents/skills/b/SKILL.md'));
+  });
+
   describe('kind: guide — feedback Y/N sobre archivos existentes (2.3)', () => {
     it('dest existe + askConfirm true → sobrescribe (Actualizada) y cuenta como creado', async () => {
       fs.existsSync.mockReturnValue(true);

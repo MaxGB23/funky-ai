@@ -72,6 +72,14 @@ export function runSkills({ srcDir, targetBase, selectedSkills, manifests }) {
         action: 'copy',
         src: path.join(srcDir, item.src),
         dest: path.join(targetBase, item.dest),
+        // Cada skill trae su propio SKILL.md: sin este label los logs dicen solo
+        // "SKILL.md" y no se sabe de qué skill hablan (contrato 2.8 del fs-adapter
+        // usa basename a propósito; aquí el llamador lo desambigua).
+        label: item.dest,
+        // La unidad de decisión es la skill, no el archivo: sin esto no se puede
+        // agrupar para preguntar una vez y evitar dejar un SKILL.md nuevo junto a
+        // docs viejos de la versión anterior.
+        skill: name,
       };
       if (item.optional) {
         intention.optional = true;
@@ -84,7 +92,7 @@ export function runSkills({ srcDir, targetBase, selectedSkills, manifests }) {
 }
 
 export const skillsCommand = new Command('skills')
-  .description('Instala las skills detectadas bajo src/skills/ desde sus manifests y bootstrapa los docs compartidos de SDD (docs-live-index, formato canónico de índice seccional, release-notes)')
+  .description('Instala las skills detectadas bajo src/skills/ desde sus manifests y bootstrapa los docs compartidos que usan (docs-live-index, formato canónico de índice seccional, release-notes)')
   .action(async () => {
     const srcDir = path.join(__dirname, '..');
     const targetBase = process.cwd();
@@ -98,10 +106,18 @@ export const skillsCommand = new Command('skills')
 
       p.intro('funky skills — instalador interactivo');
 
-      const selection = await p.select({
-        message: '¿Qué quieres instalar?',
+      // Nada preseleccionado: el default es instalar NADA. Un Enter sin marcar nada lo
+      // bloquea el prompt, que además enseña la tecla en su mensaje. Así el fallo va
+      // hacia "no instala", nunca hacia "instala de más".
+      //
+      // `required` se omite a propósito: su default (true) hace que el prompt bloquee
+      // la confirmación vacía. Pasarlo en false fue la causa raíz del revert
+      // v4.2.0 -> v4.3.2 (un Enter directo devolvía [] en silencio).
+      const ALL = '__all__';
+      const selection = await p.multiselect({
+        message: '¿Qué quieres instalar?  (Espacio: marcar o desmarcar · Enter: confirmar)',
         options: [
-          { value: '__all__', label: 'Todas' },
+          { value: ALL, label: 'Todas' },
           ...available.map((name) => ({ value: name, label: name })),
         ],
       });
@@ -109,10 +125,25 @@ export const skillsCommand = new Command('skills')
       if (p.isCancel(selection)) {
         p.cancel('Operación cancelada.');
         process.exit(1);
+        return; // process.exit está mockeado en tests: sin return, `selection` sigue siendo el símbolo de cancelación
       }
 
-      // R-SK-6: cancelar ⇒ exit(1) sin I/O; select no admite selección vacía.
-      const selected = selection === '__all__' ? available : [selection];
+      // Precedencia: ganan las skills marcadas. «Todas» significa "todo" solo cuando
+      // es la única elección; si además se marcaron skills concretas, la decisión
+      // explícita prevalece y desmarcar una sí la excluye. Por construcción el
+      // instalador nunca copia más de lo marcado: el fallo posible va hacia "instalé
+      // menos", que es el sesgo seguro para algo que escribe en disco.
+      const marked = selection.filter((name) => name !== ALL);
+      const selected = marked.length === 0 && selection.includes(ALL) ? available : marked;
+
+      // Defensa en profundidad: el prompt ya bloquea la confirmación vacía. Si aun así
+      // llegara [], runSkills la trataría como entrada válida e instalaría cero archivos
+      // en silencio — el mismo fallo que tumbó el multiselect en v4.3.2.
+      if (selected.length === 0) {
+        p.cancel('No se seleccionó ninguna skill. Presiona Espacio para marcar al menos una.');
+        process.exit(1);
+        return;
+      }
 
       // R-SK-8: los manifests se cargan dinámicamente de cada skill seleccionada;
       // una skill nueva con SKILL.md + manifest.js queda instalable sin tocar código.
@@ -124,14 +155,62 @@ export const skillsCommand = new Command('skills')
         manifests.push(mod.default);
       }
 
-      console.log('🚀 Instalando skills y docs compartidos SDD...');
+      console.log('🚀 Instalando skills y docs compartidos...');
       const intentions = runSkills({ srcDir, targetBase, selectedSkills: selected, manifests });
+
+      // Estado por skill: qué archivos ya existen (conflicto) y cuáles faltan. Los que
+      // faltan no son conflicto — no hay nada que perder — así que se instalan siempre;
+      // los que existen requieren una decisión, y se toma UNA por skill.
+      const bySkill = new Map();
+      for (const intention of intentions) {
+        const shipped = !intention.optional || fs.existsSync(intention.src);
+        if (!shipped) continue;
+        const entry = bySkill.get(intention.skill) ?? { exists: [], missing: [] };
+        (fs.existsSync(intention.dest) ? entry.exists : entry.missing).push(intention);
+        bySkill.set(intention.skill, entry);
+      }
+
+      const interactive = Boolean(process.stdin && process.stdin.isTTY);
+      let pendingOverwrite = false;
+
+      if (!interactive) {
+        const conflicts = [...bySkill.values()].filter((e) => e.exists.length > 0);
+        if (conflicts.length > 0) {
+          console.warn('⚠️ Entorno no interactivo: no se reemplazan archivos existentes de skills.');
+        }
+      } else {
+        for (const [name, { exists, missing }] of bySkill) {
+          if (exists.length === 0) continue;
+
+          p.note(
+            [
+              ...exists.map((i) => `ya existe: ${i.label}`),
+              ...missing.map((i) => `falta:    ${i.label}`),
+            ].join('\n'),
+            `${name} (${exists.length} de ${exists.length + missing.length} archivos)`
+          );
+
+          const replace = await p.confirm({
+            message: `¿Reemplazar los archivos existentes de ${name} con la versión nueva? Perderás cualquier edición local.`,
+            initialValue: false,
+          });
+
+          // Cancelar se trata como "no": se conserva todo lo actual.
+          if (p.isCancel(replace) || replace !== true) continue;
+          for (const intention of exists) intention.overwrite = true;
+          pendingOverwrite = true;
+        }
+      }
+
+      if (pendingOverwrite) {
+        console.log('ℹ️ Reemplazando los archivos confirmados.');
+      }
 
       const { created, skipped, logs } = await executeIntentions(intentions);
       for (const log of logs) {
         console.log(log);
       }
-      console.log(`\n✅ Skills y docs compartidos instalados. ${created} archivos creados, ${skipped} ya existian.`);
+      console.log(`\n✅ Skills y docs compartidos instalados. ${created} archivos creados, ${skipped} ya existían.`);
     } catch (error) {
       console.error('❌ Error al instalar skills y docs compartidos:', error.message);
       process.exit(1);

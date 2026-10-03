@@ -22,17 +22,32 @@ function wrapFSOp(fn, fsPath, description) {
 }
 
 /**
+ * Cómo identificar un archivo en los logs. Por defecto el skip muestra solo el
+ * basename (contrato 2.8: logs cortos, sin ruido de rutas absolutas). Un llamador
+ * puede pasar `label` en la intención para desambiguar cuando varios archivos
+ * comparten basename — skills copia un `SKILL.md` por skill, así que sin esto el log
+ * dice "Omitiendo (ya existe): SKILL.md" sin decir de qué skill.
+ *
+ * @param {{ dest: string, label?: string }} intention
+ * @returns {string}
+ */
+function labelOf(intention) {
+  return intention.label ?? path.basename(intention.dest);
+}
+
+/**
  * Procesa UNA intención sin confirmación interactiva (núcleo síncrono compartido
  * por executeIntentions y executeIntentionsSync). Para kind: 'guide' con destino
  * existente aplica el default "n" (skip logueado, nunca sobrescribe).
  *
- * @param {{ action: 'copy'|'create'|'mkdir', dest: string, src?: string, content?: string, optional?: boolean, kind?: 'guide'|'decision' }} intention
+ * @param {{ action: 'copy'|'create'|'mkdir', dest: string, src?: string, content?: string, optional?: boolean, kind?: 'guide'|'decision', label?: string, overwrite?: boolean }} intention
  * @param {object} options
  * @param {boolean} [options.dryRun=false] - Si es true, no ejecuta operaciones físicas de I/O, sólo simula.
  * @returns {{ created: number, skipped: number, logs: string[] }}
  */
 function applyIntention(intention, { dryRun }) {
   const { action, dest, src, content, kind } = intention;
+  const label = labelOf(intention);
   const logs = [];
 
   if (action === 'mkdir') {
@@ -49,17 +64,16 @@ function applyIntention(intention, { dryRun }) {
     return { created: 0, skipped: 0, logs };
   }
 
-  if (fs.existsSync(dest)) {
-    const basename = path.basename(dest);
-
+  const existed = fs.existsSync(dest);
+  if (existed && !intention.overwrite) {
     if (kind === 'decision') {
       logs.push(
-        `⚡ Omitiendo (ya existe): ${basename}. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.`
+        `⚡ Omitiendo (ya existe): ${label}. Contiene decisiones del proyecto: no se sobrescriben automáticamente. Si quieres la versión más reciente, elimínalo o muévelo de ubicación para conservar un backup.`
       );
       return { created: 0, skipped: 1, logs };
     }
 
-    logs.push(`⚡ Omitiendo (ya existe): ${basename}`);
+    logs.push(`⚡ Omitiendo (ya existe): ${label}`);
     return { created: 0, skipped: 1, logs };
   }
 
@@ -88,7 +102,7 @@ function applyIntention(intention, { dryRun }) {
         'copiar archivo'
       );
     }
-    logs.push(`✅ Creado: ${dest}`);
+    logs.push(existed ? `✅ Actualizada: ${label}` : `✅ Creado: ${label}`);
     return { created: 1, skipped: 0, logs };
   }
 
@@ -100,7 +114,7 @@ function applyIntention(intention, { dryRun }) {
         'escribir archivo'
       );
     }
-    logs.push(`✅ Creado: ${dest}`);
+    logs.push(existed ? `✅ Actualizada: ${label}` : `✅ Creado: ${label}`);
     return { created: 1, skipped: 0, logs };
   }
 
@@ -163,7 +177,7 @@ export async function executeIntentions(intentions, { dryRun = false, askConfirm
         logs.push(`✅ Actualizada: ${basename}`);
         createdCount++;
       } else {
-        logs.push(`⚡ Omitiendo (ya existe): ${basename}`);
+        logs.push(`⚡ Omitiendo (ya existe): ${labelOf(intention)}`);
         skippedCount++;
       }
       continue;

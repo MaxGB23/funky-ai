@@ -36,11 +36,15 @@ describe('runSkills()', () => {
       action: 'copy',
       src: path.join(fakeSrcDir, 'skills/sdd-release/SKILL.md'),
       dest: path.join(fakeTargetDir, '.agents/skills/sdd-release/SKILL.md'),
+      label: '.agents/skills/sdd-release/SKILL.md',
+      skill: 'sdd-release',
     });
     expect(skills).toContainEqual({
       action: 'copy',
       src: path.join(fakeSrcDir, 'skills/sdd-docs-sync/SKILL.md'),
       dest: path.join(fakeTargetDir, '.agents/skills/sdd-docs-sync/SKILL.md'),
+      label: '.agents/skills/sdd-docs-sync/SKILL.md',
+      skill: 'sdd-docs-sync',
     });
   });
 
@@ -54,17 +58,23 @@ describe('runSkills()', () => {
       action: 'copy',
       src: path.join(fakeSrcDir, 'templates/bootstrap/sdd/docs-live-index.md'),
       dest: path.join(fakeTargetDir, '.agents/templates/sdd/docs-live-index.md'),
+      label: '.agents/templates/sdd/docs-live-index.md',
+      skill: 'sdd-docs-sync',
     });
     expect(docs).toContainEqual({
       action: 'copy',
       src: path.join(fakeSrcDir, 'templates/bootstrap/sdd/docs-index/_indice-seccional-template.md'),
       dest: path.join(fakeTargetDir, '.agents/templates/sdd/docs-index/_indice-seccional-template.md'),
+      label: '.agents/templates/sdd/docs-index/_indice-seccional-template.md',
+      skill: 'sdd-docs-sync',
     });
     expect(docs).toContainEqual({
       action: 'copy',
       src: path.join(fakeSrcDir, 'templates/bootstrap/sdd/release-notes.md'),
       dest: path.join(fakeTargetDir, '.agents/templates/sdd/release-notes.md'),
       optional: true,
+      label: '.agents/templates/sdd/release-notes.md',
+      skill: 'sdd-release',
     });
   });
 
@@ -107,6 +117,9 @@ describe('runSkills()', () => {
         action: 'copy',
         src: path.join(fakeSrcDir, 'skills/prueba/SKILL.md'),
         dest: path.join(fakeTargetDir, '.agents/skills/prueba/SKILL.md'),
+        // Log legible: identifica el archivo, no solo su basename.
+        label: '.agents/skills/prueba/SKILL.md',
+        skill: 'prueba',
       },
     ]);
   });

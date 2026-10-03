@@ -29,7 +29,34 @@ funky skills
 
 ## Selección interactiva
 
-El instalador detecta las skills disponibles bajo `src/skills/` y pregunta qué instalar con un menú de selección única (`select`): **Todas** o una skill específica. Elegir una skill instala solo esa skill y sus docs compartidos; **Todas** instala todas las detectadas. No existe selección vacía: la operación solo se cancela explícitamente (Esc/Ctrl+C), lo que sale con código 1 sin realizar cambios (R-SK-6). El orden de instalación es determinista: alfabético por skill y luego el orden del manifest (D3).
+El instalador detecta las skills disponibles bajo `src/skills/` y pregunta qué instalar con un menú de **selección múltiple** (`multiselect`). Se marca cada skill con `Espacio` y se confirma con `Enter`. Cualquier subconjunto es válido — instalar 3 de 4 es una sola interacción.
+
+El prompt **no preselecciona nada**: el valor por defecto es no instalar. Un `Enter` sin marcar es bloqueado por el prompt, que muestra el recordatorio de la tecla, así que el error va hacia "no instala" y nunca hacia "instala de más". Para instalar todo hay que marcar la opción **Todas** (la primera de la lista) y confirmar.
+
+**Precedencia: ganan las skills marcadas.** «Todas» significa "todo" únicamente cuando es la única elección. Si además marcas skills concretas, tu decisión explícita prevalece y desmarcar una sí la excluye. Por construcción el instalador nunca copia más de lo marcado: el fallo posible va hacia "instalé menos", que es el sesgo seguro para un comando que escribe en disco.
+
+Cancelar (Esc/Ctrl+C) sale con código 1 sin realizar cambios, igual que una confirmación vacía si llegara a alcanzarse. El orden de instalación es determinista: alfabético por skill y luego el orden del manifest (D3).
+
+## Conflictos y archivos faltantes
+
+La unidad de decisión es **la skill, no el archivo**. Antes de instalar, el instalador compara los recursos declarados en el manifest contra lo que hay en destino y separa dos cosas:
+
+- **Ya existe** — hay un conflicto: se perdería una edición local.
+- **Falta** — no hay conflicto: no se pierde nada, así que el archivo se crea siempre.
+
+Por cada skill con archivos en conflicto, el comando emite **un solo aviso** que nombra cada archivo afectado (`ya existe:` / `falta:`) y pregunta si se reemplazan con la versión nueva. La respuesta por defecto es **no**; cancelar el aviso equivale a "no", nunca a abortar la instalación.
+
+La granularidad es por skill a propósito: reemplazar el `SKILL.md` de una skill pero conservar sus docs compartidos dejaría esa skill internamente inconsistente — una versión nueva apuntando a archivos de la anterior. Con una decisión por skill ese estado es imposible. También hace que el número de preguntas escale con el catálogo de skills, no con su número de archivos.
+
+Un archivo ausente nunca genera aviso de conflicto, pero sí aparece listado como `falta:` en el aviso de su skill, para que la instalación parcial sea visible en lugar de silenciosa.
+
+## Logs
+
+Cada línea nombra la ruta del archivo (`` ⚡ Omitiendo (ya existe): .agents/skills/<skill>/SKILL.md ``), no solo su basename: con varias skills, todas traen un `SKILL.md` y el nombre solo sería ambiguo.
+
+## Sin TTY
+
+`funky skills` es interactivo: sin terminal el `multiselect` no puede recoger selección, así que el comando no instala nada. La rama defensiva de no-reemplazo (avisa y conserva lo existente) existe para cuando la selección se ejecute sin terminal, y es coherente con `funky init`.
 
 ## Autodetección de skills (R-SK-7)
 
