@@ -37,6 +37,29 @@ El prompt **no preselecciona nada**: el valor por defecto es no instalar. Un `En
 
 Cancelar (Esc/Ctrl+C) sale con código 1 sin realizar cambios, igual que una confirmación vacía si llegara a alcanzarse. El orden de instalación es determinista: alfabético por skill y luego el orden del manifest (D3).
 
+## Modo no interactivo (CI, agentes)
+
+Sin terminal el comando no puede preguntar qué instalar, así que **exige una selección explícita**:
+
+```bash
+funky skills --all                              # todas las detectadas
+funky skills --skill sdd-release                # una sola
+funky skills -s sdd-release -s layout-debug     # varias (repetible)
+```
+
+Reglas, todas con código de salida 1 y sin instalar nada:
+
+| Situación | Por qué |
+|---|---|
+| Sin TTY y sin flags | No hay modo no interactivo implícito: el código de salida no miente |
+| `--all` y `--skill` juntos | Se pide un subconjunto o todo, no ambos: no se elige uno en silencio |
+| `--skill <desconocida>` | Un éxito parcial dejaría creyendo que se instaló lo pedido |
+
+El mensaje de error siempre lista las skills disponibles, así el reintento no necesita un `ls`.
+
+Sin TTY, un archivo que ya existe se conserva y se avisa por `console.warn`: el aviso no
+bloquea la instalación de lo que sí faltaba. Con TTY, en cambio, se pregunta.
+
 ## Conflictos y archivos faltantes
 
 La unidad de decisión es **la skill, no el archivo**. Antes de instalar, el instalador compara los recursos declarados en el manifest contra lo que hay en destino y separa dos cosas:
@@ -56,7 +79,7 @@ Cada línea nombra la ruta del archivo (`` ⚡ Omitiendo (ya existe): .agents/sk
 
 ## Sin TTY
 
-`funky skills` es interactivo: sin terminal el `multiselect` no puede recoger selección, así que el comando no instala nada. La rama defensiva de no-reemplazo (avisa y conserva lo existente) existe para cuando la selección se ejecute sin terminal, y es coherente con `funky init`.
+`funky skills` sin flags es interactivo. Sin terminal el `multiselect` no puede recoger selección, así que el comando **falla con código 1** indicando `--all` o `--skill`, en vez de imprimir el prompt y terminar sin instalar. Ver la sección de modo no interactivo.
 
 ## Autodetección de skills (R-SK-7)
 

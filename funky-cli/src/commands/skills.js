@@ -91,9 +91,28 @@ export function runSkills({ srcDir, targetBase, selectedSkills, manifests }) {
   return intentions;
 }
 
+/** Acumula `-s a -s b` en un array. Patrón estándar de commander para opciones repetibles. */
+function collect(value, previous) {
+  return previous.concat([value]);
+}
+
+const SKILLS_HELP = `
+Ejemplos:
+  funky skills                                Pregunta qué instalar (modo interactivo)
+  funky skills --all                          Instala todas las skills detectadas
+  funky skills --skill sdd-release            Instala solo esa skill
+  funky skills -s sdd-release -s layout-debug  Instala varias
+
+Sin terminal (CI, agentes) es obligatorio usar --all o --skill. Sin ninguno el comando
+falla con código 1 en vez de no hacer nada. Una skill desconocida también falla y lista
+las disponibles.`;
+
 export const skillsCommand = new Command('skills')
   .description('Instala las skills detectadas bajo src/skills/ desde sus manifests y bootstrapa los docs compartidos que usan (docs-live-index, formato canónico de índice seccional, release-notes)')
-  .action(async () => {
+  .option('--all', 'Instala todas las skills detectadas, sin preguntar')
+  .option('-s, --skill <nombre>', 'Instala solo la skill indicada (repetible)', collect, [])
+  .addHelpText('after', SKILLS_HELP)
+  .action(async (opts) => {
     const srcDir = path.join(__dirname, '..');
     const targetBase = process.cwd();
 
@@ -104,45 +123,82 @@ export const skillsCommand = new Command('skills')
         return;
       }
 
-      p.intro('funky skills — instalador interactivo');
+      const interactive = Boolean(process.stdin && process.stdin.isTTY);
+      const requested = [...new Set(opts.skill ?? [])];
+      const catalog = `Disponibles: ${available.join(', ')}`;
 
-      // Nada preseleccionado: el default es instalar NADA. Un Enter sin marcar nada lo
-      // bloquea el prompt, que además enseña la tecla en su mensaje. Así el fallo va
-      // hacia "no instala", nunca hacia "instala de más".
-      //
-      // `required` se omite a propósito: su default (true) hace que el prompt bloquee
-      // la confirmación vacía. Pasarlo en false fue la causa raíz del revert
-      // v4.2.0 -> v4.3.2 (un Enter directo devolvía [] en silencio).
-      const ALL = '__all__';
-      const selection = await p.multiselect({
-        message: '¿Qué quieres instalar?  (Espacio: marcar o desmarcar · Enter: confirmar)',
-        options: [
-          { value: ALL, label: 'Todas' },
-          ...available.map((name) => ({ value: name, label: name })),
-        ],
-      });
-
-      if (p.isCancel(selection)) {
-        p.cancel('Operación cancelada.');
-        process.exit(1);
-        return; // process.exit está mockeado en tests: sin return, `selection` sigue siendo el símbolo de cancelación
-      }
-
-      // Precedencia: ganan las skills marcadas. «Todas» significa "todo" solo cuando
-      // es la única elección; si además se marcaron skills concretas, la decisión
-      // explícita prevalece y desmarcar una sí la excluye. Por construcción el
-      // instalador nunca copia más de lo marcado: el fallo posible va hacia "instalé
-      // menos", que es el sesgo seguro para algo que escribe en disco.
-      const marked = selection.filter((name) => name !== ALL);
-      const selected = marked.length === 0 && selection.includes(ALL) ? available : marked;
-
-      // Defensa en profundidad: el prompt ya bloquea la confirmación vacía. Si aun así
-      // llegara [], runSkills la trataría como entrada válida e instalaría cero archivos
-      // en silencio — el mismo fallo que tumbó el multiselect en v4.3.2.
-      if (selected.length === 0) {
-        p.cancel('No se seleccionó ninguna skill. Presiona Espacio para marcar al menos una.');
+      if (opts.all && requested.length > 0) {
+        console.error('❌ --all y --skill son excluyentes: usa uno u otro.');
         process.exit(1);
         return;
+      }
+
+      if (requested.length > 0) {
+        // Una skill desconocida es un fallo, no un aviso: si el pedido no se puede
+        // satisfacer entero, el código de salida debe decirlo. Un éxito parcial deja
+        // al agente creyendo que instaló lo que pidió.
+        const unknown = requested.filter((name) => !available.includes(name));
+        if (unknown.length > 0) {
+          console.error(
+            `❌ Skills desconocidas: ${unknown.map((n) => `"${n}"`).join(', ')}. ${catalog}`
+          );
+          process.exit(1);
+          return;
+        }
+      }
+
+      let selected;
+      if (requested.length > 0) {
+        selected = requested;
+      } else if (opts.all) {
+        selected = available;
+      } else if (!interactive) {
+        console.error(
+          `❌ Sin terminal no se puede preguntar qué instalar. Usa --all o --skill <nombre>. ${catalog}`
+        );
+        process.exit(1);
+        return;
+      } else {
+        p.intro('funky skills — instalador interactivo');
+
+        // Nada preseleccionado: el default es instalar NADA. Un Enter sin marcar nada lo
+        // bloquea el prompt, que además enseña la tecla en su mensaje. Así el fallo va
+        // hacia "no instala", nunca hacia "instala de más".
+        //
+        // `required` se omite a propósito: su default (true) hace que el prompt bloquee
+        // la confirmación vacía. Pasarlo en false fue la causa raíz del revert
+        // v4.2.0 -> v4.3.2 (un Enter directo devolvía [] en silencio).
+        const ALL = '__all__';
+        const selection = await p.multiselect({
+          message: '¿Qué quieres instalar?  (Espacio: marcar o desmarcar · Enter: confirmar)',
+          options: [
+            { value: ALL, label: 'Todas' },
+            ...available.map((name) => ({ value: name, label: name })),
+          ],
+        });
+
+        if (p.isCancel(selection)) {
+          p.cancel('Operación cancelada.');
+          process.exit(1);
+          return; // process.exit está mockeado en tests: sin return, `selection` sigue siendo el símbolo de cancelación
+        }
+
+        // Precedencia: ganan las skills marcadas. «Todas» significa "todo" solo cuando
+        // es la única elección; si además se marcaron skills concretas, la decisión
+        // explícita prevalece y desmarcar una sí la excluye. Por construcción el
+        // instalador nunca copia más de lo marcado: el fallo posible va hacia "instalé
+        // menos", que es el sesgo seguro para algo que escribe en disco.
+        const marked = selection.filter((name) => name !== ALL);
+        selected = marked.length === 0 && selection.includes(ALL) ? available : marked;
+
+        // Defensa en profundidad: el prompt ya bloquea la confirmación vacía. Si aun así
+        // llegara [], runSkills la trataría como entrada válida e instalaría cero archivos
+        // en silencio — el mismo fallo que tumbó el multiselect en v4.3.2.
+        if (selected.length === 0) {
+          p.cancel('No se seleccionó ninguna skill. Presiona Espacio para marcar al menos una.');
+          process.exit(1);
+          return;
+        }
       }
 
       // R-SK-8: los manifests se cargan dinámicamente de cada skill seleccionada;
@@ -158,7 +214,7 @@ export const skillsCommand = new Command('skills')
       console.log('🚀 Instalando skills y docs compartidos...');
       const intentions = runSkills({ srcDir, targetBase, selectedSkills: selected, manifests });
 
-      // Estado por skill: qué archivos ya existen (conflicto) y cuáles faltan. Los que
+// Estado por skill: qué archivos ya existen (conflicto) y cuáles faltan. Los que
       // faltan no son conflicto — no hay nada que perder — así que se instalan siempre;
       // los que existen requieren una decisión, y se toma UNA por skill.
       const bySkill = new Map();
@@ -170,7 +226,6 @@ export const skillsCommand = new Command('skills')
         bySkill.set(intention.skill, entry);
       }
 
-      const interactive = Boolean(process.stdin && process.stdin.isTTY);
       let pendingOverwrite = false;
 
       if (!interactive) {
@@ -178,7 +233,7 @@ export const skillsCommand = new Command('skills')
         if (conflicts.length > 0) {
           console.warn('⚠️ Entorno no interactivo: no se reemplazan archivos existentes de skills.');
         }
-      } else {
+} else {
         for (const [name, { exists, missing }] of bySkill) {
           if (exists.length === 0) continue;
 

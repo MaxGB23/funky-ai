@@ -46,6 +46,9 @@ const program = new Command('funky');
 program.addCommand(skillsCommand);
 
 describe('skillsCommand — acción interactiva (R-SK-6)', () => {
+  // El prompt exige terminal: `funky skills` sin TTY y sin flags falla con código 1.
+  // Estos tests ejercitan el camino interactivo, así que declaran TTY explícitamente.
+  const ttyDescriptor = Object.getOwnPropertyDescriptor(process, 'stdin');
   let cwd;
   let tmpDir;
   let exitSpy;
@@ -57,6 +60,7 @@ describe('skillsCommand — acción interactiva (R-SK-6)', () => {
     p.confirm.mockReset();
     p.cancel.mockReset();
 
+    Object.defineProperty(process, 'stdin', { value: { isTTY: true }, configurable: true });
     cwd = process.cwd();
     const harnessRoot = path.resolve(cwd, '..', '.tmp');
     fs.mkdirSync(harnessRoot, { recursive: true });
@@ -73,6 +77,11 @@ describe('skillsCommand — acción interactiva (R-SK-6)', () => {
     fs.rmSync(tmpDir, { recursive: true, force: true });
     exitSpy.mockRestore();
     logSpy.mockRestore();
+    if (ttyDescriptor) {
+      Object.defineProperty(process, 'stdin', ttyDescriptor);
+    } else {
+      delete process.stdin;
+    }
   });
 
   it('Cancel: p.isCancel ⇒ exit(1) sin escribir ningún archivo', async () => {
@@ -359,19 +368,23 @@ describe('skillsCommand — conflictos por skill (reemplazo y faltantes)', () =>
     expect(fs.readFileSync(file, 'utf8')).toBe('version local');
   });
 
-  it('Sin TTY: avisa y conserva, sin preguntar', async () => {
+  it('Sin TTY pero con --all: instala y avisa que no reemplaza, sin preguntar', async () => {
+    // Con los flags no interactivos esta ruta existe de verdad: instala lo pedido,
+    // pero ante un conflicto conserva lo existente en vez de preguntar.
     const file = path.join(tmpDir, '.agents', 'skills', 'layout-debug', 'SKILL.md');
     fs.mkdirSync(path.dirname(file), { recursive: true });
     fs.writeFileSync(file, 'version local', 'utf8');
     setTTY(false);
 
-    p.multiselect.mockResolvedValueOnce(['layout-debug']);
+    p.multiselect.mockResolvedValueOnce(['__all__']);
 
-    await program.parseAsync(['skills'], { from: 'user' });
+    await program.parseAsync(['skills', '--all'], { from: 'user' });
 
     expect(p.confirm).not.toHaveBeenCalled();
     expect(warnSpy).toHaveBeenCalled();
     expect(fs.readFileSync(file, 'utf8')).toBe('version local');
+    // Y lo que no estaba en conflicto sí se instala: el aviso no bloquea la instalación.
+    expect(fs.existsSync(path.join(tmpDir, '.agents/skills/layout-debug-canon/SKILL.md'))).toBe(true);
   });
 
   it('Una skill recién detectada no genera aviso ni pregunta: no hay conflicto', async () => {

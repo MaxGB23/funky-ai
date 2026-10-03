@@ -1,7 +1,8 @@
-﻿import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+﻿import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach, vi } from 'vitest';
 import fs from 'fs';
 import path from 'path';
-import { runSkills } from '../src/commands/skills.js';
+import { Command } from 'commander';
+import { runSkills, skillsCommand, discoverSkills } from '../src/commands/skills.js';
 import { executeIntentions } from '../src/utils/fs-adapter.js';
 import sddReleaseManifest from '../src/skills/sdd-release/manifest.js';
 import sddDocsSyncManifest from '../src/skills/sdd-docs-sync/manifest.js';
@@ -109,6 +110,156 @@ describe('runSkills() Integration', () => {
     };
     for (const root of roots) walk(root);
     expect(hits).toEqual([]);
+  });
+});
+
+describe('funky skills — modo no interactivo (flags)', () => {
+  const srcDir = path.join(process.cwd(), 'src');
+  const program = new Command('funky');
+  program.addCommand(skillsCommand);
+
+  // Mismo patrón de TTY que skills.interactive.test.js / init.test.js: vitest no
+  // tiene terminal, así que hay que fijarla explícitamente y restaurarla después.
+  const ttyDescriptor = Object.getOwnPropertyDescriptor(process, 'stdin');
+  const setTTY = (value) => {
+    Object.defineProperty(process, 'stdin', { value: { isTTY: value }, configurable: true });
+  };
+
+  let repoCwd;
+  let tmpDir;
+  let exitSpy;
+  let errorSpy;
+  let warnSpy;
+  let logSpy;
+
+  beforeEach(() => {
+    repoCwd = process.cwd();
+    const harnessRoot = path.resolve(repoCwd, '..', '.tmp');
+    fs.mkdirSync(harnessRoot, { recursive: true });
+    tmpDir = fs.mkdtempSync(path.join(harnessRoot, 'skills-flags-'));
+    process.chdir(tmpDir);
+
+    // exitSpy lanza para replicar la terminación real (patrón init.test.js:229).
+    exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => {
+      throw new Error('exit');
+    });
+    errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    process.chdir(repoCwd);
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+    exitSpy.mockRestore();
+    errorSpy.mockRestore();
+    warnSpy.mockRestore();
+    vi.restoreAllMocks();
+    if (ttyDescriptor) {
+      Object.defineProperty(process, 'stdin', ttyDescriptor);
+    } else {
+      delete process.stdin;
+    }
+  });
+
+  const available = () => discoverSkills(srcDir);
+  const errors = () => errorSpy.mock.calls.map((c) => String(c[0]));
+  const warnings = () => warnSpy.mock.calls.map((c) => String(c[0])).join('\n');
+  const skillDir = (name) => path.join(tmpDir, '.agents', 'skills', name, 'SKILL.md');
+  const seedConflict = (name, content = 'version local') => {
+    const file = skillDir(name);
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, content, 'utf8');
+    return file;
+  };
+
+  it('--all instala todas las skills detectadas sin preguntar', async () => {
+    setTTY(false);
+
+    await program.parseAsync(['skills', '--all'], { from: 'user' });
+
+    for (const name of available()) {
+      expect(fs.existsSync(skillDir(name))).toBe(true);
+    }
+    expect(exitSpy).not.toHaveBeenCalled();
+  });
+
+  it('--skill instala solo la indicada; repetible para varias', async () => {
+    setTTY(false);
+    const [first, second] = available();
+    const third = available()[2];
+    expect(third).toBeDefined();
+
+    await program.parseAsync(['skills', '-s', first, '-s', second], { from: 'user' });
+
+    expect(fs.existsSync(skillDir(first))).toBe(true);
+    expect(fs.existsSync(skillDir(second))).toBe(true);
+    expect(fs.existsSync(skillDir(third))).toBe(false);
+  });
+
+  it('--skill desconocida falla con código 1 y lista las disponibles', async () => {
+    setTTY(false);
+
+    await expect(
+      program.parseAsync(['skills', '-s', 'no-existe-esta'], { from: 'user' })
+    ).rejects.toThrow('exit');
+
+    // El mensaje debe permitir reintentar sin preguntar nada: lista el catálogo.
+    const message = errors().join('\n');
+    for (const name of available()) {
+      expect(message).toContain(name);
+    }
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    // Nada instalado: el fallo no es un éxito parcial.
+    expect(fs.existsSync(path.join(tmpDir, '.agents'))).toBe(false);
+  });
+
+  it('--all y --skill juntos se rechazan, sin elegir uno en silencio', async () => {
+    setTTY(false);
+
+    await expect(
+      program.parseAsync(['skills', '--all', '-s', available()[0]], { from: 'user' })
+    ).rejects.toThrow('exit');
+
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    expect(fs.existsSync(path.join(tmpDir, '.agents'))).toBe(false);
+  });
+
+  it('sin TTY y sin flags falla con código 1 en vez de no-op silencioso', async () => {
+    setTTY(false);
+
+    await expect(program.parseAsync(['skills'], { from: 'user' })).rejects.toThrow('exit');
+
+    // El mensaje dice cómo resolverlo, no solo que falta algo.
+    const message = errors().join('\n');
+    expect(message).toMatch(/--all/);
+    expect(message).toMatch(/--skill/);
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    expect(fs.existsSync(path.join(tmpDir, '.agents'))).toBe(false);
+  });
+
+  it('--help documenta ambos flags con ejemplos para agentes', async () => {
+    // addHelpText no aparece en helpInformation(): se emite al imprimir. Lo que
+    // importa es lo que un agente lee de verdad al ejecutar `--help`, así que se
+    // captura stdout en vez de inspeccionar la API interna.
+    const chunks = [];
+    const stdoutSpy = vi
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((chunk) => {
+        chunks.push(String(chunk));
+        return true;
+      });
+
+    await expect(
+      program.parseAsync(['skills', '--help'], { from: 'user' })
+    ).rejects.toThrow('exit');
+
+    const help = chunks.join('');
+    expect(help).toContain('--all');
+    expect(help).toContain('--skill');
+    // Sin ejemplos el agente no sabe cómo combinarlos ni qué pasa sin TTY.
+    expect(help).toMatch(/Ejemplos/);
+    stdoutSpy.mockRestore();
   });
 });
 
