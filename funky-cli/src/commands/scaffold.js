@@ -197,7 +197,7 @@ export async function runScaffoldCommand() {
     for (const log of logs) {
       console.log(log);
     }
-    console.log(`\n✅ Funky AI instalado. ${created} archivos creados, ${skipped} ya existian.`);
+    console.log(`\n✅ Funky AI instalado. ${created} archivos creados, ${skipped} ya existían.`);
   } catch (error) {
     console.error('❌ Error al instalar Funky AI:', error.message);
     process.exit(1);
@@ -220,7 +220,7 @@ export async function runAgnosticScaffoldCommand() {
     for (const log of logs) {
       console.log(log);
     }
-    console.log(`\n✅ Scaffold agnóstico instalado. ${created} archivos creados, ${skipped} ya existian.`);
+    console.log(`\n✅ Scaffold agnóstico instalado. ${created} archivos creados, ${skipped} ya existían.`);
   } catch (error) {
     console.error('❌ Error al instalar el scaffold agnóstico:', error.message);
     process.exit(1);
