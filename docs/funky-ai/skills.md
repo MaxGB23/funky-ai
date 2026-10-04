@@ -4,7 +4,7 @@
 
 `funky skills` instala las skills del ecosistema agéntico MaxGB23 dentro de `.agents/skills/` del proyecto destino, junto con los docs compartidos que usan los procesos de docs y release (docs-live-index, formato canónico de índice seccional y release-notes). Cada skill declara sus propios recursos en un manifest (`src/skills/<skill>/manifest.js`), que es la única fuente de qué archivos se instalan y a dónde (R-SK-8) — el comando no tiene listas hardcodeadas de recursos.
 
-Sin `funky skills` ninguna skill del catálogo se distribuye al proyecto, ni se bootstrapan los docs compartidos que esos procesos esperan en `.agents/templates/sdd/`.
+Sin `funky skills` ninguna skill del catálogo se distribuye al proyecto, ni se bootstrapean los docs compartidos que esos procesos esperan en `.agents/templates/sdd/`.
 
 Todas las skills del catálogo son personales de MaxGB23. Ninguna viene de un framework ni de un paquete externo, y el instalador no las trata como esenciales: la selección interactiva permite instalar solo las deseadas.
 

@@ -133,7 +133,7 @@ falla con código 1 en vez de no hacer nada. Una skill desconocida también fall
 las disponibles.`;
 
 export const skillsCommand = new Command('skills')
-  .description('Instala las skills detectadas bajo src/skills/ desde sus manifests y bootstrapa los docs compartidos que usan (docs-live-index, formato canónico de índice seccional, release-notes)')
+  .description('Instala las skills detectadas bajo src/skills/ desde sus manifests y bootstrapea los docs compartidos que usan (docs-live-index, formato canónico de índice seccional, release-notes)')
   .option('--all', 'Instala todas las skills detectadas, sin preguntar')
   .option('-s, --skill <nombre>', 'Instala solo la skill indicada (repetible)', collect, [])
   .option('--force', 'Reemplaza los archivos existentes sin preguntar (destructivo: pierde ediciones locales)')
