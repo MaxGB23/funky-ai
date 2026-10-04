@@ -17,9 +17,10 @@
 ### Contextuales
 | Categoría | Dónde |
 |-----------|-------|
-| `.agents/templates/sdd/` | Templates "golden" — **Convenciones específicas de este workspace** |
-| CLI base templates (distribución) | `funky-cli/src/templates/sdd/` — **Convenciones generales para generar nuevos proyectos** |
-| Living Specs + RFCs + Changes | `openspec/specs/`, `openspec/rfcs/`, `openspec/changes/` |
+| `.agents/templates/` | Templates "golden" — **Convenciones específicas de este workspace** |
+| Base del CLI (lo que se distribuye) | `funky-cli/src/` - **Convenciones generales para nuevos proyectos** |
+| Features ODD (doc único por feature) | `odd/tasks/` — objetivo, scope, checklist, evidencia |
+| SDD congelado (sistema retirado) | `openspec/specs/`, `openspec/rfcs/`, `openspec/changes/` — **sin mantenimiento** |
 | Release notes completas | `docs/funky-ai/releases/` |
 
 ---
@@ -65,10 +66,10 @@ Roadmap sugerido: 2 -> 1 -> 3 -> 4 (pero esto no es mandatorio).
 ## 📋 Historial de Versiones (Resumen)
 | Versión | Descripción |
 |---------|-------------|
-| v4.2.0 | **MINOR** — funky skills v2: instalador interactivo (multiselect "Todas"/cancel, autodetección `src/skills/` por manifest-per-skill); índice seccional 3 niveles; `sdd-release` inyecta `release-notes.md`; regla doc-nuevo en `sdd-docs-sync`; gap docs v4.1.0 cerrado. 284 tests verdes. Lanzado 2026-08-04. |
+| v4.2.0 | **MINOR** — funky skills v2: instalador interactivo (multiselect "Todas"/cancel, autodetección `src/skills/` por manifest-per-skill); índice seccional 3 niveles; `release` inyecta `release-notes.md`; regla doc-nuevo en `docs-sync`; gap docs v4.1.0 cerrado. 284 tests verdes. Lanzado 2026-08-04. |
 | v4.3.1 | **PATCH** — refactor de organización de tests: `estimate.test.js` partido en 4 archivos por unidad bajo prueba; meta-test `organization.test.js` (cohesión + topes de tamaño, `LEGACY_EXCEPTIONS` vacío); deuda legacy migrada (`pipeline`→`.integration`, `assess` split, `context` trim, `skills` cohesionado); convención en skill `vitest`; `AGENTS.md` recortado a 26 líneas. 311 tests / 27 archivos verdes con vitest 4.1.10. Lanzado 2026-08-05. |
 | v4.6.0 | **MINOR** — funky secure v1 (PR #40): `doctor` (diagnóstico conductual), `init` (seed idempotente de la política pnpm: 7 claves estándar, bloque AGENTS, baseline SHA-256 de hooks, `.gitignore`, pin packageManager; posturas fail-silent/fail-fast), `check` (gate CI-ready exit 0/1); normalización pnpm 10.x/11.x + dedup win32; refactor assess (architecture-review eliminado); docs sync post-merge (secure.md en SSOT, README "Novedad"). 412 tests / 34 archivos verdes. Lanzado 2026-08-11. |
 | v4.7.0 | **MINOR** — refactor canvas-phase-1: canvas es recolector pasivo, assess asume rol de juez arquitectónico definitivo validado contra 4 ejes (se elimina architecture-review.md). estimate mejora DX en tópicos, severidad y reglas multiplicativas. 412 tests verdes (más tests de integración/dominio agregados). Docs sync: assess.md alineado al CLI. Lanzado 2026-08-12. |
 | v4.8.0 | **MINOR** — refactor del framework SDD: Route A sabueso (subagente flash_lite + MCP codegraph), metodologías data-driven, contrato t2-apply con slots unificados, Contexto Previo pasivo (workers desacoplados de funkygram), routers T1/T2/T3 alineados, harness modelo-por-fase, custom-workflows T3 inyectables vía sdd-install (27 reglas). Modernización anti-brittle de tests (~150 aserciones → snapshots/golden/tokens) y RFC 014 aplicado (spec.template.md). 411 tests / 36 archivos verdes. Docs-sync delegado con contrato de rango de commits. Lanzado 2026-08-24. |
-| v4.9.0 | **MINOR** — session gate binario: Paso 0 abre preguntando ideación/implementación, respuesta humana vinculante para el Tier (ideación siempre T0); sdd-preflight manual-only con check CORE; POST-CONFIRMACIÓN ordena metodologías→router mismo turno; tasks-tdd.md eliminado (reglas → metodologias [tasks]); agente custom sdd-docs-sync validado; bootstrap reads restringidos; test e2e archivado (arbol-navidad-cli). Docs-sync delegado verificado byte-parity de mirrors. Lanzado 2026-08-24. |
+| v4.9.0 | **MINOR** — session gate binario: Paso 0 abre preguntando ideación/implementación, respuesta humana vinculante para el Tier (ideación siempre T0); sdd-preflight manual-only con check CORE; POST-CONFIRMACIÓN ordena metodologías→router mismo turno; tasks-tdd.md eliminado (reglas → metodologias [tasks]); agente custom docs-sync validado; bootstrap reads restringidos; test e2e archivado (arbol-navidad-cli). Docs-sync delegado verificado byte-parity de mirrors. Lanzado 2026-08-24. |
 | v4.9.1 | **PATCH** — endurecimiento del protocolo SDD: trigger del orquestador con frases literales + Solo CLI; clasificación incondicional (Paso 0.1); guardia de madurez redirige implementación vaga a Tier 0; routers tier1/2/3 a trigger manual (punto único de entrada) con relectura por delegación; transición ideación→implementación definida (chat nuevo si exhaustiva / reinicio Pre-Vuelo si breve) con invariante RFC-en-disco; hard-gate scaffold condensado; higiene de contexto global; hallazgos de harness documentados (aislamiento custom agents, discovery en subdirectorios). Validado end-to-end en sesión viva. Lanzado 2026-08-26. |
