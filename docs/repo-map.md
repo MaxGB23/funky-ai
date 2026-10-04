@@ -25,7 +25,7 @@
 | [`src/commands/`](../funky-cli/src/commands/) | Comandos del CLI |
 | [`src/templates/`](../funky-cli/src/templates/) | Templates por comando |
 | [`src/utils/`](../funky-cli/src/utils/) | Utilidades compartidas |
-| [`src/skills/`](../funky-cli/src/skills/) | Skills base (sdd-release, sdd-docs-sync) con manifest por skill |
+| [`src/skills/`](../funky-cli/src/skills/) | Skills base (release, docs-sync) con manifest por skill |
 
 ### Comandos
 

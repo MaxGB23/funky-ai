@@ -4,10 +4,10 @@ import path from 'path';
 import { Command } from 'commander';
 import { runSkills, skillsCommand, discoverSkills } from '../src/commands/skills.js';
 import { executeIntentions } from '../src/utils/fs-adapter.js';
-import sddReleaseManifest from '../src/skills/sdd-release/manifest.js';
-import sddDocsSyncManifest from '../src/skills/sdd-docs-sync/manifest.js';
+import releaseManifest from '../src/skills/release/manifest.js';
+import docsSyncManifest from '../src/skills/docs-sync/manifest.js';
 
-const MANIFESTS = [sddDocsSyncManifest, sddReleaseManifest];
+const MANIFESTS = [docsSyncManifest, releaseManifest];
 
 describe('runSkills() Integration', () => {
   const srcDir = path.join(process.cwd(), 'src');
@@ -28,8 +28,8 @@ describe('runSkills() Integration', () => {
   });
 
   const skillDests = [
-    path.join(tmpDir, '.agents/skills/sdd-release/SKILL.md'),
-    path.join(tmpDir, '.agents/skills/sdd-docs-sync/SKILL.md'),
+    path.join(tmpDir, '.agents/skills/release/SKILL.md'),
+    path.join(tmpDir, '.agents/skills/docs-sync/SKILL.md'),
     path.join(tmpDir, '.agents/templates/sdd/docs-live-index.md'),
     path.join(tmpDir, '.agents/templates/sdd/docs-index/_indice-seccional-template.md'),
     path.join(tmpDir, '.agents/templates/sdd/release-notes.md'),
@@ -48,7 +48,7 @@ describe('runSkills() Integration', () => {
   });
 
   it('2ª ejecución: salteados y no sobrescribe custom rules (R-SK-3)', async () => {
-    const customPath = path.join(tmpDir, '.agents/skills/sdd-release/SKILL.md');
+    const customPath = path.join(tmpDir, '.agents/skills/release/SKILL.md');
     const custom = '# Custom rules del proyecto\n';
     fs.writeFileSync(customPath, custom, 'utf8');
 
@@ -61,7 +61,7 @@ describe('runSkills() Integration', () => {
   });
 
   it('estado parcial: skill faltante se crea, el resto se salta (R-SK-3 edge)', async () => {
-    const missingPath = path.join(tmpDir, '.agents/skills/sdd-docs-sync/SKILL.md');
+    const missingPath = path.join(tmpDir, '.agents/skills/docs-sync/SKILL.md');
     fs.rmSync(missingPath, { recursive: true, force: true });
 
     const intentions = runSkills({ srcDir, targetBase: tmpDir, manifests: MANIFESTS });
@@ -313,7 +313,7 @@ describe('funky skills — modo no interactivo (flags)', () => {
 
   it('conflicto + archivos faltantes: instala los faltantes igual y después falla', async () => {
     setTTY(false);
-    const release = available().find((n) => n === 'sdd-release') ?? available()[0];
+    const release = available().find((n) => n === 'release') ?? available()[0];
     const [first] = available();
     seedConflict(first);
     const companion = path.join(tmpDir, '.agents', 'templates', 'sdd', 'release-notes.md');

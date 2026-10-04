@@ -96,13 +96,13 @@ describe('skillsCommand — acción interactiva (R-SK-6)', () => {
   });
 
   it('Skill específica: instala solo esa skill + sus docs compartidos', async () => {
-    p.multiselect.mockResolvedValueOnce(['sdd-release']);
+    p.multiselect.mockResolvedValueOnce(['release']);
 
     await program.parseAsync(['skills'], { from: 'user' });
 
-    expect(fs.existsSync(path.join(tmpDir, '.agents/skills/sdd-release/SKILL.md'))).toBe(true);
+    expect(fs.existsSync(path.join(tmpDir, '.agents/skills/release/SKILL.md'))).toBe(true);
     expect(fs.existsSync(path.join(tmpDir, '.agents/templates/sdd/release-notes.md'))).toBe(true);
-    expect(fs.existsSync(path.join(tmpDir, '.agents/skills/sdd-docs-sync/SKILL.md'))).toBe(false);
+    expect(fs.existsSync(path.join(tmpDir, '.agents/skills/docs-sync/SKILL.md'))).toBe(false);
     // La instalación se prueba por outcomes de archivos (arriba) y por el aviso
     // de éxito emitido (el mensaje exacto con conteo se cubre dinámicamente en
     // el test de todas; el literal no se copia aquí).
@@ -336,18 +336,18 @@ describe('skillsCommand — conflictos por skill (reemplazo y faltantes)', () =>
     // El caso que pediste: la skill está pero le falta su doc compartido. El prompt
     // debe listar el faltante, y aun conservando el SKILL.md actual el faltante se crea
     // (no es conflicto: no hay nada que sobrescribir).
-    const existing = path.join(tmpDir, '.agents', 'skills', 'sdd-release', 'SKILL.md');
+    const existing = path.join(tmpDir, '.agents', 'skills', 'release', 'SKILL.md');
     fs.mkdirSync(path.dirname(existing), { recursive: true });
     fs.writeFileSync(existing, 'version local', 'utf8');
     const missing = path.join(tmpDir, '.agents', 'templates', 'sdd', 'release-notes.md');
 
-    p.multiselect.mockResolvedValueOnce(['sdd-release']);
+    p.multiselect.mockResolvedValueOnce(['release']);
     p.confirm.mockResolvedValueOnce(false);
 
     await program.parseAsync(['skills'], { from: 'user' });
 
     const detail = String(p.note.mock.calls[0][0]);
-    expect(detail).toContain(`.agents/skills/sdd-release/SKILL.md`);
+    expect(detail).toContain(`.agents/skills/release/SKILL.md`);
     expect(detail).toContain(`.agents/templates/sdd/release-notes.md`);
     expect(fs.existsSync(missing)).toBe(true);
     expect(fs.readFileSync(existing, 'utf8')).toBe('version local');

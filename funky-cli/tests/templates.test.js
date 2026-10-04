@@ -21,8 +21,8 @@ describe('Templates Validation', () => {
 });
 
 describe('Bases de skills (src/skills/, no dead gentle)', () => {
-  it('sdd-release base: sin capa CLI del monorepo, rutas neutralizadas (D3)', () => {
-    const releasePath = path.join(__dirname, '../src/skills/sdd-release/SKILL.md');
+  it('release base: sin capa CLI del monorepo, rutas neutralizadas (D3)', () => {
+    const releasePath = path.join(__dirname, '../src/skills/release/SKILL.md');
     const content = fs.readFileSync(releasePath, 'utf8');
 
     expect(content).not.toMatch(/No aplica en antigravity/);
@@ -31,8 +31,8 @@ describe('Bases de skills (src/skills/, no dead gentle)', () => {
     expect(content).toContain('release-notes.md');
   });
 
-  it('sdd-release base: paso 2 inyecta release-notes.md desde el template si falta, rutas con / (D5, R-SK-10)', () => {
-    const releasePath = path.join(__dirname, '../src/skills/sdd-release/SKILL.md');
+  it('release base: paso 2 inyecta release-notes.md desde el template si falta, rutas con / (D5, R-SK-10)', () => {
+    const releasePath = path.join(__dirname, '../src/skills/release/SKILL.md');
     const content = fs.readFileSync(releasePath, 'utf8');
 
     expect(content).toContain('.agents/templates/sdd/release-notes.md');
@@ -40,8 +40,8 @@ describe('Bases de skills (src/skills/, no dead gentle)', () => {
     expect(content).toMatch(/does not exist, inject it from the base template/i);
   });
 
-  it('sdd-docs-sync base: sin verificación CLI del monorepo, SSOT condicional (D2)', () => {
-    const syncPath = path.join(__dirname, '../src/skills/sdd-docs-sync/SKILL.md');
+  it('docs-sync base: sin verificación CLI del monorepo, SSOT condicional (D2)', () => {
+    const syncPath = path.join(__dirname, '../src/skills/docs-sync/SKILL.md');
     const content = fs.readFileSync(syncPath, 'utf8');
 
     expect(content).not.toContain('funky-cli/bin');
@@ -51,8 +51,8 @@ describe('Bases de skills (src/skills/, no dead gentle)', () => {
     expect(content).toContain('docs-index/');
   });
 
-  it('sdd-docs-sync base: regla doc-nuevo en Decision Gates y pasos (D6, R-SK-11)', () => {
-    const syncPath = path.join(__dirname, '../src/skills/sdd-docs-sync/SKILL.md');
+  it('docs-sync base: regla doc-nuevo en Decision Gates y pasos (D6, R-SK-11)', () => {
+    const syncPath = path.join(__dirname, '../src/skills/docs-sync/SKILL.md');
     const content = fs.readFileSync(syncPath, 'utf8');
 
     expect(content).toMatch(/Comando nuevo/);

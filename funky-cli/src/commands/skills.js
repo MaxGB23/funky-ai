@@ -120,8 +120,8 @@ const SKILLS_HELP = `
 Ejemplos:
   funky skills                                Pregunta qué instalar (modo interactivo)
   funky skills --all                          Instala todas las skills detectadas
-  funky skills --skill sdd-release            Instala solo esa skill
-  funky skills -s sdd-release -s layout-debug  Instala varias
+  funky skills --skill release            Instala solo esa skill
+  funky skills -s release -s layout-debug  Instala varias
 
 Conflicto (un archivo ya existe):
   Sin flag             Pregunta una vez por skill; por defecto conserva

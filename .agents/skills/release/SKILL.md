@@ -1,19 +1,19 @@
 ---
-name: sdd-release
-description: "Trigger: No aplica en antigravity. Release en opencode + gentle-ai, tag, version bump, publicar release. Post-archive release workflow: version bump, release notes, git tag, publicar release en GitHub con gh."
+name: release
+description: "Trigger: No aplica en antigravity. Release en opencode, tag, version bump, publicar release. Post-archive release workflow: version bump, release notes, git tag, publicar release en GitHub con gh."
 license: Apache-2.0
 metadata:
   author: "MaxGB23"
   version: "1.0"
 ---
 
-# SDD Release
+# Release
 
 Post-archive release workflow. Handles version bump, release notes, git tag, and GitHub release publication.
 
 ## When to use
 
-After `sdd-archive` completes, the orchestrator suggests running this skill if the change warrants a release. The user decides.
+After merging a branch, the orchestrator suggests running this skill if the change warrants a release. The user decides.
 
 **Suggest release when:**
 - Change includes new features (MINOR bump)

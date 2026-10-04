@@ -3,10 +3,10 @@ import fs from 'fs';
 import path from 'path';
 
 import { runSkills, discoverSkills } from '../src/commands/skills.js';
-import sddReleaseManifest from '../src/skills/sdd-release/manifest.js';
-import sddDocsSyncManifest from '../src/skills/sdd-docs-sync/manifest.js';
+import releaseManifest from '../src/skills/release/manifest.js';
+import docsSyncManifest from '../src/skills/docs-sync/manifest.js';
 
-const MANIFESTS = [sddDocsSyncManifest, sddReleaseManifest];
+const MANIFESTS = [docsSyncManifest, releaseManifest];
 
 describe('runSkills()', () => {
   const fakeSrcDir = '/fake/src';
@@ -34,17 +34,17 @@ describe('runSkills()', () => {
 
     expect(skills).toContainEqual({
       action: 'copy',
-      src: path.join(fakeSrcDir, 'skills/sdd-release/SKILL.md'),
-      dest: path.join(fakeTargetDir, '.agents/skills/sdd-release/SKILL.md'),
-      label: '.agents/skills/sdd-release/SKILL.md',
-      skill: 'sdd-release',
+      src: path.join(fakeSrcDir, 'skills/release/SKILL.md'),
+      dest: path.join(fakeTargetDir, '.agents/skills/release/SKILL.md'),
+      label: '.agents/skills/release/SKILL.md',
+      skill: 'release',
     });
     expect(skills).toContainEqual({
       action: 'copy',
-      src: path.join(fakeSrcDir, 'skills/sdd-docs-sync/SKILL.md'),
-      dest: path.join(fakeTargetDir, '.agents/skills/sdd-docs-sync/SKILL.md'),
-      label: '.agents/skills/sdd-docs-sync/SKILL.md',
-      skill: 'sdd-docs-sync',
+      src: path.join(fakeSrcDir, 'skills/docs-sync/SKILL.md'),
+      dest: path.join(fakeTargetDir, '.agents/skills/docs-sync/SKILL.md'),
+      label: '.agents/skills/docs-sync/SKILL.md',
+      skill: 'docs-sync',
     });
   });
 
@@ -59,14 +59,14 @@ describe('runSkills()', () => {
       src: path.join(fakeSrcDir, 'templates/bootstrap/sdd/docs-live-index.md'),
       dest: path.join(fakeTargetDir, '.agents/templates/sdd/docs-live-index.md'),
       label: '.agents/templates/sdd/docs-live-index.md',
-      skill: 'sdd-docs-sync',
+      skill: 'docs-sync',
     });
     expect(docs).toContainEqual({
       action: 'copy',
       src: path.join(fakeSrcDir, 'templates/bootstrap/sdd/docs-index/_indice-seccional-template.md'),
       dest: path.join(fakeTargetDir, '.agents/templates/sdd/docs-index/_indice-seccional-template.md'),
       label: '.agents/templates/sdd/docs-index/_indice-seccional-template.md',
-      skill: 'sdd-docs-sync',
+      skill: 'docs-sync',
     });
     expect(docs).toContainEqual({
       action: 'copy',
@@ -74,7 +74,7 @@ describe('runSkills()', () => {
       dest: path.join(fakeTargetDir, '.agents/templates/sdd/release-notes.md'),
       optional: true,
       label: '.agents/templates/sdd/release-notes.md',
-      skill: 'sdd-release',
+      skill: 'release',
     });
   });
 
@@ -93,13 +93,13 @@ describe('runSkills()', () => {
     const intentions = runSkills({
       srcDir: fakeSrcDir,
       targetBase: fakeTargetDir,
-      selectedSkills: ['sdd-release'],
+      selectedSkills: ['release'],
       manifests: MANIFESTS,
     });
 
     expect(intentions).toHaveLength(2);
     const dests = intentions.map(i => String(i.dest).replace(/\\/g, '/'));
-    expect(dests[0]).toContain('.agents/skills/sdd-release/SKILL.md');
+    expect(dests[0]).toContain('.agents/skills/release/SKILL.md');
     expect(dests[1]).toContain('.agents/templates/sdd/release-notes.md');
   });
 
@@ -128,18 +128,18 @@ describe('runSkills()', () => {
     const intentions = runSkills({ srcDir: fakeSrcDir, targetBase: fakeTargetDir, manifests: MANIFESTS });
 
     expect(intentions).toHaveLength(5);
-    expect(String(intentions[0].src)).toContain(path.join('skills', 'sdd-docs-sync', 'SKILL.md'));
-    expect(String(intentions[3].src)).toContain(path.join('skills', 'sdd-release', 'SKILL.md'));
+    expect(String(intentions[0].src)).toContain(path.join('skills', 'docs-sync', 'SKILL.md'));
+    expect(String(intentions[3].src)).toContain(path.join('skills', 'release', 'SKILL.md'));
   });
 
   it('orden determinista: sort por skill (docs-sync antes de release), luego orden del manifest (D3)', () => {
     const intentions = runSkills({ srcDir: fakeSrcDir, targetBase: fakeTargetDir, manifests: MANIFESTS });
 
     const srcParts = intentions.map(i => String(i.src).replace(/\\/g, '/'));
-    expect(srcParts[0]).toContain('skills/sdd-docs-sync/SKILL.md');
+    expect(srcParts[0]).toContain('skills/docs-sync/SKILL.md');
     expect(srcParts[1]).toContain('templates/bootstrap/sdd/docs-live-index.md');
     expect(srcParts[2]).toContain('templates/bootstrap/sdd/docs-index/_indice-seccional-template.md');
-    expect(srcParts[3]).toContain('skills/sdd-release/SKILL.md');
+    expect(srcParts[3]).toContain('skills/release/SKILL.md');
     expect(srcParts[4]).toContain('templates/bootstrap/sdd/release-notes.md');
   });
 

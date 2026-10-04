@@ -1,19 +1,19 @@
 ---
-name: sdd-docs-sync
-description: "Trigger: cierre de sesión, doc update, actualizar docs. Sincroniza docs del SSOT y repo-map y verifica contra el CLI real antes de sdd-release."
+name: docs-sync
+description: "Trigger: cierre de sesión, doc update, actualizar docs. Sincroniza docs del SSOT y repo-map y verifica contra el CLI real antes de release."
 license: Apache-2.0
 metadata:
   author: "MaxGB23"
   version: "1.0"
 ---
 
-# SDD Docs Sync
+# Docs Sync
 
-Cierra la documentación del repo al final del ciclo SDD, después de `sdd-archive` y antes de `sdd-release`. Garantiza que los docs espejen el comportamiento real del CLI (fuente de datos para `--help`).
+Cierra la documentación del repo al cierre de la sesión, tras mergear una branch y antes de `release`. Garantiza que los docs espejen el comportamiento real del CLI (fuente de datos para `--help`).
 
 ## When to use
 
-Tras `sdd-archive`, antes de `sdd-release` (o al cerrar cualquier sesión con cambios de código). El orquestador la sugiere cuando la sesión modificó comandos, flags, templates o estructura del repo.
+Tras mergear una branch, antes de `release` (o al cerrar cualquier sesión con cambios de código). El orquestador la sugiere cuando la sesión modificó comandos, flags, templates o estructura del repo.
 
 ## Hard Rules
 

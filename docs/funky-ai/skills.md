@@ -8,17 +8,6 @@ Sin `funky skills` ninguna skill del catálogo se distribuye al proyecto, ni se 
 
 Todas las skills del catálogo son personales de MaxGB23. Ninguna viene de un framework ni de un paquete externo, y el instalador no las trata como esenciales: la selección interactiva permite instalar solo las deseadas.
 
-### Sobre el prefijo `sdd-`
-
-El prefijo es **legacy y engañoso**: no se refiere a spec-driven development, que este proyecto ya no usa. Las skills que lo llevan siguen describiendo procesos reales:
-
-| Skill | Proceso que sirve |
-|---|---|
-| `sdd-release` | proceso de release de funky-ai |
-| `sdd-docs-sync` | proceso de actualizar los docs de funky-ai |
-
-El nombre se conserva para no alterar rutas ni referencias ya escritas en `AGENTS.md`, en la config de agentes y en release notes. Está previsto deprecarlo; cuando se haga, el nombre debe cambiar a algo que describa el proceso real.
-
 ## ¿Cuándo usarlo?
 
 Cuando el proyecto necesite las skills de release o de docs, o los docs compartidos que ambas usan. El comando es interactivo e idempotente: los archivos existentes se skipean sin sobrescribirse (skip-if-exists), por lo que las ediciones locales sobre las golden templates se conservan.
@@ -43,8 +32,8 @@ Sin terminal el comando no puede preguntar qué instalar, así que **exige una s
 
 ```bash
 funky skills --all                              # todas las detectadas
-funky skills --skill sdd-release                # una sola
-funky skills -s sdd-release -s layout-debug     # varias (repetible)
+funky skills --skill release                # una sola
+funky skills -s release -s layout-debug     # varias (repetible)
 ```
 
 Reglas, todas con código de salida 1 y sin instalar nada:
@@ -80,7 +69,7 @@ byte-idéntico no hay nada que sobrescribir ni que perder, así que no se pregun
 falla: se informa y se sigue.
 
 ```
-ℹ️ 2 archivo(s) ya están en la versión más reciente: .agents/skills/sdd-release/SKILL.md, ...
+ℹ️ 2 archivo(s) ya están en la versión más reciente: .agents/skills/release/SKILL.md, ...
 ```
 
 Eso hace que la ruta con flags sea idempotente: instalar, volver a instalar y reintentar
@@ -120,7 +109,7 @@ imprime qué archivos va a descartar:
 
 ```
 ⚠️ --force: reemplazando 2 archivo(s) existente(s):
-  - .agents/skills/sdd-release/SKILL.md
+  - .agents/skills/release/SKILL.md
   - .agents/templates/sdd/release-notes.md
 ```
 
@@ -146,13 +135,13 @@ Cada línea nombra la ruta del archivo (`` ⚡ Omitiendo (ya existe): .agents/sk
 
 Cada skill vive en `src/skills/<skill>/`:```
 src/skills/
-├── sdd-release/           # proceso de release de funky-ai (prefijo legacy, ver arriba)
+├── release/           # proceso de release de funky-ai
 │   ├── SKILL.md
-│   └── manifest.js        # SKILL.md → .agents/skills/sdd-release/
+│   └── manifest.js        # SKILL.md → .agents/skills/release/
 │                          # templates/bootstrap/sdd/release-notes.md → .agents/templates/sdd/ (optional)
-├── sdd-docs-sync/         # proceso de docs de funky-ai (prefijo legacy, ver arriba)
+├── docs-sync/         # proceso de docs de funky-ai
 │   ├── SKILL.md
-│   └── manifest.js        # SKILL.md → .agents/skills/sdd-docs-sync/
+│   └── manifest.js        # SKILL.md → .agents/skills/docs-sync/
 │                          # docs-live-index.md → .agents/templates/sdd/
 │                          # docs-index/_indice-seccional-template.md → .agents/templates/sdd/docs-index/
 ├── layout-debug/          # reglas del overlay de layout, instalacion cross-project
@@ -171,9 +160,9 @@ En tiempo de instalación `runSkills()` carga el manifest de cada skill seleccio
 
 Los docs compartidos viven en `src/templates/bootstrap/sdd/` — el MISMO src que usa `funky sdd install`. Así, el índice de docs vivos (`docs-live-index.md`), el template canónico del índice seccional (`_indice-seccional-template.md`) y `release-notes.md` llegan byte a byte idénticos por `funky skills` y por `funky sdd install`; no hay dos copias que divergir.
 
-## Regla doc-nuevo en sdd-docs-sync (R-SK-11)
+## Regla doc-nuevo en docs-sync (R-SK-11)
 
-La skill `sdd-docs-sync` amplió sus Decision Gates: además del doc modificado clásico, ahora un **comando nuevo** (o flag nuevo) exige crear `docs/<dominio>/<comando>.md` completo, su índice seccional y su fila en `docs-live-index.md` (SSOT); también cubren capability nueva, fraccionamiento de un doc existente y estructura de docs nueva. El matching entre el índice SSOT y el árbol de docs es bidireccional: un ítem nuevo sin fila en el índice se marca como doc nuevo.
+La skill `docs-sync` amplió sus Decision Gates: además del doc modificado clásico, ahora un **comando nuevo** (o flag nuevo) exige crear `docs/<dominio>/<comando>.md` completo, su índice seccional y su fila en `docs-live-index.md` (SSOT); también cubren capability nueva, fraccionamiento de un doc existente y estructura de docs nueva. El matching entre el índice SSOT y el árbol de docs es bidireccional: un ítem nuevo sin fila en el índice se marca como doc nuevo.
 
 ## Diagrama de flujo
 

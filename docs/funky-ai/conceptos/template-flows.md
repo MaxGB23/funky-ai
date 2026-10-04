@@ -83,8 +83,8 @@ funky feature <name>
 `funky-cli/src/commands/skills.js`
 
 ```
-skills/sdd-release/SKILL.md          ──► <proyecto>/.agents/skills/sdd-release/SKILL.md
-skills/sdd-docs-sync/SKILL.md        ──► <proyecto>/.agents/skills/sdd-docs-sync/SKILL.md
+skills/release/SKILL.md          ──► <proyecto>/.agents/skills/release/SKILL.md
+skills/docs-sync/SKILL.md        ──► <proyecto>/.agents/skills/docs-sync/SKILL.md
 bootstrap/sdd/release-notes.md       ──► <proyecto>/.agents/templates/sdd/release-notes.md   (opcional R-SK-3)
 bootstrap/sdd/docs-live-index.md     ──► <proyecto>/.agents/templates/sdd/docs-live-index.md
 bootstrap/sdd/docs-index/_indice-seccional-template.md  ──► <proyecto>/.agents/templates/sdd/docs-index/_indice-seccional-template.md
