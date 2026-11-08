@@ -144,6 +144,9 @@ src/skills/
 │   └── manifest.js        # SKILL.md → .agents/skills/docs-sync/
 │                          # docs-live-index.md → .agents/templates/sdd/
 │                          # docs-index/_indice-seccional-template.md → .agents/templates/sdd/docs-index/
+├── funky-judge/       # ruteo de un artefacto al review mas barato suficiente
+│   ├── SKILL.md
+│   └── manifest.js        # SKILL.md → .agents/skills/funky-judge/
 ├── layout-debug/          # reglas del overlay de layout, instalacion cross-project
 │   ├── SKILL.md
 │   └── manifest.js        # SKILL.md → .agents/skills/layout-debug/
