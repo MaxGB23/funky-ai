@@ -4,7 +4,7 @@ description: "Trigger: funky judge, second opinion, review this RFC, review this
 license: Apache-2.0
 metadata:
   author: "MaxGB23"
-  version: "1.0"
+  version: "1.1"
 ---
 
 ## Activation Contract
@@ -35,10 +35,12 @@ Pick the row, then run its default mode.
 | Bug, cause unknown | LIGHT | Reproduce first, then `explore` by hypothesis | 3+ hypotheses disproved |
 | Diff or commit | LIGHT | Native 4R review when RDD is on, else `verify` | >400 lines, or auth/payments/data/security |
 | Issue draft | STANDARD | `explore` (duplicates, upstream, repo policy), then 2 blind judges | Never |
+| Issue comment or follow-up | LIGHT | One blind judge, one sweep | It introduces a new root cause or changes the issue's direction |
 | RFC or plan | STANDARD | Premise check, then 2 blind judges, discovery-only | Giant or cross-cutting feature |
 | Question or doc | LIGHT | One read-only reviewer | — |
 
 Mode budgets: LIGHT = one pass, one reviewer. STANDARD = two blind judges, one sweep each. DEEP = one fact-check pass, then two sweeps per judge.
+Sweep budget: at most ~15 tool calls and `curl -m 10`; report gaps instead of chasing.
 
 Never run `judgment-day` and the 4R review on the same target at once.
 
@@ -48,7 +50,8 @@ Never run `judgment-day` and the 4R review on the same target at once.
 2. Freeze the target and record the exact path plus commit or hash.
 3. Run the artifact's pre-gate: reproduction for bugs, premises against code for RFCs, duplicates, upstream version, and the target repo's contribution workflow for issues.
    **Outside the session clone** (`%TEMP%`, a sibling checkout): `gentle-ai-explore`
-   cannot read those paths; dispatch `funky-lakra` read-only with the absolute paths.
+   cannot read those paths; dispatch `funky-lakra` read-only with `Tier: inspect` and
+   the absolute paths.
    The two judges stay `jd-judge-*`: tell them to read the artifact by absolute path
    with `bash`, as data. A web/API-only pre-gate (duplicates, upstream, policy) may
    still use `gentle-ai-explore` when it does not need the local file.
