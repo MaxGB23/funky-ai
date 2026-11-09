@@ -5,6 +5,9 @@ Require explicit authorization before implementing (including through workers) o
 Recommendations, reviews, comparisons, and questions are not authorization; answer first and wait.
 Only an explicit session instruction overrides this.
 
+## Repository policy
+When creating issues or pull requests, follow the target repository's rules — `CONTRIBUTING.md`, templates, policy scripts, and CI gates — over your defaults. Use the relevant issue / PR skills.
+
 ## Commits
 Use English Conventional Commits.
 One commit = one work unit (behavior, fix, or docs), never split by file type. Consult the work-unit-commits skill when planning commits.
