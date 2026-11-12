@@ -18,7 +18,7 @@ funky skills
 
 ## Selección interactiva
 
-El instalador detecta las skills disponibles bajo `src/skills/` y pregunta qué instalar con un menú de **selección múltiple** (`multiselect`). Se marca cada skill con `Espacio` y se confirma con `Enter`. Cualquier subconjunto es válido — instalar 3 de 4 es una sola interacción.
+El instalador detecta las skills disponibles bajo `src/skills/` y pregunta qué instalar con un menú de **selección múltiple** (`multiselect`). Se marca cada skill con `Espacio` y se confirma con `Enter`. Cualquier subconjunto es válido — instalar 3 de 6 es una sola interacción.
 
 El prompt **no preselecciona nada**: el valor por defecto es no instalar. Un `Enter` sin marcar es bloqueado por el prompt, que muestra el recordatorio de la tecla, así que el error va hacia "no instala" y nunca hacia "instala de más". Para instalar todo hay que marcar la opción **Todas** (la primera de la lista) y confirmar.
 
@@ -147,6 +147,9 @@ src/skills/
 ├── funky-judge/       # ruteo de un artefacto al review mas barato suficiente
 │   ├── SKILL.md
 │   └── manifest.js        # SKILL.md → .agents/skills/funky-judge/
+├── funky-herdr-peer/  # mensajeria REQ/RES entre panes de Herdr; inerte fuera de Herdr
+│   ├── SKILL.md
+│   └── manifest.js        # SKILL.md → .agents/skills/funky-herdr-peer/
 ├── layout-debug/          # reglas del overlay de layout, instalacion cross-project
 │   ├── SKILL.md
 │   └── manifest.js        # SKILL.md → .agents/skills/layout-debug/
