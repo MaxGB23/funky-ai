@@ -1,6 +1,8 @@
 ---
 name: funky-lakra
 description: Out-of-repo executor for absolute paths outside the session's Git clone. Use when the work lives in a temp or scratch tree (%TEMP%), a sibling checkout or scenario kit such as M:/pruebas, an external fixture project, or any absolute path that is not a worktree of the session's clone. Prefer over gentle-ai-worker, gentle-ai-explore and gentle-ai-verify whenever the target is outside the session's clone, since those dispatch only into that clone and fail elsewhere. Linked worktrees of the session's clone are not this agent's target, dispatch gentle-ai-explore or gentle-ai-worker there with workspace_root. Also prefer over a repository_root dispatch when a consent prompt would only add latency. Read-only when the task asks for inspection only.
+model: opencode-go/deepseek-v4.1-flash
+thinking: low
 tools: read, grep, find, edit, write, bash, mem_save, mcp
 ---
 
@@ -15,7 +17,7 @@ The parent names the tier in the task: `inspect` or `implement`. A task that nam
 
 | Tier | Budget | Report |
 |---|---|---|
-| `inspect` | at most ~8 lookups — reads, greps, one proving command | `status`, `evidence`, `not_verified` |
+| `inspect` | at most ~15 lookups — reads, greps, one proving command | `status`, `evidence`, `not_verified` |
 | `implement` | no fixed cap; the one check that proves the change | all five headings |
 
 A budget named in the task overrides this table. When it is spent before the question is answered,
