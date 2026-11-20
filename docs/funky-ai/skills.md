@@ -144,12 +144,20 @@ src/skills/
 │   └── manifest.js        # SKILL.md → .agents/skills/docs-sync/
 │                          # docs-live-index.md → .agents/templates/sdd/
 │                          # docs-index/_indice-seccional-template.md → .agents/templates/sdd/docs-index/
-├── funky-judge/       # ruteo de un artefacto al review mas barato suficiente
+├── funky-judge/       # ruteo de un artefacto al review mas barato suficiente; requiere funky-judge-protocol
 │   ├── SKILL.md
-│   └── manifest.js        # SKILL.md → .agents/skills/funky-judge/
+│   ├── manifest.js        # SKILL.md + references/*.md (4) → .agents/skills/funky-judge/
+│   └── references/        # before-code, open-change, reproduce, outbound-text
+├── funky-judge-protocol/  # disciplina del judge: reglas duras, encuadre, adjudicacion; requerida por funky-judge
+│   ├── SKILL.md
+│   └── manifest.js        # SKILL.md → .agents/skills/funky-judge-protocol/
 ├── funky-herdr-peer/  # mensajeria REQ/RES entre panes de Herdr; inerte fuera de Herdr
 │   ├── SKILL.md
 │   └── manifest.js        # SKILL.md → .agents/skills/funky-herdr-peer/
+├── gemini-image-generation/  # Chrome + Gemini end to end: subir, esperar, descargar
+│   ├── SKILL.md
+│   ├── manifest.js        # SKILL.md + references/** (7) → .agents/skills/gemini-image-generation/
+│   └── references/        # gating de sesion, recetas de upload/download, postproceso, prompts/
 ├── layout-debug/          # reglas del overlay de layout, instalacion cross-project
 │   ├── SKILL.md
 │   └── manifest.js        # SKILL.md → .agents/skills/layout-debug/
