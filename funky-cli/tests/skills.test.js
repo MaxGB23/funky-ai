@@ -1,12 +1,34 @@
 ﻿import { describe, it, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath, pathToFileURL } from 'url';
 
 import { runSkills, discoverSkills } from '../src/commands/skills.js';
 import releaseManifest from '../src/skills/release/manifest.js';
 import docsSyncManifest from '../src/skills/docs-sync/manifest.js';
 
 const MANIFESTS = [docsSyncManifest, releaseManifest];
+
+const SKILLS_SRC = fileURLToPath(new URL('../src/skills', import.meta.url));
+
+/**
+ * Archivos de una skill, recursivo, relativo a su carpeta y con separador `/`
+ * (el mismo formato que usa `src` en cada manifest).
+ * @param {string} skillDir
+ * @returns {string[]}
+ */
+function skillFiles(skillDir) {
+  const found = [];
+  const walk = (dir, prefix) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const rel = prefix ? `${prefix}/${entry.name}` : entry.name;
+      if (entry.isDirectory()) walk(path.join(dir, entry.name), rel);
+      else found.push(rel);
+    }
+  };
+  walk(skillDir, '');
+  return found.sort();
+}
 
 describe('runSkills()', () => {
   const fakeSrcDir = '/fake/src';
@@ -166,6 +188,51 @@ describe('runSkills()', () => {
     } finally {
       fs.rmSync(fakeSrc, { recursive: true, force: true });
     }
+  });
+});
+
+describe('catálogo de skills (R-SK-7 / R-SK-8)', () => {
+  const skillDirs = fs
+    .readdirSync(SKILLS_SRC, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort();
+
+  it('toda skill con SKILL.md declara manifest.js, o `funky skills` la ignora para siempre', () => {
+    const invisible = skillDirs.filter((name) => {
+      const names = fs.readdirSync(path.join(SKILLS_SRC, name));
+      return names.includes('SKILL.md') && !names.includes('manifest.js');
+    });
+
+    expect(invisible).toEqual([]);
+  });
+
+  it('cada archivo de la skill está declarado en su manifest y cada src declarado existe', async () => {
+    const problems = [];
+
+    for (const name of skillDirs) {
+      const dir = path.join(SKILLS_SRC, name);
+      if (!fs.readdirSync(dir).includes('manifest.js')) continue;
+
+      const moduleUrl = pathToFileURL(path.join(dir, 'manifest.js')).href;
+      const manifest = (await import(moduleUrl)).default;
+      const prefix = `skills/${name}/`;
+      const declared = new Set(
+        manifest
+          .filter((item) => String(item.src).startsWith(prefix))
+          .map((item) => String(item.src).slice(prefix.length)),
+      );
+
+      for (const rel of skillFiles(dir)) {
+        if (rel === 'manifest.js') continue;
+        if (!declared.has(rel)) problems.push(`${name}/${rel} no está declarado en su manifest`);
+      }
+      for (const rel of declared) {
+        if (!fs.existsSync(path.join(dir, rel))) problems.push(`${name}/${rel} declarado en el manifest pero ausente`);
+      }
+    }
+
+    expect(problems).toEqual([]);
   });
 });
 
